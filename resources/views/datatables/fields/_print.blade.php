@@ -1,1 +1,0 @@
-<a href="{{ $value->getPrintUrl() }}" uk-icon="download"></a>

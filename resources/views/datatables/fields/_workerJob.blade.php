@@ -1,2 +1,0 @@
-
-{{ $jobs[$value] ?? $value }}

@@ -1,1 +1,0 @@
-{{ $element->courseWorker->id }}-{{ $element->company->id }}

@@ -20,6 +20,7 @@ class Datatables
     public $fieldsGroups;
     public $elements;
     public $url;
+    public $columnDefs = [];
 
     public function __construct()
     {
@@ -27,13 +28,13 @@ class Datatables
         $this->fieldsGroups = collect();
     }
 
-    static function create(string $name, array $fieldsGroups, Collection $elements)
+    static function create(string $name, array $fieldsGroups, $elements)
     {
         if(request()->ajax())
         {
             if($cachedTableKey = request()->input('cachedtablekey'))
             {
-                $table = new Datatable();
+                $table = new static();
 
                 if($data = cache()->pull($cachedTableKey))
                 {
@@ -45,7 +46,7 @@ class Datatables
                 $table->addFieldsGroups($fieldsGroups);
                 // $table->addFields($fields);
 
-                $elements = Appointment::with('contact')->get();
+                $elements = $elements();
                 $table->setElements($elements);
                 $table->setData();
 
@@ -66,7 +67,7 @@ class Datatables
         $table->setName($name);
         $table->setUrl(request()->url());
 
-        $table->setElements($elements);
+        $table->setElements($elements());
         $table->prepareCachedData();
 
         return $table;
@@ -131,14 +132,14 @@ class Datatables
                 "data" => $this->getData()
             ];
 
-        return view('layouts.app', ['table' => $this]);
+        return view('datatables::table', ['table' => $this]);
     }
 
     public function render()
     {
         $this->parseColumnDefs();
 
-        return view('datatables._table', ['table' => $this]);
+        return view('datatables::_table', ['table' => $this]);
     }
 
     public function getId()

@@ -1,1 +1,0 @@
-<span uk-tooltip="{{ $value }}">{{ substr($value, 0, $field->truncate) }}@if(strlen($value) > $field->truncate)...@endif</span>

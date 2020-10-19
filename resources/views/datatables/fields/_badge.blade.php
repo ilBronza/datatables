@@ -1,1 +1,0 @@
-<div class="uk-badge {{ $value }}">{{ $value }}</div>

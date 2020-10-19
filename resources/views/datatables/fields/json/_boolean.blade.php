@@ -1,1 +1,0 @@
-{{ __('fields.flatBoolean' . $value) }}

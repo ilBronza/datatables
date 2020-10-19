@@ -1,1 +1,0 @@
-<a href="{{ $value->getEditURL() }}">{{ $value->rag_soc }}</a>

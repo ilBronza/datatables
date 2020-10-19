@@ -1,1 +1,0 @@
-@if($value) {{ App\Color::getCachedColorName($value->getFirstColorId()) }} @endif

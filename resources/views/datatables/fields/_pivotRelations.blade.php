@@ -1,1 +1,0 @@
-@foreach($field->subfields as $relation) <a href="{{ $element->getRelationsLink($relation) }}">{{ trans('relations.' . $relation) }}</a> @endforeach

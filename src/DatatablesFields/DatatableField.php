@@ -1,6 +1,6 @@
 <?php
 
-namespace ilBronza\Datatables\DatatablesFields;
+namespace IlBronza\Datatables\DatatablesFields;
 
 use Auth;
 use Illuminate\Support\Str;
@@ -371,7 +371,7 @@ class DatatableField
 
     public function renderHeader()
     {
-        return view('datatables.datatablesFields._header', ['field' => $this]);
+        return view('datatables::datatablesFields._header', ['field' => $this]);
     }
 
     public function getFilterType()

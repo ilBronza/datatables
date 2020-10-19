@@ -1,9 +1,9 @@
 <?php
 
-namespace ilBronza\Datatables\Traits;
+namespace IlBronza\Datatables\Traits;
 
-use ilBronza\Datatables\DatatablesFields\ColumnDef;
-use ilBronza\Datatables\DatatablesFields\DatatableField;
+use IlBronza\Datatables\DatatablesFields\ColumnDef;
+use IlBronza\Datatables\DatatablesFields\DatatableField;
 
 trait DatatableColumnDefsTrait
 {

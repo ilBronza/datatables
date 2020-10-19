@@ -13,7 +13,7 @@ class DatatablesServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'ilbronza');
+        // $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'IlBronza');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'datatables');
         // $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         // $this->loadRoutesFrom(__DIR__.'/routes.php');
@@ -63,17 +63,21 @@ class DatatablesServiceProvider extends ServiceProvider
 
         // Publishing the views.
         /*$this->publishes([
-            __DIR__.'/../resources/views' => base_path('resources/views/vendor/ilbronza'),
+            __DIR__.'/../resources/views' => base_path('resources/views/vendor/IlBronza'),
         ], 'datatables.views');*/
+
+        $this->publishes([
+            __DIR__.'/path/to/assets' => public_path('vendor/IlBronza'),
+        ], 'public');
 
         // Publishing assets.
         /*$this->publishes([
-            __DIR__.'/../resources/assets' => public_path('vendor/ilbronza'),
+            __DIR__.'/../resources/assets' => public_path('vendor/IlBronza'),
         ], 'datatables.views');*/
 
         // Publishing the translation files.
         /*$this->publishes([
-            __DIR__.'/../resources/lang' => resource_path('lang/vendor/ilbronza'),
+            __DIR__.'/../resources/lang' => resource_path('lang/vendor/IlBronza'),
         ], 'datatables.views');*/
 
         // Registering package commands.

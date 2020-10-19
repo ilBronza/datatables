@@ -1,10 +1,11 @@
 <?php
 
-namespace ilBronza\Datatables\Traits;
+namespace IlBronza\Datatables\Traits;
 
-use ilBronza\Datatables\DatatableFieldsGroup;
-use ilBronza\Datatables\DatatablesFields\DatatableField;
 use Illuminate\Support\Collection;
+
+use IlBronza\Datatables\DatatableFieldsGroup;
+use IlBronza\Datatables\DatatablesFields\DatatableField;
 
 trait DatatableFieldsTrait
 {

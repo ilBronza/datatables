@@ -1,1 +1,0 @@
-@if(isset($workerPrivacies[$element->id]))<ul class="uk-list">@foreach($workerPrivacies[$element->id] as $_privacy)<li>{{ $_privacy }}</li>@endforeach</ul>@endif

@@ -1,1 +1,0 @@
-<a uk-tooltip="" title="{{ trans('categories.manage') }}" href="{{ \App\Category::getManageUrl($value) }}">C</a>

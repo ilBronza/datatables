@@ -1,1 +1,0 @@
-{{ $value->route ?? '-' }}, {{ $value->street_number ?? '-' }}

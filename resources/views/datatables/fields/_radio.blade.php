@@ -1,1 +1,0 @@
-<input class="uk-radio" type="radio" name="{{ $field->fieldName }}" value="{{ $value }}" />

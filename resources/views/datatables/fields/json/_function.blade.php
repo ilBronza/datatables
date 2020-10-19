@@ -1,1 +1,0 @@
-{!! call_user_func_array( [$value, $field->function], compact($field->variable ?? null) ) !!}

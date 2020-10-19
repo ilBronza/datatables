@@ -1,8 +1,8 @@
 <?php
 
-namespace ilBronza\Datatables\DatatablesFields\Dates;
+namespace IlBronza\Datatables\DatatablesFields\Dates;
 
-use ilBronza\Datatables\DatatablesFields\DatatableField;
+use IlBronza\Datatables\DatatablesFields\DatatableField;
 
 class DatatableFieldCarbon extends DatatableField
 {

@@ -1,1 +1,0 @@
-<span class='c'>{{{ $value }}}</span>

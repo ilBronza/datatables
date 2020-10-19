@@ -1,8 +1,8 @@
 <?php
 
-namespace ilBronza\Datatables\Traits;
+namespace IlBronza\Datatables\Traits;
 
-use ilBronza\Datatables\DatatablesFields\DatatableField;
+use IlBronza\Datatables\DatatablesFields\DatatableField;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 

@@ -1,1 +1,0 @@
-<span style="display: none;"></span><input autocomplete="off" data-trip="{{ $trip->id }}" type='text' data-field="{{ explode('.',$field)[1] }}" data-id="{{ $element->id }}" class='uk-input uk-form-width-medium tableinput moving' name={{ explode('.',$field)[1] }}[{{ $element->id }}]  value={{ $value }} >

@@ -1,1 +1,0 @@
-@if(is_object($value)) @foreach($value->pluck($field->property) as $_value) {{ $_value }} @if(! $loop->last) {{ $field->separator ?? '</ br>' }} @endif @endforeach @endif

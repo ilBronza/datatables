@@ -1,1 +1,0 @@
-{"id" : {{ $value->id }}, "name" : "{{ $value->getNameForDisplayRelation() }}"}
