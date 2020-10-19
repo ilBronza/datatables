@@ -1,0 +1,1 @@
+<a uk-icon="file-edit" href="{{ $value->getEditURL() }}"></a>

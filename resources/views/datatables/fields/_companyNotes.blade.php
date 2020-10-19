@@ -1,0 +1,1 @@
+{!! $notesByCompanyId[$value->id] ?? '' !!}

@@ -1,0 +1,1 @@
+<a href="{{ $value->getShowUrl() }}">{{ $value->getName() }}</a>

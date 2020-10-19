@@ -1,0 +1,1 @@
+@if($value){{ $value->format('H:i') }}@endif

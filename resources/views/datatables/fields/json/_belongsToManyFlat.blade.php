@@ -1,0 +1,1 @@
+@foreach($value as $related) {{ $related->getNameForDisplayRelation() }} @if(! $loop->last)<br /> @endif @endforeach

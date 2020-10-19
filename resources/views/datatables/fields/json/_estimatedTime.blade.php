@@ -1,0 +1,1 @@
+{{ \App\OrderProductPhase::getStaticHumanReadableEstimatedTime($value) }}

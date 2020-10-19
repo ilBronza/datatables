@@ -1,0 +1,1 @@
+@if($value->ordered_at) <a class="uk-button dg-icon dg-icon-{{ $element->getPrintDossiersPDF()->icon }}" href="{{ $element->getPrintDossiersPDF()->href }}">&nbsp;</a> @endif

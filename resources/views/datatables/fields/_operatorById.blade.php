@@ -1,0 +1,1 @@
+{{ $operators[$value]->group->name }}

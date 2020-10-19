@@ -1,0 +1,1 @@
+@if($button = call_user_func_array( [$value, $field->button], compact($field->variable ?? null))) {!!  $button->renderLink() !!} @endif

@@ -1,0 +1,1 @@
+<a href="{{ $value->getCompanyEditUrl($company) }}">E</a>

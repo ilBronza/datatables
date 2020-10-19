@@ -1,0 +1,1 @@
+{{ $value->getValue() }}

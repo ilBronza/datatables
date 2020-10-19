@@ -1,0 +1,1 @@
+<a uk-tooltip title="{{ trans('dossiers.setRelations') }}" href="{{ $value->getRelationURL() }}">R</a>

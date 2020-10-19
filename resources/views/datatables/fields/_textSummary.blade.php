@@ -1,0 +1,1 @@
+{!! $element->getTextSummary('<br />', 'strong') !!}

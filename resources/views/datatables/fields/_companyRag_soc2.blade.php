@@ -1,0 +1,1 @@
+<a class="company-link" data-id="{{ $value->id }}" href="{{ $value->showUrl() }}">{{ $value->rag_soc2 }}</a>

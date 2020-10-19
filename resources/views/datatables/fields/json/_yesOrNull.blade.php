@@ -1,0 +1,1 @@
+@if($value) {{ __('fields.flatBoolean' . $value) }} @endif

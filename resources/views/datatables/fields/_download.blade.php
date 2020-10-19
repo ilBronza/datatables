@@ -1,0 +1,1 @@
+<a target="_blank" href="{{ $value->getShowUrl() }}" uk-icon="cloud-download"></a>

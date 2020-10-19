@@ -1,0 +1,1 @@
+@if($value)<span uk-icon="ban"></span>@endif

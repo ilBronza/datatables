@@ -1,0 +1,1 @@
+{!! trans($field->file . '.' . $value . ($field->suffix ?? '')) !!}

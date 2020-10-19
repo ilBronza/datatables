@@ -1,0 +1,1 @@
+@if($value)<a href="mailto:{{ $value }}" target="_blank"><span uk-icon="mail"></span> {{ $value }}</a>@endif

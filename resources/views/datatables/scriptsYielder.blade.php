@@ -1,0 +1,2 @@
+@yield('datatables.scripts.toggler')
+

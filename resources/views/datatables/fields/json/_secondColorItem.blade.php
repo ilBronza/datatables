@@ -1,0 +1,1 @@
+@if($value) {{ App\Color::getCachedColorName($value->getSecondColorId()) }} @endif

@@ -1,0 +1,1 @@
+@if($value) {{ App\Color::getCachedColorName($value->getFirstColorId()) }} @endif <span data-class="{{ class_basename($value) }}" data-phase="{{ $value->getKey() }}" class="colorswitcher" uk-icon="chevron-double-right"></span>

@@ -1,0 +1,1 @@
+{!! $value->getTranslation($field->key?? 'tableField') !!}
