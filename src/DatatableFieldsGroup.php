@@ -2,87 +2,67 @@
 
 namespace IlBronza\Datatables;
 
+use IlBronza\Datatables\DatatablesFields\DatatableField;
+
 class DatatableFieldsGroup
 {
-    public $name;
-    public $fields;
+	public $fields;
+	public $name;
 
-    public function __construct(string $name)
-    {
-        $this->name = $name;
-        $this->fields = collect([]);
-    }
+	public function __construct(string $name)
+	{
+	    $this->name = $name;
 
-    public function setAbsoluteIndexes(int $base = 0)
-    {
-        foreach($this->fields as $field)
-            $field->setAbsoluteIndex($base + $field->index);
+	    $this->fields = collect();
+	}
 
-        return $this->getNextIndex() + $base;
-    }
+	public function addField(string $fieldName, DatatableField $field)
+	{
+		$this->fields[$fieldName] = $field;
+	}
 
-    public function getNextIndex()
-    {
-        if($higherField = $this->fields->sortByDesc('index')->first())
-            return $higherField->index + 1;
+	public function getFieldByName(string $fieldName)
+	{
+		foreach($this->fields as $field)
+			if($field->name == $fieldName)
+				return $field;
+	}
 
-        return 0;
-    }
+	public function assignRoles(array $roles)
+	{
+		$this->allowedForRoles = $roles;
 
-    public function getIndexesArray()
-    {
-        return $this->fields->pluck('absoluteIndex')->toArray();
-    }
+		foreach($this->fields as $field)
+			$field->assignRoles($roles);
+	}
 
+	public function assignForbiddenRolesToFields(array $groupRoles)
+	{
+		foreach($groupRoles as $fieldName => $forbiddenRoles)
+		{
+			$field = $this->getFieldByName($fieldName);
 
-    /**
-     * create  a field class instance and add it to the fields collection
-     *
-     * @param string $name
-     * @param array $parameters
-     */
-    public function addFieldByParameters(string $name, array $parameters)
-    {
-        $field = new DatatableField($name, $parameters);
-        $field->setIndex($this->getNextIndex());
-        $field->table = $this->table;
+			$field->assignForbiddenRoles($forbiddenRoles['roles']);
+		}
+	}
 
-        $this->fields->push($field);
-    }
+	public function assignRolesToFields(array $groupRoles)
+	{
+		foreach($groupRoles as $fieldName => $roles)
+		{
+			$field = $this->getFieldByName($fieldName);
 
-    /**
-     * check if fieldParameters are just a view name,
-     * if true set it as array key => value
-     *
-     * @param string|array $fieldParameters
-     *
-     * @throw \Exception if is not string or array
-     *
-     * @return array
-     */
-    private function checkIfViewName($fieldParameters)
-    {
-        if(is_array($fieldParameters))
-            return $fieldParameters;
+			$field->assignRoles($roles['roles']);
+		}
+	}
 
-        //if is just the view, set it as view parameter
-        if(is_string($fieldParameters))
-            return ['view' => $fieldParameters];
+	public function assignSummaryToFields(array $summary)
+	{
+		foreach($summary as $fieldName => $_summary)
+		{
+			$field = $this->getFieldByName($fieldName);
 
-        throw new \Exception('wrong field parameteres for table ' . json_encode($this->name));
-    }
-
-    /**
-     * populate each field with correct parameters, at least with view as view name by default
-     */
-    public function populateFields(array $fieldsGroup)
-    {
-        foreach($fieldsGroup as $fieldName => $fieldParameters)
-        {
-            //if $fieldParameters is just view name, set it to array ['view' => 'viewName']
-            $fieldParameters = $this->checkIfViewName($fieldParameters);
-
-            $this->addFieldByParameters($fieldName, $fieldParameters);
-        }
-    }
+			$field->assignSummary($_summary);				
+		}		
+	}
 }
