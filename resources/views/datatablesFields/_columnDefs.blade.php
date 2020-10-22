@@ -1,4 +1,6 @@
 <script type="text/javascript">
+
+
     window.{{ $table->getId() }}columnDefs = @if(count($table->columnDefs)||(count($table->customColumnDefs))) [
 
     @foreach ($table->columnDefs as $type => $element)

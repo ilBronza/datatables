@@ -132,6 +132,8 @@ class Datatables
                 "data" => $this->getData()
             ];
 
+        $this->parseColumnDefs();
+
         return view('datatables::table', ['table' => $this]);
     }
 

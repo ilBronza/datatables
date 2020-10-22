@@ -90,7 +90,7 @@ trait DatatableFieldsTrait
 
     public function hasSummary()
     {
-        return isset($this->summary);
+        return !! $this->summary;
     }
 
     private function hasSummaryType(string $type)
@@ -175,7 +175,24 @@ trait DatatableFieldsTrait
 
         //if is just the view, set it as view parameter
         if(is_string($fieldParameters))
-            return ['view' => $fieldParameters];
+        {
+            if(substr( $fieldParameters, 0, 4 ) === "_fn_")
+                return [
+                    'type' => 'function',
+                    'function' => substr($fieldParameters, 4)
+                ];
+
+            if(substr( $fieldParameters, 0, 5 ) === "_btn_")
+                return [
+                    'type' => 'button',
+                    'button' => substr($fieldParameters, 5)
+                ];
+
+            return [
+                'type' => $fieldParameters
+            ];
+
+        }
 
         throw new \Exception('wrong field parameteres for table ' . json_encode($this->name));      
     }

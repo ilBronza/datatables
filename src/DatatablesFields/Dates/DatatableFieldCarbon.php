@@ -11,5 +11,5 @@ class DatatableFieldCarbon extends DatatableField
     public function transformValue($value)
     {
         return $value->timestamp ?? null;
-    }    
+    }
 }

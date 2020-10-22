@@ -31,13 +31,13 @@ class DatatableField
         if($index !== null)
             $this->setIndex($index);
 
-        $this->setType();
+        // $this->setType();
 
         $this->setColumnDefs();
         $this->setColumnOptions();
 
         $this->summaryValues = collect();
-        $this->transformValueMethod = 'transformValue' . ucfirst(Str::camel($this->view));
+        $this->transformValueMethod = 'transformValue' . ucfirst(Str::camel($this->type));
     }
 
     public function transformValue($value)
@@ -114,11 +114,6 @@ class DatatableField
     public function getCustomColumnDef()
     {
         
-    }
-
-    public function setType()
-    {
-        $this->type = $this->view;
     }
 
     public function getFieldName()
