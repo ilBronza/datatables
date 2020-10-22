@@ -171,7 +171,14 @@ trait DatatableFieldsTrait
     private function prepareFieldParameters($fieldParameters) : array
     {
         if(is_array($fieldParameters))
+        {
+            if(isset($fieldParameters['childType']))
+            {
+                $fieldParameters['childParameters'] = $this->prepareFieldParameters($fieldParameters['childType']);
+            }
+
             return $fieldParameters;
+        }
 
         //if is just the view, set it as view parameter
         if(is_string($fieldParameters))
