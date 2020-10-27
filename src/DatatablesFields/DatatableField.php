@@ -37,7 +37,6 @@ class DatatableField
         $this->setColumnOptions();
 
         $this->summaryValues = collect();
-        $this->transformValueMethod = 'transformValue' . ucfirst(Str::camel($this->type));
     }
 
     public function transformValue($value)

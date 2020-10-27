@@ -4,7 +4,7 @@ namespace IlBronza\Datatables\DatatablesFields;
 
 use IlBronza\Datatables\DatatablesFields\Dates\DatatableFieldCarbon;
 
-class DatatableFieldDate extends DatatableFieldCarbon
+class DatatableFieldTime extends DatatableFieldCarbon
 {
     public function getCustomColumnDef()
     {
@@ -19,20 +19,15 @@ class DatatableFieldDate extends DatatableFieldCarbon
                 {
                     let date = moment.unix(data);
 
+                    return date;
+
                     if(date.isValid())
-                        return date.format(\"D/MM/YYYY\");
+                        return date.format(\"hh:mm\");
 
                     return data;
                 }
 
                 return data;
-            },
-            createdCell: function (td, cellData, rowData, row, col)
-            {
-                if ( cellData < 4602692420 )
-                {
-                    $(td).css('color', '#ff0912');
-                }
             }
         }
         ";
