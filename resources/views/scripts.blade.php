@@ -1,6 +1,16 @@
 {{--  DATATABLES  --}}
-<script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.4/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.4/js/buttons.flash.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.4/js/buttons.html5.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.4/js/buttons.print.min.js"></script>
+
+
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
 <script type="text/javascript" src="/js/moment.min.js"></script>
 {{--  //DATATABLES  --}}
@@ -8,6 +18,13 @@
 
 <script type="text/javascript">
 $(document).ready(function($) {
+
+    $.fn.dataTable.ext.buttons.reload = {
+        text: 'Reload',
+        action: function ( e, dt, node, config ) {
+            dt.ajax.reload();
+        }
+    };
 
     function addParameterToURL(url, paramName, paramValue)
     {
@@ -80,12 +97,14 @@ $(document).ready(function($) {
 
         let tableId = $(this).attr('id');
         let columnDefs = window[tableId + 'columnDefs'];
+        let buttons = window[tableId + 'buttons'];
 
         let summary = (typeof $('#' + tableId).data('summary') !== 'undefined');
 
         let datatableUrl = addParameterToURL(url, 'cachedtablekey', cachedtablekey);
 
         $(this).DataTable( {
+            dom: 'Bfrtip',
             processing: true,
             orderCellsTop: true,
             // "serverSide": true,
@@ -99,6 +118,7 @@ $(document).ready(function($) {
                 }
             },
             columnDefs : columnDefs,
+            buttons: buttons,
             // columns: [
             // // {
             // //     // DT_RowClass : 0

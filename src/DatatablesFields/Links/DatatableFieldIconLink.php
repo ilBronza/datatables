@@ -1,8 +1,10 @@
 <?php
 
-namespace IlBronza\Datatables\DatatablesFields;
+namespace IlBronza\Datatables\DatatablesFields\Links;
 
-class DatatableFieldLink extends DatatableField
+use IlBronza\Datatables\DatatablesFields\DatatableField;
+
+class DatatableFieldIconLink extends DatatableFieldLink
 {
 	public $icon = 'link';
 

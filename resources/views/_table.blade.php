@@ -1,4 +1,4 @@
-@include('datatables::datatablesFields._columnDefs')
+@include('datatables::datatablesFields._tableSingleSpec')
 
     <table
         id="{{ $table->getId() }}"

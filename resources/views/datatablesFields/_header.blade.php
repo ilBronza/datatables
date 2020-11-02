@@ -1,4 +1,4 @@
-<span class="uk-h4">{{ $field->name }}</span>
+<span class="uk-h4">{{ $field->getTranslatedName() }}</span>
 
 <div>
 
@@ -9,7 +9,7 @@
 			@endif
 
 			type="text"
-			placeholder="{{ $field->name }}"
+			placeholder="{{ $field->getTranslatedName() }}"
 			name="{{ $field->name }}" 
 			autocomplete="notautocomplete{{ rand(0, 99999999) }}"
 			data-filtertype="{{ $field->getFilterType() }}"
@@ -21,7 +21,7 @@
 			@endif
 
 			type="date"
-			placeholder="{{ $field->name }}"
+			placeholder="{{ $field->getTranslatedName() }}"
 			name="{{ $field->name }}" 
 			autocomplete="notautocomplete{{ rand(0, 99999999) }}"
 			data-filtertype="{{ $field->getFilterType() }}"

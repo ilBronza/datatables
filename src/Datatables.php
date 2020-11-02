@@ -2,16 +2,18 @@
 
 namespace IlBronza\Datatables;
 
+use App\Models\Appointment;
+use IlBronza\Datatables\Traits\DatatableButtonsTrait;
 use IlBronza\Datatables\Traits\DatatableColumnDefsTrait;
 use IlBronza\Datatables\Traits\DatatableDataTrait;
 use IlBronza\Datatables\Traits\DatatableFieldsTrait;
-use App\Models\Appointment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class Datatables
 {
+    use DatatableButtonsTrait;
     use DatatableDataTrait;
     use DatatableFieldsTrait;
     use DatatableColumnDefsTrait;
@@ -21,11 +23,14 @@ class Datatables
     public $elements;
     public $url;
     public $columnDefs = [];
+    public $buttons = ['reload', 'copy', 'csv', 'excel', 'pdf', 'print'];
 
     public function __construct()
     {
         $this->fields = collect();
         $this->fieldsGroups = collect();
+
+        $this->customButtons = collect();
     }
 
     static function create(string $name, array $fieldsGroups, $elements)

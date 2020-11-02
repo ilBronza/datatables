@@ -115,6 +115,11 @@ class DatatableField
         
     }
 
+    public function getTranslatedName()
+    {
+        return __('fields.' . $this->name);
+    }
+
     public function getFieldName()
     {
         return $this->name;
@@ -125,7 +130,17 @@ class DatatableField
         if(isset($this->renderAs))
             return $this->renderAs;
 
-        return $this->type;
+        try
+        {
+            return $this->type;
+        }
+        catch(\Exception $e)
+        {
+            mori($this);
+        }
+
+
+
     }
 
     // public function getCellClass()
