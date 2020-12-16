@@ -2,7 +2,9 @@
 
 namespace IlBronza\Datatables\DatatablesFields;
 
-class DatatableFieldEdit extends DatatableFieldLink
+use IlBronza\Datatables\DatatablesFields\Links\DatatableFieldIconLink;
+
+class DatatableFieldEdit extends DatatableFieldIconLink
 {
 	public $icon = 'file-edit';
 

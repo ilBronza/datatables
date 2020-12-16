@@ -1,7 +1,5 @@
 {{--  DATATABLES  --}}
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
-
-<script type="text/javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.4/js/dataTables.buttons.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.4/js/buttons.flash.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
@@ -10,14 +8,18 @@
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.4/js/buttons.html5.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.4/js/buttons.print.min.js"></script>
 
-
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
 <script type="text/javascript" src="/js/moment.min.js"></script>
 {{--  //DATATABLES  --}}
 
 
 <script type="text/javascript">
-$(document).ready(function($) {
+$(document).ready(function($)
+{
+    $('input[type="date"]').change(function()
+    {
+        $(this).data('timestamp', new Date($(this).val()).getTime() / 1000);
+    });
 
     $.fn.dataTable.ext.buttons.reload = {
         text: 'Reload',
@@ -90,6 +92,38 @@ $(document).ready(function($) {
 
     }
 
+    function _filter(container, section, searchValue = false)
+    {
+        $('input', section).on('keyup change clear', function ()
+        {
+            let value = $(this).val().toLowerCase();
+
+            if($(this).attr('type') == 'date')
+                value = new Date(value).getTime() / 1000;
+
+            $(this).data('value', value);
+
+            // if(container.search() !== value)
+            // {
+                if(searchValue)
+                    container.search(this.value).draw();
+
+                else
+                    container.draw();
+            // }
+        });        
+    }
+
+    function normalFilter(container, section)
+    {
+        _filter(container, section, true);
+    }
+
+    function rangeFilter(container, section)
+    {
+        _filter(container, section);
+    }
+
     $('.wannabedatatable').each(function()
     {
         let url = $(this).data('url');
@@ -128,17 +162,14 @@ $(document).ready(function($) {
             {
                 this.api().columns().every(function ()
                 {
-                    var that = this;
-     
-                    $('input', this.header()).on('keyup change clear', function ()
-                    {
-                        if(that.search() !== this.value)
-                        {
-                            that
-                            .search(this.value)
-                            .draw();
-                        }
-                    });
+                    // normalFilter(this, this.header());
+
+                    // // var that = this;
+
+                    if($(this.header()).data('range'))
+                        rangeFilter(this, this.header());
+                    else
+                        normalFilter(this, this.header());
                 });
             },
             drawCallback: function(settings)

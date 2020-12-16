@@ -8,6 +8,11 @@ class DatatableFieldLink extends DatatableField
 {
 	public $icon = 'link';
 
+    public function transformValue($value)
+    {
+        return $value->{$this->function}();
+    }
+
     public function getCustomColumnDef()
     {
 		return "

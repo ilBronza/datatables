@@ -8,6 +8,7 @@ use Spatie\Permission\Models\Role;
 
 class DatatableField
 {
+    public $id;
     public $name;
     public $index;
     public $summary;
@@ -15,8 +16,10 @@ class DatatableField
     public $customColumnDefs = [];
     public $columnOptions = [];
     public $filterType;
-    public $defaultFilterType = 'text';
+    public $filterRange;
     public $summaryValues;
+
+    public $defaultFilterType = 'text';
 
     public $availableColumnOptions = ['order'];
     public $availableColumnDefs = ['width', 'orderDataType', 'visible'];
@@ -25,6 +28,8 @@ class DatatableField
     {
         $this->name = $name;
 
+        $this->id = $this->generateId();
+
         if(count($parameters))
             $this->setParameters($parameters);
 
@@ -32,11 +37,20 @@ class DatatableField
             $this->setIndex($index);
 
         // $this->setType();
-
         $this->setColumnDefs();
         $this->setColumnOptions();
 
         $this->summaryValues = collect();
+    }
+
+    public function generateId()
+    {
+        return $this->name . rand(0, 999999);
+    }
+
+    public function getId()
+    {
+        return $this->id;
     }
 
     public function transformValue($value)
@@ -317,10 +331,10 @@ class DatatableField
             $this->$parameter = [];
     }
 
-    // public function isRange()
-    // {
-    //     return $this->filterType == 'range';
-    // }
+    public function hasRangeFilter()
+    {
+        return !! $this->filterRange;
+    }
 
     // public function isSelect()
     // {
@@ -388,6 +402,14 @@ class DatatableField
         return $this->filterType ?? $this->defaultFilterType;
     }
 
+    public function getFilterRangeType()
+    {
+        if($this->filterRange === true)
+            return 'normal';
+
+        return $this->filterRange;
+    }
+
     public function assignSummary(string $summary)
     {
         $this->summary = $summary;
@@ -453,5 +475,15 @@ class DatatableField
                 return true;
 
         return false;
+    }
+
+    public function getRangeFilterJavascriptPlugin(string $tableId = null)
+    {
+        $view = 'datatables::datatablesFields.filters.scripts._range' . ucfirst($this->getFilterRangeType());
+
+        return view($view, [
+            'tableId' => $tableId,
+            'field' => $this
+        ])->render();
     }
 }

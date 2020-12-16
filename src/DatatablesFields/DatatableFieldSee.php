@@ -2,7 +2,9 @@
 
 namespace IlBronza\Datatables\DatatablesFields;
 
-class DatatableFieldSee extends DatatableFieldLink
+use IlBronza\Datatables\DatatablesFields\Links\DatatableFieldIconLink;
+
+class DatatableFieldSee extends DatatableFieldIconLink
 {
     public function transformValue($value)
     {

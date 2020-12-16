@@ -16,6 +16,9 @@
             <tr class="columns">
                 @foreach($table->getFields() as $field)
                 <th
+
+                    data-range="{{ $field->hasRangeFilter() }}"
+                    data-filter="{{ $field->getFilterType() }}"
                     data-name="{{ $field->getFieldName() }}"
                     data-column="{{ $field->getIndex() }}"
                     >
