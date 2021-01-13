@@ -20,7 +20,10 @@ class DatatableFieldDate extends DatatableFieldCarbon
                     let date = moment.unix(data);
 
                     if(date.isValid())
-                        return date.format(\"D/MM/YYYY\");
+                    {
+                        if(date._i != 0)
+                            return date.format(\"D/MM/YYYY\");
+                    }
 
                     return data;
                 }

@@ -1,4 +1,12 @@
+@section('pageTitle')
+    @if($caption = $table->getCaption())
+    <span class="uk-h3">{{ $caption }}</span>
+    @endif
+@endsection
+
 @include('datatables::datatablesFields._tableSingleSpec')
+
+@include('datatables::__extraViews', ['position' => 'top'])
 
     <table
         id="{{ $table->getId() }}"
@@ -9,10 +17,10 @@
         data-summary="true"
         @endif
 
-        class="wannabedatatable"
+        class="wannabedatatable {{ $table->getStripeClass() }} datatable {{ $table->getName() }}"
         style="width:100%"
         >
-        <thead>
+        <thead class="sectionheader">
             <tr class="columns">
                 @foreach($table->getFields() as $field)
                 <th
@@ -29,7 +37,7 @@
 
             @if($table->hasSummary())
 
-            <tr class="summary">
+            <tr class="summary" style="display: none;">
                 @foreach($table->getFields() as $field)
                 <th
                     class="summary{{ $field->getIndex() }}"
@@ -42,7 +50,7 @@
 
                 @if($table->hasInlineSearch())
 
-            <tr class="inlinesearchsummary">
+            <tr class="inlinesearchsummary" style="display: none;">
                 @foreach($table->getFields() as $field)
                 <th
                     class="summary{{ $field->getIndex() }}"
@@ -67,4 +75,7 @@
             </tr>
         </tfoot>
  --}}    </table>
+
+
+@include('datatables::__extraViews', ['position' => 'bottom'])
 

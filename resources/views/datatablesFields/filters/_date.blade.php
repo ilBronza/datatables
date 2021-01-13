@@ -14,3 +14,5 @@
 	autocomplete="notautocomplete{{ rand(0, 99999999) }}"
 	data-filtertype="{{ $field->getFilterType() }}"
 	/>
+
+	@include('datatables::datatablesFields.filters.filterfunctions')

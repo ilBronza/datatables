@@ -7,23 +7,34 @@ use IlBronza\Datatables\Traits\DatatableButtonsTrait;
 use IlBronza\Datatables\Traits\DatatableColumnDefsTrait;
 use IlBronza\Datatables\Traits\DatatableDataTrait;
 use IlBronza\Datatables\Traits\DatatableFieldsTrait;
+use IlBronza\Datatables\Traits\DatatableFormTrait;
+use IlBronza\Datatables\Traits\DatatableOptionsTrait;
+use IlBronza\Datatables\Traits\DatatableSelectRowsTrait;
+use IlBronza\Datatables\Traits\DatatablesExtraViewsTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class Datatables
 {
+    use DatatableFormTrait;
     use DatatableButtonsTrait;
     use DatatableDataTrait;
     use DatatableFieldsTrait;
     use DatatableColumnDefsTrait;
+    use DatatablesExtraViewsTrait;
+    use DatatableOptionsTrait;
+    use DatatableSelectRowsTrait;
 
+    public $rowId;
     public $fields;
     public $fieldsGroups;
     public $elements;
     public $url;
     public $columnDefs = [];
-    public $buttons = ['reload', 'copy', 'csv', 'excel', 'pdf', 'print'];
+    public $buttons = ['copy', 'csv'];
+    public $getRowIdIndex = false;
+    public $stripe = true;
 
     public function __construct()
     {
@@ -33,17 +44,20 @@ class Datatables
         $this->customButtons = collect();
     }
 
-    static function create(string $name, array $fieldsGroups, $elements)
+    static function create(string $name, array $fieldsGroups, $elements, bool $selectRowCheckboxes = false)
     {
+        $table = new static();
+
+        if($selectRowCheckboxes)
+            $table->setRowSelectCheckboxes();
+
         if(request()->ajax())
         {
             if($cachedTableKey = request()->input('cachedtablekey'))
             {
-                $table = new static();
-
                 if($data = cache()->pull($cachedTableKey))
                 {
-                    $table->setData($data);
+                    $table->setData($data, $selectRowCheckboxes);
 
                     return $table;
                 }
@@ -63,9 +77,6 @@ class Datatables
             ];
         }
         // return "HTTP";
-
-
-        $table = new static;
 
         $table->addFieldsGroups($fieldsGroups);
 
@@ -115,13 +126,21 @@ class Datatables
         return Str::camel($this->getName());
     }
 
+    public function getStripeClass()
+    {
+        if($this->stripe)
+            return 'stripe row-border';
+    }
+
     public function getNextFieldIndex()
     {
-        $index = -1;
+        $index = $this->fields->max('index') ?? 0;
 
-        foreach($this->fields as $field)
-            if($field->index > $index)
-                $index = $field->index;
+        // $index = -1;
+
+        // foreach($this->fields as $field)
+        //     if($field->index > $index)
+        //         $index = $field->index;
 
         return $index + 1;
     }
@@ -138,6 +157,8 @@ class Datatables
             ];
 
         $this->parseColumnDefs();
+
+        $this->parseOptions();
 
         return view('datatables::table', ['table' => $this]);
     }

@@ -11,12 +11,13 @@ class DatatableField
     public $id;
     public $name;
     public $index;
+    public $rowId = false;
     public $summary;
     public $columnDefs = [];
     public $customColumnDefs = [];
     public $columnOptions = [];
     public $filterType;
-    public $filterRange;
+    public $rangeFilter;
     public $summaryValues;
 
     public $defaultFilterType = 'text';
@@ -45,7 +46,7 @@ class DatatableField
 
     public function generateId()
     {
-        return $this->name . rand(0, 999999);
+        return Str::slug($this->name . rand(0, 999999), '');
     }
 
     public function getId()
@@ -74,11 +75,39 @@ class DatatableField
                 return (float) $value;
             });
 
+        if($summaryType == 'distinct')
+        {
+            return $this->summaryValues->unique(function ($value)
+            {
+                return strip_tags($value);
+            })->implode('-');
+        }
+
         if($summaryType == 'sum')
             return $this->summaryValues->sum(function ($value)
             {
                 return (float) $value;
             });
+
+        if($summaryType == 'sumMinutes')
+        {
+            $totalMinutes = $this->summaryValues->sum(function ($value)
+            {
+                return (float) $value;
+            });
+
+            $pieces = [];
+
+            if($hours = floor($totalMinutes / 60))
+                $pieces[] = $hours . " h";
+
+            if($minutes = $totalMinutes % 60)
+                $pieces[] = $minutes . " \'";
+
+            return  implode(" ", $pieces);      
+
+        }
+
 
         mori('manca summaryType ' . $summaryType);
     }
@@ -92,13 +121,18 @@ class DatatableField
         return $value;
     }
 
-    public function g3tSummaryResult()
+    public function isRowId()
     {
-        if(! $this->hasSummary())
-            return null;
-
-        return json_encode($this->summaryValues);
+        return $this->rowId;
     }
+
+    // public function g3tSummaryResult()
+    // {
+    //     if(! $this->hasSummary())
+    //         return null;
+
+    //     return json_encode($this->summaryValues);
+    // }
 
     static function getClassNameByType(string $fieldType)
     {
@@ -270,6 +304,11 @@ class DatatableField
         $this->columnOptions[$name] = $value;       
     }
 
+    public function getColumnOptions()
+    {
+        return $this->columnOptions;
+    }
+
     /**
      * set field own columnDefs
      */
@@ -297,9 +336,9 @@ class DatatableField
      * @param string $name
      * @param mixed $value
      */
-    public function addColumnDef(string $name, $value)
+    public function addColumnDef(string $columnDef, $value)
     {
-        $this->columnDefs[$name] = $value;
+        $this->columnDefs[$columnDef] = $value;
     }
 
     // public function setAbsoluteIndex(int $index)
@@ -310,6 +349,11 @@ class DatatableField
     public function setIndex(int $index)
     {
         $this->index = $index;
+    }
+
+    public function incrementIndex()
+    {
+        $this->index ++;
     }
 
     public function getIndex()
@@ -333,7 +377,7 @@ class DatatableField
 
     public function hasRangeFilter()
     {
-        return !! $this->filterRange;
+        return !! $this->rangeFilter;
     }
 
     // public function isSelect()
@@ -346,11 +390,16 @@ class DatatableField
     //     return $this->view == 'date' || $this->renderAsView == 'date';
     // }
 
+    public function getHtmlClass()
+    {
+        return Str::camel(str_replace(".", " ", $this->name));
+    }
+
     private function setClassnameColumnDef()
     {
         //add className to field columnDefs
         if(! isset($this->columnDefs['className']))
-            $this->columnDefs['className'] = Str::camel($this->name);        
+            $this->columnDefs['className'] = $this->getHtmlClass();        
     }
 
     public function getColumnDefs()
@@ -402,12 +451,12 @@ class DatatableField
         return $this->filterType ?? $this->defaultFilterType;
     }
 
-    public function getFilterRangeType()
+    public function getrangeFilterType()
     {
-        if($this->filterRange === true)
+        if($this->rangeFilter === true)
             return 'normal';
 
-        return $this->filterRange;
+        return $this->rangeFilter;
     }
 
     public function assignSummary(string $summary)
@@ -479,7 +528,7 @@ class DatatableField
 
     public function getRangeFilterJavascriptPlugin(string $tableId = null)
     {
-        $view = 'datatables::datatablesFields.filters.scripts._range' . ucfirst($this->getFilterRangeType());
+        $view = 'datatables::datatablesFields.filters.scripts._range' . ucfirst($this->getrangeFilterType());
 
         return view($view, [
             'tableId' => $tableId,

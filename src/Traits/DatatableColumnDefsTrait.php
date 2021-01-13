@@ -12,7 +12,6 @@ trait DatatableColumnDefsTrait
     private function addCustomColumnDefsRenderingMethods(DatatableField $field)
     {
         $columnDefRenderType = $field->getRenderAsType();
-
         $fieldIndex = $field->getIndex();
 
         if($customColumnDef = $field->getCustomColumnDef())
@@ -39,7 +38,7 @@ trait DatatableColumnDefsTrait
      **/
     public function parseColumnDefs()
     {
-        foreach($this->fields as $field)
+        foreach($this->getFields() as $field)
             $this->checkFieldColumnDefs($field);
     }    
 

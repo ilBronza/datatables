@@ -24,7 +24,7 @@ trait DatatableFieldsTrait
     {
         $index = 0;
 
-        foreach($this->fields as $field)
+        foreach($this->getFields() as $field)
             $field->index = $index ++;
 
     }
@@ -41,6 +41,7 @@ trait DatatableFieldsTrait
 
         $this->parsePermissionsAndRoles();
         $this->condensateIndexes();
+        $this->parseRowId();
     }
 
     /**
@@ -68,6 +69,7 @@ trait DatatableFieldsTrait
     {
         foreach($fields as $fieldName => $fieldParameters)
         {
+            // mori($fieldParameters);
             $newField = $this->addField($fieldName, $fieldParameters);
             $fieldsGroup->addField($fieldName, $newField);
         }
@@ -150,7 +152,12 @@ trait DatatableFieldsTrait
      **/
     public function getFields() : Collection
     {
-        return $this->fields;
+        return $this->fields->sortBy('index');
+    }
+
+    public function getFieldByName(string $fieldName)
+    {
+        return $this->fields->firstWhere('name', $fieldName);
     }
 
     /**
@@ -218,4 +225,34 @@ trait DatatableFieldsTrait
         );
     }
 
+    public function setRowIdIndex(int $rowIdIndex)
+    {
+        $this->rowId = $rowIdIndex;
+    }
+
+    public function parseRowId()
+    {
+        foreach($this->fields as $field)
+            if($field->isRowId())
+            {
+                $this->setRowIdIndex($field->getIndex());
+                return ;
+            }
+    }
+
+    public function getRowIdIndex()
+    {
+      return $this->rowId;
+    }
+
+    public function assignIndexToField(string $fieldName, int $index)
+    {
+        $incrementingFields = $this->fields->where('index', '>=', $index);
+
+        foreach($incrementingFields as $incrementingField)
+            $incrementingField->incrementIndex();
+
+        $field = $this->getFieldByName($fieldName);
+        $field->setIndex($index);
+    }
 }
