@@ -154,6 +154,9 @@ $(document).ready(function($)
             if(typeof summary === 'undefined')
                 return;
 
+            let realColumnNumber = $(element).data('column');
+            let th = $('#' + tableId + ' .inlinesearchsummary').find('.summary' + realColumnNumber);
+
             if(summary == 'sumMinutes')
             {
                 // api.rows({selected: true}).every(function (rowIdx, tableLoop, rowLoop)
@@ -178,7 +181,7 @@ $(document).ready(function($)
 
                 filteredRows.every(function (rowIdx, tableLoop, rowLoop)
                 {
-                    var value = this.cell(rowIdx, columnIndex, { search:'applied' }).data();
+                    var value = this.cell(rowIdx, realColumnNumber, { search:'applied' }).data();
 
                     if(! isNaN(float = parseFloat(value)))
                         result = result + float;
@@ -209,7 +212,6 @@ $(document).ready(function($)
                     result = hours + ' ' + minutes;
                 }
 
-                let th = $('#' + tableId + ' .inlinesearchsummary').find('.summary' + columnIndex);
                 $(th).html(result);
             }
             else if((summary == 'distinct'))
@@ -218,7 +220,7 @@ $(document).ready(function($)
 
                 filteredRows.every(function (rowIdx, tableLoop, rowLoop)
                 {
-                    var value = this.cell(rowIdx, columnIndex, { search:'applied' }).data();
+                    var value = this.cell(rowIdx, realColumnNumber, { search:'applied' }).data();
 
                     if(typeof result[value] === 'undefined')
                         result[value] = 0;
@@ -241,7 +243,6 @@ $(document).ready(function($)
                     string.push(key + ': ' + result[key]);
                 });
 
-                let th = $('#' + tableId + ' .inlinesearchsummary').find('.summary' + columnIndex);
                 $(th).html(string.join('<br />'));
             }
 
@@ -301,6 +302,7 @@ $(document).ready(function($)
             processing: true,
             orderCellsTop: true,
             paging: false,
+            // scrollX: true,
             // "serverSide": true,
             ajax: {
                 url: datatableUrl,

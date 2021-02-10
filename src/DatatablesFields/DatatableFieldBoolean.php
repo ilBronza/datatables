@@ -6,10 +6,10 @@ class DatatableFieldBoolean extends DatatableField
 {
 	public function transformValue($value)
 	{
-		if(! $value)
+		if($value == null)
 			return ;
 
-		return $value;
+		return !! $value;
 	}
 
 	public function getCustomColumnDef()
@@ -24,15 +24,17 @@ class DatatableFieldBoolean extends DatatableField
 				if(type == 'display')
 				{
 					if(data === true)
-						return '" . _('fields.booleanTrue') . "';
+						return '<strong class=\"uk-text-danger\">" . __('fields.booleanTrue') . "</strong>';
 
 					if(data === false)
-						return '" . _('fields.booleanFalse') . "';
+						return '" . __('fields.booleanFalse') . "';
 
-					return '" . _('fields.booleanNull') . "';
+					return '" . __('fields.booleanNull') . "';
 				}
 
 			return data;
+
+			console.log('admamama');
 			}
 		}";
 	}
