@@ -25,6 +25,9 @@ class DatatableFieldEach extends MultipleDatatableField
 
 	public function getItemValue($item)
 	{
+		if($propertyName = $this->child->getPropertyName())
+			$item = $this->getCellDataValue($propertyName, $item);
+
 		return $this->child->transformValue($item);
 	}
 
@@ -35,7 +38,9 @@ class DatatableFieldEach extends MultipleDatatableField
 
 	public function getCustomColumnDef()
 	{
-		$singleColumnDef = (method_exists($this->child, 'getColumnDefSingleResult')) ? $this->child->getColumnDefSingleResult() : 'item;';
+		// $singleColumnDef = (method_exists($this->child, 'getColumnDefSingleResult')) ? $this->child->getColumnDefSingleResult() : 'item;';
+
+		// mori($singleColumnDef);
 
 		return "
 		{
@@ -48,7 +53,11 @@ class DatatableFieldEach extends MultipleDatatableField
 
 					data.forEach(function(item)
 					{
-						result += " . $singleColumnDef . ";
+						" . $this->child->getColumnDefSingleResult() . ";
+
+						if(item)
+							result += item;
+
 						result += '" . $this->separator . "';
 					});
 

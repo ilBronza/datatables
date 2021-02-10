@@ -1,0 +1,73 @@
+<?php
+
+namespace IlBronza\Datatables\Traits\DatatablesFields;
+
+use IlBronza\Datatables\Datatables;
+use Illuminate\Support\Str;
+
+trait DatatablesFieldsRelationsTrait
+{
+    public function getRelationModelNameByFieldName()
+    {
+        $parts = explode(".", $this->name);
+
+        return Str::singular(
+            array_pop($parts)
+        );
+    }	
+
+    /**
+     * get pivot model name to create route name eg. manufacturerPaper
+     *
+     * @return string
+     **/
+    private function getRelationModelName()
+    {
+        if(isset($this->relation))
+            return class_basename($this->relation);
+
+        return $this->getRelationModelNameByFieldName();
+    }
+
+    private function getRelationPivotModelName()
+    {
+        if(empty($this->pivot))
+            throw new \Exception('Manca dichiarazione pivot per il campo ' . $this->name . " -> " . json_encode($this));
+
+        return class_basename($this->pivot);
+    }
+
+    public function getRelationPivotSprintFShowRoute()
+    {
+        return $this->getRelationPivotSprintFRouteByType('show');
+    }
+
+    private function getRelationPivotSprintFRouteByType(string $type)
+    {
+        return $this->getSprintFRouteByModelType(
+            $this->getRelationPivotModelName(),
+            $type
+        );
+    }
+
+    private function getSprintFRouteByModelType(string $modelBasename, string $type)
+    {
+        $modelBasename = Str::singular(lcfirst($modelBasename));
+        $routeBasename = Str::plural($modelBasename);
+
+        return route($routeBasename . '.' . $type, [$modelBasename => '%s']);
+    }
+
+    private function getRelationModelSprintFRouteByType(string $type)
+    {
+        return $this->getSprintFRouteByModelType(
+            $this->getRelationModelName(),
+            $type
+        );
+    }
+
+    public function getRelationModelSprintFShowRoute()
+    {
+        return $this->getRelationModelSprintFRouteByType('show');
+    }
+}

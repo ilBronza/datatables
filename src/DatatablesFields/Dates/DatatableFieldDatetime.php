@@ -24,13 +24,6 @@ class DatatableFieldDatetime extends DatatableFieldCarbon
                 }
 
                 return data;
-            },
-            createdCell: function (td, cellData, rowData, row, col)
-            {
-                if ( cellData < 4602692420 )
-                {
-                    $(td).css('color', '#ff0912');
-                }
             }
         }
         ";

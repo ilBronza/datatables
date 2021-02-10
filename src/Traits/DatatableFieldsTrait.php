@@ -132,10 +132,12 @@ trait DatatableFieldsTrait
         $group = $this->createFieldsGroup($name);
 
         $fields = $fieldsGroup['fields'];
+
         $permissions = $fieldsGroup['permissions'] ?? [];
         $summary = $fieldsGroup['summary'] ?? [];
 
         $this->addFieldsToGroup($group, $fields);
+
         $this->setPermissionsToGroupFields($group, $permissions);
         $this->setSummaryToGroupFields($group, $summary);
     }

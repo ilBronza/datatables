@@ -6,36 +6,23 @@ class DatatableFieldBoolean extends DatatableField
 {
 	public function transformValue($value)
 	{
-		if($value == null)
+		if(is_null($value))
 			return ;
 
 		return !! $value;
 	}
 
-	public function getCustomColumnDef()
-	{
-		$fieldIndex = $this->getIndex();
+    public function getColumnDefSingleResult()
+    {
+    	return "
+			if(item === true)
+				item = '" . trans('fields.booleanTrue') . "';
 
-		return "
-		{
-			targets: [{$fieldIndex}],
-			render: function ( data, type, row, meta )
-			{
-				if(type == 'display')
-				{
-					if(data === true)
-						return '<strong class=\"uk-text-danger\">" . __('fields.booleanTrue') . "</strong>';
+			else if(item === false)
+				item = '" . trans('fields.booleanFalse') . "';
 
-					if(data === false)
-						return '" . __('fields.booleanFalse') . "';
-
-					return '" . __('fields.booleanNull') . "';
-				}
-
-			return data;
-
-			console.log('admamama');
-			}
-		}";
-	}
+			else
+				item =  '" . trans('fields.booleanNull') . "';
+    	";
+    }
 }

@@ -3,8 +3,13 @@
 namespace IlBronza\Datatables\DatatablesFields;
 
 use Auth;
-use Illuminate\Support\Str;
-use Spatie\Permission\Models\Role;
+use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsColumnDefsTrait;
+use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsDisplayTrait;
+use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsFiltersTrait;
+use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsIdentifiersTrait;
+use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsParametersTrait;
+use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsPermissionsTrait;
+use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsSummaryTrait;
 
 class DatatableField
 {
@@ -12,10 +17,12 @@ class DatatableField
     public $name;
     public $index;
     public $rowId = false;
+    public $tooltip = false;
     public $summary;
     public $columnDefs = [];
     public $customColumnDefs = [];
     public $columnOptions = [];
+    public $htmlClasses = [];
     public $filterType;
     public $rangeFilter;
     public $summaryValues;
@@ -24,6 +31,14 @@ class DatatableField
 
     public $availableColumnOptions = ['order'];
     public $availableColumnDefs = ['width', 'orderDataType', 'visible'];
+
+    use DatatablesFieldsPermissionsTrait;
+    use DatatablesFieldsIdentifiersTrait;
+    use DatatablesFieldsDisplayTrait;
+    use DatatablesFieldsColumnDefsTrait;
+    use DatatablesFieldsSummaryTrait;
+    use DatatablesFieldsParametersTrait;
+    use DatatablesFieldsFiltersTrait;
 
     public function __construct(string $name, array $parameters = [], int $index = null)
     {
@@ -40,84 +55,40 @@ class DatatableField
         // $this->setType();
         $this->setColumnDefs();
         $this->setColumnOptions();
+        $this->setHtmlClasses();
 
         $this->summaryValues = collect();
     }
 
-    public function generateId()
+    public function getCellDataValue(string $fieldName, $element)
     {
-        return Str::slug($this->name . rand(0, 999999), '');
+        $properties = explode(".", $fieldName);
+
+        do {
+            $property = array_shift($properties);
+
+            if(strpos($property, 'mySelf') === false)
+                $element = $element->$property?? false;
+
+        } while (count($properties));
+
+        return $element;
     }
 
-    public function getId()
+    public function __toString()
     {
-        return $this->id;
+        unset($this->table);
+
+        return json_encode($this);
+    }
+
+    public function getPropertyName()
+    {
+        return $this->property ?? false;
     }
 
     public function transformValue($value)
     {
-        return $value;
-    }
-
-    public function getSummaryType()
-    {
-        return $this->summary;
-    }
-
-    public function getSummaryResult()
-    {
-        if(! $summaryType = $this->getSummaryType())
-            return null;
-
-        if($summaryType == 'average')
-            return $this->summaryValues->avg(function ($value)
-            {
-                return (float) $value;
-            });
-
-        if($summaryType == 'distinct')
-        {
-            return $this->summaryValues->unique(function ($value)
-            {
-                return strip_tags($value);
-            })->implode('-');
-        }
-
-        if($summaryType == 'sum')
-            return $this->summaryValues->sum(function ($value)
-            {
-                return (float) $value;
-            });
-
-        if($summaryType == 'sumMinutes')
-        {
-            $totalMinutes = $this->summaryValues->sum(function ($value)
-            {
-                return (float) $value;
-            });
-
-            $pieces = [];
-
-            if($hours = floor($totalMinutes / 60))
-                $pieces[] = $hours . " h";
-
-            if($minutes = $totalMinutes % 60)
-                $pieces[] = $minutes . " \'";
-
-            return  implode(" ", $pieces);      
-
-        }
-
-
-        mori('manca summaryType ' . $summaryType);
-    }
-
-    public function transformValueWithSummary($value)
-    {
-        $value = $this->transformValue($value);
-
-        $this->summaryValues->push($value);
-
         return $value;
     }
 
@@ -152,25 +123,7 @@ class DatatableField
     {
         $className = static::getClassNameByType($fieldType);
 
-        // if(! class_exists($className))
-        //     $className = static::class;
-
         return new $className($fieldName, $fieldParameters, $index);
-    }
-
-    public function getCustomColumnDef()
-    {
-        
-    }
-
-    public function getTranslatedName()
-    {
-        return __('fields.' . $this->name);
-    }
-
-    public function getFieldName()
-    {
-        return $this->name;
     }
 
     public function getRenderAsType()
@@ -186,8 +139,6 @@ class DatatableField
         {
             mori($this);
         }
-
-
 
     }
 
@@ -309,76 +260,15 @@ class DatatableField
         return $this->columnOptions;
     }
 
-    /**
-     * set field own columnDefs
-     */
-    private function setColumnDefs()
-    {
-        $this->columnDefs = [];
-
-        //parse through available columnDefs parameters and id set, store it
-        foreach($this->availableColumnDefs as $availableColumnDef)
-            $this->setColumnDef($availableColumnDef);
-    }
-
-    /**
-     * if exists in object, add columnDef to field
-     */
-    public function setColumnDef(string $columnDef)
-    {
-        if(($value = $this->$columnDef?? null) !== null)
-            $this->addColumnDef($columnDef, $value);
-    }
-
-    /**
-     * add columnDef to field
-     *
-     * @param string $name
-     * @param mixed $value
-     */
-    public function addColumnDef(string $columnDef, $value)
-    {
-        $this->columnDefs[$columnDef] = $value;
-    }
-
     // public function setAbsoluteIndex(int $index)
     // {
     //     $this->absoluteIndex = $index;
     // }
 
-    public function setIndex(int $index)
-    {
-        $this->index = $index;
-    }
-
-    public function incrementIndex()
-    {
-        $this->index ++;
-    }
-
-    public function getIndex()
-    {
-        return $this->index;
-    }
-
     // public function getIndex()
     // {
     //     return $this->index;
     // }
-
-    private function setParameter($name, $parameter)
-    {
-        if(! is_int($name))
-            $this->$name = $parameter;
-
-        else
-            $this->$parameter = [];
-    }
-
-    public function hasRangeFilter()
-    {
-        return !! $this->rangeFilter;
-    }
 
     // public function isSelect()
     // {
@@ -389,25 +279,6 @@ class DatatableField
     // {
     //     return $this->view == 'date' || $this->renderAsView == 'date';
     // }
-
-    public function getHtmlClass()
-    {
-        return Str::camel(str_replace(".", " ", $this->name));
-    }
-
-    private function setClassnameColumnDef()
-    {
-        //add className to field columnDefs
-        if(! isset($this->columnDefs['className']))
-            $this->columnDefs['className'] = $this->getHtmlClass();        
-    }
-
-    public function getColumnDefs()
-    {
-        $this->setClassnameColumnDef();
-
-        return $this->columnDefs;
-    }
 
     // public function getColumnOptions()
     // {
@@ -433,106 +304,4 @@ class DatatableField
     //  unset($parameters[$name]);
     // }
 
-    public function setParameters(array $parameters)
-    {
-        // $this->setParameterByName('view', $parameters, true);
-
-        foreach($parameters as $name => $parameter)
-            $this->setParameter($name, $parameter);
-    }
-
-    public function renderHeader()
-    {
-        return view('datatables::datatablesFields._header', ['field' => $this]);
-    }
-
-    public function getFilterType()
-    {
-        return $this->filterType ?? $this->defaultFilterType;
-    }
-
-    public function getrangeFilterType()
-    {
-        if($this->rangeFilter === true)
-            return 'normal';
-
-        return $this->rangeFilter;
-    }
-
-    public function assignSummary(string $summary)
-    {
-        $this->summary = $summary;
-    }
-
-    public function assignRoles(array $roles)
-    {
-        $this->allowedForRoles = array_merge(
-            $this->allowedForRoles ?? [],
-            $roles
-        );
-    }
-
-    public function assignForbiddenRoles(array $roles)
-    {
-        $this->forbiddenForRoles = array_merge(
-            $this->forbiddenForRoles ?? [],
-            $roles
-        );
-    }
-
-    public function isAllowedForGuest()
-    {
-        if(isset($this->allowedForRoles))
-            return false;
-
-        if(isset($this->forbiddenForRoles))
-            return false;
-
-        return true;
-    }
-
-    public function isForbiddenForRole(Role $role)
-    {
-        if(! isset($this->forbiddenForRoles))
-            return false;
-
-        return in_array($role->name, $this->forbiddenForRoles);
-    }
-
-    public function isAllowedForRole(Role $role)
-    {
-        if(! isset($this->allowedForRoles))
-            return true;
-
-        return in_array($role->name, $this->allowedForRoles);        
-    }
-
-    public function isAllowed()
-    {
-        if($this->isAllowedForGuest())
-            return true;
-
-        if(! $user = Auth::user())
-            return false;
-
-        foreach($user->roles as $role)
-            if($this->isForbiddenForRole($role))
-                return false;
-
-        foreach($user->roles as $role)
-            if($this->isAllowedForRole($role))
-                return true;
-
-        return false;
-    }
-
-    public function getRangeFilterJavascriptPlugin(string $tableId = null)
-    {
-        $view = 'datatables::datatablesFields.filters.scripts._range' . ucfirst($this->getrangeFilterType());
-
-        return view($view, [
-            'tableId' => $tableId,
-            'field' => $this
-        ])->render();
-    }
 }

@@ -35,6 +35,7 @@ class Datatables
     public $buttons = ['copy', 'csv'];
     public $getRowIdIndex = false;
     public $stripe = true;
+    public $options = [];
 
     public function __construct()
     {

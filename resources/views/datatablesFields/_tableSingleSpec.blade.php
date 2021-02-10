@@ -2,14 +2,14 @@
 
     window.{{ $table->getId() }}FilteredSelected = false;
 
-    window.{{ $table->getId() }}rowReorder = {@isset($table->dragAndDrop)
+    window.{{ $table->getId() }}rowReorder = @isset($table->dragAndDrop) {
    
             @if(isset($table->dragAndDrop->selector))
             selector: '{{ $table->dragAndDrop->selector }}',
             dataSrc: {{ $table->dragAndDrop->dataSrc ?? 1 }}
             @endif
 
-        @endisset };
+        } @else false @endisset ;
 
     window.{{ $table->getId() }}options =  { 
 
@@ -88,7 +88,7 @@
     @foreach ($table->customColumnDefs as $customColumnDef)
         {!! $customColumnDef !!},
     @endforeach
-    ] @endif ;
+    ] @else [] @endif ;
 
     window.{{ $table->getId() }}buttons = @if(count($buttons = $table->getButtons())||(count(1))) [
 
@@ -128,9 +128,6 @@
         @else
         {
             text: '{{ $button->getName() }}',
-            @if($htmlClass = $button->getClasses())
-                className: '{{ $htmlClass }}',
-            @endif
             action: function ( e, dt, node, config ) {
                 {!! $button->renderJsMethod() !!}
                 // dt.ajax.reload();

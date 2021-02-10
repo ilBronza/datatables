@@ -30,24 +30,10 @@ trait DatatableDataTrait
         return $this->data;
     }
 
-    private function getCellDataValue(string $fieldName, Model $element)
-    {
-        $properties = explode(".", $fieldName);
-
-        do {
-            $property = array_shift($properties);
-
-            if(strpos($property, 'mySelf') === false)
-                $element = $element->$property?? false;
-
-        } while (count($properties));
-
-        return $element;
-    }
-
     private function getCellData(DatatableField $field, Model $element)
     {
-        $value = $this->getCellDataValue($field->name, $element);
+        $value = $field->getCellDataValue($field->name, $element);
+        // $value = $this->getCellDataValue($field->name, $element);
 
         return $field->transformValue($value);
     }

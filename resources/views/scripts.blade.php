@@ -28,6 +28,31 @@
         background-color: rgba(0, 0, 0, 0.5);
         color: #fff;
     }
+
+    td
+    {
+        max-width: 140px;
+    }
+
+    nobr
+    {
+        display: inline-block;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        line-height: 1em;
+    }
+
+    .uk-text-truncate br
+    {
+        display: none!important;
+    }
+
+    .uk-text-truncate *
+    {
+        display: inline!important;
+    }
 </style>
 
 <script type="text/javascript">
@@ -66,6 +91,36 @@ $(document).ready(function($)
 <script type="text/javascript">
 $(document).ready(function($)
 {
+    window.datatablesGetJsonObjectValues = function(key, fields, object)
+    {
+        let result = new Array();
+
+        result.push(key + ': ' + object[key]);
+
+        if(fields[key].length > 0)
+            result.push(
+                window.datatablesGetJsonObjectString(fields[key], object[key])
+                );
+
+        return result.join(', ');
+    }
+
+
+    window.datatablesGetJsonObjectString = function(fields, object)
+    {
+        let result = new Array();
+
+        for (var key in fields)
+            result.push(window.datatablesGetJsonObjectValues(key, fields, object));
+
+        return result.join(' - ');
+    }
+
+    window.datatablesJsonEncode = function(object)
+    {
+        return JSON.stringify(object, null, 2);
+    }
+
     $('input[type="date"]').change(function()
     {
         $(this).data('timestamp', new Date($(this).val()).getTime() / 1000);
@@ -302,7 +357,6 @@ $(document).ready(function($)
             processing: true,
             orderCellsTop: true,
             paging: false,
-            // scrollX: true,
             // "serverSide": true,
             ajax: {
                 url: datatableUrl,
