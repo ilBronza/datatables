@@ -53,7 +53,7 @@ class DatatableFieldEach extends MultipleDatatableField
 
 					data.forEach(function(item)
 					{
-						" . $this->child->getColumnDefSingleResult() . ";
+						" . $this->child->getCustomColumnDefSingleResult() . ";
 
 						if(item)
 							result += item;

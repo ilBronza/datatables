@@ -137,7 +137,7 @@ class DatatableField
         }
         catch(\Exception $e)
         {
-            mori($this);
+            mori('render as missing ' . $this->name);
         }
 
     }
