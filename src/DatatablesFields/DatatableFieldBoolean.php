@@ -16,13 +16,15 @@ class DatatableFieldBoolean extends DatatableField
     {
     	return "
 			if(item === true)
-				item = '" . trans('fields.booleanTrue') . "';
+				item = '<strong style=\"color: red;\">" . trans('fields.booleanTrue') . "</strong>';
 
-			else if(item === false)
-				item = '" . trans('fields.booleanFalse') . "';
+			else item = '';
 
-			else
-				item =  '" . trans('fields.booleanNull') . "';
+			// else if(item === false)
+			// 	item = '" . trans('fields.booleanFalse') . "';
+
+			// else
+			// 	item =  '" . trans('fields.booleanNull') . "';
     	";
     }
 }

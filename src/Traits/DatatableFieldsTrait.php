@@ -92,7 +92,7 @@ trait DatatableFieldsTrait
 
     public function hasSummary()
     {
-        return !! $this->summary;
+        return !! ($this->summary ?? false);
     }
 
     private function hasSummaryType(string $type)
