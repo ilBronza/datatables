@@ -2,17 +2,17 @@
 
 namespace IlBronza\Datatables\DatatablesFields\Links;
 
-class DatatableFieldEdit extends DatatableFieldLink
+class DatatableFieldSee extends DatatableFieldLink
 {
-	public $icon = 'file-edit';
+    public $textParameter = 'name';
 
 	public function transformValue($value)
 	{
 		if(! $this->textParameter)
-			return $value->getEditUrl();
+			return $value->getShowUrl();
 
 		return [
-			$value->getEditUrl(),
+			$value->getShowUrl(),
 			$value->{$this->textParameter}
 		];
 	}

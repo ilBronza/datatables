@@ -6,7 +6,8 @@ use IlBronza\Datatables\DatatablesFields\DatatableField;
 
 class DatatableFieldLink extends DatatableField
 {
-	public $icon = 'link';
+	public $icon = false;
+	public $textParameter = false;
 
 	public function transformValue($value)
 	{
@@ -76,29 +77,23 @@ class DatatableFieldLink extends DatatableField
 			else item = ''";
 	}
 
-    public function getCustomColumnDef()
-    {
+	public function getCustomColumnDef()
+	{
+		$fieldIndex = $this->getIndex();
+
 		return "
 		{
 			targets: [" . $this->getIndex() . "],
-			render: function ( data, type, row, meta )
+			render: function ( item, type, row, meta )
 			{
 				if(type == 'display')
-					return " . $this->getLinkColumnDefResult() . ";
+				{
+					" . $this->getCustomColumnDefSingleResult() . ";
+				}
 
-				return data;
+			return item;
 			}
-		}
-		";
+		}";
 	}
 
-	public function getIconString()
-	{
-		return "uk-icon=\"" . $this->icon . "\" ";
-	}
-
-	public function getLinkColumnDefResult()
-	{
-		return "'<a " . $this->getIconString() . " href=\"' + data[0] + '\" >' + data[1] + '</a>'";
-	}
 }
