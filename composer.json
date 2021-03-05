@@ -12,10 +12,8 @@
     "homepage": "https://github.com/ilbronza/datatables",
     "keywords": ["Laravel", "Datatables"],
     "require": {
-        "illuminate/support": "^5"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.0"
     },
     "minimum-stability": "dev",
     "autoload": {
