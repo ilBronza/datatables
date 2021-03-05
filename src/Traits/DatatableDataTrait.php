@@ -38,6 +38,21 @@ trait DatatableDataTrait
         return $field->transformValue($value);
     }
 
+    public function getCellDataValue(string $fieldName, $element)
+    {
+        $properties = explode(".", $fieldName);
+
+        do {
+            $property = array_shift($properties);
+
+            if(strpos($property, 'mySelf') === false)
+                $element = $element->$property?? false;
+
+        } while (count($properties));
+
+        return $element;
+    }
+
     private function getCellDataWithSummary(DatatableField $field, Model $element)
     {
         $value = $this->getCellDataValue($field->name, $element);

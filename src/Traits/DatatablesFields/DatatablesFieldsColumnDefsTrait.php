@@ -55,6 +55,11 @@ trait DatatablesFieldsColumnDefsTrait
         $this->columnDefs[$columnDef] = $value;
     }
 
+    public function getCustomColumnDefSingleResult()
+    {
+        return $this->getEndingResultOptions();        
+    }
+
     public function getCustomColumnDef()
     {
         // if(! $this->getEndingResultOptions())
