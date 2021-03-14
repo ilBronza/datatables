@@ -6,6 +6,11 @@ use Spatie\Permission\Models\Role;
 
 trait DatatablesFieldsParametersTrait
 {
+    public function getName()
+    {
+        return $this->name;
+    }
+
     public function setParameters(array $parameters)
     {
         // $this->setParameterByName('view', $parameters, true);

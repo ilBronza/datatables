@@ -35,6 +35,9 @@ trait DatatableDataTrait
         $value = $field->getCellDataValue($field->name, $element);
         // $value = $this->getCellDataValue($field->name, $element);
 
+        if($field->requireElement())
+            return $field->transformValue($element);
+
         return $field->transformValue($value);
     }
 

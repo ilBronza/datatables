@@ -8,6 +8,42 @@ class DatatableFieldLink extends DatatableField
 {
 	public $icon = false;
 	public $textParameter = false;
+	public $defaultWidth = '25px';
+
+	/**
+	 * return field default width based on text existence or just icon
+	 *
+	 * if link contains text, default width is null, if is just icon, default width will be 25px
+	 *
+	 * return mixed
+	 */
+    public function getWidth()
+    {
+		if(! $this->textParameter)
+        	return $this->defaultWidth;
+
+        return false;
+    }
+
+    public function isSortable()
+    {
+    	if(! $this->sortable)
+    		return false;
+
+    	if(! $this->textParameter)
+    		return false;
+
+    	return $this->sortable;
+    }
+
+    public function getFilterType()
+    {
+		if(! $this->textParameter)
+			return 'none';
+
+		return parent::getFilterType();
+    }
+
 
 	public function transformValue($value)
 	{

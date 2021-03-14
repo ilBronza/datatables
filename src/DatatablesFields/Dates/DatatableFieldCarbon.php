@@ -6,7 +6,14 @@ use IlBronza\Datatables\DatatablesFields\DatatableField;
 
 class DatatableFieldCarbon extends DatatableField
 {
+	public $defaultWidth = '80px';
     public $defaultFilterType = 'date';
+    public $dateFormat = "D/MM/YYYY";
+
+    public function getDateFormat()
+    {
+    	return $this->dateFormat;
+    }
 
     public function transformValue($value)
     {

@@ -9,6 +9,7 @@ use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsFiltersTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsIdentifiersTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsParametersTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsPermissionsTrait;
+use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsSortingTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsSummaryTrait;
 
 class DatatableField
@@ -23,9 +24,12 @@ class DatatableField
     public $customColumnDefs = [];
     public $columnOptions = [];
     public $htmlClasses = [];
+    public $headerHtmlClasses = [];
     public $filterType;
     public $rangeFilter;
     public $summaryValues;
+    public $sortable = true;
+    public $requireElement = false;
 
     public $defaultFilterType = 'text';
 
@@ -39,12 +43,15 @@ class DatatableField
     use DatatablesFieldsSummaryTrait;
     use DatatablesFieldsParametersTrait;
     use DatatablesFieldsFiltersTrait;
+    use DatatablesFieldsSortingTrait;
 
     public function __construct(string $name, array $parameters = [], int $index = null)
     {
         $this->name = $name;
 
         $this->id = $this->generateId();
+
+        $this->manageWidth($parameters);
 
         if(count($parameters))
             $this->setParameters($parameters);
@@ -90,6 +97,11 @@ class DatatableField
     public function transformValue($value)
     {
         return $value;
+    }
+
+    public function requireElement()
+    {
+        return $this->requireElement;
     }
 
     public function isRowId()

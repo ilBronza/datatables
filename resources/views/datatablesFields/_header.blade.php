@@ -1,5 +1,5 @@
-<span class="uk-h4 uk-display-block uk-margin-remove-bottom uk-text-truncate" uk-tooltip="{{ $field->getTranslatedName() }}">{{ $field->getTranslatedName() }}</span>
-
+{{-- <span class="uk-h6 uk-display-block uk-margin-remove-bottom uk-text-truncate" uk-tooltip="{{ $field->getTranslatedName() }}">{{ $field->getTranslatedName() }}</span>
+ --}}
 <div>
 	@if(! $field->hasRangeFilter())
 	<div class="datatablefilter">

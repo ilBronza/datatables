@@ -1,7 +1,41 @@
+<style type="text/css">
+.ib-toggle
+{
+    cursor: pointer;
+}
+
+.ib-spin
+{
+    position: absolute;
+    left: 4px;
+    top: 3px;
+    background-color: rgba(2, 122, 32, 0.7)!important;
+    color: #fff;
+}
+</style>
+
 <script type="text/javascript">
 
 $(document).ready(function($)
 {
+    function __addSpinner(target)
+    {
+        let td = $(target).parents('td');
+
+        td.css('position', 'relative');
+        td.append("<div class='ib-spin' uk-spinner='ratio: 0.5'></div>");
+    }
+
+    function __addSpinnerIcon(target)
+    {
+        target.prepend("<div uk-spinner></div>");
+    }
+
+    function __removeSpinner(target)
+    {
+        $(target).find('div.ib-spin').remove();
+    }
+
     function removeSpinner(target)
     {
         target.find('div.ib-spin').remove();
@@ -200,6 +234,167 @@ $(document).ready(function($)
             eval(result.javascript);
         }
     }
+
+    function __isEnabled(params)
+    {
+        if(($(params.target).hasClass('disabled'))||($(params.target).is(':disabled')))
+            return false;
+
+        return true;
+    }
+
+    function __isConfirmed(params)
+    {
+        var returnconfirm = $(params.target).data('returnconfirm');
+
+        if (typeof returnconfirm !== 'undefined')
+            if(! confirm(returnconfirm))
+                return false;
+
+        return true;
+    }
+
+    function __manageSpinner(params)
+    {
+        if($(params.target).hasClass('spin') == true)
+            __addSpinner(params.target);
+
+        if($(params.target).hasClass('spinicon') == true)
+            __addSpinnerIcon(params.target);        
+    }
+
+    function __manageSpinnerRemoval(params)
+    {
+        if($(params.target).hasClass('spin') == true)
+            __removeSpinner(params.target);
+    }
+
+    function __getData(params)
+    {
+        // if($(params.target).data('dataattributes'))
+        //     return collectDataAttributes(params.target);
+
+        // if($(params.target).data('elements'))
+        //     return collectDatas(params.target);
+
+        return params.data;
+    }
+
+    function __getType(params)
+    {
+        if($(params.target).data('type'))
+            return $(params.target).data('type');        
+
+        return 'POST';
+    }
+
+    function __getUrl(params)
+    {
+        return $(params.target).data('url');
+    }
+
+    function __addMethodToData(data, params)
+    {
+        if($(params.target).data('method'))
+            data._method = $(params.target).data('method');
+
+        return data;
+    }
+
+    function __checkResultToggle(result, params)
+    {
+        if(typeof result.toggle === "undefined")
+            return;
+
+        let table = $(params.target).parents('table.datatable').DataTable();
+        let td = $(params.target).parents('td');
+        let cell = table.cell(td);
+
+        cellData = cell.data();
+
+        let fieldName = params.data.field;
+
+        cellData[1] = result[fieldName];
+        cell.data(cellData).draw();
+    }
+
+    function ibCallAjax(params)
+    {
+        params.e.preventDefault();
+
+        if(! __isEnabled(params))
+            return false;
+
+        if(! __isConfirmed(params))
+            return false;
+
+        __manageSpinner(params);
+
+        var type = __getType(params);
+        var url = __getUrl(params);
+        let data = __getData(params);
+
+        data = __addMethodToData(data, params);
+
+        $.ajax(
+        {
+            url     : url,
+            type    : type,
+            dataType: 'json',
+            data    : data,
+            success : function(result)
+            {
+                __checkResultToggle(result, params);
+
+
+                // checkJavascript(result, params.target);
+                // checkRemoveElement(result, params.target);
+                // checkMessage(result);
+
+                // if(! newCheckTargetHtmlAppend(result, params.target))
+                //     checkTargetHtmlAppend(result, params.target);
+
+                // checkTargetHtml(result, params.target);
+
+                // if(! newCheckTargetHtml(result, params.target))
+                //     checkHtml(result, params.target);
+
+                // checkUrl(result, params.target);
+                // checkClass(result, params.target);
+                // checkIcon(result, params.target);
+                // checkDatas(result, params.target);
+                // checkRemoveClass(result, params.target);
+                // checkTooltip(result, params.target);
+                // checkNewselecttor(result, params.target);
+                // checkFinalJavascript(result, params.target);
+
+                __manageSpinnerRemoval(params);
+
+                console.log(result);
+            },
+            error   : function()
+            {
+                __manageSpinnerRemoval(params);
+            }
+        });
+
+    }
+
+    $('body').on('click', '.ib-toggle', function(e)
+    {
+        var params = {
+            target : this,
+            e : e,
+            type : 'POST',
+            data : {
+                toggle : true,
+                field : $(this).data('field'),
+                _method : 'PUT',                
+            }
+        };
+
+        ibCallAjax(params);
+    });
 
     $('body').on('click', '.ib-ajax-button', function(e)
     {

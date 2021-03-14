@@ -60,6 +60,13 @@ trait DatatablesFieldsColumnDefsTrait
         return $this->getEndingResultOptions();        
     }
 
+    public function getCustomColumnDefSingleSearchResult()
+    {
+        return "
+            return item;
+        ";
+    }
+
     public function getCustomColumnDef()
     {
         // if(! $this->getEndingResultOptions())
@@ -67,16 +74,23 @@ trait DatatablesFieldsColumnDefsTrait
 
         return "
         {
+            //astro" . $this->getName() . "
             targets: [" . $this->getIndex() . "],
             render: function ( item, type, row, meta )
             {
                 if(type == 'display')
                 {
-                    " . $this->getColumnDefSingleResult() . "
+                    " . $this->getCustomColumnDefSingleResult() . "
                     " . $this->getEndingResultOptions() . "
 
                     return item;
                 }
+                if(type == 'filter')
+                {
+                    // console.log('qwe');
+                    " . $this->getCustomColumnDefSingleSearchResult() . "
+                }
+
 
                 return item;
             }

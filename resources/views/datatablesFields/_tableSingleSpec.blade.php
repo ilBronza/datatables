@@ -62,10 +62,14 @@
     // }
     // @endif ;
 
-    window.{{ $table->getId() }}columnDefs = @if(count($table->columnDefs)||(count($table->customColumnDefs))) [
+    window.{{ $table->getId() }}columnDefs = [
+        {
+            "targets"  : 'no-sort',
+            "orderable": false            
+        }@if(count($table->columnDefs)||(count($table->customColumnDefs))),
 
         @if($table->hasSelectRowCheckboxes())
-       {
+        {
            orderable: false,
            className: 'select-checkbox',
            targets:   0
@@ -88,7 +92,7 @@
     @foreach ($table->customColumnDefs as $customColumnDef)
         {!! $customColumnDef !!},
     @endforeach
-    ] @else [] @endif ;
+    @endif ];
 
     window.{{ $table->getId() }}buttons = @if(count($buttons = $table->getButtons())||(count(1))) [
 

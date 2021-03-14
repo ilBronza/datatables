@@ -6,42 +6,46 @@ class DatatableFieldToggle extends DatatableFieldEditor
 {
 	public $trueIcon = 'check';
 	public $falseIcon = 'close';
+	public $nullIcon = 'minus';
+	public $width = '25px';
 	public $nullable = true;
 
-	public function transformValue($value)
+	private function getLinkString(string $iconString)
 	{
-		return $value->{$this->parameter};
-	}
+		$classes = $this->getHtmlClassesString();
 
-	public function getEditorUrl()
-	{
-		return $this->model::getDatatableEditorUrl();
+		return "
+			item = '<span data-field=\"{$this->parameter}\" class=\"" . $classes . " ib-toggle\" data-url=\"' + url + '\" {$iconString} ></span>';
+		";
 	}
 
 	private function _getCustomColumnDefNullableResult()
 	{
 		return "
 
-		if(item)
-			item = '<a href=\"javascript:void(0)\" data-url=\"" . $this->getEditorUrl() . "\" uk-icon=\"{$this->trueIcon}\" ></a>';
+		" . $this->substituteUrlParameter() . "
 
-		else if(item === false)
-			item = '<a href=\"javascript:void(0)\" data-url=\"" . $this->getEditorUrl() . "\" uk-icon=\"{$this->falseIcon}\"></a>';
+		if(item[1])
+			" . $this->getLinkString("uk-icon=\"{$this->trueIcon}\"") . "
+
+		else if((item[1] == 0)||(item[1] === false))
+			" . $this->getLinkString("uk-icon=\"{$this->falseIcon}\"") . "
 
 		else
-			item = '<a href=\"javascript:void(0)\" data-url=\"" . $this->getEditorUrl() . "\">nd</a>';
-			";
+			" . $this->getLinkString("uk-icon=\"{$this->nullIcon}\"");
 	}
 
 	private function _getCustomColumnDefResult()
 	{
 		return "
 
-		if(item)
-			item = '<a href=\"javascript:void(0)\" data-url=\"" . $this->getEditorUrl() . "\" uk-icon=\"{$this->trueIcon}\" ></a>';
+		" . $this->substituteUrlParameter() . "
+
+		if(item[1])
+			" . $this->getLinkString("uk-icon=\"{$this->trueIcon}\"") . "
 
 		else
-			item = '<a href=\"javascript:void(0)\" data-url=\"" . $this->getEditorUrl() . "\" uk-icon=\"{$this->falseIcon}\"></a>';
+			" . $this->getLinkString("uk-icon=\"{$this->falseIcon}\"") . "
 		";
 	}
 

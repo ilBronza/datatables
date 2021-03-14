@@ -24,6 +24,7 @@
             <tr class="columns">
                 @foreach($table->getFields() as $field)
                 <th
+                    class="{{ $field->getHeaderHtmlClasses() }}"
 
                     data-range="{{ $field->hasRangeFilter() }}"
                     data-filter="{{ $field->getFilterType() }}"

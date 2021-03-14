@@ -12,6 +12,7 @@
 <script type="text/javascript" src="/js/moment.min.js"></script>
 {{--  //DATATABLES  --}}
 
+@include('datatables::ajaxButtonScripts')
 
 {{-- START FILTERFUNCTIONS --}}
 <style type="text/css">
@@ -319,7 +320,7 @@ $(document).ready(function($)
             // if(container.search() !== value)
             // {
                 if(searchValue)
-                    container.search(this.value).draw();
+                    container.search(this.value, true, false).draw();
 
                 else
                     container.draw();
@@ -369,7 +370,14 @@ $(document).ready(function($)
             },
             columnDefs : columnDefs,
             rowReorder : rowReorder,
-            buttons: buttons,
+            buttons: {
+                dom: {
+                    button: {
+                        className: 'uk-button uk-button-small uk-button-primary'
+                    }
+                },
+                buttons: buttons
+            },
             initComplete: function ()
             {
                 this.api().columns().every(function ()
@@ -390,12 +398,14 @@ $(document).ready(function($)
 
                 if(summary)
                     populateFilteredColumnValues(api, tableId);
+
+                api.columns.adjust();
             }
         };
 
         jQuery.extend(settings, options);
 
-        window['table' + tableId] = $(this).DataTable(settings);        
+        window['table' + tableId] = $(this).DataTable(settings);
     })
 
     // START SCRIPTS PER LE RICERCHE SU CAMPI
