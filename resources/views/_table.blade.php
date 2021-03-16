@@ -17,7 +17,7 @@
         data-summary="true"
         @endif
 
-        class="wannabedatatable {{ $table->getStripeClass() }} datatable {{ $table->getName() }}"
+        class="wannabedatatable uk-table {{ $table->getStripeClass() }} datatable {{ $table->getName() }}"
         style="width:100%"
         >
         <thead class="sectionheader">

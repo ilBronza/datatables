@@ -63,6 +63,7 @@ class DatatableField
         // $this->setType();
         $this->setColumnDefs();
         $this->setColumnOptions();
+
         $this->setHtmlClasses();
 
         $this->summaryValues = collect();
