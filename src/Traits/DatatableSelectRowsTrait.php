@@ -16,12 +16,13 @@ trait DatatableSelectRowsTrait
 
     public function setRowSelectCheckboxes()
     {
-        $newField = $this->addField('selectRow', ["type" => "selectRowCheckbox"]);
-
         $fieldsGroup = $this->createFieldsGroup('selectRow');
-        $fieldsGroup->addField('selectRow', $newField);
 
-        $this->assignIndexToField('selectRow', 0);
+        $selectRowField = $this->addField('selectRow', ["type" => "selectRowCheckbox"]);
+        $fieldsGroup->addField('selectRow', $selectRowField);
+
+        $primaryField = $this->addField('primary', ["type" => "primary"]);
+        $fieldsGroup->addField('primary', $primaryField);
 
         $this->selectRowCheckboxes = true;
     }

@@ -20,6 +20,17 @@
         },
         @endif
 
+        @if($scripts = $table->getCreatedRowScripts())
+        createdRow: function( row, data, dataIndex )
+        {
+            @foreach ($scripts as $script)
+            {!! $script !!}
+            @endforeach
+        },        
+        @endif
+
+        pageLength: {{ $table->getPageLength() }},
+
         @if(($rowIdIndex = $table->getRowIdIndex()) !== null)
         rowId: {{ $rowIdIndex }},
         @endif
@@ -72,8 +83,8 @@
         {
            orderable: false,
            className: 'select-checkbox',
-           targets:   0
-        } ,
+           targets: 0,
+        },
         @endif
     @foreach ($table->columnDefs as $type => $element)
         @foreach($element->values as $key => $value)
@@ -131,11 +142,27 @@
         '{{ $button }}' @if(! $loop->last), @endif
         @else
         {
+            attr: {
+                @foreach($button->getAttributes() as $attribute => $value)
+                '{{ $attribute }}': '{{ $value }}',
+                @endforeach
+                @foreach($button->getData() as $data => $value)
+                'data-{{ $data }}': '{{ $value }}',
+                @endforeach
+                @if($button->getId())
+                id: '{{ $button->getId() }}',
+                @endif
+            },
+            @if($buttonClasses = $button->getClasses())
+            className: '{{ $buttonClasses }}',
+            @endif
             text: '{{ $button->getName() }}',
+            @if($jsMethodText = $button->renderJsMethod())
             action: function ( e, dt, node, config ) {
-                {!! $button->renderJsMethod() !!}
+                {!! $jsMethodText !!}
                 // dt.ajax.reload();
             }
+            @endif
         } @if(! $loop->last), @endif
         @endif
     @endforeach

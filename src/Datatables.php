@@ -32,9 +32,11 @@ class Datatables
     public $elements;
     public $url;
     public $columnDefs = [];
+    public $createdRowScripts = [];
     public $buttons = ['copy', 'csv'];
     public $getRowIdIndex = false;
     public $stripe = true;
+    public $pageLength = 50;
     public $options = [];
 
     public function __construct()

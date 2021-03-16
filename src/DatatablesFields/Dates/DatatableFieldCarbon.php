@@ -8,7 +8,6 @@ class DatatableFieldCarbon extends DatatableField
 {
 	public $defaultWidth = '80px';
     public $defaultFilterType = 'date';
-    public $dateFormat = "D/MM/YYYY";
 
     public function getDateFormat()
     {

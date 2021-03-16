@@ -9,11 +9,16 @@ trait DatatablesFieldsColumnDefsTrait
         return $this->suffix ?? false;
     }
 
+    public function getPrefix()
+    {
+        return $this->prefix ?? false;
+    }
+
     private function setClassnameColumnDef()
     {
         //add className to field columnDefs
         if(! isset($this->columnDefs['className']))
-            $this->columnDefs['className'] = $this->getHtmlClass();        
+            $this->columnDefs['className'] = $this->getCamelName();        
     }
 
     public function getColumnDefs()
@@ -74,7 +79,7 @@ trait DatatablesFieldsColumnDefsTrait
 
         return "
         {
-            //astro" . $this->getName() . "
+            //" . $this->getName() . "
             targets: [" . $this->getIndex() . "],
             render: function ( item, type, row, meta )
             {
@@ -87,15 +92,13 @@ trait DatatablesFieldsColumnDefsTrait
                 }
                 if(type == 'filter')
                 {
-                    // console.log('qwe');
                     " . $this->getCustomColumnDefSingleSearchResult() . "
                 }
 
 
                 return item;
             }
-        }
-        ";
+        }";
     }
 
     public function getEndingResultOptions()
@@ -108,11 +111,45 @@ trait DatatablesFieldsColumnDefsTrait
                 item = item + '" . $this->getSuffix() . "';
         ";
 
+        if($this->getPrefix())
+            $result[] = "
+            if(item)
+                item = '" . $this->getPrefix() . "' + item;
+        ";
+
         return implode(" ", $result);
     }
 
     public function getColumnDefSingleResult()
     {
         return $this->getEndingResultOptions();
+    }
+
+    public function getValueAsRowClassScript()
+    {
+        if($this->valueAsRowClass)
+
+            return "
+        let val = data[" . $this->getIndex() . "];
+
+        if(typeof val !== 'undefined')
+        {
+            if(typeof val !== 'string')
+                val = JSON.stringify(val);
+
+            $(row).addClass(val.replace(/[^a-zA-Z ]/g, ' '));
+        }
+
+        ";
+    }
+
+    public function getCreatedRowScripts()
+    {
+        $result = [];
+
+        if($script = $this->getValueAsRowClassScript())
+            $result[] = $script;
+
+        return implode(" ", $result);
     }
 }

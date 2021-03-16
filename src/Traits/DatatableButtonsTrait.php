@@ -22,6 +22,8 @@ trait DatatableButtonsTrait
             if($button == $addingButton)
                 return false;
 
+        $addingButton->setTableId($this->getId());
+
         $this->buttons[] = $addingButton;
     }
 

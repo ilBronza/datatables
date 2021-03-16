@@ -39,8 +39,7 @@ class DatatableFieldBelongsTo extends DatatableField
 
                 return data.name;
             }
-        }
-        ";
+        }";
     }
 }
 

@@ -5,7 +5,11 @@ namespace IlBronza\Datatables\DatatablesFields\Links;
 class DatatableFieldDelete extends DatatableFieldLink
 {
     public $icon = 'trash';
+    public $actionHtmlClass = 'ib-cell-ajax-button';
     public $textParameter = false;
+    public $dataAttributes = [
+    	'method' => 'DELETE'
+    ];
 
 	public function transformValue($value)
 	{
@@ -18,13 +22,12 @@ class DatatableFieldDelete extends DatatableFieldLink
 		];
 	}
 
-	public function getCustomColumnDefSingleResult()
+	public function getHtmlClassesAttribute()
 	{
-		return "
-			if(item)
-				item = '<a data-method=\"DELETE\" class=\"ib-ajax-button\" href=\"javascript:void(0)\" data-url=\"' + " . $this->getLinkUrlString() . " + '\">" . $this->getIconHtml() . "' + " . $this->getLinkTextString() . " + '</a>';
+		$this->addHtmlClass(
+			$this->actionHtmlClass
+		);
 
-			else item = ''";
+		return parent::getHtmlClassesAttribute();
 	}
-
 }

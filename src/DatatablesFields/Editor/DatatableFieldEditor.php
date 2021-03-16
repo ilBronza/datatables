@@ -17,6 +17,9 @@ class DatatableFieldEditor extends DatatableField
 		$this->setParameter();
 	}
 
+	/**
+	 * if parameter to toggle is not declared in model's array, field name is taken as default
+	 **/
 	private function setParameter()
 	{
 		if(empty($this->parameter))

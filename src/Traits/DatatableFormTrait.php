@@ -22,14 +22,14 @@ trait DatatableFormTrait
         $this->setDragAndDropColumn($dragAndDropField->index);
 
         if(empty($this->dragAndDrop->selector))
-            $this->dragAndDrop->selector = 'td.' . $dragAndDropField->getHtmlClass();
+            $this->dragAndDrop->selector = 'td.' . $dragAndDropField->getHtmlClassForCss();
     }
 
     public function setDragAndDropSelector($columnIntestation)
     {
         $dragAndDropField = $this->getDragAndDropFieldByName($columnIntestation);
 
-        $this->dragAndDrop->selector = 'td.' . $dragAndDropField->getHtmlClass();
+        $this->dragAndDrop->selector = 'td.' . $dragAndDropField->getHtmlClassForCss();
     }
 
     public function setDragAndDropColumn($column)

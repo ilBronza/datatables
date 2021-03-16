@@ -1,6 +1,6 @@
 <?php
 
-namespace IlBronza\Datatables\DatatablesFields;
+namespace IlBronza\Datatables\DatatablesFields\Iterators;
 
 class DatatableFieldEach extends MultipleDatatableField
 {
@@ -44,6 +44,7 @@ class DatatableFieldEach extends MultipleDatatableField
 
 		return "
 		{
+			//" . $this->getName() . "
 			targets: [" . $this->getIndex() . "],
 			render: function ( data, type, row, meta )
 			{
@@ -53,7 +54,8 @@ class DatatableFieldEach extends MultipleDatatableField
 
 					data.forEach(function(item)
 					{
-						" . $this->child->getCustomColumnDefSingleResult() . ";
+						" . $this->child->getCustomColumnDefSingleResult() . "
+						" . $this->getEndingResultOptions() . "
 
 						if(item)
 							result += item;
@@ -66,7 +68,6 @@ class DatatableFieldEach extends MultipleDatatableField
 
 				return data;
 			}
-		}
-		";
+		}";
 	}
 }

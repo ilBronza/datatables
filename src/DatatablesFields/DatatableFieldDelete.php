@@ -4,6 +4,8 @@ namespace IlBronza\Datatables\DatatablesFields;
 
 class DatatableFieldDelete extends DatatableField
 {
+
+	//TODO OCIO
 	public function transformValue($value)
 	{
 		if($value->trashed())
@@ -12,20 +14,18 @@ class DatatableFieldDelete extends DatatableField
 		return [0 => $value->getDeleteUrl()];
 	}
 
-    public function getCustomColumnDef()
-    {
+	public function getCustomColumnDefSingleResult()
+	{
 		return "
+		if(item)
 		{
-			targets: [" . $this->getIndex() . "],
-			render: function ( data, type, row, meta )
-			{
-				if(typeof data[0] !== \"undefined\")
-					return '<button data-url=\"' + data[0] + '\" class=\"delete-button button-delete\" type=\"button\" uk-icon=\"icon: trash\"></button>';
+			if(typeof item[1] !== \"undefined\")
+				item = '<button data-destroy=\"1\" data-url=\"' + item[1] + '\" class=\"delete-button button-delete uk-text-danger\" type=\"button\" uk-icon=\"icon: trash\"></button>';
 
-				if(typeof data[1] !== \"undefined\")
-					return '<button data-destroy=\"1\" data-url=\"' + data[1] + '\" class=\"delete-button button-delete uk-text-danger\" type=\"button\" uk-icon=\"icon: trash\"></button>';
-			}
+			elseif(typeof item[0] !== \"undefined\")
+				item = '<button data-url=\"' + item[0] + '\" class=\"delete-button button-delete\" type=\"button\" uk-icon=\"icon: trash\"></button>';
 		}
-		";
+
+		else item = ''";
 	}
 }

@@ -14,43 +14,28 @@ class DatatableFieldJsonObjects extends DatatableField
 		return json_encode($this->getProperties());
 	}
 
-	public function transformValue($value)
+	public function getCustomColumnDefSingleResult()
 	{
-		return $value;
-	}
-
-	public function getCustomColumnDef()
-	{
-		$fieldIndex = $this->getIndex();
-
 		return "
-        {
-			targets: [{$fieldIndex}],
-			render: function ( data, type, row, meta )
+			if(item)
 			{
-				if(type == 'display')
-				{
-					let fields = " . $this->getJsonProperties() . ";
-					let result = new Array();
+				let fields = " . $this->getJsonProperties() . ";
+				let result = new Array();
 
-					objects = JSON.parse(data);
+				objects = JSON.parse(item);
 
-					for (var key in objects)
-						if (objects.hasOwnProperty(key))
-							result.push(window.datatablesGetJsonObjectString(fields, objects[key]));
+				for (var key in objects)
+					if (objects.hasOwnProperty(key))
+						result.push(window.datatablesGetJsonObjectString(fields, objects[key]));
 
-					// for (var key in objects)
-					// 	result.push(window.datatablesJsonEncode(objects[key]));
+				if(result.length == 0)
+					item = '';
 
-					if(result.length == 0)
-						return '';
-
-					return '<pre class=\"noborder\">' + result.join('<br />') + '</pre>';
-				}
-
-				return data;
+				else
+					item = '<pre class=\"noborder\">' + result.join('<br />') + '</pre>';
 			}
-		}
-		";
+
+
+			else item = ''";
 	}
 }

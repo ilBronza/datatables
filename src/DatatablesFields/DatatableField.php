@@ -30,6 +30,7 @@ class DatatableField
     public $summaryValues;
     public $sortable = true;
     public $requireElement = false;
+    public $valueAsRowClass = false;
 
     public $defaultFilterType = 'text';
 
@@ -131,7 +132,7 @@ class DatatableField
         return __NAMESPACE__ . '\\' . $folders . "DatatableField" . $fieldType;
     }
 
-    static function createByType(string $fieldName, string $fieldType, array $fieldParameters, int $index)
+    static function createByType(string $fieldName, string $fieldType, array $fieldParameters, int $index = 0)
     {
         $className = static::getClassNameByType($fieldType);
 
@@ -142,6 +143,8 @@ class DatatableField
     {
         if(isset($this->renderAs))
             return $this->renderAs;
+
+        return ;
 
         try
         {

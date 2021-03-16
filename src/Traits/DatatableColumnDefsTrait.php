@@ -11,8 +11,13 @@ trait DatatableColumnDefsTrait
 
     private function addCustomColumnDefsRenderingMethods(DatatableField $field)
     {
-        $columnDefRenderType = $field->getRenderAsType();
-        $fieldIndex = $field->getIndex();
+        if($alternativeRenderAs = $field->getRenderAsType())
+            $field = $this->replicateRenderAsField('fakeRenderingField', $alternativeRenderAs, $field);
+
+        // $fieldIndex = $field->getIndex();
+
+        if($field->name == 'fakeRenderingField')
+            mori($field);
 
         if($customColumnDef = $field->getCustomColumnDef())
             return $this->customColumnDefs[] = $customColumnDef;
@@ -60,6 +65,11 @@ trait DatatableColumnDefsTrait
         }
 
         $this->addCustomColumnDefsRenderingMethods($field);
+    }
+
+    public function getCreatedRowScripts()
+    {
+        return $this->createdRowScripts;
     }
 }
 

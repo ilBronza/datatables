@@ -1,6 +1,8 @@
 <?php
 
-namespace IlBronza\Datatables\DatatablesFields;
+namespace IlBronza\Datatables\DatatablesFields\Iterators;
+
+use IlBronza\Datatables\DatatablesFields\DatatableField;
 
 class MultipleDatatableField extends DatatableField
 {
@@ -45,7 +47,6 @@ class MultipleDatatableField extends DatatableField
 
 				return data;
 			}
-		}
-		";
+		}";
 	}
 }

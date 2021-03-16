@@ -2,7 +2,7 @@
 
 namespace IlBronza\Datatables\DatatablesFields\Relations;
 
-use IlBronza\Datatables\DatatablesFields\DatatableFieldIterator;
+use IlBronza\Datatables\DatatablesFields\Iterators\DatatableFieldIterator;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsRelationsTrait;
 
 class DatatableFieldHasMany extends DatatableFieldIterator

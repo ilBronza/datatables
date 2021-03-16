@@ -1,18 +1,9 @@
 <?php
 
-namespace IlBronza\Datatables\DatatablesFields;
+namespace IlBronza\Datatables\DatatablesFields\Iterators;
 
-use IlBronza\Datatables\DatatablesFields\DatatableField;
-
-class DatatableFieldIterator extends DatatableField
+class DatatableFieldIterator extends MultipleDatatableField
 {
-    public $separator = '<br />';
-
-    public function getSeparator()
-    {
-        return $this->separator;
-    }
-
     public function transformValue($value)
     {
         $result = [];
@@ -75,8 +66,7 @@ class DatatableFieldIterator extends DatatableField
 
                 return data;
             }
-        }
-        ";
+        }";
     }
 }
 

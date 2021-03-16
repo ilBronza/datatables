@@ -4,6 +4,12 @@ namespace IlBronza\Datatables\DatatablesFields;
 
 class DatatableFieldBoolean extends DatatableField
 {
+	public $trueIcon = 'check';
+	public $falseIcon = 'close';
+	public $nullIcon = 'minus';
+	public $width = '25px';
+	public $nullable = true;
+
 	public function transformValue($value)
 	{
 		if(is_null($value))
@@ -12,19 +18,46 @@ class DatatableFieldBoolean extends DatatableField
 		return !! $value;
 	}
 
-    public function getColumnDefSingleResult()
-    {
-    	return "
-			if(item === true)
-				item = '<strong style=\"color: red;\">" . trans('fields.booleanTrue') . "</strong>';
+	private function getBooleanString(string $iconString)
+	{
+		$classes = $this->getHtmlClassesString();
 
-			else item = '';
+		return "
+			item = '<span class=\"" . $classes . "\" {$iconString} ></span>';
+		";
+	}
 
-			// else if(item === false)
-			// 	item = '" . trans('fields.booleanFalse') . "';
+	private function _getCustomColumnDefNullableResult()
+	{
+		return "
 
-			// else
-			// 	item =  '" . trans('fields.booleanNull') . "';
-    	";
-    }
+		if(item)
+			" . $this->getBooleanString("uk-icon=\"{$this->trueIcon}\"") . "
+
+		else if((item == 0)||(item === false))
+			" . $this->getBooleanString("uk-icon=\"{$this->falseIcon}\"") . "
+
+		else
+			" . $this->getBooleanString("uk-icon=\"{$this->nullIcon}\"");
+	}
+
+	private function _getCustomColumnDefResult()
+	{
+		return "
+
+		if(item)
+			" . $this->getBooleanString("uk-icon=\"{$this->trueIcon}\"") . "
+
+		else
+			" . $this->getBooleanString("uk-icon=\"{$this->falseIcon}\"") . "
+		";
+	}
+
+	public function getCustomColumnDefSingleResult()
+	{
+		if($this->nullable)
+			return $this->_getCustomColumnDefNullableResult();
+
+		return $this->_getCustomColumnDefResult();
+	}
 }

@@ -9,6 +9,7 @@ class DatatableFieldLink extends DatatableField
 	public $icon = false;
 	public $textParameter = false;
 	public $defaultWidth = '25px';
+	public $dataAttributes = [];
 
 	/**
 	 * return field default width based on text existence or just icon
@@ -59,7 +60,7 @@ class DatatableFieldLink extends DatatableField
 	public function getIconHtml()
 	{
 		if($this->icon)
-			return "<span uk-icon=\"" . $this->icon . "\"></span>";
+			return "<span uk-icon=\"{$this->icon}\"></span>";
 
 		if(! $this->textParameter)
 			return "<span uk-icon=\"link\"></span>";
@@ -91,45 +92,31 @@ class DatatableFieldLink extends DatatableField
 		return "item[1]";
 	}
 
+	public function getHtmlClassesAttribute()
+	{
+		if (! $classes = $this->getHtmlClassesString())
+			return ;
+
+		return " class=\"{$classes}\"";
+	}
+
+	public function getHtmlDataAttributesString()
+	{
+		$result = [];
+
+		foreach($this->dataAttributes ?? [] as $data => $value)
+			$result[] = "data-" . $data . "\"" . $value . "\"";
+
+		return implode(" ", $result);
+	}
+
 	public function getCustomColumnDefSingleResult()
 	{
-		// if(! $this->textParameter)
-		// 	return "
-		// 	if(item)
-		// 		item = '<a " . $this->getTargetHtml() . " href=\"' + item + '\">" . $this->getIconHtml() . "</a>';
-
-		// 	else item = ''";
-
-		// return "
-		// 	if(item)
-		// 		item = '<a " . $this->getTargetHtml() . "  href=\"' + item[0] + '\">" . $this->getIconHtml() . "' + item[1] + '</a>';
-
-		// 	else item = ''";
-
 		return "
 			if(item)
-				item = '<a " . $this->getTargetHtml() . " href=\"' + " . $this->getLinkUrlString() . " + '\">" . $this->getIconHtml() . "' + " . $this->getLinkTextString() . " + '</a>';
+				item = '<a " . $this->getHtmlDataAttributesString() . " " . $this->getHtmlClassesAttribute() . " " . $this->getTargetHtml() . " href=\"' + " . $this->getLinkUrlString() . " + '\">" . $this->getIconHtml() . "' + " . $this->getLinkTextString() . " + '</a>';
 
-			else item = ''";
+			else item = '';
+		";
 	}
-
-	public function getCustomColumnDef()
-	{
-		$fieldIndex = $this->getIndex();
-
-		return "
-		{
-			targets: [" . $this->getIndex() . "],
-			render: function ( item, type, row, meta )
-			{
-				if(type == 'display')
-				{
-					" . $this->getCustomColumnDefSingleResult() . ";
-				}
-
-			return item;
-			}
-		}";
-	}
-
 }

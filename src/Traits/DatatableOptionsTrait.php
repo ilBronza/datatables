@@ -7,6 +7,16 @@ use IlBronza\Datatables\DatatablesFields\DatatableField;
 
 trait DatatableOptionsTrait
 {
+    public function setPageLength($pageLength)
+    {
+        $this->pageLength = $pageLength;
+    }
+
+    public function getPageLength()
+    {
+        return $this->pageLength;
+    }
+
     public function setCaption(string $caption)
     {
         $this->caption = $caption;
@@ -25,6 +35,17 @@ trait DatatableOptionsTrait
         ksort($this->options['order']);
     }
 
+    private function addCreatedRowScript(string $script)
+    {
+        $this->createdRowScripts[] = $script;
+    }
+
+    private function checkFieldRowCreationScripts(DatatableField $field)
+    {
+        if($script = $field->getCreatedRowScripts())
+            $this->addCreatedRowScript($script);
+    }
+
     /**
      * check if all field's columnDefs are set in datatable
      * if not, set them
@@ -33,6 +54,8 @@ trait DatatableOptionsTrait
      */
     private function checkFieldOptions(DatatableField $field)
     {
+        $this->checkFieldRowCreationScripts($field);
+
         $fieldColumnOptions = $field->getColumnOptions();
 
         foreach($fieldColumnOptions as $definition => $value)

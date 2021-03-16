@@ -54,10 +54,18 @@ trait DatatablesFieldsDisplayTrait
         return implode(" ", $this->htmlClasses);        
     }
 
+    public function getHtmlClassForCss()
+    {
+        return $this->getCamelName();
+    }
+
+    public function getCamelName()
+    {
+        return Str::camel(str_replace(".", " ", $this->name));
+    }
+
     public function getHtmlClass()
     {
-        $this->addHtmlClass(Str::camel(str_replace(".", " ", $this->name)));
-
         return $this->getHtmlClassesString();
     }
 

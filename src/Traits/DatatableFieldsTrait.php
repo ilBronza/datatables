@@ -213,18 +213,51 @@ trait DatatableFieldsTrait
         throw new \Exception('wrong field parameteres for table ' . json_encode($this->name));      
     }
 
-    public function addField(string $fieldName, $parameters)
+    public function replicateRenderAsField(string $fieldName, string $alternativeRenderAs, DatatableField $field)
     {
+        $fieldParameters = DatatableField::extractOverrideableParametersNameByType(
+            $alternativeRenderAs
+        );
+
+        $parameters = [];
+
+        foreach($fieldParameters as $fieldParameter)
+            if(! empty($field->$fieldParameter))
+                $parameters[$fieldParameter] = $field->$fieldParameter;
+
+        return DatatableField::createByType(
+            $fieldName,
+            $alternativeRenderAs,
+            $parameters,
+            $field->getIndex()
+        );
+    }
+
+    public function craeteField(string $fieldName, $parameters)
+    {
+        if($fieldName == 'fakeRenderingField')
+        {
+            $fieldParameters = $this->prepareFieldParameters($parameters);
+            mori($fieldParameters);
+        }
+
         $fieldParameters = $this->prepareFieldParameters($parameters);
 
         $fieldType = $this->TODO_ChangeAllViewsInTypeGetType($fieldParameters);
 
-        return $this->fields[$fieldName] = DatatableField::createByType(
+        return DatatableField::createByType(
             $fieldName,
             $fieldType,
             $fieldParameters,
             $this->getNextFieldIndex()
         );
+    }
+
+    public function addField(string $fieldName, $parameters)
+    {
+        $field = $this->craeteField($fieldName, $parameters);
+
+        return $this->fields[$fieldName] = $field;
     }
 
     public function setRowIdIndex(int $rowIdIndex)
@@ -244,17 +277,18 @@ trait DatatableFieldsTrait
 
     public function getRowIdIndex()
     {
-      return $this->rowId;
+        return $this->rowId;
     }
 
-    public function assignIndexToField(string $fieldName, int $index)
-    {
-        $incrementingFields = $this->fields->where('index', '>=', $index);
+    //RISCRIVERE
+    // public function assignIndexToField(string $fieldName, int $index)
+    // {
+    //     $incrementingFields = $this->fields->where('index', '>=', $index);
 
-        foreach($incrementingFields as $incrementingField)
-            $incrementingField->incrementIndex();
+    //     foreach($incrementingFields as $incrementingField)
+    //         $incrementingField->incrementIndex();
 
-        $field = $this->getFieldByName($fieldName);
-        $field->setIndex($index);
-    }
+    //     $field = $this->getFieldByName($fieldName);
+    //     $field->setIndex($index);
+    // }
 }
