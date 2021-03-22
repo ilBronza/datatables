@@ -47,37 +47,73 @@ class Datatables
         $this->customButtons = collect();
     }
 
+    private function cleanCachedTableKeyParameterIfEditor()
+    {
+        if(request()->ajax())
+            if(request()->input('ibeditor'))
+                request()->request->remove('cachedtablekey');
+    }
+
+    private function returnSingleElement(callable $elements)
+    {
+        if($elements instanceof \Closure)
+        {
+            if(! $elements = $elements())
+                mori('nessun elemento');
+
+            if(! $firstElement = $elements->first())
+                mori('nessun elemento');
+
+            $element = $elements->firstWhere(
+                $firstElement->getKeyName(),
+                request()->rowId
+            );
+
+            $collection = collect();
+            $collection->push($element);
+
+            $this->setElements($collection);
+            $this->setData();
+
+            return $this;
+        }
+
+
+        mori('non instanceof Closure, vuol dire che è una query o una collection, zio culo culo culo culo cazzo culo cazzo culo merda');
+    }
+
     static function create(string $name, array $fieldsGroups, $elements, bool $selectRowCheckboxes = false)
     {
         $table = new static();
+
+        $table->cleanCachedTableKeyParameterIfEditor();
 
         if($selectRowCheckboxes)
             $table->setRowSelectCheckboxes();
 
         if(request()->ajax())
         {
-            if($cachedTableKey = request()->input('cachedtablekey'))
+            if(
+                ($table->cachedTableKey = request()->input('cachedtablekey'))
+                &&($data = cache()->pull($table->cachedTableKey))
+            )
             {
-                if($data = cache()->pull($cachedTableKey))
-                {
-                    $table->setData($data, $selectRowCheckboxes);
-
-                    return $table;
-                }
-
-                $table->addFieldsGroups($fieldsGroups);
-                // $table->addFields($fields);
-
-                $elements = $elements();
-                $table->setElements($elements);
-                $table->setData();
+                $table->setData($data, $selectRowCheckboxes);
 
                 return $table;
             }
 
-            return [
-                'status' => 500
-            ];
+            $table->addFieldsGroups($fieldsGroups);
+            // $table->addFields($fields);
+
+            if(request()->rowId)
+                return $table->returnSingleElement($elements);
+            
+            $elements = $elements();
+            $table->setElements($elements);
+            $table->setData();
+
+            return $table;
         }
         // return "HTTP";
 
@@ -116,7 +152,7 @@ class Datatables
     {
         $this->name = $name;
 
-        $this->setCachedDataKey();
+        $this->setCachedTableKey();
     }
 
     public function getName()
@@ -175,7 +211,7 @@ class Datatables
 
     public function getId()
     {
-        return $this->id ?? $this->cachedDataKey;
+        return $this->id ?? $this->cachedTableKey;
     }
 
 }
