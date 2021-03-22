@@ -11,7 +11,7 @@ trait DatatableDataTrait
     public function prepareCachedData()
     {
         return cache()->remember(
-            $this->getCachedDataKey(),
+            $this->getCachedTableKey(),
             300,
             function()
             {
@@ -112,14 +112,14 @@ trait DatatableDataTrait
         return $data;
     }
 
-    private function setCachedDataKey()
+    private function setCachedTableKey()
     {
-        $this->cachedDataKey = $this->name . Str::random();        
+        $this->cachedTableKey = $this->name . Str::random();        
     }
 
-    public function getCachedDataKey()
+    public function getCachedTableKey()
     {
-        return $this->cachedDataKey;
+        return $this->cachedTableKey;
     }
 
 

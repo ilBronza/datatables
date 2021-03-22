@@ -11,19 +11,20 @@
     <table
         id="{{ $table->getId() }}"
         data-url="{{ $table->getUrl() }}"
-        data-cachedtablekey="{{ $table->getCachedDataKey() }}"
+        data-cachedtablekey="{{ $table->getCachedTableKey() }}"
 
         @if($table->hasSummary())
         data-summary="true"
         @endif
 
         class="wannabedatatable uk-table {{ $table->getStripeClass() }} datatable {{ $table->getName() }}"
-        style="width:100%"
+        style="width:100%;"
         >
         <thead class="sectionheader">
             <tr class="columns">
                 @foreach($table->getFields() as $field)
                 <th
+                    uk-tooltip="{{ $field->getTranslatedName() }}"
                     class="{{ $field->getHeaderHtmlClasses() }}"
 
                     data-range="{{ $field->hasRangeFilter() }}"

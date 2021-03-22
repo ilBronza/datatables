@@ -41,6 +41,8 @@ trait DatatablesExtraViewsTrait
         if(! in_array($position, $this->getAvailableExtraViewsPositions()))
             throw \Exception("posizione {$position} non esistente");
 
+        $parameters['tableId'] = $this->getId();
+
         $this->extraViews[$position][] = view($viewName, $parameters);
     }
 

@@ -93,6 +93,8 @@ trait DatatablesFieldsColumnDefsTrait
                 if(type == 'filter')
                 {
                     " . $this->getCustomColumnDefSingleSearchResult() . "
+
+                    return item;
                 }
 
 

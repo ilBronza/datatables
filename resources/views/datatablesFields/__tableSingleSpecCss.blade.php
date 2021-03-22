@@ -5,9 +5,11 @@
     @if(! empty($field->width))
 #{{ $table->getId() }} th.{{ $field->getHtmlClassForCss() }}
 {
-/*    width: {{ $field->width }};
+	/*{!! json_encode($field) !!}*/
+    width: {{ $field->width }};
     max-width: {{ $field->width }};
-*/}
+    min-width: {{ $field->width }};
+}
     @endif
 
 @endforeach
