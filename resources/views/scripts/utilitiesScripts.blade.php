@@ -10,8 +10,53 @@
 <script type="text/javascript">
 jQuery(document).ready(function()
 {
-    $(document).on('init.dt', function ( e, settings ) {
+    $('body').on('mouseenter', '.ibop', function()
+    {
+        $(this).css('position', 'relative');
 
+        var div = "<div class='fieldoperations'><span class='checkvisible' uk-icon='check'></span><span class='ban' uk-icon='ban'></span><span class='search' uk-icon='search'></span></span><span class='close' uk-icon='close'></span><span class='check uk-hidden' uk-icon='check'></span></div>";
+
+        $(this).append(div);
+    });
+
+    $('body').on('mouseleave', '.ibop', function()
+    {
+        $(this).find('div').remove();
+    });
+
+    $('body').on('click', '.checkvisible', function()
+    {
+        checkVisibleRowsByCell(this, true);
+    });
+
+    $('body').on('click', '.check', function()
+    {
+        checkRowsByCell(this, true);
+    });
+
+    $('body').on('click', '.ban', function()
+    {
+        checkRowsByCell(this, false);
+    });
+
+    $('body').on('click', '.search', function()
+    {
+        $(this).find('div').remove();
+        filterRowsByCell(this, true);
+    });
+
+    $('body').on('click', '.close', function()
+    {
+        $(this).find('div').remove();
+        filterRowsByCell(this, false);
+    });
+
+
+
+
+
+    $(document).on('init.dt', function ( e, settings )
+    {
         var api = new $.fn.dataTable.Api( settings );
 
         let table = api.table().node();
