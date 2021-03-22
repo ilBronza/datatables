@@ -30,9 +30,9 @@ class DatatableFieldFirst extends DatatableFieldEach
 			return $this->getItemValue($item);
 	}
 
-	public function getColumnDefSingleResult()
+	public function getCustomColumnDefSingleResult()
 	{
-		return $this->child->getColumnDefSingleResult();
+		return $this->child->getCustomColumnDefSingleResult();
 	}
 
 	public function getCustomColumnDef()
@@ -45,27 +45,27 @@ class DatatableFieldFirst extends DatatableFieldEach
 		{
             //" . $this->getName() . "
 			targets: [" . $this->getIndex() . "],
-			render: function ( data, type, row, meta )
+			render: function ( item, type, row, meta )
 			{
 				if(type == 'display')
 				{
-					let result = '';
+					// let result = '';
 
-					data.forEach(function(item)
-					{
+					// data.forEach(function(item)
+					// {
 						" . $this->child->getCustomColumnDefSingleResult() . "
                     	" . $this->getEndingResultOptions() . "
 
-						if(item)
-							result += item;
+						// if(item)
+						// 	result += item;
 
-						result += '" . $this->separator . "';
-					});
+						item += '" . $this->separator . "';
+					// });
 
-					return result;
+					// return result;
 				}
 
-				return data;
+				return item;
 			}
 		}";
 	}

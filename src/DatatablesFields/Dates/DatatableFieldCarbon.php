@@ -14,6 +14,11 @@ class DatatableFieldCarbon extends DatatableField
     	return $this->dateFormat;
     }
 
+    public function getInputFieldDefaultDateFormat()
+    {
+        return $this->inputFieldDefaultFormat;        
+    }
+
     public function transformValue($value)
     {
         return $value->timestamp ?? null;

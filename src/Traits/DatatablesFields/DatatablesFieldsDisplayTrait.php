@@ -43,15 +43,28 @@ trait DatatablesFieldsDisplayTrait
         $this->htmlClasses[] = $htmlClass;
     }
 
-    public function setHtmlClasses()
+    public function setHtmlClasses(array $parameters = [])
     {
         if($this->hasTooltip())
             $this->addHtmlClass('tooltip');
+
+        $this->htmlClasses = array_merge(
+            $this->htmlClasses,
+            $parameters['htmlClasses'] ?? []
+        );
+    }
+
+    public function getHtmlClasses()
+    {
+        return array_merge(
+            $this->htmlClasses,
+            $this->fieldSpecificClasses ?? []
+        );
     }
 
     public function getHtmlClassesString()
     {
-        return implode(" ", $this->htmlClasses);        
+        return implode(" ", $this->getHtmlClasses());
     }
 
     public function getHtmlClassForCss()

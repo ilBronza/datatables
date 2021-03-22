@@ -5,6 +5,7 @@ namespace IlBronza\Datatables\DatatablesFields\Dates;
 class DatatableFieldDate extends DatatableFieldCarbon
 {
     public $dateFormat = "D/MM/YYYY";
+    public $inputFieldDefaultFormat = "YYYY-MM-DD";
 
     public function getCustomColumnDefSingleResult()
     {
@@ -16,6 +17,20 @@ class DatatableFieldDate extends DatatableFieldCarbon
 
                 if(date.isValid())
                     item = date.format('" . $this->getDateFormat() . "');
+            }
+
+            else item = ''";
+    }
+
+    public function getCustomColumnDefSingleSearchResult()
+    {
+        return "
+            if(item)
+            {
+                let date = moment.unix(item);
+
+                if(date.isValid())
+                    item = date.format('" . $this->getInputFieldDefaultDateFormat() . "');
             }
 
             else item = ''";

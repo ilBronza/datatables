@@ -3,10 +3,18 @@
 namespace IlBronza\Datatables\DatatablesFields\Editor;
 
 use IlBronza\Datatables\DatatablesFields\DatatableField;
+use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\DataAttributesTrait;
+use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\HtmlClassesAttributesTrait;
+use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\IconTextContentTrait;
 use Illuminate\Support\Str;
 
 class DatatableFieldEditor extends DatatableField
 {
+	use DataAttributesTrait;
+	use HtmlClassesAttributesTrait;
+	use IconTextContentTrait;
+
+	public $ajax = true;
 	public $spin = true;
 	public $requireElement = true;
 
@@ -14,15 +22,25 @@ class DatatableFieldEditor extends DatatableField
 	{
 		parent::__construct($name, $parameters, $index);
 
-		$this->setParameter();
+		$this->setParameterByName();
+	}
+
+	public function getFieldSpecificData() : array
+	{
+		if($this->parameter ?? false)
+			return [
+				'field' => $this->parameter
+			];
+
+		return [];
 	}
 
 	/**
 	 * if parameter to toggle is not declared in model's array, field name is taken as default
 	 **/
-	private function setParameter()
+	private function setParameterByName()
 	{
-		if(empty($this->parameter))
+		if(! isset($this->parameter))
 			$this->parameter = $this->name;
 	}
 
@@ -46,13 +64,13 @@ class DatatableFieldEditor extends DatatableField
 		return $this->spin;
 	}
 
-    public function setHtmlClasses()
-    {
-    	parent::setHtmlClasses();
+	public function setHtmlClasses(array $parameters = [])
+	{
+		parent::setHtmlClasses($parameters);
 
-        if($this->hasSpinner())
-            $this->addHtmlClass('spin');
-    }
+		if($this->hasSpinner())
+			$this->addHtmlClass('spin');
+	}
 
 	public function getEditorUpdateUrl()
 	{
@@ -66,14 +84,14 @@ class DatatableFieldEditor extends DatatableField
 			$routeElementParameterName => config("datatables.replace_model_id_string")
 		];
 
-		return route($routeElementClassName . '.updateEditor', $parameters);
+		return route($routeElementClassName . '.update', $parameters);
 	}
 
 	public function transformValue($value)
 	{
 		if(! $this->requireElement())
 			return $value;
-		
+
 		$this->element = $value;
 
 		return [
@@ -93,7 +111,7 @@ class DatatableFieldEditor extends DatatableField
     public function getCustomColumnDefSingleSearchResult()
     {
         return "
-			return item[1];
+			item = item[1];
         ";
     }	
 }

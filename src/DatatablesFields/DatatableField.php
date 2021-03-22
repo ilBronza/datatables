@@ -54,17 +54,16 @@ class DatatableField
 
         $this->manageWidth($parameters);
 
-        if(count($parameters))
-            $this->setParameters($parameters);
+        $this->setParameters($parameters);
 
-        if($index !== null)
-            $this->setIndex($index);
+        $this->setIndex($index);
 
         // $this->setType();
         $this->setColumnDefs();
         $this->setColumnOptions();
 
-        $this->setHtmlClasses();
+        $this->setHtmlClasses($parameters);
+        $this->setDataAttributes($parameters);
 
         $this->summaryValues = collect();
     }
