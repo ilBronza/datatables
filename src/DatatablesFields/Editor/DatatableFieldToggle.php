@@ -9,13 +9,14 @@ class DatatableFieldToggle extends DatatableFieldEditor
 	public $nullIcon = 'minus';
 	public $width = '25px';
 	public $nullable = true;
+	public $htmlClasses = [
+		'ib-toggle'
+	];
 
 	private function getLinkString(string $iconString)
 	{
-		$classes = $this->getHtmlClassesString();
-
 		return "
-			item = '<span data-field=\"{$this->parameter}\" class=\"" . $classes . " ib-toggle\" data-url=\"' + url + '\" {$iconString} ></span>';
+			item = '<span " . $this->getHtmlDataAttributesString() . $this->getHtmlClassesAttributeString() . $iconString . " ></span>';
 		";
 	}
 

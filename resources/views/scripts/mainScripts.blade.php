@@ -12,11 +12,13 @@
 <script type="text/javascript" src="/js/moment.min.js"></script>
 {{--  //DATATABLES  --}}
 
+@include('datatables::scripts.ajaxCallScripts')
 @include('datatables::scripts.ajaxButtonScripts')
 @include('datatables::scripts.buttonScripts')
 @include('datatables::scripts.sortingScripts')
 @include('datatables::scripts.filteringScripts')
 @include('datatables::scripts.summaryScripts')
+@include('datatables::scripts.utilitiesScripts')
 @include('datatables::scripts.datatablesFieldsScripts')
 
 

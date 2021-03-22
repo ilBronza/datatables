@@ -3,9 +3,16 @@
 namespace IlBronza\Datatables\DatatablesFields\Links;
 
 use IlBronza\Datatables\DatatablesFields\DatatableField;
+use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\DataAttributesTrait;
+use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\HtmlClassesAttributesTrait;
+use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\IconTextContentTrait;
 
 class DatatableFieldLink extends DatatableField
 {
+	use HtmlClassesAttributesTrait;
+	use IconTextContentTrait;
+	use DataAttributesTrait;
+
 	public $icon = false;
 	public $textParameter = false;
 	public $defaultWidth = '25px';
@@ -57,17 +64,6 @@ class DatatableFieldLink extends DatatableField
 		];
 	}
 
-	public function getIconHtml()
-	{
-		if($this->icon)
-			return "<span uk-icon=\"{$this->icon}\"></span>";
-
-		if(! $this->textParameter)
-			return "<span uk-icon=\"link\"></span>";
-
-		return ;
-	}
-
 	public function getTargetHtml()
 	{
 		if(isset ($this->target))
@@ -84,37 +80,11 @@ class DatatableFieldLink extends DatatableField
 		return "item[0]";
 	}
 
-	public function getLinkTextString()
-	{
-		if(! $this->textParameter)
-			return "''";
-
-		return "item[1]";
-	}
-
-	public function getHtmlClassesAttribute()
-	{
-		if (! $classes = $this->getHtmlClassesString())
-			return ;
-
-		return " class=\"{$classes}\"";
-	}
-
-	public function getHtmlDataAttributesString()
-	{
-		$result = [];
-
-		foreach($this->dataAttributes ?? [] as $data => $value)
-			$result[] = "data-" . $data . "\"" . $value . "\"";
-
-		return implode(" ", $result);
-	}
-
 	public function getCustomColumnDefSingleResult()
 	{
 		return "
 			if(item)
-				item = '<a " . $this->getHtmlDataAttributesString() . " " . $this->getHtmlClassesAttribute() . " " . $this->getTargetHtml() . " href=\"' + " . $this->getLinkUrlString() . " + '\">" . $this->getIconHtml() . "' + " . $this->getLinkTextString() . " + '</a>';
+				item = '<a " . $this->getHtmlDataAttributesString() . " " . $this->getHtmlClassesAttributeString() . " " . $this->getTargetHtml() . " href=\"' + " . $this->getLinkUrlString() . " + '\">" . $this->getIconHtml() . "' + " . $this->getLinkTextString() . " + '</a>';
 
 			else item = '';
 		";

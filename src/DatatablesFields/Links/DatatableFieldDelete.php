@@ -2,14 +2,13 @@
 
 namespace IlBronza\Datatables\DatatablesFields\Links;
 
-class DatatableFieldDelete extends DatatableFieldLink
+class DatatableFieldDelete extends DatatableFieldAjax
 {
     public $icon = 'trash';
-    public $actionHtmlClass = 'ib-cell-ajax-button';
     public $textParameter = false;
-    public $dataAttributes = [
-    	'method' => 'DELETE'
-    ];
+	public $dataAttributes = [
+		'type' => 'DELETE'
+	];
 
 	public function transformValue($value)
 	{
@@ -20,14 +19,5 @@ class DatatableFieldDelete extends DatatableFieldLink
 			$value->getDeleteUrl(),
 			$value->{$this->textParameter}
 		];
-	}
-
-	public function getHtmlClassesAttribute()
-	{
-		$this->addHtmlClass(
-			$this->actionHtmlClass
-		);
-
-		return parent::getHtmlClassesAttribute();
 	}
 }

@@ -20,7 +20,8 @@ trait DatatablesFieldsParametersTrait
         // $this->setParameterByName('view', $parameters, true);
 
         foreach($parameters as $name => $parameter)
-            $this->setParameter($name, $parameter);
+            if(! in_array($name, ['htmlClasses', 'data']))
+                $this->setParameter($name, $parameter);
     }
 
     private function setParameter($name, $parameter)
@@ -30,6 +31,14 @@ trait DatatablesFieldsParametersTrait
 
         else
             $this->$parameter = [];
+    }
+
+    public function setDataAttributes(array $parameters = [])
+    {
+        $this->data = array_merge(
+            $this->data ?? [],
+            $parameters['data'] ?? []
+        );
     }
 
     static function getOverrideGuardedFields()
@@ -48,5 +57,10 @@ trait DatatablesFieldsParametersTrait
         );
 
         return array_diff($parameters, static::getOverrideGuardedFields());
+    }
+
+    public function hasDoublerClass()
+    {
+        return in_array('doubler', $this->headerHtmlClasses);
     }
 }
