@@ -15,25 +15,17 @@ $(document).ready(function($)
 
             $(node).toggleClass('uk-button-danger');
 
-            // let mytitle = dt.column( idx ).header().innerHTML;
-            let tableId = $(dt.column( 0 ).header()).parents('table').attr('id');
-            let summaryRow = $('#' + tableId).find('tr.summary');
-
-            $(summaryRow).toggle();
+            $(node).parents('.dataTables_wrapper').find('tr.summary').toggle();
         }
     };
 
     $.fn.dataTable.ext.buttons.removeInlineSearch = {
         text: 'Riepilogo filtrato',
-        action: function ( e, dt, node, config ) {
-
+        action: function ( e, dt, node, config )
+        {
             $(node).toggleClass('uk-button-danger');
 
-            // let mytitle = dt.column( idx ).header().innerHTML;
-            let tableId = $(dt.column( 0 ).header()).parents('table').attr('id');
-            let summaryRow = $('#' + tableId).find('tr.inlinesearchsummary');
-
-            $(summaryRow).toggle();
+            $(node).parents('.dataTables_wrapper').find('tr.inlinesearchsummary').toggle();
         }
     };
 

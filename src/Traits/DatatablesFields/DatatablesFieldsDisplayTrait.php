@@ -30,56 +30,9 @@ trait DatatablesFieldsDisplayTrait
         return __('fields.' . $this->name);
     }
 
-    public function getHeaderHtmlClasses()
-    {
-        if(! $this->isSortable())
-            $this->headerHtmlClasses[] = 'no-sort';
-
-        return implode(" ", $this->headerHtmlClasses);
-    }
-    
-    public function addHtmlClass(string $htmlClass)
-    {
-        $this->htmlClasses[] = $htmlClass;
-    }
-
-    public function setHtmlClasses(array $parameters = [])
-    {
-        if($this->hasTooltip())
-            $this->addHtmlClass('tooltip');
-
-        $this->htmlClasses = array_merge(
-            $this->htmlClasses,
-            $parameters['htmlClasses'] ?? []
-        );
-    }
-
-    public function getHtmlClasses()
-    {
-        return array_merge(
-            $this->htmlClasses,
-            $this->fieldSpecificClasses ?? []
-        );
-    }
-
-    public function getHtmlClassesString()
-    {
-        return implode(" ", $this->getHtmlClasses());
-    }
-
-    public function getHtmlClassForCss()
-    {
-        return $this->getCamelName();
-    }
-
     public function getCamelName()
     {
         return Str::camel(str_replace(".", " ", $this->name));
-    }
-
-    public function getHtmlClass()
-    {
-        return $this->getHtmlClassesString();
     }
 
     public function renderHeader()
