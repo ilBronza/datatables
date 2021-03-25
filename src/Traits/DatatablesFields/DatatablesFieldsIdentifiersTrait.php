@@ -22,8 +22,11 @@ trait DatatablesFieldsIdentifiersTrait
         return $this->name;
     }
 
-    public function setIndex(int $index)
+    public function setIndex(int $index = null)
     {
+        if(! $index)
+            $index = 0;
+
         $this->index = $index;
     }
 

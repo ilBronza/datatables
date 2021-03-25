@@ -12,6 +12,13 @@ $(document).ready(function($)
         return $(target).parents('td');
     }
 
+    window.__getTH = function(target)
+    {
+        var tdIndex = $(target).closest('td').index() + 1;
+
+        return $(target).parents('table.dataTable').find('thead tr th:nth-child(' + tdIndex + ')');
+    }
+
     function __addSpinner(target)
     {
         let td = window.__getTD(target);
@@ -227,6 +234,20 @@ $(document).ready(function($)
         return true;
     }
 
+    window.__isHeaderConfirmed = function(params)
+    {
+        let th = window.__getTH(params.target);
+
+
+        var confirmMessage = th.data('confirm');
+
+        if (typeof confirmMessage !== 'undefined')
+            if(! confirm(confirmMessage))
+                return false;
+
+        return true;
+    }
+
     function __isConfirmed(params)
     {
         var returnconfirm = $(params.target).data('returnconfirm');
@@ -340,6 +361,16 @@ $(document).ready(function($)
         return true;
     }
 
+    window.__reloadTable = function(params)
+    {
+        let table = window.__getDataTable(params.target);
+
+        table.rows().deselect();
+        table.ajax.reload();
+
+        return true;
+    }
+
     window.__refreshRow = function(params)
     {
         let table = window.__getDataTable(params.target);
@@ -375,10 +406,13 @@ $(document).ready(function($)
     window.__checkResultAction = function(response, params)
     {
         if(typeof response.ibaction === "undefined")
-            return;
+            return false;
 
         if(response.action == 'refreshRow')
             return window.__refreshRow(params);
+
+        if(response.action == 'reloadTable')
+            return window.__reloadTable(params);
 
         return false;
     }
@@ -407,7 +441,11 @@ $(document).ready(function($)
             
             else
                 table.draw();
+
+            return true;
         }
+
+        return false;
     }
 
     window.ibCallAjax = function(params)
@@ -418,6 +456,9 @@ $(document).ready(function($)
             return false;
 
         if(! __isConfirmed(params))
+            return false;
+
+        if(! __isHeaderConfirmed(params))
             return false;
 
         __manageSpinner(params);
@@ -438,9 +479,8 @@ $(document).ready(function($)
             {
                 if(! __checkResultToggle(response, params))
                     if(! __checkResultAction(response, params))
-                        __checkResultGeneric(response, params);
-
-                window.__manageRowsRemoving(response, params);
+                        if(! window.__manageRowsRemoving(response, params))
+                            __checkResultGeneric(response, params);
 
                 // checkJavascript(response, params.target);
                 // checkRemoveElement(response, params.target);

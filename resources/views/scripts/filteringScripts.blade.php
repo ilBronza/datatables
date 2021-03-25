@@ -90,7 +90,7 @@ $(document).ready(function($)
 
     window._filter = function (container, section, searchValue = false)
     {
-        $('input', section).on('keyup change clear', function ()
+        $('input', section).on('keyup change click clear', function ()
         {
             let value = $(this).val().toLowerCase();
 
