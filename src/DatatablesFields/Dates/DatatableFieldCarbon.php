@@ -3,21 +3,14 @@
 namespace IlBronza\Datatables\DatatablesFields\Dates;
 
 use IlBronza\Datatables\DatatablesFields\DatatableField;
+use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\CarbonTrait;
 
 class DatatableFieldCarbon extends DatatableField
 {
-	public $defaultWidth = '80px';
+    use CarbonTrait;
+
     public $defaultFilterType = 'date';
-
-    public function getDateFormat()
-    {
-    	return $this->dateFormat;
-    }
-
-    public function getInputFieldDefaultDateFormat()
-    {
-        return $this->inputFieldDefaultFormat;        
-    }
+    public $defaultWidth = '80px';
 
     public function transformValue($value)
     {
