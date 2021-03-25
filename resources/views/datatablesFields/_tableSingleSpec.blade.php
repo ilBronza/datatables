@@ -15,7 +15,7 @@
 
         @if($table->hasSelectRowCheckboxes())
         select: {
-            style:    'os',
+            style:    'multi',
             selector: 'td:first-child'
         },
         @endif
@@ -39,6 +39,7 @@
                 @if($name == 'order')
         "{{ $name }}" : 
         [
+            //{!! json_encode($value) !!}
             @foreach($value as $index => $order)
 
             {!! json_encode($order) !!}@if(! $loop->last),
@@ -172,3 +173,4 @@
 
 @include('datatables::datatablesFields.__tableSingleSpecCss')
 @include('datatables::datatablesFields.__tableSingleSpecRangeFilters')
+@include('datatables::datatablesFields.__tableSingleSpecFieldOperations')

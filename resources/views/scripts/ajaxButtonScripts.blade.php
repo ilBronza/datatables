@@ -57,7 +57,10 @@ $(document).ready(function($)
                 if((typeof response.action !== 'undefined'))
                 {
                     if(response.action == 'reloadTable')
+                    {
+                        table.rows().deselect();
                         table.ajax.reload();
+                    }
 
                     else if(response.action == 'reload')
                         location.reload();

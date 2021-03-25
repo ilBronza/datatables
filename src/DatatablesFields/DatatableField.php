@@ -6,7 +6,9 @@ use Auth;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsColumnDefsTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsDisplayTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsFiltersTrait;
+use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsHtmlClassesTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsIdentifiersTrait;
+use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsOperationsTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsParametersTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsPermissionsTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsSortingTrait;
@@ -14,17 +16,31 @@ use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsSummaryTrait;
 
 class DatatableField
 {
+    use DatatablesFieldsPermissionsTrait;
+    use DatatablesFieldsIdentifiersTrait;
+    use DatatablesFieldsDisplayTrait;
+    use DatatablesFieldsColumnDefsTrait;
+    use DatatablesFieldsSummaryTrait;
+    use DatatablesFieldsParametersTrait;
+    use DatatablesFieldsFiltersTrait;
+    use DatatablesFieldsSortingTrait;
+    use DatatablesFieldsHtmlClassesTrait;
+    use DatatablesFieldsOperationsTrait;
+
     public $id;
     public $name;
     public $index;
     public $rowId = false;
     public $tooltip = false;
     public $summary;
+    public $data = [];
+    public $headerData = [];
     public $columnDefs = [];
     public $customColumnDefs = [];
     public $columnOptions = [];
     public $htmlClasses = [];
     public $headerHtmlClasses = [];
+    public $fieldOperations = [];
     public $filterType;
     public $rangeFilter;
     public $summaryValues;
@@ -36,15 +52,6 @@ class DatatableField
 
     public $availableColumnOptions = ['order'];
     public $availableColumnDefs = ['width', 'orderDataType', 'visible'];
-
-    use DatatablesFieldsPermissionsTrait;
-    use DatatablesFieldsIdentifiersTrait;
-    use DatatablesFieldsDisplayTrait;
-    use DatatablesFieldsColumnDefsTrait;
-    use DatatablesFieldsSummaryTrait;
-    use DatatablesFieldsParametersTrait;
-    use DatatablesFieldsFiltersTrait;
-    use DatatablesFieldsSortingTrait;
 
     public function __construct(string $name, array $parameters = [], int $index = null)
     {
@@ -65,7 +72,11 @@ class DatatableField
         $this->setHtmlClasses($parameters);
         $this->setDataAttributes($parameters);
 
+        $this->manageFieldOperations($parameters);
+
         $this->summaryValues = collect();
+
+        $this->checkConfirmMessage($parameters);
     }
 
     public function getCellDataValue(string $fieldName, $element)
