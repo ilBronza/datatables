@@ -41,6 +41,24 @@ trait DatatablesFieldsParametersTrait
         );
     }
 
+    public function setHeaderDataAttributes(array $parameters = [])
+    {
+        $this->headerData = array_merge(
+            $this->headerData ?? [],
+            $parameters['headerData'] ?? []
+        );
+    }
+
+    public function setHeaderData(string $name, $value)
+    {
+        $this->headerData[$name] = $value;
+    }
+
+    public function getHeaderData()
+    {
+        return $this->headerData;
+    }
+
     static function getOverrideGuardedFields()
     {
         return static::$overrideGuardedFields;
@@ -49,6 +67,8 @@ trait DatatablesFieldsParametersTrait
     static function extractOverrideableParametersNameByType(string $fieldType)
     {
         $className = static::getClassNameByType($fieldType);
+
+        mori($className);
 
         $field = new $className('placeholder');
 
@@ -63,4 +83,13 @@ trait DatatablesFieldsParametersTrait
     {
         return in_array('doubler', $this->headerHtmlClasses);
     }
+
+    public function checkConfirmMessage()
+    {
+        if(! ($this->confirmMessage ?? false))
+            return ;
+
+        $this->setHeaderData('confirm', __($this->confirmMessage));
+    }
+
 }

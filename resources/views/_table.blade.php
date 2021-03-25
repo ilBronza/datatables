@@ -6,7 +6,9 @@
 
 @include('datatables::datatablesFields._tableSingleSpec')
 
-@include('datatables::__extraViews', ['position' => 'top'])
+@if(! request()->input('justTable', false))
+    @include('datatables::__extraViews', ['position' => 'top'])
+@endif
 
     <table
         id="{{ $table->getId() }}"
@@ -30,7 +32,20 @@
                     data-range="{{ $field->hasRangeFilter() }}"
                     data-filter="{{ $field->getFilterType() }}"
                     data-name="{{ $field->getFieldName() }}"
+                    data-camelName="{{ $field->getCamelName() }}"
                     data-column="{{ $field->getIndex() }}"
+
+                    @foreach($field->getHeaderData() as $data => $value)
+                    data-{{ $data }}="{{ $value }}"
+                    @endforeach
+
+                    @if($field->hasFieldOperations())
+                    data-fieldOperations="{{ json_encode($field->getFieldOperations()) }}"
+                    @endif
+
+                    @if($field->getFilteredTable())
+                    data-filteredTable="{{ $field->getFilteredTable() }}"
+                    @endif
                     >
                     {{ $field->renderHeader() }}
                 </th>
@@ -79,5 +94,6 @@
  --}}    </table>
 
 
-@include('datatables::__extraViews', ['position' => 'bottom'])
-
+@if(! request()->input('justTable', false))
+    @include('datatables::__extraViews', ['position' => 'bottom'])
+@endif
