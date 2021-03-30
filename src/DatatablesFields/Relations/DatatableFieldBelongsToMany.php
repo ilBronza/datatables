@@ -7,10 +7,18 @@ use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsRelationsTrait;
 
 class DatatableFieldBelongsToMany extends DatatableFieldIterator
 {
+    public $pivot = false;
+
     use DatatablesFieldsRelationsTrait;
 
     public function _transformValue($value)
     {
+        if(! $this->pivot)
+            return [
+                'id' => $value->getKey(),
+                'name' => $value->getNameForDisplayRelation(),
+            ];
+
         return [
             'pivotId' => $value->pivot->id,
             'id' => $value->getKey(),
@@ -21,6 +29,21 @@ class DatatableFieldBelongsToMany extends DatatableFieldIterator
 
     public function getDisplayColumnDef()
     {
+        if(! $this->pivot)
+            return "
+                let result = '';
+                let urlRelation = '" . $this->getRelationModelSprintFShowRoute() . "';
+
+                Object.keys(elements).forEach(key => {
+
+                    let _result = '<a href=\"' + urlRelation.replace('%s', elements[key].id) + '\">' + elements[key].name + '</a>';
+
+                    _result = '<nobr>' + _result + '</nobr>" . $this->getSeparator() . "';
+
+                    result = result + _result;
+                });
+            ";
+
         return "
             let result = '';
             let urlRelation = '" . $this->getRelationModelSprintFShowRoute() . "';

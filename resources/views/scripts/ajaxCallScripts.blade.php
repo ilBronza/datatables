@@ -2,6 +2,63 @@
 
 $(document).ready(function($)
 {
+    window.reloadAjaxTable = function(tableId)
+    {
+        let table = $(tableId).DataTable();
+
+        table.rows().deselect();
+        table.ajax.reload();
+    }
+
+    window.removePopup = function(popupId)
+    {
+        UIkit.util.on(datatablepopup, 'hide', function () {
+            $(datatablepopup).remove();
+        });
+
+        $(datatablepopup).hide();
+    }
+
+    window.openModalWithData = function (url, data, type = 'POST', iframed = true)
+    {
+        $('body').append('<div id="datatablepopup" uk-modal><div class="uk-modal-dialog uk-modal-body"><h2 class="uk-modal-title"></h2><button class="uk-modal-close" type="button"></button><iframe id="modelpopupiframe" name="modelpopupiframe" class="uk-width-xlarge" style="min-height: 450px;"></iframe></div></div>');
+
+        UIkit.modal($('#datatablepopup')).show();
+
+        var form = document.createElement("form");
+        form.target = "modelpopupiframe";
+        form.method = type;
+        form.action = url;
+        form.style.display = "none";
+
+        for (var key in data) {
+            var input = document.createElement("input");
+            input.type = "hidden";
+            input.name = key;
+            input.value = data[key];
+            form.appendChild(input);
+        }
+
+        if(iframed)
+        {
+            var input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "iframed";
+            input.value = true;
+            form.appendChild(input);            
+        }
+
+        var input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "_token";
+        input.value = "{{ csrf_token() }}";
+        form.appendChild(input);
+
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+    }
+
     window.__getTR = function(target)
     {
         return $(target).parents('tr');
@@ -339,7 +396,28 @@ $(document).ready(function($)
         else
             tableId = $(target).parents('table.datatable').attr('id');
 
+        //this is because some elements contains # in the parameter string
+        tableId = tableId.replace(/\b\#\w+/g, ''); 
+
         return $('#' + tableId).DataTable();
+    }
+
+    window.__getTable = function(target)
+    {
+        let tableId;
+
+        if($(target).data('tableid'))
+            tableId = $(target).data('tableid');
+
+        else
+            tableId = $(target).parents('table.datatable').attr('id');
+
+        tableId = tableId.replace(/\b\#\w+/g, ''); 
+
+        alert('tableId');
+        alert(tableId);
+
+        return $('#' + tableId);
     }
 
     window.__checkResultToggle = function(result, params)
@@ -403,6 +481,13 @@ $(document).ready(function($)
         return true;
     }
 
+    window.__checkResultPopup = function(response, params)
+    {
+        if(response.ibaction == 'openPopup')
+            return window.__openPopup(response, params);
+
+    }
+
     window.__checkResultAction = function(response, params)
     {
         if(typeof response.ibaction === "undefined")
@@ -414,7 +499,25 @@ $(document).ready(function($)
         if(response.action == 'reloadTable')
             return window.__reloadTable(params);
 
+        if(response.ibaction == 'openPopup')
+            return window.__openPopup(response, params);
+
         return false;
+    }
+
+    window.__openPopup = function (response, params)
+    {
+        let table = window.__getTable(params.target);
+        let tableId = $(table).attr('id');
+
+        window.openModalWithData(
+            response.route,
+            {
+                callertablename: tableId,
+                target: params.target
+            },
+            'GET'
+        );
     }
 
     window.__manageRowsRemoving = function(response, params)
@@ -524,9 +627,9 @@ $(document).ready(function($)
             window.addSuccessNotification('elemento aggiornato');
     }
 
-    window.__displayResponseErrors = function(response)
+    window.__displayResponseErrors = function(jsonResponse)
     {
-        jsonResponse = response.responseJSON;
+        // jsonResponse = response.responseJSON;
 
         if(typeof jsonResponse.exception !== 'undefined')
             alert(jsonResponse.message);

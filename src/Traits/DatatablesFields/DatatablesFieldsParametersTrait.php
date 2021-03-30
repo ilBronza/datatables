@@ -54,8 +54,15 @@ trait DatatablesFieldsParametersTrait
         $this->headerData[$name] = $value;
     }
 
+    public function parseFieldSpecificHeaderData()
+    {
+        
+    }
+
     public function getHeaderData()
     {
+        $this->parseFieldSpecificHeaderData();
+
         return $this->headerData;
     }
 

@@ -19,16 +19,20 @@
 
 $(document).ready(function($)
 {
+
+
     $('body').on('click', '.ib-table-action-button', function(e)
     {
         e.preventDefault();
+
+        var target = this;
 
         var modal = $('#deliveries-modal');
         if(modal.length)
             UIkit.modal(modal).hide();
 
         var tableid = $(this).data('tableid');
-        var table = $(tableid).DataTable();
+        var table = $('#' + tableid).DataTable();
 
         let idColumnIndex = window.__getIdColumnIndex(this, table);
 
@@ -36,6 +40,15 @@ $(document).ready(function($)
         var ids = selectedRows.data().pluck(idColumnIndex).toArray();
 
         var url = $(this).data('route');
+
+        // window.open(url + '?iframed=true&callertablename=' + tableVarName, 'window', 'width=960, height=600, toolbar=no, menubar=no, resizable=yes');
+
+        // openWindowWithPost(url, {
+        //     ids: ids,
+        // });
+
+
+        // return false;
 
         $.ajax({
             url : url,
@@ -78,6 +91,10 @@ $(document).ready(function($)
                         table.draw();
                     }
                 }
+
+                window.__checkResultPopup(response, {
+                    target: target
+                });
 
                 window.__displayResponseErrors(response);
             },
@@ -145,6 +162,54 @@ $(document).ready(function($)
 
     $('body').on('blur', '.ib-editor-text', function(e)
     {
+        var params = {
+            target : this,
+            e : e,
+            type : 'POST',
+            data : {
+                "ib-editor" : true,
+                field : $(this).data('field'),
+                value : $(this).val(),
+                _method : 'PUT',
+            }
+        };
+
+        window.ibCallAjax(params);
+    });
+
+    $('body').on('click', '.ib-editor-select', function(e)
+    {
+        if($(this).data('populated'))
+            return ;
+
+        if($(this).data('populating'))
+            return ;
+
+
+        $(this).data('populating', true);
+
+        let currentValue = $(this).val();
+
+        let th = window.__getTH(this);
+        let possibleValues = th.data('possiblevalues');
+
+        for (var key in possibleValues)
+        {
+            if(key == currentValue)
+                continue;
+
+            $(this).append('<option value="' + key + '">' + possibleValues[key] + '</option>');
+        }
+
+        $(this).data('populated', true);
+        $(this).data('populating', false);
+    });
+
+    $('body').on('blur', '.ib-editor-select', function(e)
+    {
+        if($(this).val() == $(this).data('originalvalue'))
+            return false;
+
         var params = {
             target : this,
             e : e,

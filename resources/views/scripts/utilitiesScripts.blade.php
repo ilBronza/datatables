@@ -195,7 +195,7 @@ jQuery(document).ready(function()
         var filteringValue = td.text();
 
         if($('#modal-' + tableId).length == 0)
-            $('body').append('<div id="modal-' + tableId + '" uk-modal><div class="uk-modal-dialog uk-width-1-1 uk-height-1-1"><iframe name="' + Date.now() + '" class="uk-width-1-1 uk-height-1-1" src="{{ route('orders.index') }}?filteringIndex=' + filteringIndex + '&filteringValue=' + filteringValue + '&iframed=true&justTable=true" uk-video></iframe></div></div>');
+            $('body').append('<div id="modal-' + tableId + '" uk-modal><div class="uk-modal-dialog uk-width-1-1 uk-height-1-1"><iframe name="' + Date.now() + '" class="uk-width-1-1 uk-height-1-1" src="' + table.ajax.url() + '&filteringIndex=' + filteringIndex + '&filteringValue=' + filteringValue + '&iframed=true&justTable=true" uk-video></iframe></div></div>');
 
         UIkit.modal($('#modal-' + tableId)).show();
 
