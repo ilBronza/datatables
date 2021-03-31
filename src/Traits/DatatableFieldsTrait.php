@@ -131,7 +131,10 @@ trait DatatableFieldsTrait
     {
         $group = $this->createFieldsGroup($name);
 
-        $fields = $fieldsGroup['fields'];
+        if(! isset($fieldsGroup['fields']))
+            throw new \Exception('Please declare key fields inside fieldsgroup ' . $fieldsGroup);
+
+        $fields = $fieldsGroup['fields'];            
 
         $permissions = $fieldsGroup['permissions'] ?? [];
         $summary = $fieldsGroup['summary'] ?? [];

@@ -1,5 +1,9 @@
 <script type="text/javascript">
 
+    @if($table->isArrayTable())
+    window.{{ $table->getId() }}dataset = {!! json_encode($tableSourceData) !!},
+    @endif
+
     window.{{ $table->getId() }}FilteredSelected = false;
 
     window.{{ $table->getId() }}rowReorder = @isset($table->dragAndDrop) {
@@ -12,6 +16,20 @@
         } @else false @endisset ;
 
     window.{{ $table->getId() }}options =  { 
+
+        @if($table->isAjaxTable())
+        ajax: {
+            url: window.addParameterToURL("{{ $table->getUrl() }}", 'cachedtablekey', "{{ $table->getCachedTableKey() }}"),
+            dataSrc: function(json)
+            {
+                let data = window.transformDataBySummaryExistence("{{ $table->getId() }}", "{{ $table->hasSummary() }}", json);
+
+                return data;
+            }
+        },
+        @elseif($table->isArrayTable())
+        data: window.{{ $table->getId() }}dataset,
+        @endif
 
         @if($table->hasSelectRowCheckboxes())
         select: {

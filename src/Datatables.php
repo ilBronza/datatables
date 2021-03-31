@@ -38,6 +38,7 @@ class Datatables
     public $stripe = true;
     public $pageLength = 50;
     public $options = [];
+    public $sourceType = 'ajax';
 
     public function __construct()
     {
@@ -202,6 +203,17 @@ class Datatables
         return view('datatables::table', ['table' => $this]);
     }
 
+    public function renderPortion()
+    {
+        $this->parseColumnDefs();
+        $this->parseOptions();
+
+        return view('datatables::_table', [
+            'table' => $this,
+            'tableSourceData' => $this->calculateData()
+        ])->render();        
+    }
+
     public function render()
     {
         $this->parseColumnDefs();
@@ -214,5 +226,24 @@ class Datatables
         return $this->id ?? $this->cachedTableKey;
     }
 
+    public function setArrayTable()
+    {
+        $this->sourceType = 'array';
+    }
+
+    public function setAjaxTable()
+    {
+        $this->sourceType = 'ajax';
+    }
+
+    public function isAjaxTable()
+    {
+        return $this->sourceType == 'ajax';
+    }
+
+    public function isArrayTable()
+    {
+        return $this->sourceType == 'array';
+    }
 }
 

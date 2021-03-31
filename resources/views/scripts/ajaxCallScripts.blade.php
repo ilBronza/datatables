@@ -2,6 +2,66 @@
 
 $(document).ready(function($)
 {
+    window.__mustOpenIframe = function(target)
+    {
+        if($(target).data('openiframe'))
+            return true;
+
+        return false;
+    }
+
+    window.__getDataTableSelectedIds = function(target, datatable)
+    {
+        let idColumnIndex = window.__getIdColumnIndex(target, datatable);
+        let selectedRows = datatable.rows( { selected: true } );
+        var ids = selectedRows.data().pluck(idColumnIndex).toArray();
+
+        return ids;
+    }
+
+    window.__openIframe = function(target)
+    {
+        let table = window.__getTable(target);
+        let tableId = $(table).attr('id');
+
+        let datatable = table.DataTable();
+
+        let ids = window.__getDataTableSelectedIds(target, datatable);
+
+        let url = window.__getTargetUrl(target);
+        let method = window.__getTargetMethod(target);
+        let iframed = true;
+
+        let data = {
+            callertablename: tableId,
+            ids: ids
+        };
+
+        window.openModalWithData (
+            url,
+            data,
+            method,
+            iframed
+        )
+    }
+
+    window.postTableToUrl = function(tableId, url)
+    {
+        let datatable = $(tableId).DataTable();
+        let ids = window.__getDataTableSelectedIds(null, datatable);
+        let type = 'POST';
+
+        let data = {
+            ids: ids
+        };
+
+        var params = {
+            target : datatable,
+        };
+
+        return window.__ibCallAjax(url, type, data, params);
+    }
+
     window.reloadAjaxTable = function(tableId)
     {
         let table = $(tableId).DataTable();
@@ -12,16 +72,19 @@ $(document).ready(function($)
 
     window.removePopup = function(popupId)
     {
-        UIkit.util.on(datatablepopup, 'hide', function () {
-            $(datatablepopup).remove();
+        UIkit.util.on(popupId, 'hide', function () {
+            setTimeout(function()
+            {
+                $(popupId).remove();
+            }, 1000);
         });
 
-        $(datatablepopup).hide();
+        UIkit.modal($(popupId)).hide();
     }
 
     window.openModalWithData = function (url, data, type = 'POST', iframed = true)
     {
-        $('body').append('<div id="datatablepopup" uk-modal><div class="uk-modal-dialog uk-modal-body"><h2 class="uk-modal-title"></h2><button class="uk-modal-close" type="button"></button><iframe id="modelpopupiframe" name="modelpopupiframe" class="uk-width-xlarge" style="min-height: 450px;"></iframe></div></div>');
+        $('body').append('<div id="datatablepopup" uk-modal><div class="uk-modal-dialog uk-modal-body uk-width-1-1 uk-height-1-1"><h2 class="uk-modal-title"></h2><button class="uk-modal-close" type="button"></button><iframe id="modelpopupiframe" name="modelpopupiframe" class="uk-width-1-1 uk-height-1-1"></iframe></div></div>');
 
         UIkit.modal($('#datatablepopup')).show();
 
@@ -350,6 +413,19 @@ $(document).ready(function($)
         return 'POST';
     }
 
+    window.__getTargetMethod = function(target)
+    {
+        if($(target).data('method'))
+            return $(target).data('method');
+
+        return 'POST';
+    }
+
+    function __getParametersMethod(parameters)
+    {
+        return window.__getTargetMethod(parameters.target);
+    }
+
     function __getUrl(params)
     {
         if($(params.target).data('url'))
@@ -357,6 +433,20 @@ $(document).ready(function($)
         
         if($(params.target).attr('href'))
             return $(params.target).attr('href');
+        
+        alert('missing url for this element');
+    }
+
+    window.__getTargetUrl = function(target)
+    {
+        if($(target).data('url'))
+            return $(target).data('url');
+        
+        if($(target).data('route'))
+            return $(target).data('route');
+        
+        if($(target).attr('href'))
+            return $(target).attr('href');
         
         alert('missing url for this element');
     }
@@ -413,9 +503,6 @@ $(document).ready(function($)
             tableId = $(target).parents('table.datatable').attr('id');
 
         tableId = tableId.replace(/\b\#\w+/g, ''); 
-
-        alert('tableId');
-        alert(tableId);
 
         return $('#' + tableId);
     }
@@ -484,7 +571,7 @@ $(document).ready(function($)
     window.__checkResultPopup = function(response, params)
     {
         if(response.ibaction == 'openPopup')
-            return window.__openPopup(response, params);
+            return window.__openPopupOLDRIFARE(response, params);
 
     }
 
@@ -500,12 +587,12 @@ $(document).ready(function($)
             return window.__reloadTable(params);
 
         if(response.ibaction == 'openPopup')
-            return window.__openPopup(response, params);
+            return window.__openPopupOLDRIFARE(response, params);
 
         return false;
     }
 
-    window.__openPopup = function (response, params)
+    window.__openPopupOLDRIFARE = function (response, params)
     {
         let table = window.__getTable(params.target);
         let tableId = $(table).attr('id');
@@ -551,27 +638,8 @@ $(document).ready(function($)
         return false;
     }
 
-    window.ibCallAjax = function(params)
+    window.__ibCallAjax = function(url, type, data, params)
     {
-        params.e.preventDefault();
-
-        if(! __isEnabled(params))
-            return false;
-
-        if(! __isConfirmed(params))
-            return false;
-
-        if(! __isHeaderConfirmed(params))
-            return false;
-
-        __manageSpinner(params);
-
-        var type = __getType(params);
-        var url = __getUrl(params);
-        let data = __getData(params);
-
-        data = __addMethodToData(data, params);
-
         $.ajax(
         {
             url     : url,
@@ -580,6 +648,9 @@ $(document).ready(function($)
             data    : data,
             success : function(response)
             {
+                console.log('son qua');
+                console.log(response);
+
                 if(! __checkResultToggle(response, params))
                     if(! __checkResultAction(response, params))
                         if(! window.__manageRowsRemoving(response, params))
@@ -616,6 +687,31 @@ $(document).ready(function($)
                 __manageSpinnerRemoval(params);
             }
         });
+
+    }
+
+    window.ibCallAjax = function(params)
+    {
+        params.e.preventDefault();
+
+        if(! __isEnabled(params))
+            return false;
+
+        if(! __isConfirmed(params))
+            return false;
+
+        if(! __isHeaderConfirmed(params))
+            return false;
+
+        __manageSpinner(params);
+
+        var type = __getType(params);
+        var url = __getUrl(params);
+        let data = __getData(params);
+
+        data = __addMethodToData(data, params);
+
+        return window.__ibCallAjax(url, type, data, params);
     }
 
     function __manageSuccessMessages(response)
@@ -648,8 +744,9 @@ $(document).ready(function($)
 
     window.__getIdColumnIndex = function(target, table)
     {
-        if($(this).data('idcolumn'))
-            return $(this).data('idcolumn');
+        //never used as override by the moment
+        if($(target).data('idcolumn'))
+            return $(target).data('idcolumn');
 
         return table.init().rowId;
     }

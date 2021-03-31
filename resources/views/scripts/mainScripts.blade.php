@@ -27,19 +27,23 @@
 
 
 <script type="text/javascript">
+
+window.addParameterToURL = function(url, paramName, paramValue)
+{
+    url += (url.split('?')[1] ? '&':'?') + paramName + '=' + paramValue;
+
+    return url;
+}
+
 $(document).ready(function($)
 {
-    function addParameterToURL(url, paramName, paramValue)
-    {
-        url += (url.split('?')[1] ? '&':'?') + paramName + '=' + paramValue;
-
-        return url;
-    }
-
     $('.wannabedatatable').each(function()
     {
-        let url = $(this).data('url');
-        let cachedtablekey = $(this).data('cachedtablekey');
+        // let isAjax = $(this).data('isAjax');
+        // let url = $(this).data('url');
+        // let cachedtablekey = $(this).data('cachedtablekey');
+        // let datatableUrl = window.addParameterToURL(url, 'cachedtablekey', cachedtablekey);
+
 
         let tableId = $(this).attr('id');
         let columnDefs = window[tableId + 'columnDefs'];
@@ -49,22 +53,21 @@ $(document).ready(function($)
 
         let summary = (typeof $('#' + tableId).data('summary') !== 'undefined');
 
-        let datatableUrl = addParameterToURL(url, 'cachedtablekey', cachedtablekey);
-
         let settings = {
-            dom: 'Bfrtip',
+            dom: 'Blfritip',
             processing: true,
             orderCellsTop: true,
+            lengthMenu: [[10, 25, 50, 100, 250, 500, -1], [10, 25, 50, 100, 250, 500, "All"]],
             // "serverSide": true,
-            ajax: {
-                url: datatableUrl,
-                dataSrc: function(json)
-                {
-                    let data = window.transformDataBySummaryExistence(tableId, summary, json);
+            // ajax: {
+            //     url: datatableUrl,
+            //     dataSrc: function(json)
+            //     {
+            //         let data = window.transformDataBySummaryExistence(tableId, summary, json);
 
-                    return data;
-                }
-            },
+            //         return data;
+            //     }
+            // },
             columnDefs : columnDefs,
             rowReorder : rowReorder,
             buttons: {

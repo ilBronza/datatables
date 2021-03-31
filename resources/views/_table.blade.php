@@ -1,8 +1,11 @@
+{{-- START SOLO PER IDEALPACK, RISOLVERE --}}
 @section('pageTitle')
     @if($caption = $table->getCaption())
     <span class="uk-h3">{{ $caption }}</span>
     @endif
 @endsection
+{{-- END SOLO PER IDEALPACK, RISOLVERE --}}
+
 
 @include('datatables::datatablesFields._tableSingleSpec')
 
@@ -12,8 +15,11 @@
 
     <table
         id="{{ $table->getId() }}"
+
+        @if($table->isAjaxTable())
         data-url="{{ $table->getUrl() }}"
         data-cachedtablekey="{{ $table->getCachedTableKey() }}"
+        @endif
 
         @if($table->hasSummary())
         data-summary="true"

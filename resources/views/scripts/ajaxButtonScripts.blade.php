@@ -27,6 +27,9 @@ $(document).ready(function($)
 
         var target = this;
 
+        if(window.__mustOpenIframe(target))
+            return window.__openIframe(target);
+
         var modal = $('#deliveries-modal');
         if(modal.length)
             UIkit.modal(modal).hide();

@@ -7,6 +7,10 @@
 
 	<script type="text/javascript">
 
+	@if($postTableToUrl ?? false)
+	window.parent.postTableToUrl("#{{ $callerTablename }}", "{{ $postTableToUrl }}");
+	@endif
+
 	@if($callerTablename = request()->input('callertablename', false))
 	window.parent.reloadAjaxTable("#{{ $callerTablename }}");
 	window.parent.removePopup("#datatablepopup");
