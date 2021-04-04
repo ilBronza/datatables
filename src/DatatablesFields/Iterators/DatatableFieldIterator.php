@@ -8,6 +8,9 @@ class DatatableFieldIterator extends MultipleDatatableField
     {
         $result = [];
 
+        if(! $value)
+            return ;
+
         foreach($value as $_value)
             $result[] = $this->_transformValue($_value);
 
@@ -41,6 +44,9 @@ class DatatableFieldIterator extends MultipleDatatableField
             targets: [{$fieldIndex}],
             render: function ( data, type, row, meta )
             {
+                if((! data)||(typeof data.elements === 'undefined'))
+                    return data;
+
                 if(type == 'display')
                 {
                     let elements = data.elements;
