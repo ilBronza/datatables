@@ -50,8 +50,16 @@ class DatatableField
 
     public $defaultFilterType = 'text';
 
+    //this is used to tell datatables how to render sorting value
+    public $datatableType = 'string';
+
     public $availableColumnOptions = ['order'];
-    public $availableColumnDefs = ['width', 'orderDataType', 'visible'];
+    public $availableColumnDefs = [
+        'width' => 'width',
+        'orderDataType' => 'orderDataType',
+        'visible' => 'visible',
+        'datatableType' => 'type'
+    ];
 
     public function __construct(string $name, array $parameters = [], int $index = null)
     {

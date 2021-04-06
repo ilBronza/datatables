@@ -8,9 +8,11 @@
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.4/js/buttons.html5.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.4/js/buttons.print.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/select/1.3.0/js/dataTables.select.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/keytable/2.6.1/js/dataTables.keyTable.min.js"></script>
 
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/select/1.3.1/css/select.dataTables.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/keytable/2.6.1/css/keyTable.dataTables.min.css" />
 
 <script type="text/javascript" src="/js/moment.min.js"></script>
 {{--  //DATATABLES  --}}
@@ -39,12 +41,6 @@ $(document).ready(function($)
 {
     $('.wannabedatatable').each(function()
     {
-        // let isAjax = $(this).data('isAjax');
-        // let url = $(this).data('url');
-        // let cachedtablekey = $(this).data('cachedtablekey');
-        // let datatableUrl = window.addParameterToURL(url, 'cachedtablekey', cachedtablekey);
-
-
         let tableId = $(this).attr('id');
         let columnDefs = window[tableId + 'columnDefs'];
         let rowReorder = window[tableId + 'rowReorder'];
@@ -58,16 +54,6 @@ $(document).ready(function($)
             processing: true,
             orderCellsTop: true,
             lengthMenu: [[10, 25, 50, 100, 250, 500, -1], [10, 25, 50, 100, 250, 500, "All"]],
-            // "serverSide": true,
-            // ajax: {
-            //     url: datatableUrl,
-            //     dataSrc: function(json)
-            //     {
-            //         let data = window.transformDataBySummaryExistence(tableId, summary, json);
-
-            //         return data;
-            //     }
-            // },
             columnDefs : columnDefs,
             rowReorder : rowReorder,
             buttons: {
@@ -105,7 +91,14 @@ $(document).ready(function($)
 
         jQuery.extend(settings, options);
 
-        window['table' + tableId] = $(this).DataTable(settings);
+        window['table' + tableId] = $(this).DataTable(settings)
+            .on('key-blur', function ( e, datatable, cell ) {
+                $(cell.node()).find('input').blur();
+                $(cell.node()).find('select').blur();
+            })
+            .on('key-focus', function ( e, datatable, cell ) {
+                $(cell.node()).find('input').focus();
+            });
     })
 
 });   

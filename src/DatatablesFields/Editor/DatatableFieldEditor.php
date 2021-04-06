@@ -105,10 +105,21 @@ class DatatableFieldEditor extends DatatableField
 		return "
 			let url = '" . $this->getEditorUpdateUrl() . "';
 			url = url.replace('" . config("datatables.replace_model_id_string") . "', item[0]);
+
+			if(item[1] === null)
+				item[1] = '';
+
 		";
 	}
 
     public function getCustomColumnDefSingleSearchResult()
+    {
+        return "
+			item = item[1];
+        ";
+    }	
+
+    public function getCustomColumnDefSingleSortResult()
     {
         return "
 			item = item[1];

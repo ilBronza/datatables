@@ -17,6 +17,16 @@
 
 <script type="text/javascript">
 
+window.editorFieldHasChanged = function(target)
+{
+    let val = $(target).val();
+    let oldVal = $(target).data('originalvalue');
+
+    return oldVal != val;
+}
+
+
+
 $(document).ready(function($)
 {
 
@@ -148,6 +158,9 @@ $(document).ready(function($)
 
     $('body').on('blur', '.ib-editor-color', function(e)
     {
+        if(! window.editorFieldHasChanged(this))
+            return false;
+
         var params = {
             target : this,
             e : e,
@@ -165,6 +178,9 @@ $(document).ready(function($)
 
     $('body').on('blur', '.ib-editor-text', function(e)
     {
+        if(! window.editorFieldHasChanged(this))
+            return false;
+
         var params = {
             target : this,
             e : e,
@@ -210,6 +226,9 @@ $(document).ready(function($)
 
     $('body').on('blur', '.ib-editor-select', function(e)
     {
+        if(! window.editorFieldHasChanged(this))
+            return false;
+
         if($(this).val() == $(this).data('originalvalue'))
             return false;
 

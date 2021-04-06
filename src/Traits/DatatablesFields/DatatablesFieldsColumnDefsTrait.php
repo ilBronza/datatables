@@ -36,17 +36,19 @@ trait DatatablesFieldsColumnDefsTrait
         $this->columnDefs = [];
 
         //parse through available columnDefs parameters and id set, store it
-        foreach($this->availableColumnDefs as $availableColumnDef)
-            $this->setColumnDef($availableColumnDef);
+        foreach($this->availableColumnDefs as $ilBronzaDefinition => $datatablesDefinition)
+        {
+            $this->setColumnDef($ilBronzaDefinition, $datatablesDefinition);
+        }
     }
 
     /**
      * if exists in object, add columnDef to field
      */
-    public function setColumnDef(string $columnDef)
+    public function setColumnDef(string $ilBronzaDefinition, string $datatablesDefinition)
     {
-        if(($value = $this->$columnDef?? null) !== null)
-            $this->addColumnDef($columnDef, $value);
+        if(($value = $this->$ilBronzaDefinition?? null) !== null)
+            $this->addColumnDef($datatablesDefinition, $value);
     }
 
     /**
@@ -57,6 +59,9 @@ trait DatatablesFieldsColumnDefsTrait
      */
     public function addColumnDef(string $columnDef, $value)
     {
+        if($columnDef == 'datatableType')
+            $columnDef = 'type';
+
         $this->columnDefs[$columnDef] = $value;
     }
 
@@ -66,6 +71,13 @@ trait DatatablesFieldsColumnDefsTrait
     }
 
     public function getCustomColumnDefSingleSearchResult()
+    {
+        return "
+            return item;
+        ";
+    }
+
+    public function getCustomColumnDefSingleSortResult()
     {
         return "
             return item;
@@ -93,6 +105,13 @@ trait DatatablesFieldsColumnDefsTrait
                 if(type == 'filter')
                 {
                     " . $this->getCustomColumnDefSingleSearchResult() . "
+
+                    return item;
+                }
+
+                if(type == 'sort')
+                {
+                    " . $this->getCustomColumnDefSingleSortResult() . "
 
                     return item;
                 }

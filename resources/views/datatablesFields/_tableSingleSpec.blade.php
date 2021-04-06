@@ -17,6 +17,8 @@
 
     window.{{ $table->getId() }}options =  { 
 
+        keys : true,
+
         @if($table->isAjaxTable())
         ajax: {
             url: window.addParameterToURL("{{ $table->getUrl() }}", 'cachedtablekey', "{{ $table->getCachedTableKey() }}"),
