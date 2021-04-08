@@ -7,6 +7,7 @@
 {
 	/*{!! json_encode($field->name) !!}*/
     max-width: {{ $field->width }}!important;
+    width: {{ $field->width }}!important;
 }
     @endif
 

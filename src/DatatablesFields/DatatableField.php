@@ -51,7 +51,7 @@ class DatatableField
     public $defaultFilterType = 'text';
 
     //this is used to tell datatables how to render sorting value
-    public $datatableType = 'string';
+    // public $datatableType = 'string';
 
     public $availableColumnOptions = ['order'];
     public $availableColumnDefs = [

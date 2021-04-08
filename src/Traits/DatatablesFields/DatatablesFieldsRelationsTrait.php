@@ -60,6 +60,12 @@ trait DatatablesFieldsRelationsTrait
 
     private function getRelationModelSprintFRouteByType(string $type)
     {
+        if(isset($this->routeBasename))
+            return $this->getSprintFRouteByModelType(
+                $this->routeBasename,
+                $type
+            );
+
         return $this->getSprintFRouteByModelType(
             $this->getRelationModelName(),
             $type
