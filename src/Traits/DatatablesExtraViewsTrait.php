@@ -2,6 +2,9 @@
 
 namespace IlBronza\Datatables\Traits;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
+
 trait DatatablesExtraViewsTrait
 {
     public $extraViews = [
@@ -10,6 +13,32 @@ trait DatatablesExtraViewsTrait
         'left' => [],
         'right' => []
     ];
+
+    public function getParentModelView(Model $model)
+    {
+        if(isset($model->topExtraView))
+            return $model->topExtraView;
+
+        $pluralModelName = Str::camel(Str::plural(class_basename($model)));
+
+        $viewName = "{$pluralModelName}.topExtraView";
+
+        if (view()->exists($viewName))
+            return $viewName;
+
+        return false;
+    }
+
+    public function addParentModel(Model $parentModel)
+    {
+        if(! $parentModel)
+            return ;
+
+        if(! $view = $this->getParentModelView($parentModel))
+            $view = 'crud::models._parentModelExtraView';
+
+        $this->addTopView($view, compact('parentModel'));
+    }
 
     private function getAvailableExtraViewsPositions()
     {
