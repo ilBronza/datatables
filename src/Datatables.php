@@ -39,6 +39,7 @@ class Datatables
     public $pageLength = 50;
     public $options = [];
     public $sourceType = 'ajax';
+    public $variables = [];
 
     public function __construct()
     {
@@ -46,6 +47,22 @@ class Datatables
         $this->fieldsGroups = collect();
 
         $this->customButtons = collect();
+    }
+
+    public function setVariables(array $extraVariables)
+    {
+        foreach($extraVariables as $name => $value)
+            $this->setVariable($name, $value);        
+    }
+
+    public function setVariable(string $name, $value)
+    {
+        $this->variables[$name] = $value;
+    }
+
+    public function getVariable(string $name)
+    {
+        return $this->variables[$name] ?? null;
     }
 
     private function cleanCachedTableKeyParameterIfEditor()
@@ -83,7 +100,7 @@ class Datatables
         mori('non instanceof Closure, vuol dire che è una query o una collection, zio culo culo culo culo cazzo culo cazzo culo merda');
     }
 
-    static function create(string $name, array $fieldsGroups, $elements, bool $selectRowCheckboxes = false)
+    static function create(string $name, array $fieldsGroups, $elements, bool $selectRowCheckboxes = false, array $extraVariables = [])
     {
         $table = new static();
 
@@ -91,6 +108,8 @@ class Datatables
 
         if($selectRowCheckboxes)
             $table->setRowSelectCheckboxes();
+
+        $table->setVariables($extraVariables);
 
         if(request()->ajax())
         {

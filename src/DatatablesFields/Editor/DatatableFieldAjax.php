@@ -10,9 +10,9 @@ class DatatableFieldAjax extends DatatableFieldEditor
 	];
 	public $parameter = false;
 
+
 	public function getCustomColumnDefSingleResult()
 	{
-
 		return "
 			" . $this->substituteUrlParameter() . "
 

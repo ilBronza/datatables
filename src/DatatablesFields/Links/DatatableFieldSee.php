@@ -10,6 +10,9 @@ class DatatableFieldSee extends DatatableFieldLink
 		if(! $this->textParameter)
 			return $value->getShowUrl();
 
+		if(! $value)
+			return [null, null];
+
 		return [
 			$value->getShowUrl(),
 			$value->{$this->textParameter}

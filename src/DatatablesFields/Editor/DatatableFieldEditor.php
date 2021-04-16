@@ -27,6 +27,11 @@ class DatatableFieldEditor extends DatatableField
 
 	public function getFieldSpecificData() : array
 	{
+		if($this->editorProperty ?? false)
+			return [
+				'field' => $this->editorProperty
+			];
+
 		if($this->parameter ?? false)
 			return [
 				'field' => $this->parameter
@@ -89,14 +94,19 @@ class DatatableFieldEditor extends DatatableField
 
 	public function transformValue($value)
 	{
+		if(isset($this->solveElement))
+			$value = $this->getCellDataValue($this->name, $value);
+
 		if(! $this->requireElement())
 			return $value;
 
 		$this->element = $value;
 
+		$propertyName = $this->editorProperty ?? $this->name;
+
 		return [
 			$this->element->getKey(),
-			$value->{$this->name}
+			$value->{$propertyName}
 		];
 	}
 

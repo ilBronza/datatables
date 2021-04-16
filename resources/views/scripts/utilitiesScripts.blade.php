@@ -257,13 +257,15 @@ jQuery(document).ready(function()
         $(table).find('th.doubler').each(function()
         {
             let columnIndex = $(this).data('column');
+            let columnName = $(this).data('camelname');
+
             let names = window.__getTableArrayNames(api, columnIndex);
 
-            window.__showDuplicates(api, names, columnIndex);
+            window.__showDuplicates(api, names, columnIndex, columnName);
         });
     });
 
-    window.__showDuplicates = function(datatable, names, columnIndex)
+    window.__showDuplicates = function(datatable, names, columnIndex, columnName)
     {
         datatable.rows().eq( 0 ).map( function (rowIdx)
         {
@@ -271,7 +273,11 @@ jQuery(document).ready(function()
             var name = String(nameCell.data());
 
             if(names[name] > 1)
+            {
                 $(nameCell.node()).addClass('doubled');
+
+                $(nameCell.node()).closest('tr').addClass('double' + columnName);
+            }
         });
     }
 

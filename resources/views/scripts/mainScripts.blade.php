@@ -14,6 +14,13 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/select/1.3.1/css/select.dataTables.min.css" />
 <link rel="stylesheet" href="https://cdn.datatables.net/keytable/2.6.1/css/keyTable.dataTables.min.css" />
 
+<style type="text/css">
+.dataTable tbody input.uk-input
+{
+    padding: 1px;
+}    
+</style>
+
 <script type="text/javascript" src="/js/moment.min.js"></script>
 {{--  //DATATABLES  --}}
 

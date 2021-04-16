@@ -725,8 +725,6 @@ $(document).ready(function($)
 
     window.__displayResponseErrors = function(jsonResponse)
     {
-        // jsonResponse = response.responseJSON;
-
         if(typeof jsonResponse.exception !== 'undefined')
             alert(jsonResponse.message);
 
@@ -740,6 +738,14 @@ $(document).ready(function($)
 
                 window.addDangerNotification(errorMessage);
             }
+
+        if (typeof jsonResponse.responseJSON !== 'undefined')
+        {
+            let response = jsonResponse.responseJSON;
+
+            if (typeof response.message !== 'undefined')
+                alert(response.message);
+        }
     }
 
     window.__getIdColumnIndex = function(target, table)

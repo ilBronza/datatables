@@ -51,8 +51,8 @@
 
         pageLength: {{ $table->getPageLength() }},
 
-        @if(($rowIdIndex = $table->getRowIdIndex()) !== null)
-        rowId: {{ $rowIdIndex }},
+        @if($table->getRowIdIndex() !== null)
+        rowId: {{ $table->getRowIdIndex() }},
         @endif
 
             @foreach($table->options as $name => $value)
@@ -61,9 +61,7 @@
         [
             //{!! json_encode($value) !!}
             @foreach($value as $index => $order)
-
-            {!! json_encode($order) !!}@if(! $loop->last),
-                @endif
+            {!! json_encode($order) !!}@if(! $loop->last),@endif
             @endforeach
         
         ],
@@ -121,7 +119,12 @@
         @endforeach
     @endforeach
 
+    //count columnDefs = {{ count($table->customColumnDefs) }}
+
     @foreach ($table->customColumnDefs as $customColumnDef)
+
+    //INDEX LOOP {{ $loop->index }}
+
         {!! $customColumnDef !!},
     @endforeach
     @endif ];

@@ -29,7 +29,7 @@ class DatatableFieldToggle extends DatatableFieldEditor
 		if(item[1])
 			" . $this->getLinkString("uk-icon=\"{$this->trueIcon}\"") . "
 
-		else if((item[1] == 0)||(item[1] === false))
+		else if((item[1] === 0)||(item[1] === false))
 			" . $this->getLinkString("uk-icon=\"{$this->falseIcon}\"") . "
 
 		else

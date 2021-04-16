@@ -259,6 +259,7 @@ trait DatatableFieldsTrait
     public function addField(string $fieldName, $parameters)
     {
         $field = $this->craeteField($fieldName, $parameters);
+        $field->table = $this;
 
         return $this->fields[$fieldName] = $field;
     }

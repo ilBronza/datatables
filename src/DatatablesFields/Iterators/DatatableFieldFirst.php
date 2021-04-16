@@ -25,6 +25,9 @@ class DatatableFieldFirst extends DatatableFieldEach
 
 	public function transformValue($value)
 	{
+		if(! isset($this->element))
+			return ;
+
 		//return first element of array, object, collection
 		foreach($value->{$this->element} as $item)
 			return $this->getItemValue($item);

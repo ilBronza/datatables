@@ -6,6 +6,7 @@
 #{{ $table->getId() }} th.{{ $field->getHtmlClassForCss() }}
 {
 	/*{!! json_encode($field->name) !!}*/
+    min-width: {{ $field->width }}!important;
     max-width: {{ $field->width }}!important;
     width: {{ $field->width }}!important;
 }

@@ -11,7 +11,7 @@ class DatatableFieldDate extends DatatableFieldEditor
 	use EditorSingleFieldTrait;
     use CarbonTrait;
 
-	public $defaultWidth = '125px';
+	public $defaultWidth = '65px';
     public $inputFieldDefaultFormat = "YYYY-MM-DD";
 	public $fieldType = 'date';
 
