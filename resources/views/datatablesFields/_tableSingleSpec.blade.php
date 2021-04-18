@@ -19,6 +19,10 @@
 
         keys : true,
 
+        @if($dom = $table->getCustomDom())
+        dom: '{{ $dom }}',
+        @endif
+
         @if($table->isAjaxTable())
         ajax: {
             url: window.addParameterToURL("{{ $table->getUrl() }}", 'cachedtablekey', "{{ $table->getCachedTableKey() }}"),

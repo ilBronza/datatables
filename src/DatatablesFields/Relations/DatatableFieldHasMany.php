@@ -9,6 +9,10 @@ class DatatableFieldHasMany extends DatatableFieldIterator
 {
     use DatatablesFieldsRelationsTrait;
 
+    /**
+     * set to false in array parameter to use normal routes models.action
+     * instead of complex parents.models.action
+     **/
     public $isDependentRelation = true;
 
     public function _transformValue($value)
@@ -23,7 +27,7 @@ class DatatableFieldHasMany extends DatatableFieldIterator
     {
         if(isset($this->table->modelClass))
             return "
-                console.log('iteratore');
+
                 let result = '';
                 let urlRelation = '" . $this->getRelationModelSprintFShowRoute() . "';
 

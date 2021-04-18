@@ -50,6 +50,17 @@ class Datatables
         $this->customButtons = collect();
     }
 
+    public function setMinimalDom()
+    {
+        //Blfritip
+        $this->dom = 'ftip';
+    }
+
+    public function getCustomDom()
+    {
+        return $this->dom ?? null;
+    }
+
     public function addBaseModelClass(string $modelClass)
     {
         $this->modelClass = $modelClass;
