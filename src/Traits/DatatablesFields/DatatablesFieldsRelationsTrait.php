@@ -7,6 +7,11 @@ use Illuminate\Support\Str;
 
 trait DatatablesFieldsRelationsTrait
 {
+    public function isDependentRelation()
+    {
+        return $this->isDependentRelation ?? false;
+    }
+
     public function getRelationModelNameByFieldName()
     {
         $parts = explode(".", $this->name);
@@ -80,7 +85,7 @@ trait DatatablesFieldsRelationsTrait
                 $type
             );
 
-        if(isset($this->table->modelClass))
+        if(isset($this->table->modelClass)&&($this->isDependentRelation()))
             return $this->getRelationshipSprintFRouteByModelType(
                 $this->getRelationModelName(),
                 $type

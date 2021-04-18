@@ -9,6 +9,8 @@ class DatatableFieldHasMany extends DatatableFieldIterator
 {
     use DatatablesFieldsRelationsTrait;
 
+    public $isDependentRelation = true;
+
     public function _transformValue($value)
     {
         return [
