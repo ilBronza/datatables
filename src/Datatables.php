@@ -40,6 +40,7 @@ class Datatables
     public $options = [];
     public $sourceType = 'ajax';
     public $variables = [];
+    public $modelClass;
 
     public function __construct()
     {
@@ -47,6 +48,11 @@ class Datatables
         $this->fieldsGroups = collect();
 
         $this->customButtons = collect();
+    }
+
+    public function addBaseModelClass(string $modelClass)
+    {
+        $this->modelClass = $modelClass;
     }
 
     public function setVariables(array $extraVariables)

@@ -58,11 +58,31 @@ trait DatatablesFieldsRelationsTrait
         return route($routeBasename . '.' . $type, [$modelBasename => '%s']);
     }
 
+    private function getRelationshipSprintFRouteByModelType(string $modelBasename, string $type)
+    {
+        $parentModelBasename = Str::camel(class_basename($this->table->modelClass));
+        $parentRouteBasename = Str::plural($parentModelBasename);
+
+        $relatedRouteBasername = Str::plural($modelBasename);
+
+
+        return route(implode(".", [$parentRouteBasename, $relatedRouteBasername, $type]), [
+            $parentModelBasename => '%f',
+            $modelBasename => '%s'
+        ]);
+    }
+
     private function getRelationModelSprintFRouteByType(string $type)
     {
         if(isset($this->routeBasename))
             return $this->getSprintFRouteByModelType(
                 $this->routeBasename,
+                $type
+            );
+
+        if(isset($this->table->modelClass))
+            return $this->getRelationshipSprintFRouteByModelType(
+                $this->getRelationModelName(),
                 $type
             );
 

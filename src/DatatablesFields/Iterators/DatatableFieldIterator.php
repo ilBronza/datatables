@@ -14,9 +14,19 @@ class DatatableFieldIterator extends MultipleDatatableField
         foreach($value as $_value)
             $result[] = $this->_transformValue($_value);
 
+        array_pop($this->elementValues);
+
+        if($father = array_pop($this->elementValues))
+            return [
+                'separator' => $this->separator,
+                'elements' => $result,
+                'father' => $father->getKey()
+            ];
+
         return [
             'separator' => $this->separator,
-            'elements' => $result
+            'elements' => $result,
+
         ];
     }
 

@@ -19,6 +19,20 @@ class DatatableFieldHasMany extends DatatableFieldIterator
 
     public function getDisplayColumnDef()
     {
+        if(isset($this->table->modelClass))
+            return "
+                console.log('iteratore');
+                let result = '';
+                let urlRelation = '" . $this->getRelationModelSprintFShowRoute() . "';
+
+                urlRelation = urlRelation.replace('%f', data.father);
+
+                Object.keys(elements).forEach(key => {
+
+                    result = result + '<a href=\"' + urlRelation.replace('%s', elements[key].id) + '\">' + elements[key].name + '</a><br />';
+                });
+            ";
+
         return "
             let result = '';
             let urlRelation = '" . $this->getRelationModelSprintFShowRoute() . "';

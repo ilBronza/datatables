@@ -95,7 +95,7 @@ class DatatableFieldEditor extends DatatableField
 	public function transformValue($value)
 	{
 		if(isset($this->solveElement))
-			$value = $this->getCellDataValue($this->name, $value);
+			$value = $this->getFieldCellDataValue($this->name, $value);
 
 		if(! $this->requireElement())
 			return $value;

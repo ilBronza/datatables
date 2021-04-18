@@ -87,15 +87,23 @@ class DatatableField
         $this->checkConfirmMessage($parameters);
     }
 
-    public function getCellDataValue(string $fieldName, $element)
+    public function getFieldCellDataValue(string $fieldName, $element)
     {
         $properties = explode(".", $fieldName);
 
+        $this->elementValues = [];
+
+        $i = 0;
+
+        $this->elementValues[$i] = $element;
+
         do {
             $property = array_shift($properties);
-
+                
             if(strpos($property, 'mySelf') === false)
                 $element = $element->$property?? false;
+
+            $this->elementValues[++$i] = $element;
 
         } while (count($properties));
 

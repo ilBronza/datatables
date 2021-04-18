@@ -10,6 +10,8 @@ trait DatatableDataTrait
 {
     public function prepareCachedData()
     {
+        return $this->calculateData();
+
         return cache()->remember(
             $this->getCachedTableKey(),
             300,
@@ -32,7 +34,7 @@ trait DatatableDataTrait
 
     private function getCellData(DatatableField $field, Model $element)
     {
-        $value = $field->getCellDataValue($field->name, $element);
+        $value = $field->getFieldCellDataValue($field->name, $element);
         // $value = $this->getCellDataValue($field->name, $element);
 
         if($field->requireElement())
@@ -41,7 +43,9 @@ trait DatatableDataTrait
         return $field->transformValue($value);
     }
 
-    public function getCellDataValue(string $fieldName, $element)
+    //UNA VOLTA ERA
+    // public function getCellDataValue(string $fieldName, $element)
+    public function getTableCellDataValue(string $fieldName, $element)
     {
         $properties = explode(".", $fieldName);
 
@@ -58,7 +62,7 @@ trait DatatableDataTrait
 
     private function getCellDataWithSummary(DatatableField $field, Model $element)
     {
-        $value = $this->getCellDataValue($field->name, $element);
+        $value = $this->getTableCellDataValue($field->name, $element);
 
         return $field->transformValueWithSummary($value);
     }

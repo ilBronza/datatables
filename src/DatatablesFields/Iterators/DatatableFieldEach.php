@@ -26,7 +26,7 @@ class DatatableFieldEach extends MultipleDatatableField
 	public function getItemValue($item)
 	{
 		if($propertyName = $this->child->getPropertyName())
-			$item = $this->getCellDataValue($propertyName, $item);
+			$item = $this->getFieldCellDataValue($propertyName, $item);
 
 		return $this->child->transformValue($item);
 	}
