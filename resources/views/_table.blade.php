@@ -6,7 +6,6 @@
 @endsection
 {{-- END SOLO PER IDEALPACK, RISOLVERE --}}
 
-
 @include('datatables::datatablesFields._tableSingleSpec')
 
 @if(! request()->input('justTable', false))
@@ -90,14 +89,7 @@
 
 
         </thead>
-{{--         <tfoot>
-            <tr>
-                @foreach($table->getFields() as $field)
-                <th>{{ $field->renderHeader() }}</th>
-                @endforeach
-            </tr>
-        </tfoot>
- --}}    </table>
+    </table>
 
 
 @if(! request()->input('justTable', false))

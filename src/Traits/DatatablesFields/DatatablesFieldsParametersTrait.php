@@ -24,7 +24,7 @@ trait DatatablesFieldsParametersTrait
                 $this->setParameter($name, $parameter);
     }
 
-    private function setParameter($name, $parameter)
+    public function setParameter($name, $parameter)
     {
         if(! is_int($name))
             $this->$name = $parameter;
