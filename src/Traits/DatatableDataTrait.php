@@ -10,8 +10,6 @@ trait DatatableDataTrait
 {
     public function prepareCachedData()
     {
-        return $this->calculateData();
-
         return cache()->remember(
             $this->getCachedTableKey(),
             300,

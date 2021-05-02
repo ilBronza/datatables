@@ -160,7 +160,6 @@ class Datatables
         $table->setUrl(request()->url());
 
         $table->setElements($elements());
-        $table->prepareCachedData();
 
         return $table;
     }
@@ -232,6 +231,7 @@ class Datatables
                 "data" => $this->getData()
             ];
 
+        $this->prepareCachedData();
         $this->parseColumnDefs();
 
         $this->parseOptions();
