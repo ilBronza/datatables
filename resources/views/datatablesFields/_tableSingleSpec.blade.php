@@ -135,6 +135,13 @@
 
     window.{{ $table->getId() }}buttons = @if(count($buttons = $table->getButtons())||(count(1))) [
 
+        {
+            text: 'Reload',
+            action: function ( e, dt, node, config ) {
+                dt.ajax.reload();
+            }
+        },
+
         @if($table->hasSelectRowCheckboxes())
         {
             extend: 'selected',

@@ -8,11 +8,11 @@
 	<script type="text/javascript">
 
 	@if($postTableToUrl ?? false)
-	window.parent.postTableToUrl("#{{ $callerTablename }}", "{{ $postTableToUrl }}");
+	window.parent.postTableToUrl("#{{ $callertablename }}", "{{ $postTableToUrl }}");
 	@endif
 
-	@if($callerTablename = request()->input('callertablename', false))
-	window.parent.reloadAjaxTable("#{{ $callerTablename }}");
+	@if($callertablename = request()->input('callertablename', false))
+	window.parent.reloadAjaxTable("#{{ $callertablename }}");
 	window.parent.removePopup("#datatablepopup");
 	@endif
 
