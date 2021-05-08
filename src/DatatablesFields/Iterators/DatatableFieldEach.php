@@ -8,8 +8,12 @@ class DatatableFieldEach extends MultipleDatatableField
 
 	private function manageChildType()
 	{
+		$namePortions = explode(".", $this->name);
+
+		array_shift($namePortions);
+
         $this->child = static::createByType(
-            $this->name,
+            implode(".", $namePortions),
             $this->childParameters['type'],
             $this->childParameters,
             0

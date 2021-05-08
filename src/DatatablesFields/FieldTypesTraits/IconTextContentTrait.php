@@ -7,6 +7,9 @@ trait IconTextContentTrait
 {
 	public function getIconHtml()
 	{
+		if($this->avoidIcon ?? false)
+			return ;
+
 		if($this->icon ?? false)
 			return "<span uk-icon=\"{$this->icon}\"></span>";
 

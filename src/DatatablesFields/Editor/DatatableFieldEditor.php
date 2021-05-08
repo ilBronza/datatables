@@ -18,6 +18,9 @@ class DatatableFieldEditor extends DatatableField
 	public $spin = true;
 	public $requireElement = true;
 
+	//defines if vlaue is retrieved by a methd called on field element
+	public $editorValueFunction = false;
+
     public function __construct(string $name, array $parameters = [], int $index = null)
 	{
 		parent::__construct($name, $parameters, $index);
@@ -56,8 +59,7 @@ class DatatableFieldEditor extends DatatableField
 
 		$this->pluralModelClass = Str::plural(
 			lcfirst(
-				class_basename($this->element
-				)
+				class_basename($this->element)
 			)
 		);
 
@@ -101,6 +103,12 @@ class DatatableFieldEditor extends DatatableField
 			return $value;
 
 		$this->element = $value;
+
+		if($this->editorValueFunction)
+			return [
+				$this->element->getKey(),
+				$this->element->{$this->editorValueFunction}()
+			];
 
 		$propertyName = $this->editorProperty ?? $this->name;
 

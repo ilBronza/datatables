@@ -4,6 +4,12 @@ namespace IlBronza\Datatables\DatatablesFields;
 
 class DatatableFieldJsonObjects extends DatatableField
 {
+
+	/**
+	 * IMPORTANT
+	 * please cast this model's property as array, returning empty array if null
+	 **/
+
 	private function getProperties()
 	{
 		return $this->properties;
@@ -22,7 +28,7 @@ class DatatableFieldJsonObjects extends DatatableField
 				let fields = " . $this->getJsonProperties() . ";
 				let result = new Array();
 
-				objects = JSON.parse(item);
+				objects = item;
 
 				for (var key in objects)
 					if (objects.hasOwnProperty(key))

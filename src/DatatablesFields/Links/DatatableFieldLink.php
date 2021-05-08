@@ -56,12 +56,25 @@ class DatatableFieldLink extends DatatableField
 	public function transformValue($value)
 	{
 		if(! $this->textParameter)
-			return $value->{$this->function}();
+		{
+			if(! isset($this->variable))
+				return $value->{$this->function}();
 
-		return [
-			$value->{$this->function}(),
-			$value->{$this->textParameter}
-		];
+			$variableValue = $this->table->getVariable($this->variable);
+			return $value->{$this->function}($variableValue);
+		}
+
+		if(! isset($this->variable))
+			return [
+				$value->{$this->function}(),
+				$value->{$this->textParameter}
+			];
+
+		$variableValue = $this->table->getVariable($this->variable);
+			return [
+				$value->{$this->function}(),
+				$value->{$this->function}($variableValue)
+			];
 	}
 
 	public function getTargetHtml()
