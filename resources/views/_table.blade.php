@@ -1,16 +1,12 @@
-{{-- START SOLO PER IDEALPACK, RISOLVERE --}}
-@section('pageTitle')
-    @if($caption = $table->getCaption())
-    <span class="uk-h3">{{ $caption }}</span>
-    @endif
-@endsection
-{{-- END SOLO PER IDEALPACK, RISOLVERE --}}
-
 @include('datatables::datatablesFields._tableSingleSpec')
 
 @if(! request()->input('justTable', false))
     @include('datatables::__extraViews', ['position' => 'top'])
 @endif
+
+    @if($caption = $table->getCaption())
+    <span class="uk-h3">{{ $caption }}</span>
+    @endif
 
     <table
         id="{{ $table->getId() }}"
