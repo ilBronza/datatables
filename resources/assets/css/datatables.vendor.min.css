@@ -1,0 +1,96 @@
+.dataTable tbody input.uk-input
+{
+    padding: 1px;
+}    
+
+.ib-toggle,
+.ib-ajax
+{
+    cursor: pointer;
+}
+
+.ib-spin
+{
+    position: absolute;
+    left: 4px;
+    top: 3px;
+    background-color: rgba(2, 122, 32, 0.7)!important;
+    color: #fff;
+}
+
+    .datatablefilter
+    {
+        position: relative;
+    }
+
+    .filterfunctions
+    {
+        position: absolute;
+        top: -14px;
+        left: 0px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: #fff;
+    }
+
+    td
+    {
+        max-width: 140px;
+    }
+
+    nobr
+    {
+        display: inline-block;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        line-height: 1em;
+    }
+
+    .uk-text-truncate br
+    {
+        display: none!important;
+    }
+
+    .uk-text-truncate *
+    {
+        display: inline!important;
+    }
+
+.doubled,
+.doubled * 
+{
+    font-weight: bold!important;
+    color: red!important;
+}
+
+
+.fieldoperations
+{
+    position: absolute;
+    background-color: #ffffffdd;
+    top: 0;
+    left: 30px;
+    border: 1px solid #ccc;
+    display: inline-block;
+}
+
+.fieldoperations span
+{
+    float: left;
+    color: #000!important;
+    display: inline-block;
+    padding: 2px;
+    cursor: pointer;
+}
+
+.fieldoperations span:hover
+{
+    background-color: #ddd;
+}
+
+.fieldoperations span + span
+{
+    margin-left: 5px;
+}
+    

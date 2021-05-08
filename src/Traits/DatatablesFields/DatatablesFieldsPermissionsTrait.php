@@ -2,6 +2,7 @@
 
 namespace IlBronza\Datatables\Traits\DatatablesFields;
 
+use Auth;
 use Spatie\Permission\Models\Role;
 
 trait DatatablesFieldsPermissionsTrait

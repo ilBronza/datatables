@@ -66,14 +66,14 @@ class DatatablesServiceProvider extends ServiceProvider
             __DIR__.'/../resources/views' => base_path('resources/views/vendor/IlBronza'),
         ], 'datatables.views');*/
 
-        $this->publishes([
-            __DIR__.'/path/to/assets' => public_path('vendor/IlBronza'),
-        ], 'public');
+        // $this->publishes([
+        //     __DIR__.'/path/to/assets' => public_path('vendor/IlBronza'),
+        // ], 'public');
 
         // Publishing assets.
-        /*$this->publishes([
-            __DIR__.'/../resources/assets' => public_path('vendor/IlBronza'),
-        ], 'datatables.views');*/
+        $this->publishes([
+            __DIR__.'/../resources/assets' => base_path('resources'),
+        ], 'datatables.assets');
 
         // Publishing the translation files.
         /*$this->publishes([

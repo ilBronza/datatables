@@ -1,4 +1,6 @@
-<style type="text/css">
+
+{{-- INSERITI --}}
+{{-- <style type="text/css">
 .ib-toggle,
 .ib-ajax
 {
@@ -14,269 +16,293 @@
     color: #fff;
 }
 </style>
-
+ --}}
 <script type="text/javascript">
 
-window.editorFieldHasChanged = function(target)
-{
-    let val = $(target).val();
-    let oldVal = $(target).data('originalvalue');
+// window.editorFieldHasChanged = function(target)
+// {
+//     let val = $(target).val();
+//     let oldVal = $(target).data('originalvalue');
 
-    return oldVal != val;
-}
-
-
-
-$(document).ready(function($)
-{
+//     return oldVal != val;
+// }
 
 
-    $('body').on('click', '.ib-table-action-button', function(e)
-    {
-        e.preventDefault();
 
-        var target = this;
-
-        if(window.__mustOpenIframe(target))
-            return window.__openIframe(target);
-
-        var modal = $('#deliveries-modal');
-        if(modal.length)
-            UIkit.modal(modal).hide();
-
-        var tableid = $(this).data('tableid');
-        var table = $('#' + tableid).DataTable();
-
-        let idColumnIndex = window.__getIdColumnIndex(this, table);
-
-        let selectedRows = table.rows( { selected: true } );
-        var ids = selectedRows.data().pluck(idColumnIndex).toArray();
-
-        var url = $(this).data('route');
-
-        // window.open(url + '?iframed=true&callertablename=' + tableVarName, 'window', 'width=960, height=600, toolbar=no, menubar=no, resizable=yes');
-
-        // openWindowWithPost(url, {
-        //     ids: ids,
-        // });
+// $(document).ready(function($)
+// {
 
 
-        // return false;
+//     $('body').on('click', '.ib-table-action-button', function(e)
+//     {
+//         e.preventDefault();
 
-        $.ajax({
-            url : url,
-            type : 'POST',
-            data : {
-                ids : ids
-            },
-            success : function (response)
-            {
-                if(response.success == false)
-                    return this.error(response);
+//         var target = this;
 
-                // if(typeof response.notReload === 'undefined')
-                //     table.ajax.reload();
+//         if(window.__mustOpenIframe(target))
+//             return window.__openIframe(target);
 
-                if(response.success == true)
-                    window.addSuccessNotification(response.message);
+//         var modal = $('#deliveries-modal');
+//         if(modal.length)
+//             UIkit.modal(modal).hide();
 
-                if((typeof response.action !== 'undefined'))
-                {
-                    if(response.action == 'reloadTable')
-                    {
-                        table.rows().deselect();
-                        table.ajax.reload();
-                    }
+//         var tableid = $(this).data('tableid');
+//         var table = $('#' + tableid).DataTable();
 
-                    else if(response.action == 'reload')
-                        location.reload();
+//         let idColumnIndex = window.__getIdColumnIndex(this, table);
 
-                    else if(response.action == 'redirect')
-                        window.location.href = response.route;
+//         let selectedRows = table.rows( { selected: true } );
+//         var ids = selectedRows.data().pluck(idColumnIndex).toArray();
 
-                    if(response.action == 'remove')
-                    {
-                        response.ids.forEach(function(value)
-                        {
-                            table.row("#" + value).remove();
-                        });
+//         var url = $(this).data('route');
+
+//         // window.open(url + '?iframed=true&callertablename=' + tableVarName, 'window', 'width=960, height=600, toolbar=no, menubar=no, resizable=yes');
+
+//         // openWindowWithPost(url, {
+//         //     ids: ids,
+//         // });
+
+
+//         // return false;
+
+//         $.ajax({
+//             url : url,
+//             type : 'POST',
+//             data : {
+//                 ids : ids
+//             },
+//             success : function (response)
+//             {
+//                 if(response.success == false)
+//                     return this.error(response);
+
+//                 // if(typeof response.notReload === 'undefined')
+//                 //     table.ajax.reload();
+
+//                 if(response.success == true)
+//                     window.addSuccessNotification(response.message);
+
+//                 if((typeof response.action !== 'undefined'))
+//                 {
+//                     if(response.action == 'reloadTable')
+//                     {
+//                         table.rows().deselect();
+//                         table.ajax.reload();
+//                     }
+
+//                     else if(response.action == 'reload')
+//                         location.reload();
+
+//                     else if(response.action == 'redirect')
+//                         window.location.href = response.route;
+
+//                     if(response.action == 'remove')
+//                     {
+//                         response.ids.forEach(function(value)
+//                         {
+//                             table.row("#" + value).remove();
+//                         });
                         
-                        table.draw();
-                    }
-                }
+//                         table.draw();
+//                     }
+//                 }
 
-                window.__checkResultPopup(response, {
-                    target: target
-                });
+//                 window.__checkResultPopup(response, {
+//                     target: target
+//                 });
 
-                window.__displayResponseErrors(response);
-            },
-            error: function (response)
-            {
-                table.ajax.reload();
-                table.draw();
+//                 window.__displayResponseErrors(response);
+//             },
+//             error: function (response)
+//             {
+//                 table.ajax.reload();
+//                 table.draw();
 
-                window.__displayResponseErrors(response);
-            }
-        });
-    });
-
-
-    $('body').on('click', '.ib-toggle', function(e)
-    {
-        var params = {
-            target : this,
-            e : e,
-            type : 'POST',
-            data : {
-                "ib-editor" : true,
-                toggle : true,
-                field : $(this).data('field'),
-                _method : 'PUT',
-            }
-        };
-
-        window.ibCallAjax(params);
-    });
-
-    $('body').on('click', '.ib-ajax', function(e)
-    {
-        let data = $(this).data();
-
-        data['ib-editor'] = true;
-        data._method = 'PUT';
-
-        var params = {
-            target : this,
-            e : e,
-            type : 'POST',
-            data : data
-        };
-
-        window.ibCallAjax(params);
-    });
-
-    $('body').on('blur', '.ib-editor-color', function(e)
-    {
-        if(! window.editorFieldHasChanged(this))
-            return false;
-
-        var params = {
-            target : this,
-            e : e,
-            type : 'POST',
-            data : {
-                "ib-editor" : true,
-                field : $(this).data('field'),
-                value : $(this).val(),
-                _method : 'PUT',
-            }
-        };
-
-        window.ibCallAjax(params);
-    });
-
-    $('body').on('blur', '.ib-editor-text', function(e)
-    {
-        if(! window.editorFieldHasChanged(this))
-            return false;
-
-        var params = {
-            target : this,
-            e : e,
-            type : 'POST',
-            data : {
-                "ib-editor" : true,
-                field : $(this).data('field'),
-                value : $(this).val(),
-                _method : 'PUT',
-            }
-        };
-
-        window.ibCallAjax(params);
-    });
-
-    $('body').on('click', '.ib-editor-select', function(e)
-    {
-        if($(this).data('populated'))
-            return ;
-
-        if($(this).data('populating'))
-            return ;
+//                 window.__displayResponseErrors(response);
+//             }
+//         });
+//     });
 
 
-        $(this).data('populating', true);
+//     $('body').on('click', '.ib-toggle', function(e)
+//     {
+//         var params = {
+//             target : this,
+//             e : e,
+//             type : 'POST',
+//             data : {
+//                 "ib-editor" : true,
+//                 toggle : true,
+//                 field : $(this).data('field'),
+//                 _method : 'PUT',
+//             }
+//         };
 
-        let currentValue = $(this).val();
+//         window.ibCallAjax(params);
+//     });
 
-        let th = window.__getTH(this);
-        let possibleValues = th.data('possiblevalues');
+//     $('body').on('click', '.ib-ajax', function(e)
+//     {
+//         let data = $(this).data();
 
-        for (var key in possibleValues)
-        {
-            if(key == currentValue)
-                continue;
+//         data['ib-editor'] = true;
+//         data._method = 'PUT';
 
-            $(this).append('<option value="' + key + '">' + possibleValues[key] + '</option>');
-        }
+//         var params = {
+//             target : this,
+//             e : e,
+//             type : 'POST',
+//             data : data
+//         };
 
-        $(this).data('populated', true);
-        $(this).data('populating', false);
-    });
+//         window.ibCallAjax(params);
+//     });
 
-    $('body').on('blur', '.ib-editor-select', function(e)
-    {
-        if(! window.editorFieldHasChanged(this))
-            return false;
+//     $('body').on('focus', '.ib-editor-color', function(e)
+//     {
+//         $(target).data('originalvalue', $(target).val());
+//     });
 
-        if($(this).val() == $(this).data('originalvalue'))
-            return false;
+//     $('body').on('blur', '.ib-editor-color', function(e)
+//     {
+//         if(! window.editorFieldHasChanged(this))
+//             return false;
 
-        var params = {
-            target : this,
-            e : e,
-            type : 'POST',
-            data : {
-                "ib-editor" : true,
-                field : $(this).data('field'),
-                value : $(this).val(),
-                _method : 'PUT',
-            }
-        };
+//         var params = {
+//             target : this,
+//             e : e,
+//             type : 'POST',
+//             data : {
+//                 "ib-editor" : true,
+//                 field : $(this).data('field'),
+//                 value : $(this).val(),
+//                 _method : 'PUT',
+//             }
+//         };
 
-        window.ibCallAjax(params);
-    });
+//         window.ibCallAjax(params);
+//     });
 
-    $('body').on('click', '.ib-cell-ajax-button', function(e)
-    {
-        e.preventDefault();
 
-        let sendingData = {};
+//     $('body').on('keyup', '.ib-editor-text', function(e)
+//     {
+//         // var code = e.keyCode || e.which;
 
-        // var data = $(this).data('datas');
+//         // if(code == 13)
+//         // {
+//         //     let table = window.__getTableByCell(this);
+//         //     let datatable = table.DataTable();
+//         //     datatable.keys.enable();
 
-        // if($(this).data('dataattributes'))
-        //     data = collectDataAttributes(this);
+//         //     return;
+//         // }
 
-        // else if($(this).data('elements'))
-        //     data = collectDatas(this);
+//         // let table = window.__getTableByCell(this);
+//         // let datatable = table.DataTable();
+//         // datatable.keys.disable();
+//     });
 
-        // if($(this).data('dataattributes'))
-        //     var sendingData = data;
-        // else
-        //     var sendingData = {data : data};
+//     $('body').on('blur', '.ib-editor-text', function(e)
+//     {
+//         if(! window.editorFieldHasChanged(this))
+//             return false;
 
-        if($(this).data('method'))
-            sendingData._method = $(this).data('method');
+//         var params = {
+//             target : this,
+//             e : e,
+//             type : 'POST',
+//             data : {
+//                 "ib-editor" : true,
+//                 field : $(this).data('field'),
+//                 value : $(this).val(),
+//                 _method : 'PUT',
+//             }
+//         };
 
-        var params = {
-            target : this,
-            e : e,
-            data : sendingData
-        };
+//         window.ibCallAjax(params);
+//     });
 
-        window.ibCallAjax(params);
-    });
-});
+//     $('body').on('click', '.ib-editor-select', function(e)
+//     {
+//         if($(this).data('populated'))
+//             return ;
+
+//         if($(this).data('populating'))
+//             return ;
+
+
+//         $(this).data('populating', true);
+
+//         let currentValue = $(this).val();
+
+//         let th = window.__getTH(this);
+//         let possibleValues = th.data('possiblevalues');
+
+//         for (var key in possibleValues)
+//         {
+//             if(key == currentValue)
+//                 continue;
+
+//             $(this).append('<option value="' + key + '">' + possibleValues[key] + '</option>');
+//         }
+
+//         $(this).data('populated', true);
+//         $(this).data('populating', false);
+//     });
+
+//     $('body').on('blur', '.ib-editor-select', function(e)
+//     {
+//         if(! window.editorFieldHasChanged(this))
+//             return false;
+
+//         if($(this).val() == $(this).data('originalvalue'))
+//             return false;
+
+//         var params = {
+//             target : this,
+//             e : e,
+//             type : 'POST',
+//             data : {
+//                 "ib-editor" : true,
+//                 field : $(this).data('field'),
+//                 value : $(this).val(),
+//                 _method : 'PUT',
+//             }
+//         };
+
+//         window.ibCallAjax(params);
+//     });
+
+//     $('body').on('click', '.ib-cell-ajax-button', function(e)
+//     {
+//         e.preventDefault();
+
+//         let sendingData = {};
+
+//         // var data = $(this).data('datas');
+
+//         // if($(this).data('dataattributes'))
+//         //     data = collectDataAttributes(this);
+
+//         // else if($(this).data('elements'))
+//         //     data = collectDatas(this);
+
+//         // if($(this).data('dataattributes'))
+//         //     var sendingData = data;
+//         // else
+//         //     var sendingData = {data : data};
+
+//         if($(this).data('method'))
+//             sendingData._method = $(this).data('method');
+
+//         var params = {
+//             target : this,
+//             e : e,
+//             data : sendingData
+//         };
+
+//         window.ibCallAjax(params);
+//     });
+// });
     
 </script>
