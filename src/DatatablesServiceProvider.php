@@ -72,7 +72,7 @@ class DatatablesServiceProvider extends ServiceProvider
 
         // Publishing assets.
         $this->publishes([
-            __DIR__.'/../resources/assets' => base_path('resources'),
+            __DIR__.'/../resources/assets' => base_path('public/datatables'),
         ], 'datatables.assets');
 
         // Publishing the translation files.

@@ -1,5 +1,5 @@
 {{-- START FILTERFUNCTIONS --}}
-{{-- <style type="text/css">
+<style type="text/css">
     .datatablefilter
     {
         position: relative;
@@ -39,8 +39,8 @@
         display: inline!important;
     }
 </style>
- --}}
-{{-- <script type="text/javascript">
+
+<script type="text/javascript">
 
 $(document).ready(function($)
 {
@@ -112,6 +112,6 @@ $(document).ready(function($)
 
 });
     
-</script> --}}
+</script>
 
 {{-- END FILTERFUNCTIONS --}}

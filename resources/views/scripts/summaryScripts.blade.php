@@ -1,4 +1,4 @@
-{{-- <script type="text/javascript">
+<script type="text/javascript">
 jQuery(document).ready(function()
 {
     window.transformDataBySummaryExistence = function (tableId, summary, json)
@@ -134,4 +134,4 @@ jQuery(document).ready(function()
     }
 
 });
-</script> --}}
+</script>

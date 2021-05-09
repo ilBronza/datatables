@@ -1,4 +1,4 @@
-{{-- <script type="text/javascript">
+<script type="text/javascript">
 jQuery(document).ready(function()
 {
     
@@ -33,4 +33,4 @@ jQuery(document).ready(function()
     }
 
 });
-</script> --}}
+</script>

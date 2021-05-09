@@ -1,4 +1,4 @@
-{{-- <style type="text/css">
+<style type="text/css">
 .doubled,
 .doubled * 
 {
@@ -39,9 +39,9 @@
 
 
 
-</style> --}}
+</style> 
 
-{{-- <script type="text/javascript">
+<script type="text/javascript">
 jQuery(document).ready(function()
 {
     window.decodeHTMLEntities = function(text)
@@ -299,4 +299,4 @@ jQuery(document).ready(function()
 		return names;
 	}
 });
-</script> --}}
+</script>

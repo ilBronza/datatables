@@ -1,8 +1,5 @@
-<script type="text/javascript" src="/js/app.min.js"></script>
-
-
-{{-- DATATABLES  --}}
-{{-- <script type="text/javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+{{--  DATATABLES  --}}
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
@@ -18,6 +15,7 @@
 <script type="text/javascript" src="https://cdn.datatables.net/rowreorder/1.2.4/js/dataTables.rowReorder.min.js"></script>
 
 
+{{-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css"> --}}
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.uikit.min.css"/>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/rowreorder/1.2.4/css/rowReorder.dataTables.min.css"/>
 
@@ -31,13 +29,11 @@
     padding: 1px;
 }    
 </style>
- --}}
 
-{{-- <script type="text/javascript" src="/js/moment.min.js"></script> --}}
-
+<script type="text/javascript" src="/js/moment.min.js"></script>
 {{--  //DATATABLES  --}}
 
-{{-- @include('datatables::scripts.ajaxCallScripts')
+@include('datatables::scripts.ajaxCallScripts')
 @include('datatables::scripts.ajaxButtonScripts')
 @include('datatables::scripts.buttonScripts')
 @include('datatables::scripts.sortingScripts')
@@ -45,10 +41,10 @@
 @include('datatables::scripts.summaryScripts')
 @include('datatables::scripts.utilitiesScripts')
 @include('datatables::scripts.datatablesFieldsScripts')
- --}}
 
 
-{{-- <script type="text/javascript">
+
+<script type="text/javascript">
 
 window.addParameterToURL = function(url, paramName, paramValue)
 {
