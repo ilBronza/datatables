@@ -15,6 +15,33 @@ Via Composer
 $ composer require ilbronza/datatables
 ```
 
+add this lines to package.json dependencies list
+
+``` bash
+        "datatables.net-autofill-dt": "^2.3.6",
+        "datatables.net-buttons-dt": "^1.7.0",
+        "datatables.net-colreorder-dt": "^1.5.3",
+        "datatables.net-dt": "^1.10.24",
+        "datatables.net-fixedcolumns-dt": "^3.3.2",
+        "datatables.net-fixedheader-dt": "^3.1.8",
+        "datatables.net-keytable-dt": "^2.6.1",
+        "datatables.net-responsive-dt": "^2.2.7",
+        "datatables.net-rowgroup-dt": "^1.1.2",
+        "datatables.net-rowreorder-dt": "^1.2.7",
+        "datatables.net-scroller-dt": "^2.0.3",
+        "datatables.net-searchbuilder-dt": "^1.0.1",
+        "datatables.net-searchpanes-dt": "^1.2.2",
+        "datatables.net-select-dt": "^1.3.3",
+        "jszip": "^3.6.0",
+        "moment": "^2.29.1",
+        "npm": "^7.12.0",
+        "webpack-jquery-ui": "^2.0.1"
+```
+
+
+
+
+
 ## Usage
 
 ## Change log
