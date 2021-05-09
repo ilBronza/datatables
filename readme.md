@@ -34,11 +34,33 @@ add this lines to package.json dependencies list
         "datatables.net-select-dt": "^1.3.3",
         "jszip": "^3.6.0",
         "moment": "^2.29.1",
-        "npm": "^7.12.0",
         "webpack-jquery-ui": "^2.0.1"
 ```
 
+run npm install from terminal
 
+``` bash
+npm install
+```
+
+add this line to resources/js/app.js to include the required modules
+
+``` bash
+require('./ilBronza.datatables.js');
+```
+
+publish the package assets
+
+``` bash
+php artisan vendor:publish --force --tag "datatables.assets"
+```
+
+
+compile the file with laravel-mix
+
+``` bash
+npm run development
+```
 
 
 
