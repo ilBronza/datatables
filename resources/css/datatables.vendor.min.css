@@ -93,4 +93,15 @@
 {
     margin-left: 5px;
 }
-    
+
+
+table.dataTable tbody td.select-checkbox:before, table.dataTable tbody th.select-checkbox:before
+{
+    position: relative;
+    top: auto;
+}
+
+.uk-navbar-nav > li > a.uk-button
+{
+    color: #fff;
+}
