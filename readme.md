@@ -18,23 +18,23 @@ $ composer require ilbronza/datatables
 add this lines to package.json dependencies list
 
 ``` bash
-        "datatables.net-autofill-dt": "^2.3.6",
-        "datatables.net-buttons-dt": "^1.7.0",
-        "datatables.net-colreorder-dt": "^1.5.3",
-        "datatables.net-dt": "^1.10.24",
-        "datatables.net-fixedcolumns-dt": "^3.3.2",
-        "datatables.net-fixedheader-dt": "^3.1.8",
-        "datatables.net-keytable-dt": "^2.6.1",
-        "datatables.net-responsive-dt": "^2.2.7",
-        "datatables.net-rowgroup-dt": "^1.1.2",
-        "datatables.net-rowreorder-dt": "^1.2.7",
-        "datatables.net-scroller-dt": "^2.0.3",
-        "datatables.net-searchbuilder-dt": "^1.0.1",
-        "datatables.net-searchpanes-dt": "^1.2.2",
-        "datatables.net-select-dt": "^1.3.3",
-        "jszip": "^3.6.0",
-        "moment": "^2.29.1",
-        "webpack-jquery-ui": "^2.0.1"
+"datatables.net-autofill-dt": "^2.3.6",
+"datatables.net-buttons-dt": "^1.7.0",
+"datatables.net-colreorder-dt": "^1.5.3",
+"datatables.net-dt": "^1.10.24",
+"datatables.net-fixedcolumns-dt": "^3.3.2",
+"datatables.net-fixedheader-dt": "^3.1.8",
+"datatables.net-keytable-dt": "^2.6.1",
+"datatables.net-responsive-dt": "^2.2.7",
+"datatables.net-rowgroup-dt": "^1.1.2",
+"datatables.net-rowreorder-dt": "^1.2.7",
+"datatables.net-scroller-dt": "^2.0.3",
+"datatables.net-searchbuilder-dt": "^1.0.1",
+"datatables.net-searchpanes-dt": "^1.2.2",
+"datatables.net-select-dt": "^1.3.3",
+"jszip": "^3.6.0",
+"moment": "^2.29.1",
+"webpack-jquery-ui": "^2.0.1"
 ```
 
 run npm install from terminal
@@ -43,11 +43,22 @@ run npm install from terminal
 npm install
 ```
 
-add this line to resources/js/app.js to include the required modules
-
+add these line to resources/js/app.js to include the required modules
 ``` bash
 require('./ilBronza.datatables.js');
 ```
+keep in mind that it needs jQuery and jquery-ui, if you didn't required yet add to yout resources/js/app.js file
+``` bash
+import $ from 'jquery';
+window.$ = window.jQuery = $;
+
+require('webpack-jquery-ui');
+```
+
+
+
+
+
 
 publish the package assets
 
