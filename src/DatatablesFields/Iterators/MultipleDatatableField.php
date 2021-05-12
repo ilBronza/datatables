@@ -6,6 +6,7 @@ use IlBronza\Datatables\DatatablesFields\DatatableField;
 
 class MultipleDatatableField extends DatatableField
 {
+	public $requiresPlaceholderElement = true;
 	public $separator = "<br />";
 
 	public function setSeparator(string $separator)
@@ -24,6 +25,11 @@ class MultipleDatatableField extends DatatableField
 		{
 			return $this->getItemValue($item);
 		});
+	}
+
+	public function getColumnDefDataIndexString()
+	{
+		return "data-cellindex=' + i + ' ";
 	}
 
 	public function getCustomColumnDef()

@@ -228,12 +228,16 @@ trait DatatableFieldsTrait
             if(! empty($field->$fieldParameter))
                 $parameters[$fieldParameter] = $field->$fieldParameter;
 
-        return DatatableField::createByType(
+        $field = DatatableField::createByType(
             $fieldName,
             $alternativeRenderAs,
             $parameters,
             $field->getIndex()
         );
+
+        $field->table = $this;
+
+        return $field;
     }
 
     public function craeteField(string $fieldName, $parameters)
@@ -248,18 +252,21 @@ trait DatatableFieldsTrait
 
         $fieldType = $this->TODO_ChangeAllViewsInTypeGetType($fieldParameters);
 
-        return DatatableField::createByType(
+        $field = DatatableField::createByType(
             $fieldName,
             $fieldType,
             $fieldParameters,
-            $this->getNextFieldIndex()
+            $this->getNextFieldIndex(),
+            $parent = null,
+            $table = $this
         );
+
+        return $field;
     }
 
     public function addField(string $fieldName, $parameters)
     {
         $field = $this->craeteField($fieldName, $parameters);
-        $field->table = $this;
 
         return $this->fields[$fieldName] = $field;
     }
@@ -295,4 +302,18 @@ trait DatatableFieldsTrait
     //     $field = $this->getFieldByName($fieldName);
     //     $field->setIndex($index);
     // }
+
+
+    public function setMainModelElement(string $modelClass = null)
+    {
+        if(! $modelClass)
+            return ;
+
+        $this->placeholderElement = new $modelClass();
+    }
+
+    public function getPlaceholderElement()
+    {
+        return $this->placeholderElement;
+    }
 }

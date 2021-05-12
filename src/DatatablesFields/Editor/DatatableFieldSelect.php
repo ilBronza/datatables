@@ -2,6 +2,7 @@
 
 namespace IlBronza\Datatables\DatatablesFields\Editor;
 
+use IlBronza\Datatables\Datatables;
 use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\EditorSingleFieldTrait;
 
 class DatatableFieldSelect extends DatatableFieldEditor
@@ -11,14 +12,14 @@ class DatatableFieldSelect extends DatatableFieldEditor
 	public $width = '125px';
 	public $fieldType = 'text';
 
-    public function __construct(string $name, array $parameters = [], int $index = null)
+    public function __construct(string $name, array $parameters = [], int $index = null, DatatableField $parent = null, Datatables $table = null)
 	{
-		parent::__construct($name, $parameters, $index);
+		parent::__construct($name, $parameters, $index, $parent, $table);
 	}
 
     public function parseFieldSpecificHeaderData()
     {
-		$this->setHeaderData(
+		$this->setHeaderDataAttribute(
 			'possibleValues',
 			json_encode($this->getPossibleEnumValuesArray())
 		);        

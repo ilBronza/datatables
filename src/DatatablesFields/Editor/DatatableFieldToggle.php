@@ -16,7 +16,7 @@ class DatatableFieldToggle extends DatatableFieldEditor
 	private function getLinkString(string $iconString)
 	{
 		return "
-			item = '<span " . $this->getHtmlDataAttributesString() . $this->getHtmlClassesAttributeString() . $iconString . " ></span>';
+			item = '<span " . $this->getParentDataIndexString() . $this->getHtmlDataAttributesString() . $this->getHtmlClassesAttributeString() . $iconString . " ></span>';
 		";
 	}
 

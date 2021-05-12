@@ -3,13 +3,17 @@
 namespace IlBronza\Datatables\DatatablesFields;
 
 use Auth;
+use IlBronza\Datatables\Datatables;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsColumnDefsTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsDisplayTrait;
+use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsElementTrait;
+use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsFetcherTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsFiltersTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsHtmlClassesTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsIdentifiersTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsOperationsTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsParametersTrait;
+use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsParentingTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsPermissionsTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsSortingTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsSummaryTrait;
@@ -26,6 +30,9 @@ class DatatableField
     use DatatablesFieldsSortingTrait;
     use DatatablesFieldsHtmlClassesTrait;
     use DatatablesFieldsOperationsTrait;
+    use DatatablesFieldsFetcherTrait;
+    use DatatablesFieldsElementTrait;
+    use DatatablesFieldsParentingTrait;
 
     public $id;
     public $name;
@@ -46,6 +53,7 @@ class DatatableField
     public $summaryValues;
     public $sortable = true;
     public $requireElement = false;
+    public $requiresPlaceholderElement = false;
     public $valueAsRowClass = false;
 
     public $defaultFilterType = 'text';
@@ -61,11 +69,16 @@ class DatatableField
         'datatableType' => 'type'
     ];
 
-    public function __construct(string $name, array $parameters = [], int $index = null)
+    public function __construct(string $name, array $parameters = [], int $index = null, DatatableField $parent = null, Datatables $table = null)
     {
         $this->name = $name;
 
         $this->id = $this->generateId();
+
+        $this->table = $table;
+
+        $this->setParentField($parent);
+        $this->setPlaceholderElement();
 
         $this->manageWidth($parameters);
 
@@ -81,10 +94,12 @@ class DatatableField
         $this->setDataAttributes($parameters);
 
         $this->manageFieldOperations($parameters);
+        $this->setFetcherParameters($parameters);
 
         $this->summaryValues = collect();
 
         $this->checkConfirmMessage($parameters);
+
     }
 
     public function getFieldCellDataValue(string $fieldName, $element)
@@ -159,11 +174,11 @@ class DatatableField
         return __NAMESPACE__ . '\\' . $folders . "DatatableField" . $fieldType;
     }
 
-    static function createByType(string $fieldName, string $fieldType, array $fieldParameters, int $index = 0)
+    static function createByType(string $fieldName, string $fieldType, array $fieldParameters, int $index = 0, DatatableField $parent = null, Datatables $table = null)
     {
         $className = static::getClassNameByType($fieldType);
 
-        return new $className($fieldName, $fieldParameters, $index);
+        return new $className($fieldName, $fieldParameters, $index, $parent, $table);
     }
 
     public function getRenderAsType()

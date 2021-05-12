@@ -117,16 +117,18 @@ class Datatables
         mori('non instanceof Closure, vuol dire che è una query o una collection, zio culo culo culo culo cazzo culo cazzo culo merda');
     }
 
-    static function create(string $name, array $fieldsGroups, $elements, bool $selectRowCheckboxes = false, array $extraVariables = [])
+    static function create(string $name, array $fieldsGroups, $elements, bool $selectRowCheckboxes = false, array $extraVariables = null, string $modelClass = null)
     {
         $table = new static();
+
+        $table->setMainModelElement($modelClass);
 
         $table->cleanCachedTableKeyParameterIfEditor();
 
         if($selectRowCheckboxes)
             $table->setRowSelectCheckboxes();
 
-        $table->setVariables($extraVariables);
+        $table->setVariables($extraVariables ?? []);
 
         if(request()->ajax())
         {

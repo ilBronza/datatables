@@ -2,6 +2,7 @@
 
 namespace IlBronza\Datatables\DatatablesFields\Editor;
 
+use IlBronza\Datatables\Datatables;
 use IlBronza\Datatables\DatatablesFields\DatatableField;
 use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\DataAttributesTrait;
 use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\HtmlClassesAttributesTrait;
@@ -17,13 +18,14 @@ class DatatableFieldEditor extends DatatableField
 	public $ajax = true;
 	public $spin = true;
 	public $requireElement = true;
+	public $requiresPlaceholderElement = true;
 
 	//defines if vlaue is retrieved by a methd called on field element
 	public $editorValueFunction = false;
 
-    public function __construct(string $name, array $parameters = [], int $index = null)
+    public function __construct(string $name, array $parameters = [], int $index = null, DatatableField $parent = null, Datatables $table = null)
 	{
-		parent::__construct($name, $parameters, $index);
+		parent::__construct($name, $parameters, $index, $parent, $table);
 
 		$this->setParameterByName();
 	}

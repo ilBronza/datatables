@@ -2,27 +2,21 @@
 
 namespace IlBronza\Datatables\DatatablesFields\Iterators;
 
+use IlBronza\Datatables\Datatables;
+use IlBronza\Datatables\DatatablesFields\DatatableField;
+
 class DatatableFieldEach extends MultipleDatatableField
 {
 	public $child;
 
 	private function manageChildType()
 	{
-		$namePortions = explode(".", $this->name);
-
-		array_shift($namePortions);
-
-        $this->child = static::createByType(
-            implode(".", $namePortions),
-            $this->childParameters['type'],
-            $this->childParameters,
-            0
-        );
+		$this->addChildField();
 	}
 
-	public function __construct(string $name, array $parameters = [], int $index = null)
+    public function __construct(string $name, array $parameters = [], int $index = null, DatatableField $parent = null, Datatables $table = null)
 	{
-		parent::__construct($name, $parameters, $index);
+		parent::__construct($name, $parameters, $index, $parent, $table);
 
 		$this->manageChildType();
 	}
@@ -56,6 +50,8 @@ class DatatableFieldEach extends MultipleDatatableField
 				{
 					let result = '';
 
+					let i = 0;
+
 					data.forEach(function(item)
 					{
 						" . $this->child->getCustomColumnDefSingleResult() . "
@@ -63,6 +59,8 @@ class DatatableFieldEach extends MultipleDatatableField
 
 						if(item)
 							result += item;
+
+						i ++;
 
 						result += '" . $this->separator . "';
 					});

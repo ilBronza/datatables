@@ -33,6 +33,11 @@ trait DatatablesFieldsParametersTrait
             $this->$parameter = [];
     }
 
+    public function setDataAttribute(string $name, string $value)
+    {
+        $this->data[$name] = $value;
+    }
+
     public function setDataAttributes(array $parameters = [])
     {
         $this->data = array_merge(
@@ -47,10 +52,17 @@ trait DatatablesFieldsParametersTrait
             $this->headerData ?? [],
             $parameters['headerData'] ?? []
         );
+
+        if($this->parent)
+            foreach($this->headerData as $name => $value)
+                $this->parent->setHeaderDataAttribute($name, $value);
     }
 
-    public function setHeaderData(string $name, $value)
+    public function setHeaderDataAttribute(string $name, $value)
     {
+        if($this->parent)
+            $this->parent->setHeaderDataAttribute($name, $value);
+
         $this->headerData[$name] = $value;
     }
 
@@ -96,7 +108,7 @@ trait DatatablesFieldsParametersTrait
         if(! ($this->confirmMessage ?? false))
             return ;
 
-        $this->setHeaderData('confirm', __($this->confirmMessage));
+        $this->setHeaderDataAttribute('confirm', __($this->confirmMessage));
     }
 
 }

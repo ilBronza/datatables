@@ -67,7 +67,14 @@ trait DatatablesFieldsColumnDefsTrait
 
     public function getCustomColumnDefSingleResult()
     {
-        return $this->getEndingResultOptions();        
+        $result = "
+            if(item === null)
+                item = '';
+        ";
+
+        $result .= $this->getEndingResultOptions();
+
+        return $result;
     }
 
     public function getCustomColumnDefSingleSearchResult()
