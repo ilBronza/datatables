@@ -30,15 +30,33 @@ class DatatableFieldJsonObjects extends DatatableField
 
 				objects = item;
 
-				for (var key in objects)
-					if (objects.hasOwnProperty(key))
-						result.push(window.datatablesGetJsonObjectString(fields, objects[key]));
+				if(objects.length > 0)
+				{
+					result.push('<table class=\"jsondfieldtable\"><tr>');
+
+					for (var key in fields) {
+						result.push('<th uk-tooltip=\"' + key + '\" class=\"uk-text-truncate\">' + key + '</th>');
+					}
+					result.push('</tr>');
+
+					for (var key in objects)
+					{
+						result.push('<tr>');
+
+						if (objects.hasOwnProperty(key))
+							result.push(window.datatablesGetJsonObjectString(fields, objects[key]));
+
+						result.push('</tr>');
+					}
+
+					result.push('</table>');
+				}
 
 				if(result.length == 0)
 					item = '';
 
 				else
-					item = '<pre class=\"noborder\">' + result.join('<br />') + '</pre>';
+					item = result.join('');
 			}
 
 

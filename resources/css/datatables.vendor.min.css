@@ -18,44 +18,77 @@
     color: #fff;
 }
 
-    .datatablefilter
-    {
-        position: relative;
-    }
+.datatablefilter
+{
+    position: relative;
+}
 
-    .filterfunctions
-    {
-        position: absolute;
-        top: -14px;
-        left: 0px;
-        background-color: rgba(0, 0, 0, 0.5);
-        color: #fff;
-    }
+.filterfunctions
+{
+    position: absolute;
+    top: -14px;
+    left: 19px!important;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+}
 
-    td
-    {
-        max-width: 140px;
-    }
+table.dataTable thead th:hover
+{
+    position: relative;
+}
 
-    nobr
-    {
-        display: inline-block;
-        max-width: 100%;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        line-height: 1em;
-    }
+table.dataTable thead th, table.dataTable thead td
+{
+  padding: 0px!important;
+}
 
-    .uk-text-truncate br
-    {
-        display: none!important;
-    }
+table.dataTable thead th:hover:after
+{
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 18px;
+    height: 22px;
+    position: absolute;
+    top: -14px;
+    left: 0px;
+    content: ' ';
+    display: block;
+    background-image: url(/images/vendor/datatables.net-dt/sort_both.png?8b117fa…)!important;
+}
 
-    .uk-text-truncate *
-    {
-        display: inline!important;
-    }
+table.dataTable thead th.sorting_desc:hover:after
+{
+    background-image: url(/images/vendor/datatables.net-dt/sort_desc.png?c4196d3…) !important;
+}
+
+table.dataTable thead th.sorting_asc:hover:after
+{
+    background-image: url(/images/vendor/datatables.net-dt/sort_asc.png?4bba591…) !important;
+}
+
+td
+{
+    max-width: 140px;
+}
+
+nobr
+{
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1em;
+}
+
+.uk-text-truncate br
+{
+    display: none!important;
+}
+
+.uk-text-truncate *
+{
+    display: inline!important;
+}
 
 .doubled,
 .doubled * 
@@ -94,7 +127,6 @@
     margin-left: 5px;
 }
 
-
 table.dataTable tbody td.select-checkbox:before, table.dataTable tbody th.select-checkbox:before
 {
     position: relative;
@@ -104,4 +136,11 @@ table.dataTable tbody td.select-checkbox:before, table.dataTable tbody th.select
 .uk-navbar-nav > li > a.uk-button
 {
     color: #fff;
+}
+
+table.jsondfieldtable th,
+table.jsondfieldtable td
+{
+    padding: 1px!important;
+    font-size: 0.7em;
 }

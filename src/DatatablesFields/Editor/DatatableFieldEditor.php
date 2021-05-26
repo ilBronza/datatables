@@ -61,7 +61,7 @@ class DatatableFieldEditor extends DatatableField
 
 		$this->pluralModelClass = Str::plural(
 			lcfirst(
-				class_basename($this->element)
+				class_basename($this->element ?? $this->getPlaceholderElement())
 			)
 		);
 

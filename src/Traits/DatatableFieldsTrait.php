@@ -314,6 +314,30 @@ trait DatatableFieldsTrait
 
     public function getPlaceholderElement()
     {
+        if($this->elements)
+            return $this->elements->first();
+
+        if(! $this->placeholderElement)
+            throw new \Exception('Please declare a modelClass parameter for this table');
+
         return $this->placeholderElement;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
