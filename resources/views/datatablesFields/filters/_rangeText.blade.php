@@ -6,6 +6,7 @@
 
 	id="{{ $field->getId() }}start"
 
+	class="uk-input"
 	type="text"
 	placeholder="{{ $field->getTranslatedName() }}"
 	name="{{ $field->name }}start" 
@@ -22,6 +23,7 @@
 
 	id="{{ $field->getId() }}end"
 
+	class="uk-input"
 	type="text"
 	placeholder="{{ $field->getTranslatedName() }}"
 	name="{{ $field->name }}end" 

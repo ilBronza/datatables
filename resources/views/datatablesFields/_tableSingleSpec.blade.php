@@ -17,10 +17,25 @@
 
     window.{{ $table->getId() }}options =  { 
 
+        @if($caption = $table->getCaption())
+        caption: "{{ $caption }}",
+        @endif
         keys : true,
+        language : {
+            lengthMenu: "{!! __('datatables.show_MENU_entries') !!}",
+            info : "{!! __('datatables.showing_START_to_END_of_TOTAL_entries') !!}",
+            search : "{!! __('datatables.search') !!}",
+            searchPlaceholder : "{!! __('datatables.searchPlaceholder') !!}",
+            paginate: {
+                    first : "{!! __('datatables.first') !!}",
+                    last : "{!! __('datatables.last') !!}",
+                    next : "{!! __('datatables.netx') !!}",
+                    previous : "{!! __('datatables.previous') !!}",
+                },
+        },
 
         @if($dom = $table->getCustomDom())
-        dom: '{{ $dom }}',
+        dom: '{!! $dom !!}', //sgarruio
         @endif
 
         @if($table->isAjaxTable())

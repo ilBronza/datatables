@@ -8,6 +8,9 @@ class DatatableFieldEdit extends DatatableFieldLink
 
 	public function transformValue($value)
 	{
+		if(! $value)
+			return null;
+
 		if(! $this->textParameter)
 			return $value->getEditUrl();
 

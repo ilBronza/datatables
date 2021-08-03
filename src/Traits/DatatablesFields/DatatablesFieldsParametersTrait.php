@@ -2,8 +2,6 @@
 
 namespace IlBronza\Datatables\Traits\DatatablesFields;
 
-use Spatie\Permission\Models\Role;
-
 trait DatatablesFieldsParametersTrait
 {
     static $overrideGuardedFields = [

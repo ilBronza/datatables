@@ -59,6 +59,11 @@ class DatatableFieldEditor extends DatatableField
 		if($this->pluralModelClass ?? false)
 			return $this->pluralModelClass;
 
+		$element = $this->element ?? $this->getPlaceholderElement();
+
+		if(method_exists($element, 'getRouteBasename'))
+			return $element->getRouteBasename();
+
 		$this->pluralModelClass = Str::plural(
 			lcfirst(
 				class_basename($this->element ?? $this->getPlaceholderElement())

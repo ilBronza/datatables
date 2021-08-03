@@ -41,6 +41,7 @@ class Datatables
     public $sourceType = 'ajax';
     public $variables = [];
     public $modelClass;
+    public $dom;
 
     public function __construct()
     {
@@ -48,6 +49,11 @@ class Datatables
         $this->fieldsGroups = collect();
 
         $this->customButtons = collect();
+    }
+
+    public function getBaseDom()
+    {
+        return 'B<"uk-clearfix"><"uk-flex uk-flex-middle uk-child-width-1-3"<"uk-flex uk-flex-middle"ril><"tablecaption"><f>>tip';
     }
 
     public function setMinimalDom()
@@ -58,7 +64,7 @@ class Datatables
 
     public function getCustomDom()
     {
-        return $this->dom ?? null;
+        return $this->dom ?? $this->getBaseDom();
     }
 
     public function addBaseModelClass(string $modelClass)
@@ -181,7 +187,7 @@ class Datatables
         return $this->url;
     }
 
-    public function setElements(Collection $elements)
+    public function setElements(Collection $elements = null)
     {
         $this->elements = $elements;
     }

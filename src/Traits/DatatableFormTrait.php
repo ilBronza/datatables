@@ -12,7 +12,7 @@ trait DatatableFormTrait
             if($field->name == $columnIntestation)
                 return $field;
 
-        throw new \Exception('column intestation not found');
+        throw new \Exception('column intestation "' . $columnIntestation . '" not found. Check existence and permissions');
     }
 
     public function setDragAndDropColumnIntestation($columnIntestation)

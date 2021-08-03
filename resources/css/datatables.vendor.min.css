@@ -1,3 +1,9 @@
+table.dataTable thead th,
+table.dataTable tfoot th
+{
+    vertical-align: middle;
+}
+
 .dataTable tbody input.uk-input
 {
     padding: 1px;
@@ -30,6 +36,12 @@
     left: 19px!important;
     background-color: rgba(0, 0, 0, 0.5);
     color: #fff;
+}
+
+.datatable tbody *
+{
+    font-size: 12px;
+    line-height: 16px;
 }
 
 table.dataTable thead th:hover
@@ -85,6 +97,11 @@ nobr
     display: none!important;
 }
 
+.uk-text-truncate
+{
+    display: inline-block;
+}
+
 .uk-text-truncate *
 {
     display: inline!important;
@@ -127,7 +144,8 @@ nobr
     margin-left: 5px;
 }
 
-table.dataTable tbody td.select-checkbox:before, table.dataTable tbody th.select-checkbox:before
+table.dataTable tbody td.select-checkbox:before, table.dataTable tbody th.select-checkbox:before,
+table.dataTable tbody td.select-checkbox:after, table.dataTable tbody th.select-checkbox:after
 {
     position: relative;
     top: auto;
@@ -143,4 +161,20 @@ table.jsondfieldtable td
 {
     padding: 1px!important;
     font-size: 0.7em;
+}
+
+.dataTables_length select
+{
+    max-width: 60px;
+}
+
+.dataTables_length
+{
+    margin-left: 10px;
+    width: 140px;
+}
+
+.dataTables_wrapper .dataTables_info
+{
+    padding-top: 0;
 }

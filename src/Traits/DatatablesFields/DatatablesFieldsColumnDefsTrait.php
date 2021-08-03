@@ -109,6 +109,7 @@ trait DatatablesFieldsColumnDefsTrait
 
                     return item;
                 }
+
                 if(type == 'filter')
                 {
                     " . $this->getCustomColumnDefSingleSearchResult() . "
@@ -122,7 +123,6 @@ trait DatatablesFieldsColumnDefsTrait
 
                     return item;
                 }
-
 
                 return item;
             }

@@ -14,7 +14,7 @@ class DatatableFieldEach extends MultipleDatatableField
 		$this->addChildField();
 	}
 
-    public function __construct(string $name, array $parameters = [], int $index = null, DatatableField $parent = null, Datatables $table = null)
+	public function __construct(string $name, array $parameters = [], int $index = null, DatatableField $parent = null, Datatables $table = null)
 	{
 		parent::__construct($name, $parameters, $index, $parent, $table);
 
@@ -32,6 +32,11 @@ class DatatableFieldEach extends MultipleDatatableField
 	public function getColumnDefSingleResult()
 	{
 		return $this->child->getColumnDefSingleResult();
+	}
+
+	public function getCustomColumnDefSingleResult()
+	{
+		return $this->child->getCustomColumnDefSingleResult();
 	}
 
 	public function getCustomColumnDef()

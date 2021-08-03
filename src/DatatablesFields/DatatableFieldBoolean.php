@@ -53,6 +53,13 @@ class DatatableFieldBoolean extends DatatableField
 		";
 	}
 
+    public function getCustomColumnDefSingleSearchResult()
+    {
+        return "
+            return (item)? 1 : 0;
+        ";
+    }
+
 	public function getCustomColumnDefSingleResult()
 	{
 		if($this->nullable)

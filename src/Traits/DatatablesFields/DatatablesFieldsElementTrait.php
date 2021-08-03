@@ -31,7 +31,14 @@ trait DatatablesFieldsElementTrait
 
         $property = array_shift($pieces);
 
-        return $placeholderElement->{$property}()->make();
+        try
+        {
+            return $placeholderElement->{$property}()->make();            
+        }
+        catch(\Exception $e)
+        {
+            ddd($placeholderElement);
+        }
     }
 
     public function getPlaceholderElement()

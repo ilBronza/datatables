@@ -6,14 +6,24 @@ use IlBronza\Datatables\DatatablesFields\DatatableField;
 
 trait DatatablesFieldsParentingTrait
 {
-	public function addChildField()
+	private function getChildName()
 	{
+		if(isset($this->property))
+			return $this->property;
+
 		$namePortions = explode(".", $this->name);
 
 		array_shift($namePortions);
 
+		return implode(".", $namePortions);
+	}
+
+	public function addChildField()
+	{
+		$childName = $this->getChildName();
+
 		$this->child = static::createByType(
-			implode(".", $namePortions),
+			$childName,
 			$this->childParameters['type'],
 			$this->childParameters,
 			0,

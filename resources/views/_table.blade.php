@@ -4,10 +4,6 @@
     @include('datatables::__extraViews', ['position' => 'top'])
 @endif
 
-    @if($caption = $table->getCaption())
-    <span class="uk-h3">{{ $caption }}</span>
-    @endif
-
     <table
         id="{{ $table->getId() }}"
 
