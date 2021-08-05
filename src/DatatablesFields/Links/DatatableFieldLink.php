@@ -3,20 +3,17 @@
 namespace IlBronza\Datatables\DatatablesFields\Links;
 
 use IlBronza\Datatables\DatatablesFields\DatatableField;
-use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\DataAttributesTrait;
-use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\HtmlClassesAttributesTrait;
 use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\IconTextContentTrait;
 
 class DatatableFieldLink extends DatatableField
 {
-	use HtmlClassesAttributesTrait;
 	use IconTextContentTrait;
-	use DataAttributesTrait;
 
 	public $icon = false;
 	public $textParameter = false;
 	public $defaultWidth = '45px';
 	public $dataAttributes = [];
+	public $htmlTag = 'a';
 
 	/**
 	 * return field default width based on text existence or just icon
@@ -97,7 +94,9 @@ class DatatableFieldLink extends DatatableField
 	{
 		return "
 			if(item)
-				item = '<a " . $this->getHtmlDataAttributesString() . " " . $this->getHtmlClassesAttributeString() . " " . $this->getTargetHtml() . " href=\"' + " . $this->getLinkUrlString() . " + '\">" . $this->getIconHtml() . "' + " . $this->getLinkTextString() . " + '</a>';
+			{
+				item = '<" . $this->getHtmlTagString() . $this->getParentDataIndexString() . $this->getHtmlDataAttributesString() . " " . $this->getHtmlClassesAttributeString() . " " . $this->getTargetHtml() . " href=\"' + " . $this->getLinkUrlString() . " + '\">" . $this->getPrefix() . "" . $this->getIconHtml() . "' + " . $this->getLinkTextString() . " + '" . $this->getSuffix() . "</" . $this->getHtmlTagString() . ">';
+			}
 
 			else item = '';
 		";

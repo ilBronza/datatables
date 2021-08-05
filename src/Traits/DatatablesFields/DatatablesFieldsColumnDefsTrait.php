@@ -67,14 +67,20 @@ trait DatatablesFieldsColumnDefsTrait
 
     public function getCustomColumnDefSingleResult()
     {
-        $result = "
+        if($this->getParentDataIndexString()||($this->getHtmlDataAttributesString())||$this->getHtmlClassesAttributeString())
+                return "
+                if(item === null)
+                    item = '';
+                else 
+                    item = '<span " . $this->getParentDataIndexString() . $this->getHtmlDataAttributesString() . $this->getHtmlClassesAttributeString() . " >' + item + '</span>';
+            ";
+
+        return "
             if(item === null)
                 item = '';
         ";
 
-        $result .= $this->getEndingResultOptions();
-
-        return $result;
+        // $result .= $this->getEndingResultOptions();
     }
 
     public function getCustomColumnDefSingleSearchResult()

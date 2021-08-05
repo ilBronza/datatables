@@ -15,8 +15,6 @@ trait DatatablesFieldsParametersTrait
 
     public function setParameters(array $parameters)
     {
-        // $this->setParameterByName('view', $parameters, true);
-
         foreach($parameters as $name => $parameter)
             if(! in_array($name, ['htmlClasses', 'data']))
                 $this->setParameter($name, $parameter);

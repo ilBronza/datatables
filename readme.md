@@ -77,6 +77,29 @@ npm run development
 
 ## Usage
 
+
+
+Example for fetcher field
+
+``` bash
+    'mySelfTimingMessage.quantityWorkstations' => [
+        'type' => 'iterators.each',
+        'childParameters' => [
+            'requiresPlaceholderElement' => true,
+            'textParameter' => 'workstation_alias',
+            'type' => 'links.fetcher',
+
+            'fetcher' => [
+                'urlMethod' => 'getPriceCalculationMessageUrl',
+                'target' => 'currentField'
+            ]
+        ],
+        'width' => '25px'
+    ],
+```
+
+
+
 ## Change log
 
 Please see the [changelog](changelog.md) for more information on what has changed recently.

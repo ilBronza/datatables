@@ -43,7 +43,7 @@ trait DatatablesFieldsElementTrait
 
     public function getPlaceholderElement()
     {
-        if(! $this->placeholderElement)
+        if(empty($this->placeholderElement))
             return $this->table->getPlaceholderElement();
         
         return $this->placeholderElement;

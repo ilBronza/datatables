@@ -4,15 +4,11 @@ namespace IlBronza\Datatables\DatatablesFields\Editor;
 
 use IlBronza\Datatables\Datatables;
 use IlBronza\Datatables\DatatablesFields\DatatableField;
-use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\DataAttributesTrait;
-use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\HtmlClassesAttributesTrait;
 use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\IconTextContentTrait;
 use Illuminate\Support\Str;
 
 class DatatableFieldEditor extends DatatableField
 {
-	use DataAttributesTrait;
-	use HtmlClassesAttributesTrait;
 	use IconTextContentTrait;
 
 	public $ajax = true;

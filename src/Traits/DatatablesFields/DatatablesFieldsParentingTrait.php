@@ -26,9 +26,9 @@ trait DatatablesFieldsParentingTrait
 			$childName,
 			$this->childParameters['type'],
 			$this->childParameters,
-			0,
-			$this,
-			$this->table
+			$index = 0,
+			$parent = $this,
+			$table = $this->table
 		);
 	}
 

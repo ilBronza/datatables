@@ -4,6 +4,8 @@ namespace IlBronza\Datatables\DatatablesFields;
 
 use Auth;
 use IlBronza\Datatables\Datatables;
+use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\DataAttributesTrait;
+use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\HtmlClassesAttributesTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsColumnDefsTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsDisplayTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsElementTrait;
@@ -33,6 +35,8 @@ class DatatableField
     use DatatablesFieldsFetcherTrait;
     use DatatablesFieldsElementTrait;
     use DatatablesFieldsParentingTrait;
+    use HtmlClassesAttributesTrait;
+    use DataAttributesTrait;
 
     public $id;
     public $name;
@@ -55,6 +59,7 @@ class DatatableField
     public $requireElement = false;
     public $requiresPlaceholderElement = false;
     public $valueAsRowClass = false;
+    public $htmlTag;
 
     public $defaultFilterType = 'text';
 
@@ -78,11 +83,13 @@ class DatatableField
         $this->table = $table;
 
         $this->setParentField($parent);
+
+        $this->setParameters($parameters);
+
         $this->setPlaceholderElement();
 
         $this->manageWidth($parameters);
 
-        $this->setParameters($parameters);
 
         $this->setIndex($index);
 
@@ -94,12 +101,12 @@ class DatatableField
         $this->setDataAttributes($parameters);
 
         $this->manageFieldOperations($parameters);
+
         $this->setFetcherParameters($parameters);
 
         $this->summaryValues = collect();
 
         $this->checkConfirmMessage($parameters);
-
     }
 
     public function getFieldCellDataValue(string $fieldName, $element)
@@ -361,4 +368,13 @@ class DatatableField
     //  unset($parameters[$name]);
     // }
 
+    public function getHtmlTagString()
+    {
+        return $this->getHtmlTag() . ' ';
+    }
+
+    public function getHtmlTag()
+    {
+        return $this->htmlTag;
+    }
 }
