@@ -35,7 +35,7 @@ trait DatatablesExtraViewsTrait
             return ;
 
         if(! $view = $this->getParentModelView($parentModel))
-            $view = 'crud::models._parentModelExtraView';
+            $view = 'uikittemplate::models._parentModel';
 
         $this->addTopView($view, compact('parentModel'));
     }

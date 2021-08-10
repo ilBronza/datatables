@@ -13,11 +13,19 @@ trait DatatablesFieldsParametersTrait
         return $this->name;
     }
 
+    public function manageRefreshRow(array $parameters)
+    {
+        if(isset($parameters['refreshRow']))
+            $this->setDataAttribute('refreshRow', $parameters['refreshRow']);
+    }
+
     public function setParameters(array $parameters)
     {
         foreach($parameters as $name => $parameter)
             if(! in_array($name, ['htmlClasses', 'data']))
                 $this->setParameter($name, $parameter);
+
+        $this->manageRefreshRow($parameters);
     }
 
     public function setParameter($name, $parameter)
