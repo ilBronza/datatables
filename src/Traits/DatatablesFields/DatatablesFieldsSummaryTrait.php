@@ -36,6 +36,29 @@ trait DatatablesFieldsSummaryTrait
                 return (float) $value;
             });
 
+        if(($summaryType == 'sumMinutesArray')||($summaryType == 'sumSecondsArray'))
+        {
+            $totalMinutes = $this->summaryValues->sum(function ($value)
+            {
+                $tot = 0;
+                foreach($value as $_value)
+                    if($_value)
+                        $tot += (float) $_value;
+
+                    return $tot;
+            });
+
+            $pieces = [];
+
+            if($hours = floor($totalMinutes / 60))
+                $pieces[] = $hours . " h";
+
+            if($minutes = $totalMinutes % 60)
+                $pieces[] = $minutes . " \'";
+
+            return  implode(" ", $pieces);
+        }
+
         if($summaryType == 'sumMinutes')
         {
             $totalMinutes = $this->summaryValues->sum(function ($value)

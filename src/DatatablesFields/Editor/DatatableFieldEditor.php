@@ -133,6 +133,43 @@ class DatatableFieldEditor extends DatatableField
 		";
 	}
 
+
+	// <div class="uk-width-1-2@s input-group">
+ //        <input class="uk-input" type="text" placeholder="50">
+ //      <div class="input-group-append">
+ //        <div class="input-group-text">
+ //          @email
+ //        </div>
+ //      </div>
+ //    </div>
+
+	public function getSuffixString()
+	{
+		if(! $suffix = $this->getSuffix())
+			return null;
+		
+		return "<div class=\'ib-suffix\'><div>" . $suffix . "</div></div>";
+	}
+
+	public function getPrefixString()
+	{
+		if(! $prefix = $this->getPrefix())
+			return null;
+		
+		return "<div class=\'ib-prefix\'><div>" . $prefix . "</div></div>";
+	}
+
+    public function getEndingResultOptions() : ? string
+    {
+        if($this->getSuffix()||$this->getPrefix())
+            return "
+            if(item)
+                item = '<div class=\'ib-suffix-container\'>" . $this->getPrefixString() . "' + item + '" . $this->getSuffixString() . "</div>';
+        ";
+
+        return null;
+    }
+
     public function getCustomColumnDefSingleSearchResult()
     {
         return "

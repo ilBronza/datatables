@@ -62,13 +62,16 @@ trait DatatableDataTrait
     {
         $value = $this->getTableCellDataValue($field->name, $element);
 
+        if($field->requireElement())
+            return $field->transformValueWithSummary($element);
+
         return $field->transformValueWithSummary($value);
     }
 
     public function calculateData()
     {
-        if($this->hasSummary())
-            return $this->calculateDataWithSummary();
+        // if($this->hasSummary())
+        //     return $this->calculateDataWithSummary();
 
         return $this->_calculateData();
     }

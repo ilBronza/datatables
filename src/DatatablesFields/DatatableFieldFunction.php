@@ -9,6 +9,9 @@ class DatatableFieldFunction extends DatatableField
 		if(! $value)
 			return;
 
+		if(isset($this->staticVariableValue))
+			return $value->{$this->function}($this->staticVariableValue);
+
 		if(! isset($this->variable))
 			return $value->{$this->function}();
 

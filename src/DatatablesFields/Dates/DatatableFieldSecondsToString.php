@@ -21,8 +21,6 @@ class DatatableFieldSecondsToString extends DatatableField
 				let minutes = Math.floor((item % 3600) / 60);
 				let seconds = item % 60;
 
-				console.log(seconds);
-
 				item = '';
 
 				if(hours > 0)
