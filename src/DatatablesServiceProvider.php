@@ -13,7 +13,7 @@ class DatatablesServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'IlBronza');
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'datatables');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'datatables');
         // $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         // $this->loadRoutesFrom(__DIR__.'/routes.php');
@@ -78,9 +78,9 @@ class DatatablesServiceProvider extends ServiceProvider
         ], 'datatables.assets');
 
         // Publishing the translation files.
-        /*$this->publishes([
-            __DIR__.'/../resources/lang' => resource_path('lang/vendor/IlBronza'),
-        ], 'datatables.views');*/
+        $this->publishes([
+            __DIR__.'/../resources/lang' => base_path('resources/lang'),
+        ], 'datatables.lang');
 
         // Registering package commands.
         // $this->commands([]);

@@ -11,6 +11,7 @@ class DatatableFieldLink extends DatatableField
 
 	public $icon = false;
 	public $textParameter = false;
+	public $textMethod = false;
 	public $defaultWidth = '45px';
 	public $dataAttributes = [];
 	public $htmlTag = 'a';
@@ -84,10 +85,13 @@ class DatatableFieldLink extends DatatableField
 
 	public function getLinkUrlString()
 	{
-		if(! $this->textParameter)
-			return "item";
+		if($this->textParameter)
+			return "item[0]";
 
-		return "item[0]";
+		if($this->textMethod)
+			return "item[0]";
+
+		return "item";
 	}
 
 	public function getCustomColumnDefSingleResult()

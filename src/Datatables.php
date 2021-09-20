@@ -123,7 +123,41 @@ class Datatables
         mori('non instanceof Closure, vuol dire che è una query o una collection, zio culo culo culo culo cazzo culo cazzo culo merda');
     }
 
-    static function create(string $name, array $fieldsGroups, $elements, bool $selectRowCheckboxes = false, array $extraVariables = null, string $modelClass = null)
+    static function createStandAloneTable(array $parameters)
+    {
+        $name = $parameters['name'];
+        $fieldsGroups = $parameters['fieldsGroups'] ?? 'index';
+        $elements = $parameters['elements'];
+        $selectRowCheckboxes = $parameters['selectRowCheckboxes'] ?? false;
+        $extraVariables = $parameters['extraVariables'] ?? null;
+        $modelClass = $parameters['modelClass'] ?? null;
+
+        $table = static::create(
+            $name,
+            $fieldsGroups,
+            function() use($elements)
+            {
+                return $elements;
+            },
+            $selectRowCheckboxes,
+            $extraVariables,
+            $modelClass
+        );
+
+        $table->setArrayTable();
+        $table->bind($parameters);
+
+        return $table;
+    }
+
+    static function create(
+        string $name,
+        array $fieldsGroups,
+        $elements,
+        bool $selectRowCheckboxes = false,
+        array $extraVariables = null,
+        string $modelClass = null
+    )
     {
         $table = new static();
 
@@ -288,6 +322,13 @@ class Datatables
     public function isArrayTable()
     {
         return $this->sourceType == 'array';
+    }
+
+    //TODO PROTEGGERE QUESTA CON DEI FILLABLE???
+    public function bind(array $parameters)
+    {
+        foreach($parameters as $key => $value)
+            $this->{$key} = $value;
     }
 }
 

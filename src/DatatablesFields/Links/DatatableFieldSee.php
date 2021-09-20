@@ -6,12 +6,17 @@ class DatatableFieldSee extends DatatableFieldLink
 {
 	public function transformValue($value)
 	{
+		if(! $value)
+			return [null, null];
+
+		if($this->textMethod)
+			return [
+				$value->getShowUrl(),
+				$value->{$this->textMethod}()
+			];
 
 		if(! $this->textParameter)
 			return $value->getShowUrl();
-
-		if(! $value)
-			return [null, null];
 
 		return [
 			$value->getShowUrl(),
