@@ -2,7 +2,7 @@
 
 namespace IlBronza\Datatables\DatatablesFields\Iterators;
 
-class DatatableFieldFirst extends DatatableFieldEach
+class DatatableFieldFirst extends DatatableFieldSingle
 {
 	public function transformValue($value)
 	{
@@ -11,28 +11,5 @@ class DatatableFieldFirst extends DatatableFieldEach
 
 		//return first element of array, object, collection
 		return $this->getItemValue($item);
-	}
-
-	public function getCustomColumnDefSingleResult()
-	{
-		return $this->child->getCustomColumnDefSingleResult();
-	}
-
-	public function getCustomColumnDef()
-	{
-		return "
-		{
-            //" . $this->getName() . "
-			targets: [" . $this->getIndex() . "],
-			render: function ( item, type, row, meta )
-			{
-				" . $this->child->getCustomColumnDefSingleResult() . "
-				" . $this->getEndingResultOptions() . "
-
-				item += '" . $this->separator . "';
-
-				return item;
-			}
-		}";
 	}
 }

@@ -2,7 +2,7 @@
 
 namespace IlBronza\Datatables\DatatablesFields\Iterators;
 
-class DatatableFieldLast extends DatatableFieldFirst
+class DatatableFieldLast extends DatatableFieldSingle
 {
 	public function transformValue($value)
 	{
