@@ -153,7 +153,7 @@
         {
             text: 'Reload',
             action: function ( e, dt, node, config ) {
-                dt.ajax.reload();
+                window.reloadDatatable(dt);
             }
         },
 
@@ -210,7 +210,6 @@
             @if($jsMethodText = $button->renderJsMethod())
             action: function ( e, dt, node, config ) {
                 {!! $jsMethodText !!}
-                // dt.ajax.reload();
             }
             @endif
         } @if(! $loop->last), @endif
