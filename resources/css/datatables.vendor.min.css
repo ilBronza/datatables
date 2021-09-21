@@ -1,3 +1,9 @@
+.sis-buttons-header
+{
+    background-color: #fff;
+    padding: 12px;
+}
+
 table.dataTable thead th,
 table.dataTable tfoot th
 {

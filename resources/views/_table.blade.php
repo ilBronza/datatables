@@ -16,6 +16,8 @@
         data-summary="true"
         @endif
 
+        {!! $table->getDomStickynessDataAttribute() !!}
+
         class="wannabedatatable uk-table {{ $table->getStripeClass() }} datatable {{ $table->getName() }}"
         style="width:100%;"
         >
@@ -82,7 +84,6 @@
 
         </thead>
     </table>
-
 
 @if(! request()->input('justTable', false))
     @include('datatables::__extraViews', ['position' => 'bottom'])

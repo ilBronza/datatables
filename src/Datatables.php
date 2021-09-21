@@ -6,6 +6,7 @@ use App\Models\Appointment;
 use IlBronza\Datatables\Traits\DatatableButtonsTrait;
 use IlBronza\Datatables\Traits\DatatableColumnDefsTrait;
 use IlBronza\Datatables\Traits\DatatableDataTrait;
+use IlBronza\Datatables\Traits\DatatableDomTrait;
 use IlBronza\Datatables\Traits\DatatableFieldsTrait;
 use IlBronza\Datatables\Traits\DatatableFormTrait;
 use IlBronza\Datatables\Traits\DatatableOptionsTrait;
@@ -17,6 +18,7 @@ use Illuminate\Support\Str;
 
 class Datatables
 {
+    use DatatableDomTrait;
     use DatatableFormTrait;
     use DatatableButtonsTrait;
     use DatatableDataTrait;
@@ -43,28 +45,15 @@ class Datatables
     public $modelClass;
     public $dom;
 
+    public $domStickyButtons;
+    public $domStickyHeader;
+
     public function __construct()
     {
         $this->fields = collect();
         $this->fieldsGroups = collect();
 
         $this->customButtons = collect();
-    }
-
-    public function getBaseDom()
-    {
-        return 'B<"uk-clearfix"><"uk-flex uk-flex-middle uk-child-width-1-3"<"uk-flex uk-flex-middle"ril><"tablecaption"><f>>tip';
-    }
-
-    public function setMinimalDom()
-    {
-        //Blfritip
-        $this->dom = 'ftip';
-    }
-
-    public function getCustomDom()
-    {
-        return $this->dom ?? $this->getBaseDom();
     }
 
     public function addBaseModelClass(string $modelClass)
