@@ -38,5 +38,10 @@ trait DataAttributesTrait
 			$result[] = " data-" . $data . "=\"" . $value . "\" ";
 
 		return implode(" ", $result);
-	}    
+	}
+
+	public function isFilterable()
+	{
+		return $this->filterable;
+	}
 }
