@@ -39,7 +39,9 @@ class DatatableFieldSelect extends DatatableFieldEditor
 
 	public function getPossibleEnumValues()
     {
-        $_enumStr = \DB::select(\DB::raw('SHOW COLUMNS FROM ' . $this->element->getTable() . ' WHERE Field = "' . $this->name . '"'));
+    	$element = $this->element ?? $this->getPlaceholderElement();
+
+        $_enumStr = \DB::select(\DB::raw('SHOW COLUMNS FROM ' . $element->getTable() . ' WHERE Field = "' . $this->name . '"'));
 
         $enumStr = $_enumStr[0]->Type;
         preg_match_all("/'([^']+)'/", $enumStr, $matches);

@@ -117,8 +117,9 @@ trait DatatableOptionsTrait
     public function parseOptions()
     {
         foreach($this->fieldsGroups as $fieldsGroup)
-            foreach($fieldsGroup->fields as $field)
-                $this->checkFieldOptions($field);
+            if(isset($fieldsGroup->fields))
+                foreach($fieldsGroup->fields as $field)
+                    $this->checkFieldOptions($field);
 
         $this->normalizeOrderOption();
     }

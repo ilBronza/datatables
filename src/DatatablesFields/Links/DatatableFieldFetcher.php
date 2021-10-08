@@ -6,6 +6,7 @@ class DatatableFieldFetcher extends DatatableFieldLink
 {
 	public $icon = false;
 	public $tarbet = '_blank';
+	public $requiresPlaceholderElement = true;
 	public $htmlTag = 'span';
 
 	public function transformValue($value)

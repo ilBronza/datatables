@@ -13,6 +13,7 @@ class DatatableFieldLink extends DatatableField
 	public $textParameter = false;
 	public $textMethod = false;
 	public $defaultWidth = '45px';
+	public $showNull = false;
 	public $dataAttributes = [];
 	public $htmlTag = 'a';
 
@@ -97,6 +98,7 @@ class DatatableFieldLink extends DatatableField
 	public function getCustomColumnDefSingleResult()
 	{
 		return "
+
 			if(item)
 			{
 				item = '<" . $this->getHtmlTagString() . $this->getParentDataIndexString() . $this->getHtmlDataAttributesString() . " " . $this->getHtmlClassesAttributeString() . " " . $this->getTargetHtml() . " href=\"' + " . $this->getLinkUrlString() . " + '\">" . $this->getPrefix() . "" . $this->getIconHtml() . "' + " . $this->getLinkTextString() . " + '" . $this->getSuffix() . "</" . $this->getHtmlTagString() . ">';

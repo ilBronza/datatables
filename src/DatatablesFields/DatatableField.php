@@ -60,6 +60,16 @@ class DatatableField
     public $requiresPlaceholderElement = false;
     public $valueAsRowClass = false;
     public $htmlTag;
+    public $doubler = false;
+
+    //nuovo campo per capire se è abilitato il filtro o meno
+    public $filterable = true;
+
+
+    public function hasDoubler()
+    {
+        return $this->doubler;
+    }
 
     public $defaultFilterType = 'text';
 

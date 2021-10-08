@@ -3,6 +3,7 @@
 namespace IlBronza\Datatables\Traits\DatatablesFields;
 
 use IlBronza\Datatables\Datatables;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
 trait DatatablesFieldsRelationsTrait
@@ -70,11 +71,13 @@ trait DatatablesFieldsRelationsTrait
 
         $relatedRouteBasername = Str::plural($modelBasename);
 
-
-        return route(implode(".", [$parentRouteBasename, $relatedRouteBasername, $type]), [
+        if(Route::has($route = implode(".", [$parentRouteBasename, $relatedRouteBasername, $type]), [
             $parentModelBasename => '%f',
             $modelBasename => '%s'
-        ]);
+        ]))
+            return route($route);
+
+        return false;
     }
 
     private function getRelationModelSprintFRouteByType(string $type)
@@ -86,10 +89,11 @@ trait DatatablesFieldsRelationsTrait
             );
 
         if(isset($this->table->modelClass)&&($this->isDependentRelation()))
-            return $this->getRelationshipSprintFRouteByModelType(
+            if($route = $this->getRelationshipSprintFRouteByModelType(
                 $this->getRelationModelName(),
                 $type
-            );
+            ))
+            return $route;
 
         return $this->getSprintFRouteByModelType(
             $this->getRelationModelName(),

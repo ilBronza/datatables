@@ -127,5 +127,12 @@ trait DatatableDataTrait
         return $this->cachedTableKey;
     }
 
+    public function hasDoublerFields()
+    {
+        foreach($this->fields as $field)
+            if($field->hasDoubler())
+                return true;
 
+        return false;
+    }
 }

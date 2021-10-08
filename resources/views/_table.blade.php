@@ -28,8 +28,10 @@
                     uk-tooltip="{{ $field->getTranslatedName() }}"
                     class="{{ $field->getHeaderHtmlClasses() }}"
 
+                    data-showDuplicates="{{ $field->hasDoubler() }}"
                     data-range="{{ $field->hasRangeFilter() }}"
                     data-filter="{{ $field->getFilterType() }}"
+                    data-filterable="{{ $field->isFilterable() }}"
                     data-name="{{ $field->getFieldName() }}"
                     data-camelName="{{ $field->getCamelName() }}"
                     data-column="{{ $field->getIndex() }}"
