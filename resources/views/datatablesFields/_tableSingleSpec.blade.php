@@ -150,35 +150,16 @@
 
     window.{{ $table->getId() }}buttons = @if(count($buttons = $table->getButtons())||(count(1))) [
 
-        {
-            text: 'Reload',
-            action: function ( e, dt, node, config ) {
-                window.reloadDatatable(dt);
-            }
-        },
+        'search',
+        'reload',
 
         @if($table->hasSelectRowCheckboxes())
-        {
-            extend: 'selected',
-            text: 'Solo selezionate',
-            action: function ( e, dt, button, config )
-            {
-                if (button.text() == 'Solo selezionate') {
-                    window.{{ $table->getId() }}FilteredSelected = true;
-                    dt.rows({ selected: false }).nodes().to$().css({"display":"none"});
-                    button.text('Tutte le righe');
-                }
-                else {
-                    window.{{ $table->getId() }}FilteredSelected = false;
-                    dt.rows({ selected: false }).nodes().to$().css({"display":"table-row"});
-                    button.text('Solo selezionate');
-                }
-
-                window['table{{ $table->getId() }}'].draw();
-            }
-        },
+        'selectedRows',
         @endif
 
+        @if($table->hasDoublerFields())
+        'doubler',
+        @endif
 
     @if($table->hasSummary())
         'removeSummary',
