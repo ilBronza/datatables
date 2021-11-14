@@ -44,4 +44,5 @@ trait DataAttributesTrait
 	{
 		return $this->filterable;
 	}
+
 }

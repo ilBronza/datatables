@@ -45,8 +45,12 @@ class Datatables
     public $modelClass;
     public $dom;
 
+    public $scrollX = true;
+
     public $domStickyButtons;
     public $domStickyHeader;
+
+    public $filterOnEnter = false;
 
     public function __construct()
     {
@@ -133,7 +137,13 @@ class Datatables
             $modelClass
         );
 
+        if(request()->rowId)
+            return $table->returnSingleElement($elements);
+
         $table->setArrayTable();
+
+        unset($parameters['fieldsGroups']);
+
         $table->bind($parameters);
 
         return $table;
@@ -318,6 +328,11 @@ class Datatables
     {
         foreach($parameters as $key => $value)
             $this->{$key} = $value;
+    }
+
+    public function canScrollX()
+    {
+        return $this->scrollX;
     }
 }
 

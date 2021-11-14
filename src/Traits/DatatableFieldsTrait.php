@@ -9,6 +9,11 @@ use IlBronza\Datatables\DatatablesFields\DatatableField;
 
 trait DatatableFieldsTrait
 {
+    public function drawOnFieldsEvents()
+    {
+        return ! $this->filterOnEnter;
+    }
+
     private function parsePermissionsAndRoles()
     {
         foreach($this->fieldsGroups as $fieldGroup)

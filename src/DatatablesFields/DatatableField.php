@@ -59,8 +59,12 @@ class DatatableField
     public $requireElement = false;
     public $requiresPlaceholderElement = false;
     public $valueAsRowClass = false;
+    public $valueAsRowClassPrefix = false;
     public $htmlTag;
     public $doubler = false;
+    public $jqueryFilterEvents = ['change', 'keyup'];
+
+    public $canDrawTable = true;
 
     //nuovo campo per capire se è abilitato il filtro o meno
     public $filterable = true;

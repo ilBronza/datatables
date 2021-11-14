@@ -22,7 +22,7 @@ class DatatableFieldNumeric extends DatatableFieldEditor
 
 		" . $this->substituteUrlParameter() . "
 
-		item = '<input " . $this->getValueString() . $this->getTypeString() . " class=\"" . $classes . " uk-input ib-editor-text\" data-url=\"' + url + '\" data-field=\"{$this->parameter}\" />';
+		item = '<input maruionne " . $this->getHtmlDataAttributesString() . $this->getValueString() . $this->getTypeString() . " class=\"" . $classes . " uk-input ib-editor-text\" data-url=\"' + url + '\" data-field=\"{$this->parameter}\" />';
 
 		";
 	}

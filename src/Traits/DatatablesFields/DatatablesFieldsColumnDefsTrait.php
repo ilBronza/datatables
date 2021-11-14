@@ -164,14 +164,14 @@ trait DatatablesFieldsColumnDefsTrait
         if($this->valueAsRowClass)
 
             return "
-        let val = data[" . $this->getIndex() . "];
+        window.valueAsClass = data[" . $this->getIndex() . "];
 
-        if(typeof val !== 'undefined')
+        if(typeof window.valueAsClass !== 'undefined')
         {
-            if(typeof val !== 'string')
-                val = JSON.stringify(val);
+            if(typeof window.valueAsClass !== 'string')
+                window.valueAsClass = JSON.stringify(window.valueAsClass);
 
-            $(row).addClass(val.replace(/[^a-zA-Z ]/g, ' '));
+            $(row).addClass('" . $this->getValueAsRowClassPrefix() . "' + window.valueAsClass.replace(/[^a-zA-Z ]/g, ' '));
         }
 
         ";

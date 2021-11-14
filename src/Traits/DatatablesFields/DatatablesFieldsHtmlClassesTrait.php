@@ -6,6 +6,14 @@ use Illuminate\Support\Str;
 
 trait DatatablesFieldsHtmlClassesTrait
 {
+    public function getValueAsRowClassPrefix()
+    {
+        if($this->valueAsRowClassPrefix)
+            return Str::slug($this->name);
+
+        return null;
+    }
+
     public function addHeaderHtmlClass(string $class)
     {
         if(! in_array($class, $this->headerHtmlClasses))

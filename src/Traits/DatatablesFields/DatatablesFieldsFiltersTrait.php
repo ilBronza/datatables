@@ -32,4 +32,26 @@ trait DatatablesFieldsFiltersTrait
         ])->render();
     }
 
+    public function getJqueryFilterEvents()
+    {
+        return $this->jqueryFilterEvents;
+    }
+
+    public function getJqueryFilterEventsString()
+    {
+        return implode(" ", $this->getJqueryFilterEvents());
+    }
+
+    public function canDrawTable()
+    {
+        return $this->canDrawTable;
+    }
+
+    public function canDrawKeyup()
+    {
+        if(! $this->canDrawTable())
+            return false;
+
+        return $this->table->drawOnFieldsEvents();
+    }
 }

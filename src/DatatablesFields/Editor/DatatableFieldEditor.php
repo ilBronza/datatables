@@ -69,6 +69,14 @@ class DatatableFieldEditor extends DatatableField
 		return $this->getRouteElementClassName();
 	}
 
+	public function getRouteElementParameterName($routeElementClassName)
+	{
+		if($placeholderElement =  $this->getPlaceholderElement())
+			return Str::camel(class_basename($placeholderElement));
+
+		return Str::singular($routeElementClassName);
+	}
+
 	public function hasSpinner()
 	{
 		return $this->spin;
@@ -88,13 +96,21 @@ class DatatableFieldEditor extends DatatableField
 			return $this->element::getDatatableEditorUrl();
 
 		$routeElementClassName = $this->getRouteElementClassName();
-		$routeElementParameterName = Str::singular($routeElementClassName);
+
+		$routeElementParameterName = $this->getRouteElementParameterName($routeElementClassName);
 
 		$parameters = [
 			$routeElementParameterName => config("datatables.replace_model_id_string")
 		];
 
-		return route($routeElementClassName . '.update', $parameters);
+		try
+		{
+			return route($routeElementClassName . '.update', $parameters);
+		}
+		catch(\Exception $e)
+		{
+			throw new \Exception($e->getMessage() . '. ------ Also check pluralization for ' . $routeElementClassName . ' and ' . $routeElementParameterName);
+		}
 	}
 
 	public function transformValue($value)

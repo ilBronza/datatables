@@ -12,6 +12,10 @@
         data-cachedtablekey="{{ $table->getCachedTableKey() }}"
         @endif
 
+        @if($table->drawOnFieldsEvents())
+        data-filter-draw-on-events="true"
+        @endif
+
         @if($table->hasSummary())
         data-summary="true"
         @endif
@@ -29,10 +33,14 @@
                     class="{{ $field->getHeaderHtmlClasses() }}"
 
                     data-showDuplicates="{{ $field->hasDoubler() }}"
-                    data-range="{{ $field->hasRangeFilter() }}"
-                    data-filter="{{ $field->getFilterType() }}"
+                    data-range-filter="{{ $field->hasRangeFilter() }}"
+                    data-filter-type="{{ $field->getFilterType() }}"
                     data-filterable="{{ $field->isFilterable() }}"
+                    data-filter-events="{{ $field->getJqueryFilterEventsString() }}"
+                    data-filter-draw-on-events="{{ $field->canDrawTable() }}"
+                    data-filter-draw-on-keyup="{{ $field->canDrawKeyup() }}"
                     data-name="{{ $field->getFieldName() }}"
+                    data-label="{{ $field->getTranslatedName() }}"                    
                     data-camelName="{{ $field->getCamelName() }}"
                     data-column="{{ $field->getIndex() }}"
 

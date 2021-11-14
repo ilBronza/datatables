@@ -4,6 +4,7 @@ namespace IlBronza\Datatables\DatatablesFields;
 
 class DatatableFieldBoolean extends DatatableField
 {
+	public $valueAsRowClassPrefix = true;
 	public $trueIcon = 'check';
 	public $falseIcon = 'close';
 	public $nullIcon = 'minus';
