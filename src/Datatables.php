@@ -88,7 +88,7 @@ class Datatables
                 request()->request->remove('cachedtablekey');
     }
 
-    private function returnSingleElement(callable $elements)
+    public function returnSingleElement(callable $elements)
     {
         if($elements instanceof \Closure)
         {
@@ -136,9 +136,6 @@ class Datatables
             $extraVariables,
             $modelClass
         );
-
-        if(request()->rowId)
-            return $table->returnSingleElement($elements);
 
         $table->setArrayTable();
 
