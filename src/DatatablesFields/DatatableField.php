@@ -52,6 +52,7 @@ class DatatableField
     public $htmlClasses = [];
     public $headerHtmlClasses = [];
     public $fieldOperations = [];
+    public $fieldExtraData = [];
     public $filterType;
     public $rangeFilter;
     public $summaryValues;

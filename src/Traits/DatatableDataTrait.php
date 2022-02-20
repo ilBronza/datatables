@@ -109,7 +109,16 @@ trait DatatableDataTrait
             $row = [];
 
             foreach($this->getFields() as $field)
-                $row[] = $this->getCellData($field, $element);
+            {
+                try
+                {
+                    $row[] = $this->getCellData($field, $element);
+                }
+                catch(\Exception $e)
+                {
+                    mori($e->getMessage());
+                }
+            }
 
             $data[] = $row;
         }

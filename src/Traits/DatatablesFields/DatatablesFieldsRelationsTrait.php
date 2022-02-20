@@ -45,7 +45,7 @@ trait DatatablesFieldsRelationsTrait
 
     public function getRelationPivotSprintFShowRoute()
     {
-        return $this->getRelationPivotSprintFRouteByType('show');
+        return $this->getRelationPivotSprintFRouteByType('edit');
     }
 
     private function getRelationPivotSprintFRouteByType(string $type)

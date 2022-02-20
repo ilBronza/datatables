@@ -27,7 +27,10 @@ trait DatatablesFieldsFetcherTrait
         if(! isset($fetcherData['target']))
             $fetcherData['target'] = 'row';
 
-        $htmlClass = $fetcherData['type'] . 'fetchertooltip';
+        if(! isset($fetcherData['mode']))
+            $fetcherData['mode'] = 'tooltip';
+
+        $htmlClass = $fetcherData['type'] . 'fetcher' . $fetcherData['mode'];
         $this->addHtmlClass($htmlClass);
 
         $element = $this->getPlaceholderElement();

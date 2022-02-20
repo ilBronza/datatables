@@ -44,6 +44,7 @@ class Datatables
     public $variables = [];
     public $modelClass;
     public $dom;
+    public $canHideColumns;
 
     public $scrollX = true;
 
@@ -136,6 +137,9 @@ class Datatables
             $extraVariables,
             $modelClass
         );
+
+        if((request()->ajax())&&(request()->model))
+            return $table;
 
         $table->setArrayTable();
 
@@ -330,6 +334,11 @@ class Datatables
     public function canScrollX()
     {
         return $this->scrollX;
+    }
+
+    public function getRelationName()
+    {
+        return $this->name;
     }
 }
 

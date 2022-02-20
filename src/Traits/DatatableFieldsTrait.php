@@ -22,7 +22,7 @@ trait DatatableFieldsTrait
                 {
                     $fieldGroup->fields->forget($key);
                     $this->fields->forget($key);
-                }        
+                }
     }
 
     private function condensateIndexes()

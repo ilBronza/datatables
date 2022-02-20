@@ -7,7 +7,7 @@ class DatatableFieldToggle extends DatatableFieldEditor
 	public $trueIcon = 'check';
 	public $falseIcon = 'close';
 	public $nullIcon = 'minus';
-	public $width = '25px';
+	public $width = '45px';
 	public $nullable = true;
 	public $htmlClasses = [
 		'ib-toggle'

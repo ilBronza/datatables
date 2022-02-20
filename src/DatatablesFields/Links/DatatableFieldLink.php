@@ -11,11 +11,13 @@ class DatatableFieldLink extends DatatableField
 
 	public $icon = false;
 	public $textParameter = false;
+	public $staticText;
 	public $textMethod = false;
 	public $defaultWidth = '45px';
 	public $showNull = false;
 	public $dataAttributes = [];
 	public $htmlTag = 'a';
+	// public $filterType = 'none';
 
 	/**
 	 * return field default width based on text existence or just icon
@@ -43,24 +45,30 @@ class DatatableFieldLink extends DatatableField
     	return $this->sortable;
     }
 
-    public function getFilterType()
-    {
-		if(! $this->textParameter)
-			return 'none';
-
-		return parent::getFilterType();
-    }
-
-
 	public function transformValue($value)
 	{
 		if(! $this->textParameter)
 		{
 			if(! isset($this->variable))
-				return $value->{$this->function}();
+			{
+				if(! $this->textMethod ?? false)
+					return $value->{$this->function}();
+
+				return [
+					$value->{$this->function}(),
+					$value->{$this->textMethod}()
+				];
+			}
 
 			$variableValue = $this->table->getVariable($this->variable);
-			return $value->{$this->function}($variableValue);
+
+			if(! $this->textMethod ?? false)
+				return $value->{$this->function}($variableValue);
+
+			return [
+				$value->{$this->function}($variableValue),
+				$value->{$this->textMethod}()
+			];
 		}
 
 		if(! isset($this->variable))
@@ -86,11 +94,16 @@ class DatatableFieldLink extends DatatableField
 
 	public function getLinkUrlString()
 	{
-		if($this->textParameter)
+		if($this->hasText())
 			return "item[0]";
+		// if($this->textParameter)
+		// 	return "item[0]";
 
-		if($this->textMethod)
-			return "item[0]";
+		// if($this->staticText)
+		// 	return "item[0]";
+
+		// if($this->textMethod)
+		// 	return "item[0]";
 
 		return "item";
 	}

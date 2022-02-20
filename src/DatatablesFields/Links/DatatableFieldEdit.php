@@ -11,12 +11,19 @@ class DatatableFieldEdit extends DatatableFieldLink
 		if(! $value)
 			return null;
 
-		if(! $this->textParameter)
-			return $value->getEditUrl();
+		if($this->textParameter)
+			return [
+				$value->getEditUrl(),
+				$value->{$this->textParameter}
+			];
 
-		return [
-			$value->getEditUrl(),
-			$value->{$this->textParameter}
-		];
+		if($this->staticText)
+			return [
+				$value->getEditUrl(),
+				$this->staticText
+			];
+
+		return $value->getEditUrl();
+
 	}
 }

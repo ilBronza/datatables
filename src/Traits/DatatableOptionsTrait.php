@@ -7,6 +7,14 @@ use IlBronza\Datatables\DatatablesFields\DatatableField;
 
 trait DatatableOptionsTrait
 {
+    public function canHideColumns()
+    {
+        if(! empty($this->canHideColumns))
+            return $this->canHideColumns;
+
+        return config('datatables.hideColumns');
+    }
+
     public function setPageLength($pageLength)
     {
         $this->pageLength = $pageLength;

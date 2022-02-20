@@ -4,12 +4,76 @@
     @include('datatables::__extraViews', ['position' => 'top'])
 @endif
 
+@if($table->canHideColumns())
+
+<script type="text/javascript">
+jQuery(document).ready(function($)
+{
+    $('a.toggle-vis').on('click', function (e) {
+        var that = this;
+        e.preventDefault();
+
+        var table = $('#{{ $table->getId() }}').DataTable();
+
+        var column = table.column($(that).data('column'));
+
+        // Toggle the visibility
+        column.visible( ! column.visible() );
+
+        if($(that).data('show') == 1)
+        {
+            $(that).data('show', 0);
+            $(that).removeClass('uk-text-bold');
+        }
+        else
+        {
+            $(that).data('show', 1);
+            $(that).addClass('uk-text-bold');
+        }
+    } );
+
+
+});
+    
+</script>
+
+
+
+<div class="uk-button-group">
+    <button class="uk-button uk-button-default">Fields visibility</button>
+    <div class="uk-inline">
+        <button class="uk-button uk-button-default" type="button"><span uk-icon="icon:  triangle-down"></span></button>
+        <div uk-dropdown="mode: click; boundary: ! .uk-button-group; boundary-align: true;">
+            <ul class="uk-nav uk-dropdown-nav">
+                @foreach($table->getFields() as $field)
+                <li>
+                    <a
+                        href="javascript:void(0)"
+                        class="toggle-vis uk-text-bold"
+                        data-column="{{ $field->getIndex() }}"
+                        data-show="1"
+                        style="color: black;"
+                        >
+                        {{ $field->getTranslatedName() }}
+                    </a>
+                </li>
+                @endforeach
+            </ul>
+        </div>
+    </div>
+</div>
+@endif
+
     <table
         id="{{ $table->getId() }}"
 
         @if($table->isAjaxTable())
         data-url="{{ $table->getUrl() }}"
         data-cachedtablekey="{{ $table->getCachedTableKey() }}"
+        @endif
+
+        @if($table->getRelationName())
+        data-relation={{ $table->getRelationName() }}
         @endif
 
         @if($table->drawOnFieldsEvents())
@@ -31,6 +95,8 @@
                 <th
                     uk-tooltip="{{ $field->getTranslatedName() }}"
                     class="{{ $field->getHeaderHtmlClasses() }}"
+
+                    data-ajaxExtraData="{{ $field->getJsonAjaxExtraData() }}"
 
                     data-showDuplicates="{{ $field->hasDoubler() }}"
                     data-range-filter="{{ $field->hasRangeFilter() }}"
@@ -55,7 +121,7 @@
                     @if($field->getFilteredTable())
                     data-filteredTable="{{ $field->getFilteredTable() }}"
                     @endif
-                    >
+                    >                    
                     {{ $field->renderHeader() }}
                 </th>
                 @endforeach

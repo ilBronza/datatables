@@ -1,7 +1,7 @@
 <script type="text/javascript">
 
     @if($table->isArrayTable())
-    window.{{ $table->getId() }}dataset = {!! json_encode($tableSourceData) !!},
+    window.{{ $table->getId() }}dataset = {!! json_encode($tableSourceData) !!};
     @endif
 
     window.{{ $table->getId() }}FilteredSelected = false;
@@ -43,8 +43,9 @@
         @endif
 
         @if($table->isAjaxTable())
+        //ajaxxalo
         ajax: {
-            url: window.addParameterToURL("{{ $table->getUrl() }}", 'cachedtablekey', "{{ $table->getCachedTableKey() }}"),
+            url: window.addParameterToURL(window.addParameterToURL("{{ $table->getUrl() }}", 'cachedtablekey', "{{ $table->getCachedTableKey() }}"), 'model', '{{ $table->getRelationName() }}'),
             dataSrc: function(json)
             {
                 let data = window.transformDataBySummaryExistence("{{ $table->getId() }}", "{{ $table->hasSummary() }}", json);
@@ -52,8 +53,10 @@
                 return data;
             }
         },
-        @elseif($table->isArrayTable())
-        data: window.{{ $table->getId() }}dataset,
+        {{-- @elseif($table->isArrayTable()) --}}
+        //arrayalo
+        @else
+            data: window.{{ $table->getId() }}dataset,
         @endif
 
         @if($table->hasSelectRowCheckboxes())
@@ -64,6 +67,8 @@
         @endif
 
         @if($scripts = $table->getCreatedRowScripts())
+
+        //uash uash
         createdRow: function( row, data, dataIndex )
         {
             @foreach ($scripts as $script)
@@ -188,10 +193,10 @@
                 id: '{{ $button->getId() }}',
                 @endif
             },
-            @if($buttonClasses = $button->getClasses())
+            @if($buttonClasses = $button->getHtmlClassesString())
             className: '{{ $buttonClasses }}',
             @endif
-            text: '{{ $button->getName() }}',
+            text: '{{ $button->getText() }}',
             @if($jsMethodText = $button->renderJsMethod())
             action: function ( e, dt, node, config ) {
                 {!! $jsMethodText !!}

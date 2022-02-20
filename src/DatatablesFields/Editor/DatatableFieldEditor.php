@@ -95,6 +95,10 @@ class DatatableFieldEditor extends DatatableField
 		if(! $this->requireElement())
 			return $this->element::getDatatableEditorUrl();
 
+		if($placeholder = $this->getPlaceholderElement())
+			if(method_exists($placeholder, 'getEditorUpdateUrl'))
+				return $placeholder->getEditorUpdateUrl();
+
 		$routeElementClassName = $this->getRouteElementClassName();
 
 		$routeElementParameterName = $this->getRouteElementParameterName($routeElementClassName);

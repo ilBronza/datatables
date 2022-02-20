@@ -19,9 +19,23 @@ trait IconTextContentTrait
 		return ;
 	}
 
+	public function hasText()
+	{
+		if($this->textParameter ?? false)
+			return true;
+
+		if($this->staticText ?? false)
+			return true;
+
+		if($this->textMethod ?? false)
+			return true;
+
+		return false;
+	}
+
 	public function getLinkTextString()
 	{
-		if(($this->textParameter ?? false)||($this->textMethod ?? false))
+		if($this->hasText())
 		{
 			if($this->showNull)
 				return "item[1]";

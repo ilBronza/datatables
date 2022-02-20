@@ -30,6 +30,11 @@ trait DatatablesFieldsDisplayTrait
         return __('fields.' . $this->name);
     }
 
+    public function getJsonAjaxExtraData()
+    {
+        return json_encode($this->fieldExtraData);
+    }
+
     public function getCamelName()
     {
         return Str::camel(str_replace(".", " ", $this->name));
