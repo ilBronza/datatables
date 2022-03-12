@@ -11,8 +11,17 @@ class DatatableFieldNumeric extends DatatableFieldEditor
 	//datatable type to be sorted in datatable
 	public $datatableType = 'numeric';
 	public $fieldType = 'numeric';
+	public $digits = false;
 
 	public $width = '65px';
+
+    public function getValueString()
+    {
+    	if($this->digits)
+        	return " didididi data-originalvalue=\"' + item[1] + '\" value=\"' + ((item[1])? item[1].toFixed({$this->digits}) : '') + '\" ";
+
+        return " data-originalvalue=\"' + item[1] + '\" value=\"' + item[1] + '\" ";
+    }
 
 	public function getCustomColumnDefSingleResult()
 	{

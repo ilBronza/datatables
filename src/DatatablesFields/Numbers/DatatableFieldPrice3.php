@@ -13,6 +13,6 @@ class DatatableFieldPrice3 extends DatatableField
 		if(! $value)
 			return ;
 
-		return round($value, 3);
+		return number_format($value, 3);
 	}
 }

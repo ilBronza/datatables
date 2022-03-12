@@ -93,7 +93,10 @@ jQuery(document).ready(function($)
             <tr class="columns">
                 @foreach($table->getFields() as $field)
                 <th
+                    @if(config('datatables.useTooltips'))
                     uk-tooltip="{{ $field->getTranslatedName() }}"
+                    @endif
+
                     class="{{ $field->getHeaderHtmlClasses() }}"
 
                     data-ajaxExtraData="{{ $field->getJsonAjaxExtraData() }}"

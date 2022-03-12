@@ -110,14 +110,14 @@ trait DatatableDataTrait
 
             foreach($this->getFields() as $field)
             {
-                try
-                {
+                // try
+                // {
                     $row[] = $this->getCellData($field, $element);
-                }
-                catch(\Exception $e)
-                {
-                    mori($e->getMessage());
-                }
+                // }
+                // catch(\Exception $e)
+                // {
+                //     mori($e->getMessage());
+                // }
             }
 
             $data[] = $row;
