@@ -5,6 +5,7 @@ namespace IlBronza\Datatables;
 use App\Models\Appointment;
 use IlBronza\Datatables\Traits\DatatableButtonsTrait;
 use IlBronza\Datatables\Traits\DatatableColumnDefsTrait;
+use IlBronza\Datatables\Traits\DatatableColumnDisplayTrait;
 use IlBronza\Datatables\Traits\DatatableDataTrait;
 use IlBronza\Datatables\Traits\DatatableDomTrait;
 use IlBronza\Datatables\Traits\DatatableFieldsTrait;
@@ -27,7 +28,9 @@ class Datatables
     use DatatablesExtraViewsTrait;
     use DatatableOptionsTrait;
     use DatatableSelectRowsTrait;
+    use DatatableColumnDisplayTrait;
 
+    public $columnDisplayKey;
     public $rowId;
     public $fields;
     public $fieldsGroups;
@@ -35,7 +38,16 @@ class Datatables
     public $url;
     public $columnDefs = [];
     public $createdRowScripts = [];
-    public $buttons = ['copy', 'csv'];
+    public $buttons = [
+        [
+            'extend' => 'copy',
+            'exportOptions' => ['orthogonal' => 'export']
+        ],
+        [
+            'extend' => 'csv',
+            'exportOptions' => ['orthogonal' => 'export']
+        ]
+    ];
     public $getRowIdIndex = false;
     public $stripe = true;
     public $pageLength = 50;

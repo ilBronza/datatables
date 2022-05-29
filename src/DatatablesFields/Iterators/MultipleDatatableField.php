@@ -55,4 +55,44 @@ class MultipleDatatableField extends DatatableField
 			}
 		}";
 	}
+
+	public function getCompiledAsRowClassConditionScript()
+	{
+		return "
+
+			window.carc = data[" . $this->getIndex() . "];
+			window.compiledAsClass = false;
+
+			if(window.carc.length == 0)
+				window.compiledAsClass = false;
+			else
+			{
+				if(Array.isArray(window.carc))
+				{
+					for(let i = 0; i < window.carc.length; i++)
+					{ 
+						if(Array.isArray(window.carc))
+						{
+
+						}
+						else
+						{
+							console.log('areo qua, gestire areo qua adesso! normale dentro array');
+						}
+						
+
+						console.log('arreyo');
+						console.log(window.carc[i]);
+					}
+				}
+				else
+				{
+					console.log('areo qua, gestire areo qua adesso!');
+					console.log(data[" . $this->getIndex() . "]);					
+				}
+
+			}
+	    ";
+	}
+
 }

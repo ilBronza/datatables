@@ -180,6 +180,8 @@
     @foreach ($buttons as $button)
         @if(is_string($button))
         '{{ $button }}' @if(! $loop->last), @endif
+        @elseif(is_array($button))
+        {!! json_encode($button) !!} @if(! $loop->last), @endif
         @else
         {
             attr: {

@@ -8,17 +8,11 @@ class DatatableFieldText extends DatatableFieldEditor
 {
 	use EditorSingleFieldTrait;
 
-	public $defaultWidth = '125px';
+	public $width = '125px';
 	public $fieldType = 'text';
 
 	public function getCustomColumnDefSingleResult()
 	{
-
-		// $asd = "
-		// 	item = '<span " . $this->getHtmlClassesAttributeString() . $iconString . " ></span>';
-		// ";
-
-
 		$classes = $this->getHtmlClassesString();
 
 		return "
@@ -29,4 +23,5 @@ class DatatableFieldText extends DatatableFieldEditor
 
 		";
 	}
+
 }

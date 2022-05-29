@@ -1,3 +1,7 @@
 <div class="filterfunctions uk-hidden">
-	<span class="close" uk-icon="close"></span>
+	<span class="removefiltercontent" uk-icon="close"></span>
+
+	@if($field->canBeHidden())
+	{{-- <span class="hidecolumn" uk-icon="minus-circle"></span> --}}
+	@endif
 </div>

@@ -6,9 +6,18 @@ use Illuminate\Support\Str;
 
 trait DatatablesFieldsDisplayTrait
 {
+    public function canBeHidden() : bool
+    {
+        if(! $this->table->canHideColumns())
+        // if(! $this->table->usesColumnDisplay())
+            return false;
+
+        return true;
+    }
+
     public function getDefaultWidth()
     {
-        return $this->defaultWidth ?? false;
+        return $this->getWidth() ?? $this->defaultWidth ?? false;
     }
 
     public function getWidth()
@@ -38,6 +47,11 @@ trait DatatablesFieldsDisplayTrait
     public function getCamelName()
     {
         return Str::camel(str_replace(".", " ", $this->name));
+    }
+
+    public function getSluggedName()
+    {
+        return Str::slug(str_replace(".", " ", $this->name));
     }
 
     public function renderHeader()

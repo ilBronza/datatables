@@ -6,52 +6,20 @@
 
 @if($table->canHideColumns())
 
-<script type="text/javascript">
-jQuery(document).ready(function($)
-{
-    $('a.toggle-vis').on('click', function (e) {
-        var that = this;
-        e.preventDefault();
-
-        var table = $('#{{ $table->getId() }}').DataTable();
-
-        var column = table.column($(that).data('column'));
-
-        // Toggle the visibility
-        column.visible( ! column.visible() );
-
-        if($(that).data('show') == 1)
-        {
-            $(that).data('show', 0);
-            $(that).removeClass('uk-text-bold');
-        }
-        else
-        {
-            $(that).data('show', 1);
-            $(that).addClass('uk-text-bold');
-        }
-    } );
-
-
-});
-    
-</script>
-
-
-
 <div class="uk-button-group">
     <button class="uk-button uk-button-default">Fields visibility</button>
     <div class="uk-inline">
         <button class="uk-button uk-button-default" type="button"><span uk-icon="icon:  triangle-down"></span></button>
         <div uk-dropdown="mode: click; boundary: ! .uk-button-group; boundary-align: true;">
-            <ul class="uk-nav uk-dropdown-nav">
+            <ul id="togglefields{{ $table->getId() }}" class="uk-nav uk-dropdown-nav toggle-vis-container table{{ $table->getId() }}" data-tableid="{{ $table->getId() }}">
                 @foreach($table->getFields() as $field)
                 <li>
                     <a
                         href="javascript:void(0)"
-                        class="toggle-vis uk-text-bold"
+                        class="toggle-vis @if($field->isVisible()) uk-text-bold @endif"
                         data-column="{{ $field->getIndex() }}"
-                        data-show="1"
+                        data-name="{{ $field->getFieldName() }}"
+                        data-visibility="{{ ($field->isVisible() ? 1 : 0) }}"
                         style="color: black;"
                         >
                         {{ $field->getTranslatedName() }}
@@ -73,7 +41,7 @@ jQuery(document).ready(function($)
         @endif
 
         @if($table->getRelationName())
-        data-relation={{ $table->getRelationName() }}
+        data-relation="{{ $table->getRelationName() }}"
         @endif
 
         @if($table->drawOnFieldsEvents())
@@ -82,6 +50,10 @@ jQuery(document).ready(function($)
 
         @if($table->hasSummary())
         data-summary="true"
+        @endif
+
+        @if($table->usesColumnDisplay())
+        data-columndisplayroute="{{ $table->getColumnDisplayRoute() }}"
         @endif
 
         {!! $table->getDomStickynessDataAttribute() !!}
@@ -94,7 +66,7 @@ jQuery(document).ready(function($)
                 @foreach($table->getFields() as $field)
                 <th
                     @if(config('datatables.useTooltips'))
-                    uk-tooltip="{{ $field->getTranslatedName() }}"
+                    uk-tooltip="offset: 20; title: {{ $field->getTranslatedName() }}"
                     @endif
 
                     class="{{ $field->getHeaderHtmlClasses() }}"
@@ -124,7 +96,7 @@ jQuery(document).ready(function($)
                     @if($field->getFilteredTable())
                     data-filteredTable="{{ $field->getFilteredTable() }}"
                     @endif
-                    >                    
+                    >
                     {{ $field->renderHeader() }}
                 </th>
                 @endforeach

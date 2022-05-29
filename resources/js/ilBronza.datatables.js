@@ -55,6 +55,7 @@ require('./datatables.vendor.ajaxButton.min.js');
 require('./datatables.vendor.buttons.min.js');
 require('./datatables.vendor.sorting.min.js');
 require('./datatables.vendor.filtering.min.js');
+require('./datatables.vendor.columnVisibility.min.js');
 require('./datatables.vendor.summary.min.js');
 require('./datatables.vendor.duplicates.min.js');
 require('./datatables.vendor.utilities.min.js');

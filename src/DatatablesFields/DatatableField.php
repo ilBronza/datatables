@@ -19,6 +19,7 @@ use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsParentingTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsPermissionsTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsSortingTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsSummaryTrait;
+use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsUserDataTrait;
 
 class DatatableField
 {
@@ -35,6 +36,8 @@ class DatatableField
     use DatatablesFieldsFetcherTrait;
     use DatatablesFieldsElementTrait;
     use DatatablesFieldsParentingTrait;
+    use DatatablesFieldsUserDataTrait;
+
     use HtmlClassesAttributesTrait;
     use DataAttributesTrait;
 
@@ -61,9 +64,13 @@ class DatatableField
     public $requiresPlaceholderElement = false;
     public $valueAsRowClass = false;
     public $valueAsRowClassPrefix = false;
+    public $compiledAsRowClass;
+    public $compiledAsRowClassPrefix;
     public $htmlTag;
     public $doubler = false;
     public $jqueryFilterEvents = ['change', 'keyup'];
+
+    public $defaultWidth = '120px';
 
     public $canDrawTable = true;
 
@@ -145,6 +152,14 @@ class DatatableField
         } while (count($properties));
 
         return $element;
+    }
+
+    public function requiresKey()
+    {
+        if(isset($this->fetcher))
+            return true;
+
+        return false;
     }
 
     public function __toString()

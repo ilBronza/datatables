@@ -14,6 +14,14 @@ trait DatatablesFieldsHtmlClassesTrait
         return null;
     }
 
+    public function getCompiledAsRowClassPrefix()
+    {
+        if($this->compiledAsRowClassPrefix === false)
+            return null;
+
+        return $this->compiledAsRowClassPrefix ?? $this->getSluggedName();
+    }
+
     public function addHeaderHtmlClass(string $class)
     {
         if(! in_array($class, $this->headerHtmlClasses))

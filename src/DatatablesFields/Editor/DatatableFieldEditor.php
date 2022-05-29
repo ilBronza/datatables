@@ -90,6 +90,24 @@ class DatatableFieldEditor extends DatatableField
 			$this->addHtmlClass('spin');
 	}
 
+	public function getUpdateRouteName()
+	{
+		$routeElementClassName = $this->getRouteElementClassName();
+
+		return $routeElementClassName . '.update';
+	}
+
+	public function getUpdateParameters()
+	{
+		$routeElementClassName = $this->getRouteElementClassName();
+
+		$routeElementParameterName = $this->getRouteElementParameterName($routeElementClassName);
+
+		return [
+			$routeElementParameterName => config("datatables.replace_model_id_string")
+		];		
+	}
+
 	public function getEditorUpdateUrl()
 	{
 		if(! $this->requireElement())
@@ -99,21 +117,16 @@ class DatatableFieldEditor extends DatatableField
 			if(method_exists($placeholder, 'getEditorUpdateUrl'))
 				return $placeholder->getEditorUpdateUrl();
 
-		$routeElementClassName = $this->getRouteElementClassName();
-
-		$routeElementParameterName = $this->getRouteElementParameterName($routeElementClassName);
-
-		$parameters = [
-			$routeElementParameterName => config("datatables.replace_model_id_string")
-		];
+		$routeName = $this->getUpdateRouteName();
+		$parameters = $this->getUpdateParameters();
 
 		try
 		{
-			return route($routeElementClassName . '.update', $parameters);
+			return route($routeName, $parameters);
 		}
 		catch(\Exception $e)
 		{
-			throw new \Exception($e->getMessage() . '. ------ Also check pluralization for ' . $routeElementClassName . ' and ' . $routeElementParameterName);
+			throw new \Exception($e->getMessage() . '. ------ Also check pluralization for ' . $routeName . ' and ' . json_encode($parameters));
 		}
 	}
 
@@ -203,4 +216,13 @@ class DatatableFieldEditor extends DatatableField
 			item = item[1];
         ";
     }	
+
+	public function getCustomColumnDefSingleResultEditor()
+	{
+		return "
+
+		item = item[1];
+
+		";
+	}
 }

@@ -47,7 +47,10 @@ trait DatatablesFieldsColumnDefsTrait
      */
     public function setColumnDef(string $ilBronzaDefinition, string $datatablesDefinition)
     {
-        if(($value = $this->$ilBronzaDefinition?? null) !== null)
+        if(! is_null($value = $this->getDatatableUserDataParameter($datatablesDefinition)))
+            $this->addColumnDef($datatablesDefinition, $value);
+
+        elseif(($value = $this->$ilBronzaDefinition?? null) !== null)
             $this->addColumnDef($datatablesDefinition, $value);
     }
 
@@ -65,6 +68,19 @@ trait DatatablesFieldsColumnDefsTrait
         $this->columnDefs[$columnDef] = $value;
     }
 
+    public function getCustomColumnDefSingleResultEditor()
+    {
+        return $this->getCustomColumnDefSingleResult();
+    }
+
+    public function getItemString()
+    {
+        if($this->requiresKey())
+            return 'item[1]';
+
+        return 'item';
+    }
+
     public function getCustomColumnDefSingleResult()
     {
         if($this->getParentDataIndexString()||($this->getHtmlDataAttributesString())||$this->getHtmlClassesAttributeString())
@@ -72,7 +88,10 @@ trait DatatablesFieldsColumnDefsTrait
                 if(item === null)
                     item = '';
                 else 
-                    item = '<span " . $this->getParentDataIndexString() . $this->getHtmlDataAttributesString() . $this->getHtmlClassesAttributeString() . " >' + item + '</span>';
+                {
+                    //manzissimo;
+                    item = '<span " . $this->getParentDataIndexString() . $this->getHtmlDataAttributesString() . $this->getHtmlClassesAttributeString() . " >' + " . $this->getItemString() . " + '</span>';
+                }
             ";
 
         return "
@@ -116,6 +135,14 @@ trait DatatablesFieldsColumnDefsTrait
                     return item;
                 }
 
+                if(type == 'export')
+                {
+                    " . $this->getCustomColumnDefSingleResultEditor() . "
+                    " . $this->getEndingResultOptionsEditor() . "
+
+                    return item;
+                }
+
                 if(type == 'filter')
                 {
                     " . $this->getCustomColumnDefSingleSearchResult() . "
@@ -133,6 +160,11 @@ trait DatatablesFieldsColumnDefsTrait
                 return item;
             }
         }";
+    }
+
+    public function getEndingResultOptionsEditor()
+    {
+        return $this->getEndingResultOptions();
     }
 
     public function getEndingResultOptions()
@@ -164,6 +196,7 @@ trait DatatablesFieldsColumnDefsTrait
         if($this->valueAsRowClass)
 
             return "
+        //" . $this->name . "
         window.valueAsClass = data[" . $this->getIndex() . "];
 
         if(typeof window.valueAsClass !== 'undefined')
@@ -177,11 +210,34 @@ trait DatatablesFieldsColumnDefsTrait
         ";
     }
 
+    public function getCompiledAsRowClassConditionScript()
+    {
+        return "window.compiledAsClass = (data[" . $this->getIndex() . "] !== 'undefined');";
+    }
+
+    public function getCompiledAsRowClassScript()
+    {
+        if($this->compiledAsRowClass)
+            return "
+        //" . $this->name . "
+
+        " . $this->getCompiledAsRowClassConditionScript() . "
+        
+        if(window.compiledAsClass)
+            $(row).addClass('" . $this->getCompiledAsRowClassPrefix() . "compiled');
+        else
+            $(row).addClass('" . $this->getCompiledAsRowClassPrefix() . "notcompiled');
+        ";
+    }
+
     public function getCreatedRowScripts()
     {
         $result = [];
 
         if($script = $this->getValueAsRowClassScript())
+            $result[] = $script;
+
+        if($script = $this->getCompiledAsRowClassScript())
             $result[] = $script;
 
         return implode(" ", $result);

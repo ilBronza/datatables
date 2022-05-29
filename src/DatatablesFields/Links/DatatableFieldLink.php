@@ -29,9 +29,9 @@ class DatatableFieldLink extends DatatableField
     public function getWidth()
     {
 		if(! $this->textParameter)
-        	return $this->defaultWidth;
+			return $this->defaultWidth;
 
-        return false;
+		return false;
     }
 
     public function isSortable()
