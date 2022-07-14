@@ -50,6 +50,11 @@ class DatatableUserData extends Model
 		return $this->updated_at->addDays(30) < Carbon::now();
 	}
 
+	static function provideBySessionTableKey(string $tableKey)
+	{
+		return session()->get($tableKey);
+	}
+
 	static function retrieveByTableKey(string $tableKey)
 	{
 		if(! $result = static::byUser()->where('key', $tableKey)->first())

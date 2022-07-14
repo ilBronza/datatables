@@ -91,7 +91,9 @@ Example for fetcher field
 
             'fetcher' => [
                 'urlMethod' => 'getPriceCalculationMessageUrl',
-                'target' => 'currentField'
+                //target is the place where to take the id from => 'currentField' || 'row'
+                'target' => 'currentField',
+                'target' => 'row'
             ]
         ],
         'width' => '25px'
