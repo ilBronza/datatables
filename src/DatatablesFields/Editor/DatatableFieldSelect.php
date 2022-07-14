@@ -27,6 +27,10 @@ class DatatableFieldSelect extends DatatableFieldEditor
 
     public function getPossibleEnumValuesArray()
     {
+		if($method = $this->getPossibleValuesMethod())
+			if($element = $this->element ?? $this->getPlaceholderElement())
+				return $element->{$method}();
+
         $values = $this->getPossibleEnumValues();
 
         $result = [];
@@ -36,6 +40,11 @@ class DatatableFieldSelect extends DatatableFieldEditor
 
         return $result;
     }
+
+	private function getPossibleValuesMethod()
+	{
+		return $this->possibleValuesMethod ?? null;
+	}
 
 	public function getPossibleEnumValues()
     {
