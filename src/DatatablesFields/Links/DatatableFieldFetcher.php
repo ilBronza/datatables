@@ -12,10 +12,10 @@ class DatatableFieldFetcher extends DatatableFieldLink
 	public function transformValue($value)
 	{
 		if(! $this->textParameter)
-			return $value->getKey();
+			return $this->_getKey($value);
 
 		return [
-			$value->getKey(),
+			$this->_getKey($value),
 			$value->{$this->textParameter}
 		];
 	}

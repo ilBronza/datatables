@@ -15,6 +15,7 @@ class DatatableFieldEditor extends DatatableField
 	public $spin = true;
 	public $requireElement = true;
 	public $requiresPlaceholderElement = true;
+	public $customUpdateRouteName = false;
 
 	//defines if vlaue is retrieved by a methd called on field element
 	public $editorValueFunction = false;
@@ -108,8 +109,24 @@ class DatatableFieldEditor extends DatatableField
 		];		
 	}
 
-	public function getEditorUpdateUrl()
+	public function getCustomUpdateRouteName()
 	{
+		return $this->customUpdateRouteName;
+	}
+
+	public function getCustomUpdateUrl()
+	{
+		$routeName = $this->getCustomUpdateRouteName();
+		$parameters = $this->getUpdateParameters();
+
+		return route($routeName, $parameters);
+	}
+
+	public function getEditorUpdateUrl() : string
+	{
+		if($customRouteName = $this->getCustomUpdateRouteName())
+			return $this->getCustomUpdateUrl();
+
 		if(! $this->requireElement())
 			return $this->element::getDatatableEditorUrl();
 

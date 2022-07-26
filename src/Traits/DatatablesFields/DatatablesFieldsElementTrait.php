@@ -3,10 +3,31 @@
 namespace IlBronza\Datatables\Traits\DatatablesFields;
 
 use IlBronza\Datatables\DatatablesFields\DatatableField;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 trait DatatablesFieldsElementTrait
 {
+    public function _getKey($value)
+    {
+        try
+        {
+            return $value->getKey();
+        }
+        catch(\Throwable $e)
+        {
+            return null;
+        }
+    }
+
+    public function getElementItem() : Model
+    {
+        if(! $this->requireElement())
+            $this->element;
+
+        return $this->getPlaceholderElement();
+    }
+
     public function requiresPlaceholderElement()
     {
         return $this->requiresPlaceholderElement;
