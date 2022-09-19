@@ -6,7 +6,7 @@ return array (
   'search' => 'Cerca',
   'searchPlaceholder' => 'Cerca',
   'last' => 'Ultimo',
-  'netx' => 'Prossimo',
+  'next' => 'Prossimo',
   'previous' => 'Precedente',
   'first' => 'Prima',
 );

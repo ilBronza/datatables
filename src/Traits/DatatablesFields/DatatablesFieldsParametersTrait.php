@@ -115,4 +115,8 @@ trait DatatablesFieldsParametersTrait
         $this->setHeaderDataAttribute('confirm', __($this->confirmMessage));
     }
 
+    public function hasForceValue()
+    {
+        return isset($this->forceValue);
+    }
 }

@@ -33,7 +33,7 @@
             paginate: {
                     first : "{!! __('datatables.first') !!}",
                     last : "{!! __('datatables.last') !!}",
-                    next : "{!! __('datatables.netx') !!}",
+                    next : "{!! __('datatables.next') !!}",
                     previous : "{!! __('datatables.previous') !!}",
                 },
         },
