@@ -4,7 +4,8 @@ namespace IlBronza\Datatables\DatatablesFields\Links;
 
 class DatatableFieldPdf extends DatatableFieldLink
 {
-	public $icon = 'file-pdf';
+	public $icon = null;
+	public $faIcon = 'file-pdf';
 	public $target = '_blank';
 
 	public function transformValue($value)
