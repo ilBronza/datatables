@@ -91,8 +91,6 @@ trait DatatablesFieldsParametersTrait
     {
         $className = static::getClassNameByType($fieldType);
 
-        mori($className);
-
         $field = new $className('placeholder');
 
         $parameters = array_keys(
