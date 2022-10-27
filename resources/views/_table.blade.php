@@ -6,30 +6,32 @@
 
 @if($table->canHideColumns())
 
-<div class="uk-button-group">
-    <button class="uk-button uk-button-default">Fields visibility</button>
-    <div class="uk-inline">
-        <button class="uk-button uk-button-default" type="button"><span uk-icon="icon:  triangle-down"></span></button>
-        <div uk-dropdown="mode: click; boundary: ! .uk-button-group; boundary-align: true;">
-            <ul id="togglefields{{ $table->getId() }}" class="uk-nav uk-dropdown-nav toggle-vis-container table{{ $table->getId() }}" data-tableid="{{ $table->getId() }}">
-                @foreach($table->getFields() as $field)
-                <li>
-                    <a
-                        href="javascript:void(0)"
-                        class="toggle-vis @if($field->isVisible()) uk-text-bold @endif"
-                        data-column="{{ $field->getIndex() }}"
-                        data-name="{{ $field->getFieldName() }}"
-                        data-visibility="{{ ($field->isVisible() ? 1 : 0) }}"
-                        style="color: black;"
-                        >
-                        {{ $field->getTranslatedName() }}
-                    </a>
-                </li>
-                @endforeach
-            </ul>
-        </div>
+<button hidden class="colvisbutton" id="offcanvastogglefieldsbutton{{ $table->getId() }}" uk-toggle="target: #offcanvastogglefields{{ $table->getId() }}">Fields visibility</button>
+
+<div id="offcanvastogglefields{{ $table->getId() }}" uk-offcanvas>
+    <div class="uk-offcanvas-bar">
+
+        <button class="uk-offcanvas-close" type="button" uk-close></button>
+
+        <ul id="togglefields{{ $table->getId() }}" class="uk-nav uk-dropdown-nav toggle-vis-container table{{ $table->getId() }}" data-tableid="{{ $table->getId() }}">
+            @foreach($table->getFields() as $field)
+            <li>
+                <a
+                    href="javascript:void(0)"
+                    class="toggle-vis @if($field->isVisible()) uk-text-bold @endif"
+                    data-column="{{ $field->getIndex() }}"
+                    data-name="{{ $field->getFieldName() }}"
+                    data-visibility="{{ ($field->isVisible() ? 1 : 0) }}"
+                    style="color: black;"
+                    >
+                    {{ $field->getTranslatedName() }}
+                </a>
+            </li>
+            @endforeach
+        </ul>
     </div>
 </div>
+
 @endif
 
     <table
