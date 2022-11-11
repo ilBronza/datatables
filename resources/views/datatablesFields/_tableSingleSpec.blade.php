@@ -159,6 +159,8 @@
 
     window.{{ $table->getId() }}buttons = @if(count($buttons = $table->getButtons())||(count(1))) [
 
+        'fieldsVisibility',
+
         'search',
         'reload',
 

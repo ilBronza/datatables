@@ -19,8 +19,8 @@ class DatatableFieldColor extends DatatableField
         $color = Color::getCachedColor($value->{$this->method}());
 
         return [
-            $color->code,
-            $color->color
+            optional($color)->code,
+            optional($color)->color
         ];
     }
 
