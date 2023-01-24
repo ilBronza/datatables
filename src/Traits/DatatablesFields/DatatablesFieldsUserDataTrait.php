@@ -2,6 +2,8 @@
 
 namespace IlBronza\Datatables\Traits\DatatablesFields;
 
+use Auth;
+
 trait DatatablesFieldsUserDataTrait
 {
     public function getDatatableUserData()
@@ -10,6 +12,9 @@ trait DatatablesFieldsUserDataTrait
             return $this->userData;
 
         if(! $this->table)
+            return null;
+
+        if(! Auth::user())
             return null;
 
         $this->userData = $this->table->getDatatableUserData()->getcolumnsItem($this->getName());

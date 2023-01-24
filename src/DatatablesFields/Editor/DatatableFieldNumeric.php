@@ -18,7 +18,7 @@ class DatatableFieldNumeric extends DatatableFieldEditor
     public function getValueString()
     {
     	if($this->digits)
-        	return " didididi data-originalvalue=\"' + item[1] + '\" value=\"' + ((item[1])? item[1].toFixed({$this->digits}) : '') + '\" ";
+        	return " data-originalvalue=\"' + item[1] + '\" value=\"' + ((item[1])? item[1].toFixed({$this->digits}) : '') + '\" ";
 
         return " data-originalvalue=\"' + item[1] + '\" value=\"' + item[1] + '\" ";
     }
@@ -31,7 +31,7 @@ class DatatableFieldNumeric extends DatatableFieldEditor
 
 		" . $this->substituteUrlParameter() . "
 
-		item = '<input maruionne " . $this->getHtmlDataAttributesString() . $this->getValueString() . $this->getTypeString() . " class=\"" . $classes . " uk-input ib-editor-text\" data-url=\"' + url + '\" data-field=\"{$this->parameter}\" />';
+		item = '<input " . $this->getHtmlDataAttributesString() . $this->getValueString() . $this->getTypeString() . " class=\"" . $classes . " uk-input ib-editor-text\" data-url=\"' + url + '\" data-field=\"{$this->parameter}\" />';
 
 		";
 	}

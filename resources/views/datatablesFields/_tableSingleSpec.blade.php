@@ -17,9 +17,13 @@
 
     window.{{ $table->getId() }}options =  { 
 
+        @if($table->hasFixedTableHeader())
+        fixedHeader: true,
+        @endif
+
         //SCROLLX genera parecchi problemi con il grab della tabella HTML se attivo. non trova più i data etc
         //TODO
-        // scrollX: {{ $table->canScrollX() ? 'true' : 'false' }},
+        {{-- scrollX: {{ $table->canScrollX() ? 'true' : 'false' }}, --}}
 
         @if($caption = $table->getCaption())
         caption: "{{ $caption }}",

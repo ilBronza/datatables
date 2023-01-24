@@ -30,6 +30,14 @@ trait DatatableOptionsTrait
         $this->caption = $caption;
     }
 
+    public function hasFixedTableHeader()
+    {
+        if(! empty($this->fixedHeader))
+            return $this->fixedHeader;
+
+        return config('datatables.fixedHeader');        
+    }
+
     public function getCaption()
     {
         return $this->caption ?? false;
