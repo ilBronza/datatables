@@ -17,7 +17,7 @@ trait DatatableColumnDefsTrait
         // $fieldIndex = $field->getIndex();
 
         if($field->name == 'fakeRenderingField')
-            mori($field);
+            dd("fakeRenderingField");
 
         if($customColumnDef = $field->getCustomColumnDef())
             return $this->customColumnDefs[] = $customColumnDef;

@@ -74,7 +74,6 @@ trait DatatableFieldsTrait
     {
         foreach($fields as $fieldName => $fieldParameters)
         {
-            // mori($fieldParameters);
             $newField = $this->addField($fieldName, $fieldParameters);
             $fieldsGroup->addField($fieldName, $newField);
         }
@@ -250,7 +249,7 @@ trait DatatableFieldsTrait
         if($fieldName == 'fakeRenderingField')
         {
             $fieldParameters = $this->prepareFieldParameters($parameters);
-            mori($fieldParameters);
+            mori("fakeRenderingField");
         }
 
         $fieldParameters = $this->prepareFieldParameters($parameters);

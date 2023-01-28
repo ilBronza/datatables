@@ -15,7 +15,9 @@ $.fn.dataTable.ext.search.push(
 			return true;
 
 		var min = $('#{{ $field->getId() }}start').data('timestamp');
-		var max = $('#{{ $field->getId() }}end').data('timestamp');
+		var max = $('#{{ $field->getId() }}end').data('timestamp') + (24 * 60 * 60);
+
+		// console.log($('#{{ $field->getId() }}end').data('timestamp'));
 
 		var date = rowData[{{ $field->getIndex() }}];
 

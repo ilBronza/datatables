@@ -16,8 +16,6 @@ trait DatatablesFieldsFetcherTrait
                 'urlMethod' => $fetcherData
             ];
 
-        // mori(get_class_methods($this));
-
         if(! isset($fetcherData['type']))
             $fetcherData['type'] = 'hover';
 

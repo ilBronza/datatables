@@ -6,7 +6,6 @@ trait DatatableEditorTrait
 {
     static function getDatatableEditorUrl()
     {
-        mori(static::class);
         return 'maranza';
     }
 }

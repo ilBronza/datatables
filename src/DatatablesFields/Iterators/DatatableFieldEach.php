@@ -43,8 +43,6 @@ class DatatableFieldEach extends MultipleDatatableField
 	{
 		// $singleColumnDef = (method_exists($this->child, 'getColumnDefSingleResult')) ? $this->child->getColumnDefSingleResult() : 'item;';
 
-		// mori($singleColumnDef);
-
 		return "
 		{
 			//" . $this->getName() . "
