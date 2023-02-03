@@ -10,12 +10,29 @@ class DatatableFieldPdf extends DatatableFieldLink
 
 	public function transformValue($value)
 	{
-		if(! $this->textParameter)
-			return $value->{$this->function}();
+		try
+		{
+			if(! $this->textParameter)
+				return $value->{$this->function}();			
+		}
+		catch(\Throwable $e)
+		{
+			return $e->getMessage();
+		}
 
-		return [
-			$value->{$this->function}(),
-			$value->{$this->textParameter}
-		];
+		try
+		{
+			return [
+				$value->{$this->function}(),
+				$value->{$this->textParameter}
+			];			
+		}
+		catch(\Throwable $e)
+		{
+			return [
+				$e->getMessage(),
+				$e->getMessage()
+			];
+		}
 	}
 }
