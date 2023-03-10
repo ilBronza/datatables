@@ -84,7 +84,14 @@ trait DatatablesFieldsSummaryTrait
 
     public function transformValueWithSummary($value)
     {
-        $value = $this->transformValue($value);
+        try
+        {
+            $value = $this->transformValue($value);            
+        }
+        catch(\Exception $e)
+        {
+            $value = $e->getMessage();
+        }
 
         $this->summaryValues->push($value);
 

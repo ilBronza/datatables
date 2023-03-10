@@ -32,13 +32,20 @@ trait DatatableDataTrait
 
     private function getCellData(DatatableField $field, Model $element)
     {
-        $value = $field->getFieldCellDataValue($field->name, $element);
-        // $value = $this->getCellDataValue($field->name, $element);
+        try
+        {
+            $value = $field->getFieldCellDataValue($field->name, $element);
+            // $value = $this->getCellDataValue($field->name, $element);
 
-        if($field->requireElement())
-            return $field->transformValue($element);
+            if($field->requireElement())
+                return $field->transformValue($element);
 
-        return $field->transformValue($value);
+            return $field->transformValue($value);            
+        }
+        catch(\Exception $e)
+        {
+            return $e->getMessage();
+        }
     }
 
     //UNA VOLTA ERA

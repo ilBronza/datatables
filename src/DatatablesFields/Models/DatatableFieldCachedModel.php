@@ -36,10 +36,17 @@ class DatatableFieldCachedModel extends DatatableField
 
 	public function getItemValue($item)
 	{
-		if($propertyName = $this->child->getPropertyName())
-			$item = $this->getFieldCellDataValue($propertyName, $item);
+		try
+		{
+			if($propertyName = $this->child->getPropertyName())
+				$item = $this->getFieldCellDataValue($propertyName, $item);
 
-		return $this->child->transformValue($item);
+			return $this->child->transformValue($item);			
+		}
+		catch(\Exception $e)
+		{
+			return $e->getMessage();
+		}
 	}
 
 }
