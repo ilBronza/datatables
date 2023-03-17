@@ -154,10 +154,25 @@ class DatatableField
         return $element;
     }
 
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    public function isFlatType()
+    {
+        return $this->getType() == 'flat';
+    }
+
     public function requiresKey()
     {
         if(isset($this->fetcher))
+        {
+            if($this->isFlatType())
+                return false;
+
             return true;
+        }
 
         return false;
     }
