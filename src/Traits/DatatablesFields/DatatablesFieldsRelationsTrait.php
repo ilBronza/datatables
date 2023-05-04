@@ -3,11 +3,29 @@
 namespace IlBronza\Datatables\Traits\DatatablesFields;
 
 use IlBronza\Datatables\Datatables;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
 trait DatatablesFieldsRelationsTrait
 {
+    public function getRelationName() : string
+    {
+        if($this->relation ?? null)
+            return $this->relation;
+
+        return $this->name;
+    }
+
+    public function getRelatedModelPlaceholder()
+    {
+        $relationName = $this->getRelationName();
+
+        $placeholderElement = $this->getPlaceholderElement();
+
+        return $placeholderElement->$relationName()->make();
+    }
+
     public function isDependentRelation()
     {
         return $this->isDependentRelation ?? false;
@@ -64,6 +82,14 @@ trait DatatablesFieldsRelationsTrait
         return route($routeBasename . '.' . $type, [$modelBasename => '%s']);
     }
 
+    private function getSprintFRouteByModel(Model $model, string $type)
+    {
+        $routeBasename = $model->getRouteBasename();
+        $modelBasename = Str::singular(lcfirst(class_basename($model)));
+
+        return route($routeBasename . '.' . $type, [$modelBasename => '%s']);
+    }
+
     private function getRelationshipSprintFRouteByModelType(string $modelBasename, string $type)
     {
         $parentModelBasename = Str::camel(class_basename($this->table->modelClass));
@@ -94,6 +120,12 @@ trait DatatablesFieldsRelationsTrait
                 $type
             ))
             return $route;
+
+        if($relatedModel = $this->getRelatedModelPlaceholder())
+            return $this->getSprintFRouteByModel(
+                $relatedModel,
+                $type
+            );
 
         return $this->getSprintFRouteByModelType(
             $this->getRelationModelName(),

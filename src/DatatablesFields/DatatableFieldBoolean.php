@@ -9,6 +9,7 @@ class DatatableFieldBoolean extends DatatableField
 	public $falseIcon = 'close';
 	public $nullIcon = 'minus';
 	public $width = '45px';
+	public $showOnlyTrue = false;
 	public $nullable = true;
 
 	public function transformValue($value)
@@ -28,18 +29,32 @@ class DatatableFieldBoolean extends DatatableField
 		";
 	}
 
+	private function getVoidString()
+	{
+		return " item = '';";
+	}
+
 	private function _getCustomColumnDefNullableResult()
 	{
+		if(! $this->showOnlyTrue)
+			return "
+
+			if(item)
+				" . $this->getBooleanString("uk-icon=\"{$this->trueIcon}\"") . "
+
+			else if((item == 0)||(item === false))
+				" . $this->getBooleanString("uk-icon=\"{$this->falseIcon}\"") . "
+
+			else
+				" . $this->getBooleanString("uk-icon=\"{$this->nullIcon}\"");
+
 		return "
+			if(item)
+				" . $this->getBooleanString("uk-icon=\"{$this->trueIcon}\"") . "
 
-		if(item)
-			" . $this->getBooleanString("uk-icon=\"{$this->trueIcon}\"") . "
+			else
+				" . $this->getVoidString();
 
-		else if((item == 0)||(item === false))
-			" . $this->getBooleanString("uk-icon=\"{$this->falseIcon}\"") . "
-
-		else
-			" . $this->getBooleanString("uk-icon=\"{$this->nullIcon}\"");
 	}
 
 	private function _getCustomColumnDefResult()

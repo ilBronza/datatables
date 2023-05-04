@@ -247,7 +247,12 @@ class Datatables
 
     public function getName()
     {
-        return $this->name;
+        if($this->name ?? false)
+            return $this->name;
+
+        $this->setName('table' . rand(0, 99999));
+
+        return $this->getName();
     }
 
     public function getCamelName()
@@ -276,7 +281,7 @@ class Datatables
 
     public function renderPage()
     {
-        if(request()->ajax())
+        if((request()->ajax()) && (! request()->ibFetcher))
             return
             [
                 "draw" => 1,
@@ -350,7 +355,7 @@ class Datatables
 
     public function getRelationName()
     {
-        return $this->name;
+        return $this->getName();
     }
 }
 
