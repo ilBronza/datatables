@@ -8,7 +8,7 @@ class DatatableFieldColor extends DatatableFieldEditor
 {
 	use EditorSingleFieldTrait;
 
-	public $width = '25px';
+	public $width = '65px';
 	public $fieldType = 'color';
 	public $htmlClasses = [
 		'ib-editor-color'
