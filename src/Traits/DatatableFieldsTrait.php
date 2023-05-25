@@ -322,7 +322,9 @@ trait DatatableFieldsTrait
             return $this->elements->first();
 
         if(empty ($this->placeholderElement))
+        {
             throw new \Exception('Please declare a modelClass parameter for this table');
+        }
 
         return $this->placeholderElement;
     }
