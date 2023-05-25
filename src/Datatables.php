@@ -48,6 +48,8 @@ class Datatables
             'exportOptions' => ['orthogonal' => 'export']
         ]
     ];
+
+    public $debug = true;
     public $getRowIdIndex = false;
     public $stripe = true;
     public $pageLength = 50;
@@ -71,6 +73,11 @@ class Datatables
         $this->fieldsGroups = collect();
 
         $this->customButtons = collect();
+    }
+
+    public function debug() : bool
+    {
+        return $this->debug;
     }
 
     public function addBaseModelClass(string $modelClass)

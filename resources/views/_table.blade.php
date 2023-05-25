@@ -71,7 +71,7 @@
                     uk-tooltip="offset: 20; title: {{ $field->getTranslatedName() }}"
                     @endif
 
-                    class="{{ $field->getHeaderHtmlClasses() }}"
+                    class="{{ $field->getHeaderHtmlClasses() }} {{ Str::slug($field->getTranslatedName()) }}"
 
                     data-ajaxExtraData="{{ $field->getJsonAjaxExtraData() }}"
 

@@ -17,11 +17,12 @@ trait DatatablesFieldsRelationsTrait
         return $this->name;
     }
 
-    public function getRelatedModelPlaceholder()
+    public function getRelatedModelPlaceholder() : ? Model
     {
         $relationName = $this->getRelationName();
 
-        $placeholderElement = $this->getPlaceholderElement();
+        if(! $placeholderElement = $this->getPlaceholderElement())
+            return null;
 
         return $placeholderElement->$relationName()->make();
     }

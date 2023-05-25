@@ -44,6 +44,9 @@ trait DatatableDataTrait
         }
         catch(\Exception $e)
         {
+            if($this->debug())
+                throw new \Exception($e);
+
             return $e->getMessage();
         }
     }

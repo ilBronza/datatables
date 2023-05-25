@@ -90,6 +90,9 @@ trait DatatablesFieldsSummaryTrait
         }
         catch(\Exception $e)
         {
+            if($this->debug())
+                throw new \Exception($e);
+
             $value = $e->getMessage();
         }
 

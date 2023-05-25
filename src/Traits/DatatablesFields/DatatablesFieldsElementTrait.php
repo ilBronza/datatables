@@ -16,6 +16,9 @@ trait DatatablesFieldsElementTrait
         }
         catch(\Throwable $e)
         {
+            if($this->debug())
+                throw new \Exception($e);
+
             return null;
         }
     }
