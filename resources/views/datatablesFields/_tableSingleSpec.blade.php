@@ -169,6 +169,15 @@
         'reload',
 
         @if($table->hasSelectRowCheckboxes())
+        {
+            text: 'selectVisible',
+            action : function ( e, dt, node, config )
+            {
+                dt.rows( { search: 'applied' } ).select();
+            }
+        },
+        'selectAll',
+        'selectNone',
         'selectedRows',
         @endif
 

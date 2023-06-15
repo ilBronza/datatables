@@ -246,7 +246,7 @@ class DatatableField
         }
         catch(\Exception $e)
         {
-            mori('render as missing ' . $this->name);
+            dd('render as missing ' . $this->name);
         }
 
     }
@@ -421,5 +421,15 @@ class DatatableField
     public function getHtmlTag()
     {
         return $this->htmlTag;
+    }
+
+    public function getTable() : Datatables
+    {
+        return $this->table;
+    }
+
+    public function debug() : bool
+    {
+        return $this->getTable()->debug();
     }
 }

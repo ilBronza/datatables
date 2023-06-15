@@ -17,7 +17,7 @@ trait DatatablesFieldsElementTrait
         catch(\Throwable $e)
         {
             if($this->debug())
-                throw new \Exception($e);
+                dd($e->getMEssage());
 
             return null;
         }
@@ -61,7 +61,7 @@ trait DatatablesFieldsElementTrait
         }
         catch(\Exception $e)
         {
-            ddd($placeholderElement);
+            ddd([$placeholderElement, $property, $e->getMessage()]);
         }
     }
 

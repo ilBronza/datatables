@@ -33,7 +33,7 @@ class DatatableFieldEach extends MultipleDatatableField
 		catch(\Throwable $e)
 		{
 			if($this->debug())
-				throw new \Throwable($e);
+				dd($e->getMEssage());
 
 			return $e->getMessage();
 		}

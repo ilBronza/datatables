@@ -8,10 +8,16 @@ class DatatableFieldLinkCachedProperty extends DatatableFieldLink
 {
     public $defaultWidth = '120px';
     public $property;
+    public $nullValue;
 
     public function isSortable()
     {
     	return true;
+    }
+
+    public function getNullValue()
+    {
+    	return $this->nullValue;
     }
 
 	public function transformValue($value)
@@ -19,7 +25,7 @@ class DatatableFieldLinkCachedProperty extends DatatableFieldLink
 		if(! $model = $this->modelClass::findCached($value))
 			return [
 				'#',
-				'null'
+				$this->getNullValue()
 			];
 
 		return [

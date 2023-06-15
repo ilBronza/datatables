@@ -50,6 +50,9 @@ class DatatableFieldSelect extends DatatableFieldEditor
     {
     	$element = $this->element ?? $this->getPlaceholderElement();
 
+		if($method = $this->getPossibleValuesMethod())
+			return $element->$method();
+
         $_enumStr = \DB::select(\DB::raw('SHOW COLUMNS FROM ' . $element->getTable() . ' WHERE Field = "' . $this->name . '"'));
 
         $enumStr = $_enumStr[0]->Type;
