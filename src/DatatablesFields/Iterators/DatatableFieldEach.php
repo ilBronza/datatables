@@ -8,6 +8,7 @@ use IlBronza\Datatables\DatatablesFields\DatatableField;
 class DatatableFieldEach extends MultipleDatatableField
 {
 	public $child;
+	public $childParameters;
 
 	private function manageChildType()
 	{

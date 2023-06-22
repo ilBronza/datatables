@@ -6,6 +6,8 @@ use IlBronza\Datatables\DatatablesFields\DatatableField;
 
 trait DatatablesFieldsParentingTrait
 {
+	public $parent;
+
 	private function getChildName()
 	{
 		if(isset($this->property))

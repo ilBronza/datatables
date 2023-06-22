@@ -13,6 +13,7 @@ class DatatableFieldEditor extends DatatableField
 
 	public $ajax = true;
 	public $spin = true;
+	public $editorProperty;
 	public $requireElement = true;
 	public $requiresPlaceholderElement = true;
 	public $customUpdateRouteName = false;

@@ -49,7 +49,7 @@ class Datatables
         ]
     ];
 
-    public $debug = true;
+    public $debug = false;
     public $getRowIdIndex = false;
     public $stripe = true;
     public $pageLength = 50;
@@ -59,6 +59,10 @@ class Datatables
     public $modelClass;
     public $dom;
     public $canHideColumns;
+    public $customButtons;
+    public $selectRowCheckboxes;
+    public $placeholderElement;
+    public $datatableUserData;
 
     public $scrollX = true;
 
