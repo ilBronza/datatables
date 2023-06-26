@@ -22,6 +22,12 @@ class DatatableFieldLinkCachedProperty extends DatatableFieldLink
 
 	public function transformValue($value)
 	{
+		if(! $value)
+			return [
+				'#',
+				$this->getNullValue()
+			];
+		
 		if(! $model = $this->modelClass::findCached($value))
 			return [
 				'#',

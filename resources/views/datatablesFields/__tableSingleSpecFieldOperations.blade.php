@@ -10,9 +10,6 @@
 
 jQuery(document).ready(function()
 {
-	// console.log('asd');
-	//console.log('non me la toccavi');
-
 @foreach($table->getFields() as $field)
     @if($field->hasFieldOperations())
 
