@@ -17,7 +17,7 @@ trait DatatablesFieldsFetcherTrait
             ];
 
         if(! isset($fetcherData['type']))
-            $fetcherData['type'] = 'hover';
+            $fetcherData['type'] = 'click';
 
         if(! isset($fetcherData['append']))
             $fetcherData['append'] = true;
@@ -26,7 +26,7 @@ trait DatatablesFieldsFetcherTrait
             $fetcherData['target'] = 'row';
 
         if(! isset($fetcherData['mode']))
-            $fetcherData['mode'] = 'tooltip';
+            $fetcherData['mode'] = 'modal';
 
         $htmlClass = $fetcherData['type'] . 'fetcher' . $fetcherData['mode'];
         $this->addHtmlClass($htmlClass);

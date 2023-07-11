@@ -17,7 +17,7 @@ class DatatableFieldNumeric extends DatatableFieldEditor
 
     public function getValueString()
     {
-    	if($this->digits)
+    	if($this->digits !== false)
         	return " data-originalvalue=\"' + item[1] + '\" value=\"' + ((item[1])? item[1].toFixed({$this->digits}) : '') + '\" ";
 
         return " data-originalvalue=\"' + item[1] + '\" value=\"' + item[1] + '\" ";

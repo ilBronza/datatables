@@ -292,6 +292,12 @@ class Datatables
 
     public function renderPage()
     {
+        if($this->isFlatTable())
+            return view('datatables::table', [
+                'table' => $this,
+                'tableSourceData' => $this->prepareCachedData()
+            ]);
+
         if((request()->ajax()) && (! request()->ibFetcher))
             return
             [
@@ -337,6 +343,11 @@ class Datatables
         $this->sourceType = 'array';
     }
 
+    public function setFlatTable()
+    {
+        $this->sourceType = 'flat';
+    }
+
     public function setAjaxTable()
     {
         $this->sourceType = 'ajax';
@@ -345,6 +356,11 @@ class Datatables
     public function isAjaxTable()
     {
         return $this->sourceType == 'ajax';
+    }
+
+    public function isFlatTable()
+    {
+        return $this->sourceType == 'flat';
     }
 
     public function isArrayTable()

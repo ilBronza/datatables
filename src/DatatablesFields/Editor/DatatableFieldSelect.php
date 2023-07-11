@@ -66,8 +66,6 @@ class DatatableFieldSelect extends DatatableFieldEditor
 	{
 		$classes = $this->getHtmlClassesString();
 
-		$possibleValues = $this->getPossibleEnumValues();
-
 		return "
 
 		" . $this->substituteUrlParameter() . "

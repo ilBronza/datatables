@@ -66,6 +66,7 @@
         <thead class="sectionheader">
             <tr class="columns">
                 @foreach($table->getFields() as $field)
+                    @if(! $table->isFlatTable())
                 <th
                     @if(config('datatables.useTooltips'))
                     uk-tooltip="offset: 20; title: {{ $field->getTranslatedName() }}"
@@ -101,6 +102,19 @@
                     >
                     {{ $field->renderHeader() }}
                 </th>
+                    @else
+                <th 
+                    class="{{ $field->getHeaderHtmlClasses() }} {{ Str::slug($field->getTranslatedName()) }}"
+
+                    @if(config('datatables.useTooltips'))
+                    uk-tooltip="offset: 20; title: {{ $field->getTranslatedName() }}"
+                    @endif
+                >
+                    <span class="uk-text-truncate">
+                        {{ $field->getTranslatedName() }}
+                    </span>
+                </th>
+                    @endif
                 @endforeach
             </tr>
 
@@ -136,6 +150,16 @@
 
 
         </thead>
+
+        @if($table->isFlatTable())
+        @foreach($tableSourceData as $row)
+        <tr>
+            @foreach($row as $cell)
+            <td>{!! $cell !!}</td>
+            @endforeach
+        </tr>
+        @endforeach
+        @endif
     </table>
 
 @if(! request()->input('justTable', false))
