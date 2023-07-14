@@ -9,6 +9,7 @@ class DatatableFieldLinkCachedProperty extends DatatableFieldLink
     public $defaultWidth = '120px';
     public $property;
     public $nullValue;
+    public $function = 'getShowUrl';
 
     public function isSortable()
     {
@@ -35,7 +36,7 @@ class DatatableFieldLinkCachedProperty extends DatatableFieldLink
 			];
 
 		return [
-			$model->getShowUrl(),
+			$model->{$this->function}(),
 			$model->{$this->property}
 		];
 	}
