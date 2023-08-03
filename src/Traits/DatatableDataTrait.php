@@ -12,7 +12,7 @@ trait DatatableDataTrait
     {
         return cache()->remember(
             $this->getCachedTableKey(),
-            300,
+            213300,
             function()
             {
                 return $this->calculateData();

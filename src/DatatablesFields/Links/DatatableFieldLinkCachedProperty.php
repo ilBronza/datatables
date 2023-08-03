@@ -9,6 +9,7 @@ class DatatableFieldLinkCachedProperty extends DatatableFieldLink
     public $defaultWidth = '120px';
     public $property;
     public $nullValue;
+    public $mustShowNull = false;
     public $function = 'getShowUrl';
 
     public function isSortable()
@@ -51,11 +52,18 @@ class DatatableFieldLinkCachedProperty extends DatatableFieldLink
 		return "item[1]";
 	}
 
+	public function mustShowNull()
+	{
+		return $this->mustShowNull;
+	}
+
 	public function getCustomColumnDefSingleResult()
 	{
+		$nullableString = $this->mustShowNull() ? 'if(item)' : 'if(item[1])';
+
 		return "
 
-			if(item)
+			" . $nullableString . "
 			{
 				item = '<" . $this->getHtmlTagString() . $this->getParentDataIndexString() . $this->getHtmlDataAttributesString() . " " . $this->getHtmlClassesAttributeString() . " " . $this->getTargetHtml() . " href=\"' + " . $this->getLinkUrlString() . " + '\">" . $this->getPrefix() . "" . $this->getIconHtml() . "' + " . $this->getLinkTextString() . " + '" . $this->getSuffix() . "</" . $this->getHtmlTagString() . ">';
 			}
