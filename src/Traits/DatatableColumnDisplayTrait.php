@@ -24,6 +24,9 @@ trait DatatableColumnDisplayTrait
 
     private function getColumnDisplayKeyPieces() : array
     {
+        if(! $routeName = request()->route()->getName())
+            throw new \Exception('Dichiara routenname per questo indirizzo, o i campi della tabella non saranno selezionabili');
+
         return [
             request()->route()->getName(),
             class_basename(

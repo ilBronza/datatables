@@ -4,6 +4,7 @@ namespace IlBronza\Datatables\Traits;
 
 use IlBronza\Datatables\ColumnOption;
 use IlBronza\Datatables\DatatablesFields\DatatableField;
+use Illuminate\Support\Str;
 
 trait DatatableOptionsTrait
 {
@@ -23,6 +24,16 @@ trait DatatableOptionsTrait
     public function getPageLength()
     {
         return $this->pageLength;
+    }
+
+    public function setAutomaticCaption()
+    {
+        if($this->getCaption())
+            return ;
+
+        $this->setCaption(
+            str_replace("-", " ", $this->getName())
+        );
     }
 
     public function setCaption(string $caption)

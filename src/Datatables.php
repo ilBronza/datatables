@@ -226,6 +226,8 @@ class Datatables
 
         $table->setElements($elements());
 
+        // $table->setAutomaticCaption();
+
         return $table;
     }
 
