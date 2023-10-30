@@ -138,6 +138,9 @@ trait DatatableFieldsTrait
         if(! isset($fieldsGroup['fields']))
             return ;
 
+        if(($translationPrefix = $fieldsGroup['translationPrefix'] ?? false))
+            $group->setTranslationPrefix($translationPrefix);
+
         $fields = $fieldsGroup['fields'];            
 
         $permissions = $fieldsGroup['permissions'] ?? [];

@@ -34,9 +34,25 @@ trait DatatablesFieldsDisplayTrait
             $this->width = $width;
     }
 
+    public function getDefaultTranslationPrefix()
+    {
+        return 'fields';
+    }
+
+    public function getTranslationPrefix()
+    {
+        if($this->translationPrefix)
+            return $this->translationPrefix;
+
+        if(! $fieldsGroup = $this->getFieldsGroup())
+            return $this->getDefaultTranslationPrefix();
+
+        return $fieldsGroup->getTranslationPrefix();
+    }
+
     public function getTranslatedName()
     {
-        return __('fields.' . $this->name);
+        return __($this->getTranslationPrefix() . '.' . $this->name);
     }
 
     public function getJsonAjaxExtraData()

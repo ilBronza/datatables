@@ -71,11 +71,21 @@ class DatatableFieldLink extends DatatableField
 			];
 		}
 
-		if(! isset($this->variable))
+		try
+		{
+			if(! isset($this->variable))
+				return [
+					$value->{$this->function}(),
+					$value->{$this->textParameter}
+				];			
+		}
+		catch(\Throwable $e)
+		{
 			return [
-				$value->{$this->function}(),
-				$value->{$this->textParameter}
+				$e->getMessage(),
+				$e->getMessage()
 			];
+		}
 
 		$variableValue = $this->table->getVariable($this->variable);
 			return [

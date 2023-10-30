@@ -51,7 +51,10 @@ trait DatatableOptionsTrait
 
     public function getCaption()
     {
-        return $this->caption ?? false;
+        if($this->caption === false)
+            return null;
+
+        return $this->caption ?? app('uikittemplate')->getPageTitle();
     }
 
     private function normalizeOrderOption()

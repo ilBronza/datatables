@@ -2,6 +2,7 @@
 
 namespace IlBronza\Datatables\Traits;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Jenssegers\Agent\Facades\Agent;
 
@@ -9,8 +10,16 @@ trait DatatableDomTrait
 {
     public function hasStickyButtons() : bool
     {
-        if((Agent::isMobile())||(Agent::isTablet()))
+        try
+        {
+            if((Agent::isMobile())||(Agent::isTablet()))
+                return false;            
+        }
+        catch(\Throwable $e)
+        {
+            Log::critical($e->getMessage());
             return false;
+        }
 
         if(! is_null($this->domStickyButtons))
             return $this->domStickyButtons;

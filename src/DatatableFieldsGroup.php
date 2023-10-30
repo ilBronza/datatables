@@ -8,6 +8,7 @@ class DatatableFieldsGroup
 {
 	public $fields;
 	public $name;
+	public ? string $translationPrefix;
 
 	public function __construct(string $name)
 	{
@@ -16,8 +17,20 @@ class DatatableFieldsGroup
 	    $this->fields = collect();
 	}
 
+	public function setTranslationPrefix(string $translationPrefix)
+	{
+		$this->translationPrefix = $translationPrefix;
+	}
+
+	public function getTranslationPrefix()
+	{
+		return $this->translationPrefix ?? 'fields';
+	}
+
 	public function addField(string $fieldName, DatatableField $field)
 	{
+		$field->setFieldsGroup($this);
+
 		$this->fields[$fieldName] = $field;
 	}
 

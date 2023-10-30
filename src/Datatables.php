@@ -30,6 +30,7 @@ class Datatables
     use DatatableSelectRowsTrait;
     use DatatableColumnDisplayTrait;
 
+    public $caption;
     public $columnDisplayKey;
     public $rowId;
     public $fields;

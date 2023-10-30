@@ -170,7 +170,7 @@
 
         @if($table->hasSelectRowCheckboxes())
         {
-            text: 'selectVisible',
+            text: 'selectFiltered',
             action : function ( e, dt, node, config )
             {
                 dt.rows( { search: 'applied' } ).select();

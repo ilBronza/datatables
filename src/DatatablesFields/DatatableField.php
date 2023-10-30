@@ -3,6 +3,7 @@
 namespace IlBronza\Datatables\DatatablesFields;
 
 use Auth;
+use IlBronza\Datatables\DatatableFieldsGroup;
 use IlBronza\Datatables\Datatables;
 use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\DataAttributesTrait;
 use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\HtmlClassesAttributesTrait;
@@ -82,6 +83,10 @@ class DatatableField
     public $target;
     public $doubler = false;
     public $jqueryFilterEvents = ['change', 'keyup'];
+
+    public ? string $translationPrefix = null;
+
+    public DatatableFieldsGroup $fieldsGroup;
 
     public $defaultWidth = '120px';
 
@@ -346,6 +351,16 @@ class DatatableField
     //     return route($routeBasename . '.' . $type, [$modelBasename => '%s']);
 
     // }
+
+    public function setFieldsGroup(DatatableFieldsGroup $fieldsGroup)
+    {
+        $this->fieldsGroup = $fieldsGroup;
+    }
+
+    public function getFieldsGroup() : DatatableFieldsGroup
+    {
+        return $this->fieldsGroup;
+    }
 
     /**
      * set field own options
