@@ -2,6 +2,11 @@
 
 @if(! request()->input('justTable', false))
     @include('datatables::__extraViews', ['position' => 'top'])
+
+    @if($table->hasExtraViewsPositions('top'))
+    {!! $table->renderExtraViews('top') !!}
+    @endif
+
 @endif
 
 @if($table->canHideColumns())
@@ -164,4 +169,9 @@
 
 @if(! request()->input('justTable', false))
     @include('datatables::__extraViews', ['position' => 'bottom'])
+
+    @if($table->hasExtraViewsPositions('bottom'))
+    {!! $table->renderExtraViews('bottom') !!}
+    @endif
+
 @endif

@@ -72,12 +72,26 @@ class Datatables
 
     public $filterOnEnter = false;
 
+    public Collection $fetchers;
+
+    static $availableExtraViewsPositions = [
+        'top',
+        'bottom'
+    ];
+
+    public function getValidExtraViewsPositions() : array
+    {
+        return static::$availableExtraViewsPositions;
+    }
+
     public function __construct()
     {
         $this->fields = collect();
         $this->fieldsGroups = collect();
 
         $this->customButtons = collect();
+
+        $this->fetchers = collect();
     }
 
     public function debug() : bool

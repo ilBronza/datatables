@@ -31,7 +31,7 @@ class DatatableFieldLink extends DatatableField
 		if(! $this->textParameter)
 			return $this->defaultWidth;
 
-		return false;
+		return $this->width;
     }
 
     public function isSortable()

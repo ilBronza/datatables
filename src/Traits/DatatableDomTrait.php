@@ -10,16 +10,16 @@ trait DatatableDomTrait
 {
     public function hasStickyButtons() : bool
     {
-        try
-        {
-            if((Agent::isMobile())||(Agent::isTablet()))
-                return false;            
-        }
-        catch(\Throwable $e)
-        {
-            Log::critical($e->getMessage());
-            return false;
-        }
+        // try
+        // {
+        //     if((Agent::isMobile())||(Agent::isTablet()))
+        //         return false;            
+        // }
+        // catch(\Throwable $e)
+        // {
+        //     Log::critical($e->getMessage());
+        //     return false;
+        // }
 
         if(! is_null($this->domStickyButtons))
             return $this->domStickyButtons;

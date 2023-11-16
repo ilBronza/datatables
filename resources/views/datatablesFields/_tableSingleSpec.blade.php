@@ -30,15 +30,15 @@
         @endif
         keys : true,
         language : {
-            lengthMenu: "{!! __('datatables.show_MENU_entries') !!}",
-            info : "{!! __('datatables.showing_START_to_END_of_TOTAL_entries') !!}",
-            search : "{!! __('datatables.search') !!}",
-            searchPlaceholder : "{!! __('datatables.searchPlaceholder') !!}",
+            lengthMenu: "{!! __('datatables::datatables.show_MENU_entries') !!}",
+            info : "{!! __('datatables::datatables.showing_START_to_END_of_TOTAL_entries') !!}",
+            search : "{!! __('datatables::datatables.search') !!}",
+            searchPlaceholder : "{!! __('datatables::datatables.searchPlaceholder') !!}",
             paginate: {
-                    first : "{!! __('datatables.first') !!}",
-                    last : "{!! __('datatables.last') !!}",
-                    next : "{!! __('datatables.next') !!}",
-                    previous : "{!! __('datatables.previous') !!}",
+                    first : "{!! __('datatables::datatables.first') !!}",
+                    last : "{!! __('datatables::datatables.last') !!}",
+                    next : "{!! __('datatables::datatables.next') !!}",
+                    previous : "{!! __('datatables::datatables.previous') !!}",
                 },
         },
 
