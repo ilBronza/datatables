@@ -4,6 +4,8 @@ namespace IlBronza\Datatables\DatatablesFields\Links;
 
 class DatatableFieldDelete extends DatatableFieldAjax
 {
+	public ? string $translationPrefix = 'datatables::fields';
+
     public $icon = 'trash';
     public $confirmMessage = 'messages.areYouSureToDeleteThisObject';
     public $textParameter = false;

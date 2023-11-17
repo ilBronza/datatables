@@ -4,6 +4,8 @@ namespace IlBronza\Datatables\DatatablesFields\Links;
 
 class DatatableFieldEdit extends DatatableFieldLink
 {
+	public ? string $translationPrefix = 'datatables::fields';
+
 	public $icon = 'file-edit';
 
 	public function transformValue($value)
