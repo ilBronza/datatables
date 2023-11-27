@@ -17,7 +17,7 @@ trait DatatablesFieldsElementTrait
         catch(\Throwable $e)
         {
             if($this->debug())
-                dd($e->getMessage());
+                ddd($e->getMessage());
 
             return null;
         }

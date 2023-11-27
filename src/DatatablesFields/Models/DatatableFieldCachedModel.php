@@ -46,7 +46,7 @@ class DatatableFieldCachedModel extends DatatableField
 		catch(\Exception $e)
 		{
 			if($this->debug())
-				dd($e->getMEssage());
+				ddd($e->getMessage());
 
 			return $e->getMessage();
 		}

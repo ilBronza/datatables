@@ -34,7 +34,7 @@ class DatatableFieldEach extends MultipleDatatableField
 		catch(\Throwable $e)
 		{
 			if($this->debug())
-				dd($e->getMEssage());
+				ddd($e->getMessage());
 
 			return $e->getMessage();
 		}

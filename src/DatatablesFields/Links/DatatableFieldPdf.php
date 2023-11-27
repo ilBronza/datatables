@@ -18,7 +18,7 @@ class DatatableFieldPdf extends DatatableFieldLink
 		catch(\Throwable $e)
 		{
 			if($this->debug())
-				dd($e->getMEssage());
+				ddd($e->getMessage());
 
 			return $e->getMessage();
 		}
@@ -33,7 +33,7 @@ class DatatableFieldPdf extends DatatableFieldLink
 		catch(\Throwable $e)
 		{
 			if($this->debug())
-				dd($e->getMessage());
+				ddd($e->getMessage());
 
 			return [
 				$e->getMessage(),

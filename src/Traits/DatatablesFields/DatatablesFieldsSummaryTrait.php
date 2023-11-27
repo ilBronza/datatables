@@ -91,7 +91,7 @@ trait DatatablesFieldsSummaryTrait
         catch(\Exception $e)
         {
             if($this->debug())
-                dd($e->getMessage());
+                ddd($e->getMessage());
 
             $value = $e->getMessage();
         }

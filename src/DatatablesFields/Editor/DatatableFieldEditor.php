@@ -145,7 +145,7 @@ class DatatableFieldEditor extends DatatableField
 		catch(\Exception $e)
 		{
 			if($this->debug())
-				dd($e->getMessage() . '. ------ Also check pluralization for ' . $routeName . ' and ' . json_encode($parameters));
+				ddd($e->getMessage() . '. ------ Also check pluralization for ' . $routeName . ' and ' . json_encode($parameters));
 
 			throw new \Exception($e->getMessage() . '. ------ Also check pluralization for ' . $routeName . ' and ' . json_encode($parameters));
 		}
