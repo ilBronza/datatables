@@ -64,6 +64,9 @@ class DatatableFieldSelect extends DatatableFieldEditor
 
 	public function getCustomColumnDefSingleResult()
 	{
+		if(! $this->userCanEdit())
+			return $this->returnFlat();
+
 		$classes = $this->getHtmlClassesString();
 
 		return "

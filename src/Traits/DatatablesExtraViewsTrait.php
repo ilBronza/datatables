@@ -9,13 +9,6 @@ use Illuminate\Support\Str;
 
 trait DatatablesExtraViewsTrait
 {
-    public $extraViews = [
-        'top' => [],
-        'bottom' => [],
-        'left' => [],
-        'right' => []
-    ];
-
     public function getParentModelView(Model $model)
     {
         if(isset($model->topExtraView))
@@ -42,10 +35,10 @@ trait DatatablesExtraViewsTrait
         $this->addTopView($view, compact('parentModel'));
     }
 
-    private function getAvailableExtraViewsPositions()
-    {
-        return array_keys($this->extraViews);
-    }
+    // private function getAvailableExtraViewsPositions()
+    // {
+    //     return array_keys($this->extraViews);
+    // }
 
     public function addTopView(string $viewName, array $parameters = [])
     {
@@ -69,12 +62,13 @@ trait DatatablesExtraViewsTrait
 
     public function addView(string $position, string $viewName, array $parameters = [])
     {
-        if(! in_array($position, $this->getAvailableExtraViewsPositions()))
-            throw \Exception("posizione {$position} non esistente");
+        return $this->addExtraView($position, $viewName, $parameters);
+        // if(! in_array($position, $this->getValidExtraViewsPositions()))
+        //     throw \Exception("posizione {$position} non esistente");
 
-        $parameters['tableId'] = $this->getId();
+        // $parameters['tableId'] = $this->getId();
 
-        $this->extraViews[$position][] = view($viewName, $parameters);
+        // $this->extraViews[$position][] = view($viewName, $parameters);
     }
 
     public function getExtraViews(string $position)
@@ -114,115 +108,115 @@ trait DatatablesExtraViewsTrait
 
 
 
-    private function getExtraViewsCollection()
-    {
-        return $this->extraViews ?? null;
-    }
+    // private function getExtraViewsCollection()
+    // {
+    //     return $this->extraViews ?? null;
+    // }
 
-    public function getFetchers() : Collection
-    {
-        return $this->fetchers;
-    }
+    // public function getFetchers() : Collection
+    // {
+    //     return $this->fetchers;
+    // }
 
-    private function createExtraViewsCollection()
-    {
-        $result = [];
+    // private function createExtraViewsCollection()
+    // {
+    //     $result = [];
 
-        foreach($this->getValidExtraViewsPositions() as $position)
-            $result[$position] = collect();
+    //     foreach($this->getValidExtraViewsPositions() as $position)
+    //         $result[$position] = collect();
 
-        $this->extraViews = collect($result);
-    }
+    //     $this->extraViews = collect($result);
+    // }
 
-    private function checkForExtraViewsCollection()
-    {
-        if(! $this->getExtraViewsCollection())
-            $this->createExtraViewsCollection();
-    }
+    // private function checkForExtraViewsCollection()
+    // {
+    //     if(! $this->getExtraViewsCollection())
+    //         $this->createExtraViewsCollection();
+    // }
 
-    private function checkValidPosition(string $position)
-    {
-        if(! in_array($position, static::getValidExtraViewsPositions()))
-            throw new \Exception($position . ' is not a valid position for this ' . class_basename($this));
-    }
+    // private function checkValidPosition(string $position)
+    // {
+    //     if(! in_array($position, static::getValidExtraViewsPositions()))
+    //         throw new \Exception($position . ' is not a valid position for this ' . class_basename($this));
+    // }
 
-    public function addFetcher(string $position, Fetcher $fetcher)
-    {
-        $this->checkValidPosition($position);
+    // public function addFetcher(string $position, Fetcher $fetcher)
+    // {
+    //     $this->checkValidPosition($position);
 
-        $this->getFetchers()->push([
-            'position' => $position,
-            'fetcher' => $fetcher
-        ]);
-    }
+    //     $this->getFetchers()->push([
+    //         'position' => $position,
+    //         'fetcher' => $fetcher
+    //     ]);
+    // }
 
-    public function addExtraView(string $position, string $viewName, array $parameters)
-    {
-        $this->checkValidPosition($position);
-        $this->checkForExtraViewsCollection();
+    // public function addExtraView(string $position, string $viewName, array $parameters)
+    // {
+    //     $this->checkValidPosition($position);
+    //     $this->checkForExtraViewsCollection();
 
-        $this->extraViews->get($position)[$viewName] = $parameters;
-    }
+    //     $this->extraViews->get($position)[$viewName] = $parameters;
+    // }
 
-    public function hasFetchersPositions($positions) : bool
-    {
-        foreach($positions as $position)
-            if($this->getFetchers()->firstWhere('position', $position))
-                return true;
+    // public function hasFetchersPositions($positions) : bool
+    // {
+    //     foreach($positions as $position)
+    //         if($this->getFetchers()->firstWhere('position', $position))
+    //             return true;
 
-        return false;
-    }
+    //     return false;
+    // }
 
-    public function getFetchersPosition(string $position) : Collection
-    {
-        return $this->getFetchers()->where('position', $position)->pluck('fetcher');
-    }
+    // public function getFetchersPosition(string $position) : Collection
+    // {
+    //     return $this->getFetchers()->where('position', $position)->pluck('fetcher');
+    // }
 
-    public function getExtraViewsPosition(string $position) : Collection
-    {
-        if(! $this->getExtraViewsCollection())
-            return collect();
+    // public function getExtraViewsPosition(string $position) : Collection
+    // {
+    //     if(! $this->getExtraViewsCollection())
+    //         return collect();
 
-        return $this->extraViews->get($position) ?? collect();
-    }
+    //     return $this->extraViews->get($position) ?? collect();
+    // }
 
-    public function hasExtraViewsPosition(string $position) : bool
-    {
-        if(! $position = $this->getExtraViewsPosition($position))
-            return false;
+    // public function hasExtraViewsPosition(string $position) : bool
+    // {
+    //     if(! $position = $this->getExtraViewsPosition($position))
+    //         return false;
 
-        return count($position) > 0;
-    }
+    //     return count($position) > 0;
+    // }
 
-    public function hasExtraViewsPositions($positions = null) : bool
-    {
-        $positions = is_array($positions) ? $positions : func_get_args();
+    // public function hasExtraViewsPositions($positions = null) : bool
+    // {
+    //     $positions = is_array($positions) ? $positions : func_get_args();
 
-        if($this->hasFetchersPositions($positions))
-            return true;
+    //     if($this->hasFetchersPositions($positions))
+    //         return true;
 
-        // if((! $this->getExtraViewsCollection()))
-        //     return false;
+    //     // if((! $this->getExtraViewsCollection()))
+    //     //     return false;
 
-        // foreach($positions as $position)
-        //     if($this->hasExtraViewsPosition($position))
-        //         return true;
+    //     // foreach($positions as $position)
+    //     //     if($this->hasExtraViewsPosition($position))
+    //     //         return true;
 
-        return false;
-    }
+    //     return false;
+    // }
 
-    public function renderExtraViews(string $position) : string
-    {
-        $result = [];
+    // public function renderExtraViews(string $position) : string
+    // {
+    //     $result = [];
 
-        // foreach($this->getExtraViewsPosition($position) as $name => $parameters)
-        //     $result[] = view($name, $parameters)->render();
+    //     // foreach($this->getExtraViewsPosition($position) as $name => $parameters)
+    //     //     $result[] = view($name, $parameters)->render();
 
-        foreach($this->getFetchersPosition($position) as $fetcher)
-            $result[] = $fetcher->render();
+    //     foreach($this->getFetchersPosition($position) as $fetcher)
+    //         $result[] = $fetcher->render();
 
-        return implode(" ", $result);
-    }
+    //     return implode(" ", $result);
+    // }
 
 
 

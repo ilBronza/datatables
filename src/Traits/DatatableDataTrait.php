@@ -129,11 +129,15 @@ trait DatatableDataTrait
 
     private function setCachedTableKey()
     {
-        $this->cachedTableKey = Str::slug($this->name . Str::random(), '');
+        $this->cachedTableKey = Str::slug($this->getName() . Str::random(), '');
     }
 
     public function getCachedTableKey()
     {
+        if($this->cachedTableKey)
+            return $this->cachedTableKey;
+
+        $this->setCachedTableKey();
         return $this->cachedTableKey;
     }
 

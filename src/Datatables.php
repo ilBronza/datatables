@@ -13,6 +13,7 @@ use IlBronza\Datatables\Traits\DatatableFormTrait;
 use IlBronza\Datatables\Traits\DatatableOptionsTrait;
 use IlBronza\Datatables\Traits\DatatableSelectRowsTrait;
 use IlBronza\Datatables\Traits\DatatablesExtraViewsTrait;
+use IlBronza\Form\Traits\ExtraViewsTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -26,9 +27,17 @@ class Datatables
     use DatatableFieldsTrait;
     use DatatableColumnDefsTrait;
     use DatatablesExtraViewsTrait;
+    use ExtraViewsTrait;
     use DatatableOptionsTrait;
     use DatatableSelectRowsTrait;
     use DatatableColumnDisplayTrait;
+
+    static $availableExtraViewsPositions = [
+        'top',
+        'bottom',
+        'left',
+        'right'
+    ];
 
     public $caption;
     public $columnDisplayKey;
@@ -74,11 +83,6 @@ class Datatables
 
     public Collection $fetchers;
 
-    static $availableExtraViewsPositions = [
-        'top',
-        'bottom'
-    ];
-
     public function getValidExtraViewsPositions() : array
     {
         return static::$availableExtraViewsPositions;
@@ -91,12 +95,12 @@ class Datatables
 
         $this->customButtons = collect();
 
-        $this->fetchers = collect();
+        $this->setFetchers();
     }
 
     public function debug() : bool
     {
-        return $this->debug;
+        return config('datatables.debug');
     }
 
     public function addBaseModelClass(string $modelClass)
@@ -208,7 +212,7 @@ class Datatables
 
         $table->setVariables($extraVariables ?? []);
 
-        if(request()->ajax())
+        if((request()->ajax()) && (! request()->ibFetcher))
         {
             if(
                 ($table->cachedTableKey = request()->input('cachedtablekey'))
@@ -352,7 +356,7 @@ class Datatables
 
     public function getId()
     {
-        return $this->id ?? $this->cachedTableKey;
+        return $this->id ?? $this->cachedTableKey ?? ($this->id = 'table_fake_id' . rand(0, 99999999));
     }
 
     public function setArrayTable()

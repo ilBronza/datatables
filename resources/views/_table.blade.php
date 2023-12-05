@@ -1,7 +1,7 @@
 @include('datatables::datatablesFields._tableSingleSpec')
 
 @if(! request()->input('justTable', false))
-    @include('datatables::__extraViews', ['position' => 'top'])
+    {{-- @include('datatables::__extraViews', ['position' => 'top']) --}}
 
     @if($table->hasExtraViewsPositions('top'))
     {!! $table->renderExtraViews('top') !!}
@@ -168,7 +168,7 @@
     </table>
 
 @if(! request()->input('justTable', false))
-    @include('datatables::__extraViews', ['position' => 'bottom'])
+    {{-- @include('datatables::__extraViews', ['position' => 'bottom']) --}}
 
     @if($table->hasExtraViewsPositions('bottom'))
     {!! $table->renderExtraViews('bottom') !!}

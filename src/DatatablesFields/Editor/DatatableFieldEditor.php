@@ -2,6 +2,8 @@
 
 namespace IlBronza\Datatables\DatatablesFields\Editor;
 
+use Auth;
+use IlBronza\AccountManager\Models\Role;
 use IlBronza\Datatables\Datatables;
 use IlBronza\Datatables\DatatablesFields\DatatableField;
 use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\IconTextContentTrait;
@@ -17,6 +19,7 @@ class DatatableFieldEditor extends DatatableField
 	public $requireElement = true;
 	public $requiresPlaceholderElement = true;
 	public $customUpdateRouteName = false;
+	public array $editorRoles = [];
 
 	//defines if vlaue is retrieved by a methd called on field element
 	public $editorValueFunction = false;
@@ -27,6 +30,36 @@ class DatatableFieldEditor extends DatatableField
 
 		$this->setParameterByName();
 	}
+
+	public function getEditorRoles() : array
+	{
+		return $this->editorRoles;
+	}
+
+	public function hasEditorRoles() : bool
+	{
+		return count($this->getEditorRoles()) > 0;
+	}
+
+    public function isEditorAllowedForRole(Role $role)
+    {
+        return in_array($role->name, $this->getEditorRoles());
+    }
+
+    public function userCanEdit()
+    {
+    	if(! $this->hasEditorRoles())
+    		return true;
+
+        if(! $user = Auth::user())
+            return false;
+
+        foreach($user->roles as $role)
+            if($this->isEditorAllowedForRole($role))
+                return true;
+
+    	return false;
+    }
 
 	public function getFieldSpecificData() : array
 	{

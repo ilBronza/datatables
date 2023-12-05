@@ -30,6 +30,19 @@ class DatatableFieldDate extends DatatableFieldEditor
 
 	public function getCustomColumnDefSingleResult()
 	{
+        if(! $this->userCanEdit())
+        	return "
+
+            if(item[1])
+            {
+                let date = moment.unix(item[1]);
+
+                if(date.isValid())
+                    item = date.format('" . $this->inputFieldDefaultFormat . "');
+            }
+
+        ";
+
 		$classes = $this->getHtmlClassesString();
 
 		return "

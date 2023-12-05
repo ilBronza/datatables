@@ -16,6 +16,9 @@ class DatatableFieldColor extends DatatableFieldEditor
 
 	public function getCustomColumnDefSingleResult()
 	{
+        if(! $this->userCanEdit())
+        	return $this->returnFlat();
+
 		return "
 		" . $this->substituteUrlParameter() . "
 

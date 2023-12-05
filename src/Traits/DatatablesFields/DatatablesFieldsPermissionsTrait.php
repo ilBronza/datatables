@@ -47,7 +47,7 @@ trait DatatablesFieldsPermissionsTrait
         if(! isset($this->allowedForRoles))
             return true;
 
-        return in_array($role->name, $this->allowedForRoles);        
+        return in_array($role->name, $this->allowedForRoles);
     }
 
     public function isAllowed()

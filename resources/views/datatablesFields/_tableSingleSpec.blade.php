@@ -176,7 +176,7 @@
                 dt.rows( { search: 'applied' } ).select();
             }
         },
-        'selectAll',
+        // 'selectAll',
         'selectNone',
         'selectedRows',
         @endif
@@ -213,7 +213,7 @@
             @if($buttonClasses = $button->getHtmlClassesString())
             className: '{{ $buttonClasses }}',
             @endif
-            text: '{{ $button->getText() }}',
+            text: '{{ $button->getText() }}@if($button->hasIcon()) {!! $button->renderIcon() !!}@endif',
             @if($jsMethodText = $button->renderJsMethod())
             action: function ( e, dt, node, config ) {
                 {!! $jsMethodText !!}
