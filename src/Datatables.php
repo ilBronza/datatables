@@ -48,18 +48,9 @@ class Datatables
     public $url;
     public $columnDefs = [];
     public $createdRowScripts = [];
-    public $buttons = [
-        [
-            'extend' => 'copy',
-            'exportOptions' => ['orthogonal' => 'export']
-        ],
-        [
-            'extend' => 'csv',
-            'exportOptions' => ['orthogonal' => 'export']
-        ]
-    ];
+    public $buttons;
 
-    public $debug = false;
+    public $debug = true;
     public $getRowIdIndex = false;
     public $stripe = true;
     public $pageLength = 50;
@@ -95,12 +86,14 @@ class Datatables
 
         $this->customButtons = collect();
 
+        $this->initializeButtons();
+
         $this->setFetchers();
     }
 
     public function debug() : bool
     {
-        return config('datatables.debug');
+        return config('datatables.debug', false);
     }
 
     public function addBaseModelClass(string $modelClass)

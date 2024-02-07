@@ -4,6 +4,7 @@ namespace IlBronza\Datatables\DatatablesFields\Links;
 
 class DatatableFieldSee extends DatatableFieldLink
 {
+	public $faIcon = 'link';
 	public ? string $translationPrefix = 'datatables::fields';
 
 	public function transformValue($value)

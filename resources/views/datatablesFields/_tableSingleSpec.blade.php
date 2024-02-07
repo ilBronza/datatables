@@ -165,10 +165,12 @@
 
         'fieldsVisibility',
 
+        @if($table->hasSearchButton())
         'search',
+        @endif
         'reload',
 
-        @if($table->hasSelectRowCheckboxes())
+        @if($table->hasSelectFilteredButton())
         {
             text: 'selectFiltered',
             action : function ( e, dt, node, config )
@@ -181,7 +183,7 @@
         'selectedRows',
         @endif
 
-        @if($table->hasDoublerFields())
+        @if($table->hasDoublerButton())
         'doubler',
         @endif
 

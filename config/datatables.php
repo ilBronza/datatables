@@ -7,4 +7,12 @@ return [
     'fixedHeader' =>  env('DATATABLES_FIXED_HEADER', false),
     'hideColumns' => env('DATATABLES_HIDE_COLUMNS', true),
     'useTooltips' => env('DATATABLES_USE_TOOLTIPS', true),
+
+    'defaultButtons' => [
+        'search' => true,
+        'selectFiltered' => true,
+        'copy' => true,
+        'csv' => true,
+        'doubler' => true,
+    ]
 ];

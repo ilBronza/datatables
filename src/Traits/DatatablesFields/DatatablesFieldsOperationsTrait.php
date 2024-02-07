@@ -2,6 +2,7 @@
 
 namespace IlBronza\Datatables\Traits\DatatablesFields;
 
+use IlBronza\Datatables\DatatablesFieldOperation;
 use Illuminate\Support\Str;
 
 trait DatatablesFieldsOperationsTrait
@@ -17,8 +18,11 @@ trait DatatablesFieldsOperationsTrait
         $this->addHeaderHtmlClass('fieldOperations');
     }
 
-    public function getFieldOperationIcon(string $operation)
+    public function getFieldOperationIcon($operation)
     {
+        if(is_array($operation))
+            return $operation['icon'] ?? 'link';
+
         if($operation == 'checkVisible')
             return 'check';
 
@@ -44,8 +48,8 @@ trait DatatablesFieldsOperationsTrait
     {
         $result = [];
 
-        foreach($this->fieldOperations as $fieldOperation)
-            $result[$fieldOperation] = $this->getFieldOperationIcon($fieldOperation);
+        foreach($this->getFieldOperations() as $index => $fieldOperation)
+            $result[$index] = $this->getFieldOperationIcon($fieldOperation);
 
         return $result;
     }
@@ -57,7 +61,15 @@ trait DatatablesFieldsOperationsTrait
 
     public function getFieldOperations() : array
     {
-        return $this->fieldOperations;
+        $result = [];
+
+        foreach($this->fieldOperations ?? [] as $index => $value)
+            if((is_int($index))&&(is_string($value)))
+                $result[$value] = DatatablesFieldOperation::createFromParameters($value, $value);
+            else
+                $result[$index] = DatatablesFieldOperation::createFromParameters($value, $index);
+
+        return $result;
     }
 
     public function getFilteredTable()

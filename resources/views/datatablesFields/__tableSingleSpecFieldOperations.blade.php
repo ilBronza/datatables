@@ -1,10 +1,10 @@
 {{-- @foreach($table->getFields() as $field)
     @if($field->hasFieldOperations())
-<h1>{{ json_encode($field->getFieldOperationsIcons()) }}</h1>
+<h1>{{ json_encode($field->getFieldOperations()) }}</h1>
 @endif
 @endforeach
- --}}
 
+ --}}{{-- <pre>@include('datatables::datatablesFields.___tableSingleSpecFieldOperation')</pre> --}}
 
 <script type="text/javascript">
 
@@ -18,7 +18,7 @@ jQuery(document).ready(function()
         $(this).css('position', 'relative');
         $(this).addClass('ibop');
 
-        var div = "<div class='fieldoperations' style='width: {{ count($field->getFieldOperationsIcons()) * 30 }}px;'>@foreach($field->getFieldOperationsIcons() as $name => $icon)<span class='{{ $name }}' uk-icon='{{ $icon }}'></span>@endforeach</div>";
+        var div = "<div class='fieldoperations' style='width: {{ count($field->getFieldOperations()) * 30 }}px;'>@include('datatables::datatablesFields.___tableSingleSpecFieldOperation')</div>";
 
         $(this).append(div);
     });

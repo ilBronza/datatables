@@ -97,10 +97,6 @@
                     data-{{ $data }}="{{ $value }}"
                     @endforeach
 
-                    @if($field->hasFieldOperations())
-                    data-fieldOperations="{{ json_encode($field->getFieldOperations()) }}"
-                    @endif
-
                     @if($field->getFilteredTable())
                     data-filteredTable="{{ $field->getFilteredTable() }}"
                     @endif

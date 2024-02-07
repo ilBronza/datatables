@@ -45,6 +45,7 @@ class DatatableField
     public $id;
     public $name;
     public $index;
+    public $avoidIcon;
     public $rowId = false;
     public $tooltip = false;
     public $summary;

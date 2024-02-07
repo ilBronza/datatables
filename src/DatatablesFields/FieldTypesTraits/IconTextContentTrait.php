@@ -16,8 +16,8 @@ trait IconTextContentTrait
 		if($this->faIcon ?? false)
 			return "<i class=\"fa-solid fa-{$this->faIcon}\"></i>";
 
-		if(! ($this->textParameter ?? false))
-			return "<span uk-icon=\"link\"></span>";
+		// if(! ($this->textParameter ?? false))
+		// 	return "<span uk-icon=\"link\"></span>";
 
 		return ;
 	}
