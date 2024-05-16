@@ -16,10 +16,7 @@ trait DatatablesFieldsElementTrait
         }
         catch(\Throwable $e)
         {
-            if($this->debug())
-                ddd($e->getMessage());
-
-            return null;
+            return $this->handleError($e);
         }
     }
 

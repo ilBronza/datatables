@@ -17,10 +17,7 @@ class DatatableFieldPdf extends DatatableFieldLink
 		}
 		catch(\Throwable $e)
 		{
-			if($this->debug())
-				ddd($e->getMessage());
-
-			return $e->getMessage();
+			return $this->handleError($e);
 		}
 
 		try

@@ -85,6 +85,8 @@ class DatatableField
     public $doubler = false;
     public $jqueryFilterEvents = ['change', 'keyup'];
 
+    public $strLimit = 0;
+
     public ? string $translationPrefix = null;
 
     public DatatableFieldsGroup $fieldsGroup;
@@ -223,16 +225,28 @@ class DatatableField
         return $this->rowId;
     }
 
-    // public function g3tSummaryResult()
-    // {
-    //     if(! $this->hasSummary())
-    //         return null;
-
-    //     return json_encode($this->summaryValues);
-    // }
-
-    static function getClassNameByType(string $fieldType)
+    static function getPackageClassNameByType(string $fieldType) : string
     {
+        $pieces = explode("::", $fieldType);
+
+        $package = array_shift($pieces);
+
+        $fieldType = static::getClassNameByType(implode(".", $pieces), false);
+
+        $fullnamespace = get_class(app($package));
+
+        $namespacePieces = explode("\\", $fullnamespace);
+        array_pop($namespacePieces);
+
+        return implode("\\", $namespacePieces) . "\Providers\DatatablesFields\\" . $fieldType;
+    }
+
+    static function getClassNameByType(string $fieldType, bool $fullQualifiedNamespace = true) : string
+    {
+        //if contains "::" in string, it's a custom field
+        if(strpos($fieldType, "::") !== false)
+            return static::getPackageClassNameByType($fieldType);
+
         $pieces = explode(".", $fieldType);
 
         $fieldType = ucfirst(array_pop($pieces));
@@ -241,6 +255,9 @@ class DatatableField
             {
                 return ucfirst($item) . '\\';
             }, $pieces));
+
+        if(! $fullQualifiedNamespace)
+            return $folders . "DatatableField" . $fieldType;
 
         return __NAMESPACE__ . '\\' . $folders . "DatatableField" . $fieldType;
     }
@@ -441,6 +458,11 @@ class DatatableField
 
     //  unset($parameters[$name]);
     // }
+
+    public function handleError($e)
+    {
+        return $e->getMessage();
+    }
 
     public function getHtmlTagString()
     {

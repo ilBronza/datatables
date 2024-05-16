@@ -189,9 +189,9 @@
 
     @if($table->hasSummary())
         'removeSummary',
-        @if($table->hasInlineSearch())
-        'removeInlineSearch',
-        @endif
+        // @if($table->hasInlineSearch())
+        // 'removeInlineSearch',
+        // @endif
     @endif
 
     @foreach ($buttons as $button)

@@ -90,10 +90,7 @@ trait DatatablesFieldsSummaryTrait
         }
         catch(\Exception $e)
         {
-            if($this->debug())
-                ddd($e->getMessage());
-
-            $value = $e->getMessage();
+            return $this->handleError($e);
         }
 
         $this->summaryValues->push($value);

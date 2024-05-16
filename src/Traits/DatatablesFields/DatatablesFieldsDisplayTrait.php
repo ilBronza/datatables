@@ -6,6 +6,16 @@ use Illuminate\Support\Str;
 
 trait DatatablesFieldsDisplayTrait
 {
+    public function hasStrLimit() : bool
+    {
+        return !! $this->strLimit;
+    }
+
+    public function getStrLimit() : int
+    {
+        return $this->strLimit;
+    }
+
     public function canBeHidden() : bool
     {
         if(! $this->table->canHideColumns())

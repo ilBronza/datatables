@@ -50,7 +50,6 @@ class Datatables
     public $createdRowScripts = [];
     public $buttons;
 
-    public $debug = true;
     public $getRowIdIndex = false;
     public $stripe = true;
     public $pageLength = 50;
@@ -270,7 +269,7 @@ class Datatables
         $this->setCachedTableKey();
     }
 
-    public function getName()
+    public function getName() : ? string
     {
         if($this->name ?? false)
             return $this->name;
@@ -397,6 +396,14 @@ class Datatables
     public function getRelationName()
     {
         return $this->getName();
+    }
+
+    public function handleError($e)
+    {
+        if($this->debug())
+            dd($e->getMessage());
+
+        return $e->getMessage();
     }
 }
 

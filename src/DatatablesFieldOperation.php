@@ -100,7 +100,7 @@ class DatatablesFieldOperation
         return $this;
     }
 
-    public function getName() : string
+    public function getName() : ? string
     {
         return $this->name;
     }

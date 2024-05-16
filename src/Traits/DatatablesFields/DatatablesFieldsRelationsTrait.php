@@ -128,10 +128,17 @@ trait DatatablesFieldsRelationsTrait
                 $type
             );
 
-        return $this->getSprintFRouteByModelType(
-            $this->getRelationModelName(),
-            $type
-        );
+        try
+        {            
+            return $this->getSprintFRouteByModelType(
+                $this->getRelationModelName(),
+                $type
+            );
+        }
+        catch(\Exception $e)
+        {
+            return $e->getMessage();
+        }
     }
 
     public function getRelationModelSprintFShowRoute()

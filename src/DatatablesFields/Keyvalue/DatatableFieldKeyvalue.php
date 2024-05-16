@@ -5,6 +5,7 @@ namespace IlBronza\Datatables\DatatablesFields\Keyvalue;
 use IlBronza\Datatables\DatatablesFields\DatatableField;
 use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\FieldPlaceholderModelTrait;
 use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\IconTextContentTrait;
+use Illuminate\Support\Str;
 
 class DatatableFieldKeyvalue extends DatatableField
 {
@@ -19,6 +20,16 @@ class DatatableFieldKeyvalue extends DatatableField
 			return [
 				null,
 				$this->getNullValue()
+			];
+
+		if($this->hasStrLimit())
+			return [
+				$value,
+				Str::limit(
+					$this->getModelClass()::findCachedAttribute($value, $this->property),
+					$this->getStrLimit(),
+					$end = '.'
+				)
 			];
 
 		return [
