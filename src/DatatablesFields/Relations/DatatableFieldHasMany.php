@@ -9,6 +9,8 @@ class DatatableFieldHasMany extends DatatableFieldIterator
 {
     use DatatablesFieldsRelationsTrait;
 
+    public $attributeGetterMethod;
+
     /**
      * set to false in array parameter to use normal routes models.action
      * instead of complex parents.models.action
@@ -17,6 +19,12 @@ class DatatableFieldHasMany extends DatatableFieldIterator
 
     public function _transformValue($value)
     {
+        if($attributeGetterMethod = $this->attributeGetterMethod)
+            return [
+                'id' => $value->getKey(),
+                'name' => $value->{$attributeGetterMethod}()
+            ];
+
         return [
             'id' => $value->getKey(),
             'name' => $value->getNameForDisplayRelation()

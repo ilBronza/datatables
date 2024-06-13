@@ -7,7 +7,7 @@ class DatatableFieldDelete extends DatatableFieldAjax
 	public ? string $translationPrefix = 'datatables::fields';
 
     public $icon = 'trash';
-    public $confirmMessage = 'messages.areYouSureToDeleteThisObject';
+    public $confirmMessage = 'datatables::messages.areYouSureToDeleteThisObject';
     public $textParameter = false;
 	public $dataAttributes = [
 		'type' => 'DELETE'
