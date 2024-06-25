@@ -7,18 +7,20 @@ use IlBronza\Datatables\DatatablesFields\DatatableFieldFlat;
 class DatatableFieldMilestone extends DatatableFieldFlat
 {
 	public $width = '120px';
-	public $backgroundColor = '#fff';
 	public $milestoneColor = '#0c0';
 
-	public function transformValue($value)
-	{
-		return $value;
-	}
+    public function transformValue($value)
+    {
+    	if(is_numeric($value))
+    	{
+    		if($value > 100)
+    			$value = 100;
 
-	public function getBackgroundColor()
-	{
-		return $this->backgroundColor;
-	}
+    		return 100 - $value;
+    	}
+
+    	return null;
+    }
 
 	public function getMilestoneColor()
 	{
@@ -28,8 +30,8 @@ class DatatableFieldMilestone extends DatatableFieldFlat
 	public function getCustomColumnDefSingleResult()
 	{
 		return "
-			if(item)
-				item = '<div style=\"width: 100%; height: 1em; background-color: {$this->getBackgroundColor()};\"><div style=\"width: ' + item + '%; height: 100%; background-color: {$this->getMilestoneColor()};\"></div></div>';
+			if((item)||(item === 0))
+				item = '<div class=\"ibmilestone\"><span>' + (100 - item) + '%</span><div style=\"width: ' + item + '%;\"></div></div>';
 
 			else item = '';
 		";		
