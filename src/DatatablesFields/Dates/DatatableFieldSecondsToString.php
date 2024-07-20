@@ -15,7 +15,7 @@ class DatatableFieldSecondsToString extends DatatableField
 		$showZerosString = ($this->showZeros)? "" : "&&(item > 0)";
 
 		return "
-			if((Number.isInteger(item))" . $showZerosString . ")
+			if((typeof item === 'number')" . $showZerosString . ")
 			{
 				let hours = Math.floor(item / 3600);
 				let minutes = Math.floor((item % 3600) / 60);

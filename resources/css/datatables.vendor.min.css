@@ -177,6 +177,11 @@ table.jsondfieldtable td
     font-size: 0.7em;
 }
 
+table.jsondfieldtable th.uk-text-truncate
+{
+    min-width: 60px;
+}
+
 .dataTables_length select
 {
     max-width: 60px;

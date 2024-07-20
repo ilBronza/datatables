@@ -35,7 +35,7 @@ class DatatableFieldJsonObjects extends DatatableField
 					result.push('<table class=\"jsondfieldtable\"><tr>');
 
 					for (var key in fields) {
-						result.push('<th uk-tooltip=\"' + key + '\" class=\"uk-text-truncate\">' + key + '</th>');
+						result.push('<th><span uk-tooltip=\"' + key + '\" class=\"uk-text-truncate\">' + key + '</span></th>');
 					}
 					result.push('</tr>');
 
