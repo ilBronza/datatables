@@ -19,7 +19,7 @@ class DatatableFieldSecondsToString extends DatatableField
 			{
 				let hours = Math.floor(item / 3600);
 				let minutes = Math.floor((item % 3600) / 60);
-				let seconds = item % 60;
+				let seconds = Math.floor(item % 60);
 
 				item = '';
 
