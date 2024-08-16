@@ -16,7 +16,7 @@ class DatatableFieldMilestone extends DatatableFieldFlat
     		if($value > 100)
     			$value = 100;
 
-    		return 100 - $value;
+    		return round(100 - $value, 2);
     	}
 
     	return null;

@@ -7,6 +7,12 @@ class DatatableFieldEdit extends DatatableFieldLink
 	public ? string $translationPrefix = 'datatables::fields';
 
 	public $icon = 'file-edit';
+	public $method = 'getEditUrl';
+
+	public function getEditMethodName()
+	{
+		return $this->method;
+	}
 
 	public function transformValue($value)
 	{
@@ -15,17 +21,17 @@ class DatatableFieldEdit extends DatatableFieldLink
 
 		if($this->textParameter)
 			return [
-				$value->getEditUrl(),
+				$value->{$this->getEditMethodName()}(),
 				$value->{$this->textParameter}
 			];
 
 		if($this->staticText)
 			return [
-				$value->getEditUrl(),
+				$value->{$this->getEditMethodName()}(),
 				$this->staticText
 			];
 
-		return $value->getEditUrl();
+		return $value->{$this->getEditMethodName()}();
 
 	}
 }

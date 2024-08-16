@@ -62,7 +62,10 @@ trait DatatablesFieldsDisplayTrait
 
     public function getTranslatedName()
     {
-        return __($this->getTranslationPrefix() . '.' . $this->name);
+		if(isset($this->translatedName))
+			return $this->translatedName;
+
+		return __($this->getTranslationPrefix() . '.' . $this->name);
     }
 
     public function getJsonAjaxExtraData()

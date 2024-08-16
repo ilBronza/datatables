@@ -45,6 +45,17 @@ class DatatableFieldLink extends DatatableField
     	return $this->sortable;
     }
 
+	public function getValueGetterMethodName()
+	{
+		if($this->function)
+			return $this->function;
+
+		if($this->method)
+			return $this->method;
+
+		throw new \Exception('No method or function defined for DatatableFieldLink ' . $this->getName());
+	}
+
 	public function transformValue($value)
 	{
 		if(! $this->textParameter)
@@ -52,10 +63,10 @@ class DatatableFieldLink extends DatatableField
 			if(! isset($this->variable))
 			{
 				if(! $this->textMethod ?? false)
-					return $value->{$this->function}();
+					return $value->{$this->getValueGetterMethodName()}();
 
 				return [
-					$value->{$this->function}(),
+					$value->{$this->getValueGetterMethodName()}(),
 					$value->{$this->textMethod}()
 				];
 			}
@@ -63,10 +74,10 @@ class DatatableFieldLink extends DatatableField
 			$variableValue = $this->table->getVariable($this->variable);
 
 			if(! $this->textMethod ?? false)
-				return $value->{$this->function}($variableValue);
+				return $value->{$this->getValueGetterMethodName()}($variableValue);
 
 			return [
-				$value->{$this->function}($variableValue),
+				$value->{$this->getValueGetterMethodName()}($variableValue),
 				$value->{$this->textMethod}()
 			];
 		}
@@ -75,7 +86,7 @@ class DatatableFieldLink extends DatatableField
 		{
 			if(! isset($this->variable))
 				return [
-					$value->{$this->function}(),
+					$value->{$this->getValueGetterMethodName()}(),
 					$value->{$this->textParameter}
 				];			
 		}
@@ -89,8 +100,8 @@ class DatatableFieldLink extends DatatableField
 
 		$variableValue = $this->table->getVariable($this->variable);
 			return [
-				$value->{$this->function}(),
-				$value->{$this->function}($variableValue)
+				$value->{$this->getValueGetterMethodName()}(),
+				$value->{$this->getValueGetterMethodName()}($variableValue)
 			];
 	}
 
