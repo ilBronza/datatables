@@ -32,7 +32,7 @@
         language : {
             lengthMenu: "{!! __('datatables::datatables.show_MENU_entries') !!}",
             info : "{!! __('datatables::datatables.showing_START_to_END_of_TOTAL_entries') !!}",
-            search : "{!! __('datatables::datatables.search') !!}",
+            search : "{!! __('datatables::datatables.generalSearchTitle') !!}",
             searchPlaceholder : "{!! __('datatables::datatables.searchPlaceholder') !!}",
             paginate: {
                     first : "{!! __('datatables::datatables.first') !!}",

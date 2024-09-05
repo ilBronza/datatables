@@ -9,6 +9,7 @@ class DatatableFieldLink extends DatatableField
 {
 	use IconTextContentTrait;
 
+	public bool|string $lightbox = false;
 	public $icon = false;
 	public $textParameter = false;
 	public $staticText;
@@ -129,13 +130,39 @@ class DatatableFieldLink extends DatatableField
 		return "item";
 	}
 
+	public function getLightboxOpeningString() : ?string
+	{
+		if ($this->lightbox)
+			return '<div uk-lightbox>';
+
+		return null;
+	}
+
+	public function getLightboxDataTypeString() : ?string
+	{
+		if ($this->lightbox)
+			return " data-type=\"iframe\" ";
+
+		return null;
+	}
+
+	public function getLightboxClosingString() : ?string
+	{
+		if ($this->lightbox)
+			return '<div uk-lightbox>';
+
+		return null;
+	}
+
 	public function getCustomColumnDefSingleResult()
 	{
 		return "
 
 			if(item)
 			{
-				item = '<" . $this->getHtmlTagString() . $this->getParentDataIndexString() . $this->getHtmlDataAttributesString() . " " . $this->getHtmlClassesAttributeString() . " " . $this->getTargetHtml() . " href=\"' + " . $this->getLinkUrlString() . " + '\">" . $this->getPrefix() . "" . $this->getIconHtml() . " ' + " . $this->getLinkTextString() . " + '" . $this->getSuffix() . "</" . $this->getHtmlTagString() . ">';
+				item = '" . $this->getLightboxOpeningString() . "<" . $this->getHtmlTagString() . $this->getParentDataIndexString() . $this->getHtmlDataAttributesString() . $this->getLightboxDataTypeString() .
+			$this->getHtmlClassesAttributeString() .	" " . $this->getTargetHtml() .	" href=\"' + " . $this->getLinkUrlString() . " + '\">" . $this->getPrefix() . "" . $this->getIconHtml() . " ' + " .
+			$this->getLinkTextString() . " + '" . $this->getSuffix() . "</" . $this->getHtmlTagString() . ">" . $this->getLightboxClosingString() . "';
 			}
 
 			else item = '';

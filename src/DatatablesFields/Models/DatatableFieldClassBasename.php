@@ -1,6 +1,8 @@
 <?php
 
-namespace IlBronza\Datatables\DatatablesFields;
+namespace IlBronza\Datatables\DatatablesFields\Models;
+
+use IlBronza\Datatables\DatatablesFields\DatatableField;
 
 class DatatableFieldClassBasename extends DatatableField
 {

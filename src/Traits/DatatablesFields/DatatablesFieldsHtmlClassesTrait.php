@@ -54,9 +54,15 @@ trait DatatablesFieldsHtmlClassesTrait
 
     public function getHtmlClasses()
     {
+		$pieces = [];
+
+		if($this->truncateText())
+			$pieces[] = 'uk-text-truncate';
+
         return array_merge(
             $this->htmlClasses,
-            $this->fieldSpecificClasses ?? []
+            $this->fieldSpecificClasses ?? [],
+			$pieces
         );
     }
 

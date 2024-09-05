@@ -3,6 +3,7 @@
 namespace IlBronza\Datatables\DatatablesFields;
 
 use Auth;
+use IlBronza\Datatables\DatatablesFields\Editor\DatatableFieldEditor;
 use IlBronza\Datatables\DatatableFieldsGroup;
 use IlBronza\Datatables\Datatables;
 use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\DataAttributesTrait;
@@ -61,6 +62,8 @@ class DatatableField
     public $fieldExtraData = [];
     public $filteredTable;
     public $parameter;
+
+	public bool $truncateText = false;
     public $filterType;
     public $type;
     public $table;
@@ -98,7 +101,15 @@ class DatatableField
     //nuovo campo per capire se è abilitato il filtro o meno
     public $filterable = true;
 
+	public function isEditor() : bool
+	{
+		return $this instanceof DatatableFieldEditor;
+	}
 
+	public function addExtradata(string $key, mixed $value)
+	{
+		$this->fieldExtraData[$key] = $value;
+	}
     public function hasDoubler()
     {
         return $this->doubler;

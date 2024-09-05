@@ -3,6 +3,7 @@
 namespace IlBronza\Datatables\DatatablesFields\Iterators;
 
 use IlBronza\Datatables\DatatablesFields\DatatableField;
+use Illuminate\Support\Facades\Log;
 
 class MultipleDatatableField extends DatatableField
 {
@@ -21,10 +22,17 @@ class MultipleDatatableField extends DatatableField
 
 	public function transformValue($value)
 	{
-		return $value->map(function ($item)
+		try
 		{
-			return $this->getItemValue($item);
-		});
+			return $value->map(function ($item)
+			{
+				return $this->getItemValue($item);
+			});
+		}
+		catch (\Throwable $e)
+		{
+			return collect();
+		}
 	}
 
 	public function getColumnDefDataIndexString()

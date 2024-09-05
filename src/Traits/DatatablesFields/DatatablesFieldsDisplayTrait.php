@@ -6,6 +6,11 @@ use Illuminate\Support\Str;
 
 trait DatatablesFieldsDisplayTrait
 {
+	public function truncateText() : bool
+	{
+		return !! $this->truncateText;
+	}
+
     public function hasStrLimit() : bool
     {
         return !! $this->strLimit;

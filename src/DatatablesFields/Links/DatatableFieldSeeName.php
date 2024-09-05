@@ -10,6 +10,12 @@ class DatatableFieldSeeName extends DatatableFieldIconLink
 
     public function transformValue($value)
     {
+		if(! $value)
+			return [
+				null,
+				null
+			];
+
         return [
         	$value->getShowUrl(),
         	$value->getName()
