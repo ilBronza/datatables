@@ -12,6 +12,9 @@ class DatatableFieldSelect extends DatatableFieldEditor
 	public $width = '125px';
 	public $fieldType = 'text';
 
+	public $nullValue = 'null';
+	public $nullString = 'nd';
+
     public function __construct(string $name, array $parameters = [], int $index = null, DatatableField $parent = null, Datatables $table = null)
 	{
 		parent::__construct($name, $parameters, $index, $parent, $table);
@@ -19,9 +22,14 @@ class DatatableFieldSelect extends DatatableFieldEditor
 
     public function parseFieldSpecificHeaderData()
     {
+		$list = $this->getPossibleEnumValuesArray();
+
+		if($this->isNullable())
+			$list = array_merge([$this->nullValue => $this->nullString], $list);
+
 		$this->setHeaderDataAttribute(
 			'possibleValues',
-			json_encode($this->getPossibleEnumValuesArray())
+			json_encode($list)
 		);        
     }
 
@@ -55,12 +63,52 @@ class DatatableFieldSelect extends DatatableFieldEditor
 
         $_enumStr = \DB::select(\DB::raw('SHOW COLUMNS FROM ' . $element->getTable() . ' WHERE Field = "' . $this->name . '"'));
 
+        if(! isset($_enumStr[0]))
+        	return [];
+
         $enumStr = $_enumStr[0]->Type;
         preg_match_all("/'([^']+)'/", $enumStr, $matches);
 
         return $matches[1] ?? [];
     }
 
+	public function transformValue($value)
+	{
+		if ($this->hasForceValue())
+		{
+			if (! $this->requireElement())
+				return $value;
+
+			return [
+				$value->getKey(),
+				$this->forceValue
+			];
+		}
+
+		if (isset($this->solveElement))
+			$value = $this->getFieldCellDataValue($this->name, $value);
+
+		if (! $this->requireElement())
+			return $value;
+
+		$this->element = $value;
+
+		if ($this->editorValueFunction)
+			return [
+				$this->element->getKey(),
+				$this->element->{$this->editorValueFunction}()
+			];
+
+		$propertyName = $this->editorProperty ?? $this->name;
+
+		$selected = $this->getPossibleEnumValuesArray()[$value->{$propertyName}] ?? $this->nullString;
+
+		return [
+			$this->element->getKey(),
+			$value->{$propertyName} ?? $this->nullValue,
+			$selected
+		];
+	}
 
 	public function getCustomColumnDefSingleResult()
 	{
@@ -76,7 +124,7 @@ class DatatableFieldSelect extends DatatableFieldEditor
 		let selected = '';
 
 		if(item)
-			selected = '<option selected value=\"' + item[1] + '\">' + item[1] + '</option>';
+			selected = '<option selected value=\"' + item[1] + '\">' + item[2] + '</option>';
 
 		item = '<select data-populated=\"false\" " . $this->getValueString() . " class=\"" . $classes . " uk-select ib-editor-select\" data-url=\"' + url + '\" data-field=\"{$this->parameter}\">' + selected + '</select>';
 

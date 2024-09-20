@@ -4,124 +4,28 @@ namespace IlBronza\Datatables\Traits\DatatablesFields;
 
 trait DatatablesFieldsColumnDefsTrait
 {
-    public function getSuffix()
-    {
-        return $this->suffix ?? false;
-    }
+	public function getColumnDefs()
+	{
+		$this->setClassnameColumnDef();
 
-    public function getPrefix()
-    {
-        return $this->prefix ?? false;
-    }
+		return $this->columnDefs;
+	}
 
-    private function setClassnameColumnDef()
-    {
-        //add className to field columnDefs
-        if(! isset($this->columnDefs['className']))
-            $this->columnDefs['className'] = $this->getCamelName();        
-    }
+	private function setClassnameColumnDef()
+	{
+		//add className to field columnDefs
+		if (! isset($this->columnDefs['className']))
+			$this->columnDefs['className'] = $this->getCamelName();
 
-    public function getColumnDefs()
-    {
-        $this->setClassnameColumnDef();
+		$this->columnDefs['className'] .= " " . $this->getTDHtmlClassesString();
+	}
 
-        return $this->columnDefs;
-    }
+	public function getCustomColumnDef()
+	{
+		// if(! $this->getEndingResultOptions())
+		//     return ;
 
-    /**
-     * set field own columnDefs
-     */
-    private function setColumnDefs()
-    {
-        $this->columnDefs = [];
-
-        //parse through available columnDefs parameters and id set, store it
-        foreach($this->availableColumnDefs as $ilBronzaDefinition => $datatablesDefinition)
-        {
-            $this->setColumnDef($ilBronzaDefinition, $datatablesDefinition);
-        }
-    }
-
-    /**
-     * if exists in object, add columnDef to field
-     */
-    public function setColumnDef(string $ilBronzaDefinition, string $datatablesDefinition)
-    {
-        if(! is_null($value = $this->getDatatableUserDataParameter($datatablesDefinition)))
-            $this->addColumnDef($datatablesDefinition, $value);
-
-        elseif(($value = $this->$ilBronzaDefinition?? null) !== null)
-            $this->addColumnDef($datatablesDefinition, $value);
-    }
-
-    /**
-     * add columnDef to field
-     *
-     * @param string $name
-     * @param mixed $value
-     */
-    public function addColumnDef(string $columnDef, $value)
-    {
-        if($columnDef == 'datatableType')
-            $columnDef = 'type';
-
-        $this->columnDefs[$columnDef] = $value;
-    }
-
-    public function getCustomColumnDefSingleResultEditor()
-    {
-        return $this->getCustomColumnDefSingleResult();
-    }
-
-    public function getItemString()
-    {
-        if($this->requiresKey())
-            return 'item[1]';
-
-        return 'item';
-    }
-
-    public function getCustomColumnDefSingleResult()
-    {
-        if($this->getParentDataIndexString()||($this->getHtmlDataAttributesString())||$this->getHtmlClassesAttributeString())
-                return "
-                if(item === null)
-                    item = '';
-                else 
-                {
-                    //manzissimo;
-                    item = '<span " . $this->getParentDataIndexString() . $this->getHtmlDataAttributesString() . $this->getHtmlClassesAttributeString() . " >' + " . $this->getItemString() . " + '</span>';
-                }
-            ";
-
-        return "
-            if(item === null)
-                item = '';
-        ";
-
-        // $result .= $this->getEndingResultOptions();
-    }
-
-    public function getCustomColumnDefSingleSearchResult()
-    {
-        return "
-            return item;
-        ";
-    }
-
-    public function getCustomColumnDefSingleSortResult()
-    {
-        return "
-            return item;
-        ";
-    }
-
-    public function getCustomColumnDef()
-    {
-        // if(! $this->getEndingResultOptions())
-        //     return ;
-
-        return "
+		return "
         {
             //" . $this->getName() . "
             targets: [" . $this->getIndex() . "],
@@ -160,42 +64,112 @@ trait DatatablesFieldsColumnDefsTrait
                 return item;
             }
         }";
-    }
+	}
 
-    public function getEndingResultOptionsEditor()
-    {
-        return $this->getEndingResultOptions();
-    }
+	public function getCustomColumnDefSingleResult()
+	{
+		if ($this->getParentDataIndexString() || ($this->getHtmlDataAttributesString()) || $this->getHtmlClassesAttributeString())
+			return "
+                if(item === null)
+                    item = '';
+                else 
+                {
+                    //manzissimo;
+                    item = '<span " . $this->getParentDataIndexString() . $this->getHtmlDataAttributesString() . $this->getHtmlClassesAttributeString() . " >' + " . $this->getItemString() . " + '</span>';
+                }
+            ";
 
-    public function getEndingResultOptions()
-    {
-        $result = [];
+		return "
+            if(item === null)
+                item = '';
+        ";
+		// $result .= $this->getEndingResultOptions();
+	}
 
-        if($this->getSuffix())
-            $result[] = "
+	public function getItemString()
+	{
+		if ($this->requiresKey())
+			return 'item[1]';
+
+		return 'item';
+	}
+
+	public function getEndingResultOptions()
+	{
+		$result = [];
+
+		if ($this->getSuffix())
+			$result[] = "
             if(item)
                 item = item + '" . $this->getSuffix() . "';
         ";
 
-        if($this->getPrefix())
-            $result[] = "
+		if ($this->getPrefix())
+			$result[] = "
             if(item)
                 item = '" . $this->getPrefix() . "' + item;
         ";
 
-        return implode(" ", $result);
-    }
+		return implode(" ", $result);
+	}
 
-    public function getColumnDefSingleResult()
-    {
-        return $this->getEndingResultOptions();
-    }
+	public function getSuffix()
+	{
+		return $this->suffix ?? false;
+	}
 
-    public function getValueAsRowClassScript()
-    {
-        if($this->valueAsRowClass)
+	public function getPrefix()
+	{
+		return $this->prefix ?? false;
+	}
 
-            return "
+	public function getCustomColumnDefSingleResultEditor()
+	{
+		return $this->getCustomColumnDefSingleResult();
+	}
+
+	public function getEndingResultOptionsEditor()
+	{
+		return $this->getEndingResultOptions();
+	}
+
+	public function getCustomColumnDefSingleSearchResult()
+	{
+		return "
+            return item;
+        ";
+	}
+
+	public function getCustomColumnDefSingleSortResult()
+	{
+		return "
+            return item;
+        ";
+	}
+
+	public function getColumnDefSingleResult()
+	{
+		return $this->getEndingResultOptions();
+	}
+
+	public function getCreatedRowScripts()
+	{
+		$result = [];
+
+		if ($script = $this->getValueAsRowClassScript())
+			$result[] = $script;
+
+		if ($script = $this->getCompiledAsRowClassScript())
+			$result[] = $script;
+
+		return implode(" ", $result);
+	}
+
+	public function getValueAsRowClassScript()
+	{
+		if ($this->valueAsRowClass)
+
+			return "
         //" . $this->name . "
         window.valueAsClass = data[" . $this->getIndex() . "];
 
@@ -204,21 +178,16 @@ trait DatatablesFieldsColumnDefsTrait
             if(typeof window.valueAsClass !== 'string')
                 window.valueAsClass = JSON.stringify(window.valueAsClass);
 
-            $(row).addClass('" . $this->getValueAsRowClassPrefix() . "' + window.valueAsClass.replace(/[^a-zA-Z ]/g, ' '));
+            $(row).addClass('" . $this->getValueAsRowClassPrefix() . "' + window.valueAsClass.replace(/[^a-zA-Z0-9 ]/g, ' '));
         }
 
         ";
-    }
+	}
 
-    public function getCompiledAsRowClassConditionScript()
-    {
-        return "window.compiledAsClass = (data[" . $this->getIndex() . "] !== 'undefined');";
-    }
-
-    public function getCompiledAsRowClassScript()
-    {
-        if($this->compiledAsRowClass)
-            return "
+	public function getCompiledAsRowClassScript()
+	{
+		if ($this->compiledAsRowClass)
+			return "
         //" . $this->name . "
 
         " . $this->getCompiledAsRowClassConditionScript() . "
@@ -228,18 +197,50 @@ trait DatatablesFieldsColumnDefsTrait
         else
             $(row).addClass('" . $this->getCompiledAsRowClassPrefix() . "notcompiled');
         ";
-    }
+	}
 
-    public function getCreatedRowScripts()
-    {
-        $result = [];
+	public function getCompiledAsRowClassConditionScript()
+	{
+		return "window.compiledAsClass = (data[" . $this->getIndex() . "] !== 'undefined');";
+	}
 
-        if($script = $this->getValueAsRowClassScript())
-            $result[] = $script;
+	/**
+	 * set field own columnDefs
+	 */
+	private function setColumnDefs()
+	{
+		$this->columnDefs = [];
 
-        if($script = $this->getCompiledAsRowClassScript())
-            $result[] = $script;
+		//parse through available columnDefs parameters and id set, store it
+		foreach ($this->availableColumnDefs as $ilBronzaDefinition => $datatablesDefinition)
+		{
+			$this->setColumnDef($ilBronzaDefinition, $datatablesDefinition);
+		}
+	}
 
-        return implode(" ", $result);
-    }
+	/**
+	 * if exists in object, add columnDef to field
+	 */
+	public function setColumnDef(string $ilBronzaDefinition, string $datatablesDefinition)
+	{
+		if (! is_null($value = $this->getDatatableUserDataParameter($datatablesDefinition)))
+			$this->addColumnDef($datatablesDefinition, $value);
+
+		else if (($value = $this->$ilBronzaDefinition ?? null) !== null)
+			$this->addColumnDef($datatablesDefinition, $value);
+	}
+
+	/**
+	 * add columnDef to field
+	 *
+	 * @param  string  $name
+	 * @param  mixed   $value
+	 */
+	public function addColumnDef(string $columnDef, $value)
+	{
+		if ($columnDef == 'datatableType')
+			$columnDef = 'type';
+
+		$this->columnDefs[$columnDef] = $value;
+	}
 }

@@ -2,24 +2,15 @@
 
 namespace IlBronza\Datatables\Traits;
 
+use function config;
+use function is_null;
+
 trait DatatableButtonsTrait
 {
     private function initializeButtons()
     {
         $this->buttons = [];
-
-        if($this->hasCopyButton())
-            $this->buttons[] = [
-                'extend' => 'copy',
-                'exportOptions' => ['orthogonal' => 'export']
-            ];
-
-        if($this->hasCsvButton())
-            $this->buttons[] = [
-                'extend' => 'csv',
-                'exportOptions' => ['orthogonal' => 'export']
-            ];
-    }
+	}
 
     public function hasDoublerButton() : bool
     {
@@ -37,19 +28,33 @@ trait DatatableButtonsTrait
         return config('datatables.defaultButtons.selectFiltered', true);
     }
 
-    public function hasSearchButton() : bool
-    {
-        return config('datatables.defaultButtons.search', true);
-    }
+	public function hasSearchButton() : bool
+	{
+		return config('datatables.defaultButtons.search', true);
+	}
 
-    public function hasCopyButton() : bool
+	public function hasReloadButton() : bool
+	{
+		if(isset($this->reloadButton))
+			return $this->reloadButton;
+
+		return config('datatables.defaultButtons.search', true);
+	}
+
+	public function hasCopyButton() : bool
     {
-        return config('datatables.defaultButtons.copy', true);
+	    if(! is_null($this->copyButton))
+		    return $this->copyButton;
+
+	    return config('datatables.defaultButtons.copy', true);
     }
 
     public function hasCsvButton() : bool
     {
-        return config('datatables.defaultButtons.csv', true);
+	    if(! is_null($this->csvButton))
+		    return $this->csvButton;
+
+	    return config('datatables.defaultButtons.csv', true);
     }
 
     public function setButtons(array $buttons)

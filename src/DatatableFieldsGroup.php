@@ -8,23 +8,23 @@ class DatatableFieldsGroup
 {
 	public $fields;
 	public $name;
-	public ? string $translationPrefix;
+	public ?string $translationPrefix;
 
 	public function __construct(string $name)
 	{
-	    $this->name = $name;
+		$this->name = $name;
 
-	    $this->fields = collect();
-	}
-
-	public function setTranslationPrefix(string $translationPrefix)
-	{
-		$this->translationPrefix = $translationPrefix;
+		$this->fields = collect();
 	}
 
 	public function getTranslationPrefix()
 	{
 		return $this->translationPrefix ?? 'fields';
+	}
+
+	public function setTranslationPrefix(string $translationPrefix)
+	{
+		$this->translationPrefix = $translationPrefix;
 	}
 
 	public function addField(string $fieldName, DatatableField $field)
@@ -34,24 +34,9 @@ class DatatableFieldsGroup
 		$this->fields[$fieldName] = $field;
 	}
 
-	public function getFieldByName(string $fieldName)
-	{
-		foreach($this->fields as $field)
-			if($field->name == $fieldName)
-				return $field;
-	}
-
-	public function assignRoles(array $roles)
-	{
-		$this->allowedForRoles = $roles;
-
-		foreach($this->fields as $field)
-			$field->assignRoles($roles);
-	}
-
 	public function assignForbiddenRolesToFields(array $groupRoles)
 	{
-		foreach($groupRoles as $fieldName => $forbiddenRoles)
+		foreach ($groupRoles as $fieldName => $forbiddenRoles)
 		{
 			$field = $this->getFieldByName($fieldName);
 
@@ -59,9 +44,16 @@ class DatatableFieldsGroup
 		}
 	}
 
+	public function getFieldByName(string $fieldName)
+	{
+		foreach ($this->fields as $field)
+			if ($field->name == $fieldName)
+				return $field;
+	}
+
 	public function assignRolesToFields(array $groupRoles)
 	{
-		foreach($groupRoles as $fieldName => $roles)
+		foreach ($groupRoles as $fieldName => $roles)
 		{
 			$field = $this->getFieldByName($fieldName);
 
@@ -69,13 +61,21 @@ class DatatableFieldsGroup
 		}
 	}
 
+	public function assignRoles(array $roles)
+	{
+		$this->allowedForRoles = $roles;
+
+		foreach ($this->fields as $field)
+			$field->assignRoles($roles);
+	}
+
 	public function assignSummaryToFields(array $summary)
 	{
-		foreach($summary as $fieldName => $_summary)
+		foreach ($summary as $fieldName => $_summary)
 		{
 			$field = $this->getFieldByName($fieldName);
 
-			$field->assignSummary($_summary);				
-		}		
+			$field->assignSummary($_summary);
+		}
 	}
 }

@@ -11,14 +11,15 @@
 {{--        window.parent.postTableToUrl("#{{ $callertablename }}", "{{ $postTableToUrl }}");--}}
 {{--		@endif--}}
 
-        window.parent.___reloadTable(
-            window.parent.__getDataTableByClass("operatorQuotationrows")
-		);
 
 		@if(isset($tablesToRefresh))
 		@foreach($tablesToRefresh as $tableToRefresh)
 
-        {{--window.___reloadTable(--}}
+window.parent.___reloadTable(
+    window.parent.__getDataTableByClass("{{ $tableToRefresh }}")
+);
+
+{{--window.___reloadTable(--}}
         {{--    window.__getDataTableByClass("{{ $tableToRefresh }}")--}}
         {{--);--}}
 

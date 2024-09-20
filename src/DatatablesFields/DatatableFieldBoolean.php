@@ -24,8 +24,17 @@ class DatatableFieldBoolean extends DatatableField
 	{
 		$classes = $this->getHtmlClassesString();
 
+		/**
+
+		uikit icons
 		return "
-			item = '<span class=\"" . $classes . "\" {$iconString} ></span>';
+			item = '<span class=\"" . $classes . "\" uk-icon=\"{$iconString}\" ></span>';
+		";
+		 *
+		 * **/
+
+		return "
+			item = '<i class=\"fa-solid fa-{$iconString}\"></i>';
 		";
 	}
 
@@ -40,17 +49,17 @@ class DatatableFieldBoolean extends DatatableField
 			return "
 
 			if(item)
-				" . $this->getBooleanString("uk-icon=\"{$this->trueIcon}\"") . "
+				" . $this->getBooleanString($this->trueIcon) . "
 
 			else if((item == 0)||(item === false))
-				" . $this->getBooleanString("uk-icon=\"{$this->falseIcon}\"") . "
+				" . $this->getBooleanString($this->falseIcon) . "
 
 			else
-				" . $this->getBooleanString("uk-icon=\"{$this->nullIcon}\"");
+				" . $this->getBooleanString($this->nullIcon);
 
 		return "
 			if(item)
-				" . $this->getBooleanString("uk-icon=\"{$this->trueIcon}\"") . "
+				" . $this->getBooleanString($this->trueIcon) . "
 
 			else
 				" . $this->getVoidString();
@@ -62,10 +71,10 @@ class DatatableFieldBoolean extends DatatableField
 		return "
 
 		if(item)
-			" . $this->getBooleanString("uk-icon=\"{$this->trueIcon}\"") . "
+			" . $this->getBooleanString($this->trueIcon) . "
 
 		else
-			" . $this->getBooleanString("uk-icon=\"{$this->falseIcon}\"") . "
+			" . $this->getBooleanString($this->falseIcon) . "
 		";
 	}
 

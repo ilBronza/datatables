@@ -5,6 +5,7 @@ namespace IlBronza\Datatables\DatatablesFields\Links;
 class DatatableFieldEmail extends DatatableFieldLink
 {
 	public bool $truncateText = true;
+	public $defaultWidth = '195px';
 
 	public function transformValue($value)
 	{

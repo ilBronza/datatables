@@ -56,7 +56,9 @@ class DatatableField
     public $customColumnDefs = [];
     public $columnOptions = [];
     public $icon;
-    public $htmlClasses = [];
+	public $htmlClasses = [];
+	public $tDHtmlClasses = [];
+
     public $headerHtmlClasses = [];
     public $fieldOperations = [];
     public $fieldExtraData = [];

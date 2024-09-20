@@ -6,6 +6,9 @@ class DatatableFieldFunction extends DatatableField
 {
 	public function transformValue($value)
 	{
+		if(! $value)
+			return null;
+		
 		if($this->requiresKey())
 			return $this->transformValueWithKey($value);
 

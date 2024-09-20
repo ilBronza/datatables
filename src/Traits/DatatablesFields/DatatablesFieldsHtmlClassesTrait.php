@@ -4,6 +4,9 @@ namespace IlBronza\Datatables\Traits\DatatablesFields;
 
 use Illuminate\Support\Str;
 
+use function array_merge;
+use function implode;
+
 trait DatatablesFieldsHtmlClassesTrait
 {
     public function getValueAsRowClassPrefix()
@@ -52,26 +55,36 @@ trait DatatablesFieldsHtmlClassesTrait
         );
     }
 
-    public function getHtmlClasses()
-    {
+	public function getHtmlClasses()
+	{
 		$pieces = [];
 
 		if($this->truncateText())
 			$pieces[] = 'uk-text-truncate';
 
-        return array_merge(
-            $this->htmlClasses,
-            $this->fieldSpecificClasses ?? [],
+		return array_merge(
+			$this->htmlClasses,
+			$this->fieldSpecificClasses ?? [],
 			$pieces
-        );
-    }
+		);
+	}
 
-    public function getHtmlClassesString()
-    {
-        return implode(" ", $this->getHtmlClasses());
-    }
+	public function getTDHtmlClasses() : array
+	{
+		return $this->tDHtmlClasses;
+	}
 
-    public function getHtmlClassForCss()
+	public function getHtmlClassesString()
+	{
+		return implode(' ', $this->getHtmlClasses());
+	}
+
+	public function getTDHtmlClassesString()
+	{
+		return implode(' ', $this->getTDHtmlClasses());
+	}
+
+	public function getHtmlClassForCss()
     {
         return $this->getCamelName();
     }

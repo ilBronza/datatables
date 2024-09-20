@@ -7,7 +7,7 @@
     window.{{ $table->getId() }}FilteredSelected = false;
 
     window.{{ $table->getId() }}rowReorder = @isset($table->dragAndDrop) {
-   
+
             @if(isset($table->dragAndDrop->selector))
             selector: '{{ $table->dragAndDrop->selector }}',
             dataSrc: {{ $table->dragAndDrop->dataSrc ?? 1 }}
@@ -15,7 +15,7 @@
 
         } @else false @endisset ;
 
-    window.{{ $table->getId() }}options =  { 
+    window.{{ $table->getId() }}options =  {
 
         @if($table->hasFixedTableHeader())
         fixedHeader: true,
@@ -78,7 +78,7 @@
             @foreach ($scripts as $script)
             {!! $script !!}
             @endforeach
-        },        
+        },
         @endif
 
         pageLength: {{ $table->getPageLength() }},
@@ -89,13 +89,13 @@
 
             @foreach($table->options as $name => $value)
                 @if($name == 'order')
-        "{{ $name }}" : 
+        "{{ $name }}" :
         [
             //{!! json_encode($value) !!}
             @foreach($value as $index => $order)
             {!! json_encode($order) !!}@if(! $loop->last),@endif
             @endforeach
-        
+
         ],
                 @else
         "{{ $name }}" : {!! json_encode($value) !!},
@@ -114,7 +114,7 @@
     //         {!! json_encode($order) !!}@if(! $loop->last),
     //             @endif
     //         @endforeach
-        
+
     //     ],
     //     @else
     //     "{{ $name }}" : {!! json_encode($value) !!},
@@ -127,7 +127,7 @@
     window.{{ $table->getId() }}columnDefs = [
         {
             "targets"  : 'no-sort',
-            "orderable": false            
+            "orderable": false
         }@if(count($table->columnDefs)||(count($table->customColumnDefs))),
 
         @if($table->hasSelectRowCheckboxes())
@@ -161,14 +161,17 @@
     @endforeach
     @endif ];
 
-    window.{{ $table->getId() }}buttons = @if(count($buttons = $table->getButtons())||(count(1))) [
+    window.{{ $table->getId() }}buttons = [ @if($buttons = $table->getButtons())
 
         'fieldsVisibility',
 
         @if($table->hasSearchButton())
-        'search',
+        // 'search',
         @endif
+
+			@if($table->hasReloadButton())
         'reload',
+			@endif
 
         @if($table->hasSelectFilteredButton())
         {
@@ -194,7 +197,15 @@
         // @endif
     @endif
 
-    @foreach ($buttons as $button)
+		@if($table->hasCopyButton())
+        'copy',
+		@endif
+
+				@if($table->hasCsvButton())
+            'csv',
+		@endif
+
+				@foreach ($buttons as $button)
         @if(is_string($button))
         '{{ $button }}' @if(! $loop->last), @endif
         @elseif(is_array($button))
@@ -224,7 +235,7 @@
         } @if(! $loop->last), @endif
         @endif
     @endforeach
-    ] @endif ;
+     @endif ];
 
 </script>
 

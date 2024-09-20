@@ -52,7 +52,7 @@ class Datatables
 
 	public $getRowIdIndex = false;
 	public $stripe = true;
-	public $pageLength = 50;
+	public $pageLength = 100;
 	public $options = [];
 	public $sourceType = 'ajax';
 	public $variables = [];
@@ -63,6 +63,8 @@ class Datatables
 	public $selectRowCheckboxes;
 	public $placeholderElement;
 	public $datatableUserData;
+	public ? bool $copyButton = null;
+	public ? bool $csvButton = null;
 
 	public $scrollX = true;
 
