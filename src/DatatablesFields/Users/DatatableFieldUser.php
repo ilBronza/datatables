@@ -2,7 +2,7 @@
 
 namespace IlBronza\Datatables\DatatablesFields\Users;
 
-use App\Models\User;
+use IlBronza\AccountManager\Models\User;
 use IlBronza\Datatables\DatatablesFields\DatatableField;
 
 class DatatableFieldUser extends DatatableField
@@ -14,7 +14,7 @@ class DatatableFieldUser extends DatatableField
 			3600,
 			function() use($value)
 			{
-				return User::find($value);
+				return User::gpc()::find($value);
 			}
 		);
 	}

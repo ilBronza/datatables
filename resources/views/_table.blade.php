@@ -9,6 +9,12 @@
 
 @endif
 
+@if($table->hasForm())
+
+    {!! $table->getForm()->_render() !!}
+
+@endif
+
 @if($table->canHideColumns())
 
     <button hidden class="colvisbutton" id="offcanvastogglefieldsbutton{{ $table->getId() }}" uk-toggle="target: #offcanvastogglefields{{ $table->getId() }}">Fields visibility</button>
@@ -82,7 +88,6 @@
                         data-ajaxExtraData="{{ $field->getJsonAjaxExtraData() }}"
 
                         @if($field->isEditor())
-                            ASDQWE
                         @endif
 
                         @if($field->isEditor() && $field->isNullable())

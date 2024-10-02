@@ -161,7 +161,7 @@
     @endforeach
     @endif ];
 
-    window.{{ $table->getId() }}buttons = [ @if($buttons = $table->getButtons())
+    window.{{ $table->getId() }}buttons = [
 
         'fieldsVisibility',
 
@@ -205,7 +205,7 @@
             'csv',
 		@endif
 
-				@foreach ($buttons as $button)
+				@foreach ($table->getButtons() as $button)
         @if(is_string($button))
         '{{ $button }}' @if(! $loop->last), @endif
         @elseif(is_array($button))
@@ -235,7 +235,7 @@
         } @if(! $loop->last), @endif
         @endif
     @endforeach
-     @endif ];
+     ];
 
 </script>
 

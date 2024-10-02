@@ -2,10 +2,61 @@
 
 namespace IlBronza\Datatables\Traits;
 
+use IlBronza\Buttons\Button;
+use IlBronza\Form\Form;
+use IlBronza\FormField\FormField;
 use Illuminate\Support\Str;
+
+use function get_class_methods;
 
 trait DatatableFormTrait
 {
+	public function provideForm() : Form
+	{
+		$this->form = new Form();
+
+		$this->form->setHasSubmitButton(false)->setCancelButton(false);
+
+		return $this->form;
+	}
+
+	public function hasForm() : bool
+	{
+		return !! $this->form;
+	}
+
+	public function getForm() : Form
+	{
+		if($this->form)
+			return $this->form;
+
+		return $this->provideForm();
+	}
+
+	public function addPostField(FormField $formField) : self
+	{
+		$this->getForm()->addFormField($formField);
+
+		return $this;
+	}
+
+	public function createPostButton(array $parameters)
+	{
+		$button = Button::create($parameters);
+
+		$button->setPrimary();
+		
+		$button->setData('tableid', $this->getId());
+
+		$button->setSubmitTableButton();
+
+		$this->getForm()->addClosureButton($button);
+	}
+
+	public function getPostFields() : array
+	{
+		return $this->postFields;
+	}
     public function getDragAndDropFieldByName(string $columnIntestation)
     {
         foreach($this->getFields() as $field)

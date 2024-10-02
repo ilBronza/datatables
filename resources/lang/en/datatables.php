@@ -9,4 +9,5 @@ return array (
   'next' => 'Prossimo',
   'previous' => 'Precedente',
   'first' => 'Prima',
+  'generalSearchTitle' => 'Cerca'
 );

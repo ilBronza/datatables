@@ -14,6 +14,7 @@ use IlBronza\Datatables\Traits\DatatableFormTrait;
 use IlBronza\Datatables\Traits\DatatableOptionsTrait;
 use IlBronza\Datatables\Traits\DatatableSelectRowsTrait;
 use IlBronza\Datatables\Traits\DatatablesExtraViewsTrait;
+use IlBronza\Form\Form;
 use IlBronza\Form\Traits\ExtraViewsTrait;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -49,6 +50,8 @@ class Datatables
 	public $columnDefs = [];
 	public $createdRowScripts = [];
 	public $buttons;
+
+	public ? Form $form = null;
 
 	public $getRowIdIndex = false;
 	public $stripe = true;

@@ -78,6 +78,17 @@ npm run development
 ## Usage
 
 
+Example for add data to th
+
+```
+'name' => [
+    'type' => 'flat',
+    'headerData' => [
+        'reloadTable' => true,
+        'merryChristmas' => 'something'
+    ]
+]
+```
 
 Example for fetcher field
 
