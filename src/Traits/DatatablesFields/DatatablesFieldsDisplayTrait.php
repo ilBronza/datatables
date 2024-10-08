@@ -4,8 +4,26 @@ namespace IlBronza\Datatables\Traits\DatatablesFields;
 
 use Illuminate\Support\Str;
 
+use function is_null;
+
 trait DatatablesFieldsDisplayTrait
 {
+	public function hasMainHeader() : bool
+	{
+		return !! ($this->mainHeader ?? false);
+	}
+
+	public function mustPrintIntestation() : bool
+	{
+		if(! is_null($this->mustPrintIntestation))
+			return $this->mustPrintIntestation;
+
+		if($table = $this->getTable())
+			return $table->mustPrintIntestation();
+
+		return config('datatables.mustPrintIntestation', false);
+	}
+
 	public function truncateText() : bool
 	{
 		return !! $this->truncateText;

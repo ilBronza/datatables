@@ -71,10 +71,26 @@
 
         {!! $table->getDomStickynessDataAttribute() !!}
 
-        class="wannabedatatable uk-table {{ $table->getStripeClass() }} datatable {{ $table->getName() }}"
+        class="wannabedatatable uk-table {{ $table->getStripeClass() }} datatable {{ $table->getName() }} {{ $table->getHtmlClassesString() }}"
         style="width:100%;"
 >
     <thead class="sectionheader">
+
+    @if($table->hasMainHeader())
+        <tr class="mainheader">
+            @foreach($table->getFields() as $field)
+                @if($field->hasMainHeader())
+                    <th colspan="{{ $colspan = ($field->mainHeader['colspan'] ?? 1) }}">
+                        <span>{{  $field->mainHeader['label'] }}</span>
+                    </th>
+                @else
+                    @if(($colspan = (($colspan ?? 0) -1)) <= 0)
+                    <th></th>
+                    @endif
+                @endif
+            @endforeach
+        </tr>
+    @endif
     <tr class="columns">
         @foreach($table->getFields() as $field)
             @if(! $table->isFlatTable())

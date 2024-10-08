@@ -2,7 +2,11 @@
  --}}
 
 @if($field->isFilterable())
-<div>
+<div class="headercell">
+	@if($field->mustPrintIntestation())
+		<span class="uk-text-truncate">{{ $field->getTranslatedName() }}</span>
+	@endif
+
 	@if(! $field->hasRangeFilter())
 	<div class="datatablefilter">
 		@include('datatables::datatablesFields.filters._' . $field->getFilterType())

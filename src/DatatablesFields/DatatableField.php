@@ -51,6 +51,7 @@ class DatatableField
     public $tooltip = false;
     public $summary;
     public $data = [];
+	public $mainHeader = null;
     public $headerData = [];
     public $columnDefs = [];
     public $customColumnDefs = [];
@@ -58,6 +59,8 @@ class DatatableField
     public $icon;
 	public $htmlClasses = [];
 	public $tDHtmlClasses = [];
+
+	public ? bool $mustPrintIntestation = null;
 
     public $headerHtmlClasses = [];
     public $fieldOperations = [];

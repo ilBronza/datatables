@@ -19,6 +19,8 @@ use IlBronza\Form\Traits\ExtraViewsTrait;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
+use function implode;
+
 class Datatables
 {
 	use DatatableDomTrait;
@@ -51,7 +53,10 @@ class Datatables
 	public $createdRowScripts = [];
 	public $buttons;
 
-	public ? Form $form = null;
+	public ?Form $form = null;
+	public ?bool $mustPrintIntestation = null;
+
+	public array $htmlClasses = [];
 
 	public $getRowIdIndex = false;
 	public $stripe = true;
@@ -66,8 +71,8 @@ class Datatables
 	public $selectRowCheckboxes;
 	public $placeholderElement;
 	public $datatableUserData;
-	public ? bool $copyButton = null;
-	public ? bool $csvButton = null;
+	public ?bool $copyButton = null;
+	public ?bool $csvButton = null;
 
 	public $scrollX = true;
 
@@ -231,6 +236,32 @@ class Datatables
 	{
 		foreach ($parameters as $key => $value)
 			$this->{$key} = $value;
+	}
+
+	public function hasMainHeader() : bool
+	{
+		foreach ($this->getFields() as $field)
+			if ($field->hasMainHeader())
+				return true;
+
+		return false;
+	}
+
+	public function addHtmlClass(string $classname) : self
+	{
+		$this->htmlClasses[] = $classname;
+
+		return $this;
+	}
+
+	public function getHtmlClassesString() : ?string
+	{
+		return implode(" ", $this->getHtmlClasses());
+	}
+
+	public function getHtmlClasses() : array
+	{
+		return $this->htmlClasses;
 	}
 
 	public function getValidExtraViewsPositions() : array

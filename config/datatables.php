@@ -8,6 +8,10 @@ return [
     'hideColumns' => env('DATATABLES_HIDE_COLUMNS', true),
     'useTooltips' => env('DATATABLES_USE_TOOLTIPS', true),
 
+	'pageLength' => 50,
+
+	'mustPrintIntestation' => false,
+
     'defaultButtons' => [
         'search' => true,
         'selectFiltered' => true,

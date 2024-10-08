@@ -7,9 +7,25 @@ use Illuminate\Support\Collection;
 use IlBronza\Datatables\DatatableFieldsGroup;
 use IlBronza\Datatables\DatatablesFields\DatatableField;
 
+use function config;
+use function is_null;
+
 trait DatatableFieldsTrait
 {
-    public function drawOnFieldsEvents()
+	public function setMustPrintIntestation(? bool $setMustPrintIntestation)
+	{
+		$this->mustPrintIntestation = $setMustPrintIntestation;
+	}
+
+	public function mustPrintIntestation() : bool
+	{
+		if(! is_null($this->mustPrintIntestation))
+			return $this->mustPrintIntestation;
+
+		return config('datatables.mustPrintIntestation', false);
+	}
+
+	public function drawOnFieldsEvents()
     {
         return ! $this->filterOnEnter;
     }

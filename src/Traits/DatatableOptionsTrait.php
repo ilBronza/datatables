@@ -23,7 +23,7 @@ trait DatatableOptionsTrait
 
     public function getPageLength()
     {
-        return $this->pageLength;
+        return $this->pageLength ?? config('datatables.pageLength', 50);
     }
 
     public function setAutomaticCaption()

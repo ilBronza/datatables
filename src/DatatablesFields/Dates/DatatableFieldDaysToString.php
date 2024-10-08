@@ -8,7 +8,7 @@ class DatatableFieldDaysToString extends DatatableField
 {
 	public $showZeros = true;
 
-	public $width = '45px';
+	public $width = '55px';
 
     public function getCustomColumnDefSingleSearchResult()
     {
