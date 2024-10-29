@@ -10,7 +10,8 @@
 
             @if(isset($table->dragAndDrop->selector))
             selector: '{{ $table->dragAndDrop->selector }}',
-            dataSrc: {{ $table->dragAndDrop->dataSrc ?? 1 }}
+            dataSrc: {{ $table->dragAndDrop->dataSrc ?? 1 }},
+
             @endif
 
         } @else false @endisset ;

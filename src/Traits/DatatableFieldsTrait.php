@@ -170,7 +170,7 @@ trait DatatableFieldsTrait
 
     private function TODO_ChangeAllViewsInTypeGetType(array $fieldParameters) : string
     {
-        return $fieldParameters['view'] ?? $fieldParameters['type'];
+		return $fieldParameters['view'] ?? $fieldParameters['type'];
     }
 
     /**

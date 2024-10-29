@@ -7,8 +7,14 @@
 	class="uk-input"
 
 	type="text"
-	placeholder="{{ $field->getTranslatedName() }}"
-	name="{{ $field->name }}" 
+
+	@if($field->mustPrintIntestation())
+		placeholder="{{ trans('datatables::fields.search') }}"
+	@else
+		placeholder="{{ $field->getTranslatedName() }}"
+	@endif
+
+	name="{{ $field->name }}"
 	autocomplete="notautocomplete{{ rand(0, 99999999) }}"
 	data-filtertype="{{ $field->getFilterType() }}"
 	/>

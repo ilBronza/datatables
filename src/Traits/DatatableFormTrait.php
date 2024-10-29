@@ -83,6 +83,11 @@ trait DatatableFormTrait
         $this->dragAndDrop->selector = 'td.' . $dragAndDropField->getHtmlClassForCss();
     }
 
+	public function setDragAndDropStoringReorderUrl(string $url)
+	{
+		$this->dragAndDrop->url = $url;
+	}
+
     public function setDragAndDropColumn($column)
     {
         $this->createDragAndDrop();

@@ -48,9 +48,18 @@
 <table
         id="{{ $table->getId() }}"
 
+        @if($table->getRowIdIndex() !== null)
+            data-rowid="{{ $table->getRowIdIndex() }}"
+        @endif
+
+        @if(isset($table->dragAndDrop->url))
+            data-storemasssortingurl="{{ $table->dragAndDrop->url }}",
+         @endif
+
+
         @if($table->isAjaxTable())
             data-url="{{ $table->getUrl() }}"
-        data-cachedtablekey="{{ $table->getCachedTableKey() }}"
+            data-cachedtablekey="{{ $table->getCachedTableKey() }}"
         @endif
 
         @if($table->getRelationName())
@@ -130,7 +139,9 @@
                             data-filteredTable="{{ $field->getFilteredTable() }}"
                         @endif
                 >
-                    {{ $field->renderHeader() }}
+{{--                    {{ $field->renderHeader() }}--}}
+
+                    @include('datatables::datatablesFields._header')
                 </th>
             @else
                 <th

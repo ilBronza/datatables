@@ -156,9 +156,11 @@ class DatatableFieldLink extends DatatableField
 
 	public function getCustomColumnDefSingleResult()
 	{
+		$itemString = $this->hasText()? 'item[0]' : 'item';
+
 		return "
 
-			if(item)
+			if(" . $itemString . ")
 			{
 				item = '" . $this->getLightboxOpeningString() . "<" . $this->getHtmlTagString() . $this->getParentDataIndexString() . $this->getHtmlDataAttributesString() . $this->getLightboxDataTypeString() .
 			$this->getHtmlClassesAttributeString() .	" " . $this->getTargetHtml() .	" href=\"' + " . $this->getLinkUrlString() . " + '\">" . $this->getPrefix() . "" . $this->getIconHtml() . " ' + " .

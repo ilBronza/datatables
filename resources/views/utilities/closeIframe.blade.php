@@ -11,6 +11,9 @@
 {{--        window.parent.postTableToUrl("#{{ $callertablename }}", "{{ $postTableToUrl }}");--}}
 {{--		@endif--}}
 
+		@if(isset($reloadAllTables))
+    		window.parent.__reloadAllTables();
+		@endif
 
 		@if(isset($tablesToRefresh))
 		@foreach($tablesToRefresh as $tableToRefresh)
@@ -26,7 +29,8 @@ window.parent.___reloadTable(
 		@endforeach
 		@endif
 
-		window.parent.closeLightbox();
+window.parent.closeLightbox();
+window.parent.closeModal();
 
 
 
