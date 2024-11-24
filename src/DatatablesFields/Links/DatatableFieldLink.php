@@ -14,7 +14,7 @@ class DatatableFieldLink extends DatatableField
 	public $textParameter = false;
 	public $staticText;
 	public $textMethod = false;
-	public $defaultWidth = '45px';
+	public $defaultWidth = '25px';
 	public $showNull = false;
 	public $dataAttributes = [];
 	public $htmlTag = 'a';

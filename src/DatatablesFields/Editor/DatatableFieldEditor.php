@@ -10,7 +10,9 @@ use IlBronza\Datatables\DatatablesFields\DatatableField;
 use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\IconTextContentTrait;
 use Illuminate\Support\Str;
 
+use function class_basename;
 use function config;
+use function dd;
 use function is_null;
 
 class DatatableFieldEditor extends DatatableField
@@ -323,7 +325,12 @@ class DatatableFieldEditor extends DatatableField
 	public function getRouteElementParameterName($routeElementClassName)
 	{
 		if ($placeholderElement = $this->getPlaceholderElement())
+		{
+			if(method_exists($placeholderElement, 'getRouteClassname'))
+				return $placeholderElement->getRouteClassname();
+
 			return Str::camel(class_basename($placeholderElement));
+		}
 
 		return Str::singular($routeElementClassName);
 	}

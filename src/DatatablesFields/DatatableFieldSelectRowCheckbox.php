@@ -9,6 +9,6 @@ class DatatableFieldSelectRowCheckbox extends DatatableField
 
 	public function transformValue($value)
 	{
-		return ;
+		return;
 	}
 }

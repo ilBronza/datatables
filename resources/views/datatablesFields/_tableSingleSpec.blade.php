@@ -176,7 +176,7 @@
 
         @if($table->hasSelectFilteredButton())
         {
-            text: 'selectFiltered',
+            text: '{{ trans('datatables::buttons.selectFiltered') }}',
             action : function ( e, dt, node, config )
             {
                 dt.rows( { search: 'applied' } ).select();

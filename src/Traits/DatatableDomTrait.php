@@ -77,6 +77,12 @@ trait DatatableDomTrait
 		$this->setDom('tip');
 	}
 
+	public function setOnlyButtonsDom()
+	{
+		//Blfritip
+		$this->setDom('Brt');
+	}
+
 	public function getCustomDom()
 	{
 		return $this->dom ?? $this->getBaseDom();

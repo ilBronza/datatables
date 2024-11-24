@@ -6,9 +6,11 @@ use IlBronza\Datatables\DatatablesFields\DatatableField;
 
 class DatatableFieldAlerts extends DatatableField
 {
+	public $width = '35px';
+
 	public function transformValue($value)
 	{
-		if(! $value)
+		if (! $value)
 			return $value;
 
 		return $value;
@@ -18,7 +20,7 @@ class DatatableFieldAlerts extends DatatableField
 	{
 		return "
 
-            if(item.length > 0)
+            if((item)&&(item.length > 0))
             {
             	let rand = 'modal' + Math.random();
             	
@@ -33,7 +35,7 @@ class DatatableFieldAlerts extends DatatableField
 
             	tooltipText += '</ol></div></div>';
 
-				item = tooltipText + '<a href=\"#' + rand + '\" uk-toggle class=\"uk-button uk-button-small uk-button-danger\"><i class=\"fa-solid fa-exclamation-triangle\"></i>' + item.length + '</a>';
+				item = tooltipText + '<a href=\"#' + rand + '\" uk-toggle class=\"ib-alertbutton uk-button uk-button-small uk-button-danger\"><i class=\"fa-solid fa-exclamation-triangle\"></i>' + item.length + '</a>';
 			}
 
             else item = '';

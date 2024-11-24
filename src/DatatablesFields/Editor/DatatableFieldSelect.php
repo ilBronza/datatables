@@ -5,6 +5,16 @@ namespace IlBronza\Datatables\DatatablesFields\Editor;
 use IlBronza\Datatables\Datatables;
 use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\EditorSingleFieldTrait;
 
+use IlBronza\FileCabinet\Helpers\DossierCreatorHelper;
+use IlBronza\FileCabinet\Helpers\DossierrowFormFieldHelper;
+
+use IlBronza\FileCabinet\Models\Form;
+
+use IlBronza\FileCabinet\Models\Formrow;
+
+use function dd;
+use function explode;
+
 class DatatableFieldSelect extends DatatableFieldEditor
 {
 	use EditorSingleFieldTrait;
@@ -58,10 +68,26 @@ class DatatableFieldSelect extends DatatableFieldEditor
     {
     	$element = $this->element ?? $this->getPlaceholderElement();
 
-		if($method = $this->getPossibleValuesMethod())
+	    if($method = $this->getPossibleValuesMethod())
 			return $element->$method();
 
-        $_enumStr = \DB::select(\DB::raw('SHOW COLUMNS FROM ' . $element->getTable() . ' WHERE Field = "' . $this->name . '"'));
+	    if($this->isDossierrow())
+	    {
+			$cast = $this->getCast();
+
+			$pieces = explode(':', $cast);
+
+			$formDataPieces = explode(",", $pieces[1]);
+
+//		    $form = Form::gpc()::findCachedByField('slug', $formDataPieces[0]);
+		    $formrow = Formrow::gpc()::findCachedByField('slug', $formDataPieces[1]);
+
+//		    $dossierrow = DossierCreatorHelper::getOrFakeDossierrowByTargetFormFormrow($element, $form, $formrow);
+
+			return $formrow->getRowType()->getPossibleValuesArray();
+	    }
+
+	    $_enumStr = \DB::select(\DB::raw('SHOW COLUMNS FROM ' . $element->getTable() . ' WHERE Field = "' . $this->name . '"'));
 
         if(! isset($_enumStr[0]))
         	return [];

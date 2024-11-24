@@ -23,6 +23,8 @@ use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsSortingTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsSummaryTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsUserDataTrait;
 
+use function stripos;
+
 class DatatableField
 {
     use DatatablesFieldsPermissionsTrait;
@@ -57,6 +59,7 @@ class DatatableField
     public $customColumnDefs = [];
     public $columnOptions = [];
     public $icon;
+	public $showLabel = false;
 	public $htmlClasses = [];
 	public $tDHtmlClasses = [];
 
@@ -182,7 +185,7 @@ class DatatableField
             $property = array_shift($properties);
                 
             if(strpos($property, 'mySelf') === false)
-                $element = $element->$property?? false;
+                $element = isset($element->$property) ? $element->$property : null;
 
             $this->elementValues[++$i] = $element;
 
@@ -303,89 +306,6 @@ class DatatableField
 
     }
 
-    // public function getCellClass()
-    // {
-    //     if(! ($cellClass = $this->cellClass ?? null))
-    //         return false;
-
-    //     if(isset($cellClass['view']))
-    //         return view('datatables.scripts.cellClasses.' . $cellClass['view'], [
-    //             'field' => $this
-    //         ])->render();
-
-    //     return false;
-    // }
-
-    // private function getRelationPivotModelName()
-    // {
-    //     $tableModel = class_basename($this->table->modelClass);
-    //     $fieldModel = ucfirst(Str::singular($this->name));
-
-    //     $pieces = [$tableModel, $fieldModel];
-    //     sort($pieces);
-
-    //     return lcfirst(implode("", $pieces));
-    // }
-
-    // private function getRelationModelName()
-    // {
-    //     $fieldModel = ucfirst(Str::singular($this->name));
-
-    //     return lcfirst($fieldModel);
-    // }
-
-    // public function getModelSprintFShowRoute()
-    // {
-    //     return $this->getModelSprintFRouteByType('show');        
-    // }
-
-    // public function getRelationPivotSprintFShowRoute()
-    // {
-    //     return $this->getRelationPivotSprintFRouteByType('show');        
-    // }
-
-    // public function getRelationModelSprintFShowRoute()
-    // {
-    //     return $this->getRelationModelSprintFRouteByType('show');
-    // }
-
-    // public function getRelationModelSprintFEditRoute()
-    // {
-    //     return $this->getRelationModelSprintFRouteByType('edit');
-    // }
-
-    // private function getRelationModelSprintFRouteByType(string $type)
-    // {
-    //     return $this->getSprintFRouteByModelType(
-    //         $this->getRelationModelName(),
-    //         $type
-    //     );
-    // }
-
-    // private function getRelationPivotSprintFRouteByType(string $type)
-    // {
-    //     return $this->getSprintFRouteByModelType(
-    //         $this->getRelationPivotModelName(),
-    //         $type
-    //     );
-    // }
-
-    // private function getModelSprintFRouteByType(string $type)
-    // {
-    //     return $this->getSprintFRouteByModelType(
-    //         $this->table->singularBaseName,
-    //         $type
-    //     );
-    // }
-
-    // private function getSprintFRouteByModelType(string $modelBasename, string $type)
-    // {
-    //     $routeBasename = Str::plural($modelBasename);
-
-    //     return route($routeBasename . '.' . $type, [$modelBasename => '%s']);
-
-    // }
-
     public function setFieldsGroup(DatatableFieldsGroup $fieldsGroup)
     {
         $this->fieldsGroup = $fieldsGroup;
@@ -431,50 +351,6 @@ class DatatableField
         return $this->columnOptions;
     }
 
-    // public function setAbsoluteIndex(int $index)
-    // {
-    //     $this->absoluteIndex = $index;
-    // }
-
-    // public function getIndex()
-    // {
-    //     return $this->index;
-    // }
-
-    // public function isSelect()
-    // {
-    //     return $this->filterType == 'select';
-    // }
-
-    // public function isDate()
-    // {
-    //     return $this->view == 'date' || $this->renderAsView == 'date';
-    // }
-
-    // public function getColumnOptions()
-    // {
-    //     return $this->columnOptions;
-    // }
-
-    // 
-    //TODO ERA GIA CANCELLATA PRIMA, CHE JE'?
-    //
-    //
-    // private function setParameterByName(string $name, array &$parameters, bool $compulsory = false)
-    // {
-    //  if(! isset($parameters[$name]))
-    //  {
-    //      if($compulsory)
-    //          throw new \Exception("missing {$name} for {$this->name}");
-
-    //      return false;
-    //  }
-
-    //  $this->setParameter($name, $parameters[$name]);
-
-    //  unset($parameters[$name]);
-    // }
-
     public function handleError($e)
     {
         return $e->getMessage();
@@ -499,4 +375,31 @@ class DatatableField
     {
         return $this->getTable()->debug();
     }
+
+	public function getElement()
+	{
+		return $this->element ?? $this->getPlaceholderElement();
+	}
+
+	public function getCast() : ? string
+	{
+		$element = $this->getElement();
+
+		$casts = $element->getCasts();
+
+		return $casts[$this->getName()] ?? null;
+	}
+
+	public function isDossierrow() : bool
+	{
+		$element = $this->getElement();
+
+		$casts = $element->getCasts();
+
+		if(! $cast = $this->getCast())
+			return false;
+
+		return stripos($cast, 'ExtraFieldDossier') !== false;
+	}
+
 }

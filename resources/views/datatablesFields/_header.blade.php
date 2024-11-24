@@ -17,6 +17,8 @@
 </div>
 @else
 <div>
-	{{ $field->getTranslatedName() }}
+	@if($field->showLabel())
+		{{ $field->getTranslatedName() }}
+	@endif
 </div>
 @endif
