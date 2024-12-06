@@ -71,6 +71,9 @@ class DatatableFieldSelect extends DatatableFieldEditor
 	    if($method = $this->getPossibleValuesMethod())
 			return $element->$method();
 
+		if(isset($this->possibleValuesArray))
+			return $this->possibleValuesArray;
+
 	    if($this->isDossierrow())
 	    {
 			$cast = $this->getCast();

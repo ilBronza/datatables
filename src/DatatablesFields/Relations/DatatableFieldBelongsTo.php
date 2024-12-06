@@ -37,6 +37,9 @@ class DatatableFieldBelongsTo extends DatatableField
                     return '<a href=\"' + urlRelation.replace('%s', data.id) + '\">' + data.name + '</a><br />';
                 }
 
+                if(type == 'sort')
+                    return data.name;
+
                 return data.name;
             }
         }";

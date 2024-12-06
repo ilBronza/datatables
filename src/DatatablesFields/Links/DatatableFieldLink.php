@@ -170,4 +170,16 @@ class DatatableFieldLink extends DatatableField
 			else item = '';
 		";
 	}
+
+	public function getCustomColumnDefSingleSortResult()
+	{
+		$itemString = $this->hasText() ? 'item[0]' : 'item';
+
+		return '
+
+			if(' . $itemString . ")
+				item = item[1];
+		";
+	}
+
 }
