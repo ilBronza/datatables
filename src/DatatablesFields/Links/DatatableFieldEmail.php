@@ -17,6 +17,20 @@ class DatatableFieldEmail extends DatatableFieldLink
 		return 'item';
 	}
 
+	public function getCustomColumnDefSingleSearchResult()
+	{
+		return '
+            return item;
+        ';
+	}
+
+	public function getCustomColumnDefSingleSortResult()
+	{
+		return '
+            return item;
+            ';
+	}
+
 	public function getCustomColumnDefSingleResult()
 	{
 		return "

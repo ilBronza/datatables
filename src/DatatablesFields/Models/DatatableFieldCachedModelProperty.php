@@ -10,6 +10,9 @@ class DatatableFieldCachedModelProperty extends DatatableField
 {
 	public function transformValue($value)
 	{
+		if(! $value)
+			return null;
+
 		if(! $model = $this->modelClass::findCached($value))
 			return null;
 

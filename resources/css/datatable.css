@@ -1,0 +1,81 @@
+table.datatable .sectionheader.ranged-filters-table th {
+  height: 78px;
+}
+table.datatable .sectionheader.ranged-filters-table .headercell {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+table.datatable .sectionheader.ranged-filters-table .headercell.single-filter .datatablefilter,
+table.datatable .sectionheader.ranged-filters-table .headercell.range-filter .range-filters-container {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+}
+table.datatable .sectionheader th input {
+  font-size: 0.7rem;
+  font-weight: normal;
+}
+table.datatable .sectionheader th input[type="date"]::-webkit-inner-spin-button,
+table.datatable .sectionheader th input[type="date"]::-webkit-calendar-picker-indicator {
+  background: transparent;
+  bottom: 0;
+  color: transparent;
+  cursor: pointer;
+  height: auto;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: auto;
+}
+table.datatable td a {
+  max-width: 100%;
+}
+table.datatable .headercell {
+  background-color: white;
+}
+table.datatable .headercell .uk-text-truncate + .datatablefilter input,
+table.datatable .headercell .uk-text-truncate + .range-filters-container input {
+  border-left: none;
+  border-bottom: none;
+  border-right: none;
+}
+table.datatable th .uk-input,
+table.datatable th .uk-select,
+table.datatable th .uk-textarea {
+  padding: 0 2px;
+}
+table.datatable th.sorting_asc {
+  color: blue;
+}
+table.datatable th.sorting_desc {
+  color: #0081d5;
+}
+table.datatable tbody tr td {
+  padding: 4px 4px;
+}
+table.datatable tbody tr td.workingdayselector {
+  width: auto;
+  padding: 4px 2px;
+}
+table.datatable tbody tr td.workingdayselector.am {
+  padding-right: 0px;
+}
+table.datatable tbody tr td.workingdayselector.pm {
+  padding-left: 0px;
+}
+table.datatable tbody tr td.workingdayselector select.uk-select {
+  height: 26px !important;
+}
+table.datatable tbody tr td.workingdayselector select.uk-select.dayselect {
+  max-width: 30px !important;
+}
+table.datatable tr td .uk-input,
+table.datatable tr td .uk-select,
+table.datatable tr td .uk-textarea {
+  padding: 0 2px;
+}
+.dataTables_paginate.paging_simple_numbers > * {
+  margin-right: 10px;
+}

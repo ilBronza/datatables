@@ -6,6 +6,8 @@ use IlBronza\Datatables\ColumnOption;
 use IlBronza\Datatables\DatatablesFields\DatatableField;
 use Illuminate\Support\Str;
 
+use function dd;
+
 trait DatatableOptionsTrait
 {
     public function canHideColumns()

@@ -64,7 +64,15 @@ class DatatableFieldLink extends DatatableField
 			if(! isset($this->variable))
 			{
 				if(! $this->textMethod ?? false)
+				{
+					if(! $value)
+						return null;
+
 					return $value->{$this->getValueGetterMethodName()}();
+				}
+
+				if(! $value)
+					return [null, null];
 
 				return [
 					$value->{$this->getValueGetterMethodName()}(),
@@ -75,13 +83,24 @@ class DatatableFieldLink extends DatatableField
 			$variableValue = $this->table->getVariable($this->variable);
 
 			if(! $this->textMethod ?? false)
+			{
+				if(! $value)
+					return null;
+
 				return $value->{$this->getValueGetterMethodName()}($variableValue);
+			}
+
+			if(! $value)
+				return [null, null];
 
 			return [
 				$value->{$this->getValueGetterMethodName()}($variableValue),
 				$value->{$this->textMethod}()
 			];
 		}
+
+		if(! $value)
+			return [null, null];
 
 		try
 		{
@@ -169,6 +188,13 @@ class DatatableFieldLink extends DatatableField
 
 			else item = '';
 		";
+	}
+
+	public function getCustomColumnDefSingleSearchResult()
+	{
+		return '
+            return item[1];
+        ';
 	}
 
 	public function getCustomColumnDefSingleSortResult()

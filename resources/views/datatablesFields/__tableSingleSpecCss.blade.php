@@ -1,7 +1,25 @@
 
 <style type="text/css">
 
-@foreach($table->getFields() as $field)
+@foreach($table->getFields() as $index => $field)
+
+/*colonna indice {{ $loop->index }}*/
+
+	@if($field->hasCss())
+	#{{ $table->getId() }} tbody tr > *:nth-child({{ $loop->index - 1 }}) {
+		@foreach($field->getCssRules() as $cssRule)
+    	{{ $cssRule }};
+	    @endforeach
+    }
+	@endif
+
+	@if($alignmentString = $field->getAlignmentCssString())
+	#{{ $table->getId() }} tbody tr > *:nth-child({{ $loop->index - 1 }})
+	{
+		{{ $alignmentString }}
+	}
+	@endif
+
     @if(! empty($field->width))
 
 #{{ $table->getId() }} th.{{ $field->getHtmlClassForCss() }},

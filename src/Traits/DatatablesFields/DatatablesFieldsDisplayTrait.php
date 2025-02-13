@@ -69,7 +69,7 @@ trait DatatablesFieldsDisplayTrait
 
 	public function showLabel() : bool
 	{
-		return !! $this->showLabel;
+		return ! ! $this->showLabel;
 	}
 
 	public function getTranslatedName()

@@ -4,9 +4,12 @@ namespace IlBronza\Datatables\DatatablesFields\Links;
 
 use IlBronza\Datatables\DatatablesFields\Links\DatatableFieldIconLink;
 
+use function is_null;
+
 class DatatableFieldSeeName extends DatatableFieldIconLink
 {
 	public $textParameter = 'name';
+	public $faIcon = false;
 
     public function transformValue($value)
     {
@@ -16,9 +19,16 @@ class DatatableFieldSeeName extends DatatableFieldIconLink
 				null
 			];
 
-        return [
-        	$value->getShowUrl(),
-        	$value->getName()
-        ];
+		if($this->textParameter == 'name')
+			return [
+				$value->getShowUrl(),
+				$value->getName()
+			];
+
+		return [
+			$value->getShowUrl(),
+			$value->{$this->textParameter}
+		];
+
     }
 }

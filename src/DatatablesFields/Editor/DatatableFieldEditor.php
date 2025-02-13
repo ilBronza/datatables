@@ -8,6 +8,7 @@ use IlBronza\AccountManager\Models\Role;
 use IlBronza\Datatables\Datatables;
 use IlBronza\Datatables\DatatablesFields\DatatableField;
 use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\IconTextContentTrait;
+use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsStructuredDataIndexTrait;
 use Illuminate\Support\Str;
 
 use function class_basename;
@@ -18,6 +19,10 @@ use function is_null;
 class DatatableFieldEditor extends DatatableField
 {
 	use IconTextContentTrait;
+
+	public null|int|string $keyPosition = 0;
+	public null|int|string $valuePosition = 1;
+
 
 	public $ajax = true;
 	public $spin = true;

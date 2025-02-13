@@ -6,8 +6,10 @@ use Auth;
 use IlBronza\Datatables\DatatablesFields\Editor\DatatableFieldEditor;
 use IlBronza\Datatables\DatatableFieldsGroup;
 use IlBronza\Datatables\Datatables;
+use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\CssTrait;
 use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\DataAttributesTrait;
 use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\HtmlClassesAttributesTrait;
+use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\TextAlignTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsColumnDefsTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsDisplayTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsElementTrait;
@@ -20,6 +22,7 @@ use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsParametersTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsParentingTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsPermissionsTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsSortingTrait;
+use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsStructuredDataIndexTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsSummaryTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsUserDataTrait;
 
@@ -27,6 +30,7 @@ use function stripos;
 
 class DatatableField
 {
+	use DatatablesFieldsStructuredDataIndexTrait;
     use DatatablesFieldsPermissionsTrait;
     use DatatablesFieldsIdentifiersTrait;
     use DatatablesFieldsDisplayTrait;
@@ -41,6 +45,9 @@ class DatatableField
     use DatatablesFieldsElementTrait;
     use DatatablesFieldsParentingTrait;
     use DatatablesFieldsUserDataTrait;
+
+	use TextAlignTrait;
+	use CssTrait;
 
     use HtmlClassesAttributesTrait;
     use DataAttributesTrait;

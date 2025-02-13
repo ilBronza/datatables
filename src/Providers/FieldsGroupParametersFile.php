@@ -2,6 +2,12 @@
 
 namespace IlBronza\Datatables\Providers;
 
+use function array_keys;
+use function array_search;
+use function array_slice;
+use function array_splice;
+use function dd;
+
 abstract class FieldsGroupParametersFile
 {
 	public $parameters;
@@ -59,5 +65,19 @@ abstract class FieldsGroupParametersFile
 	static function getMergedAfter(array $parameters) : array
 	{
 		return static::mergeAfter($parameters)->getParameters();
+	}
+	
+	static function insertAfter(array $fieldsGroup, string $key, array $elements)
+	{
+		$fields = $fieldsGroup['fields'];
+
+		$keys = array_keys($fields);
+		$pos = array_search($key, $keys);
+
+		$resultFields = array_slice($fields, 0, $pos, true) + $elements + array_slice($fields, $pos, null, true);
+
+		$fieldsGroup['fields'] = $resultFields;
+
+		return $fieldsGroup;
 	}
 }

@@ -6,6 +6,9 @@ trait DatatablesFieldsFiltersTrait
 {
     public function hasRangeFilter()
     {
+		if(! config('datatables.rangeFilter.enabled', false))
+			return false;
+
         return !! $this->rangeFilter;
     }
 

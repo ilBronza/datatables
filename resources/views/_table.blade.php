@@ -29,7 +29,7 @@
                     <li>
                         <a
                                 href="javascript:void(0)"
-                                class="toggle-vis @if($field->isVisible()) uk-text-bold @endif"
+                                class="toggle-vis @if($field->isVisible()) uk-text-bold @endif {{ $field->getFieldName() }}"
                                 data-column="{{ $field->getIndex() }}"
                                 data-name="{{ $field->getFieldName() }}"
                                 data-visibility="{{ ($field->isVisible() ? 1 : 0) }}"
@@ -83,7 +83,7 @@
         class="wannabedatatable uk-table {{ $table->getStripeClass() }} datatable {{ $table->getName() }} {{ $table->getHtmlClassesString() }}"
         style="width:100%;"
 >
-    <thead class="sectionheader">
+    <thead class="sectionheader @if($table->hasRangeFilter()) ranged-filters-table @endif">
 
     @if($table->hasMainHeader())
         <tr class="mainheader">

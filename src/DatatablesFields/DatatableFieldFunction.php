@@ -4,6 +4,10 @@ namespace IlBronza\Datatables\DatatablesFields;
 
 class DatatableFieldFunction extends DatatableField
 {
+	public null|int|string $keyPosition = null;
+	public null|int|string $valuePosition = null;
+
+
 	public function transformValue($value)
 	{
 		if(! $value)
@@ -20,7 +24,7 @@ class DatatableFieldFunction extends DatatableField
 
 		$variableValue = $this->table->getVariable($this->variable);
 		return $value->{$this->function}($variableValue);
-	}	
+	}
 
 	public function transformValueWithKey($value)
 	{

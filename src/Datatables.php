@@ -60,7 +60,7 @@ class Datatables
 
 	public $getRowIdIndex = false;
 	public $stripe = true;
-	public $pageLength = 100;
+	public $pageLength = null;
 	public $options = [];
 	public $sourceType = 'ajax';
 	public $variables = [];
@@ -171,11 +171,13 @@ class Datatables
 		return $table;
 	}
 
-	private function cleanCachedTableKeyParameterIfEditor()
+	public function hasRangeFilter() : bool
 	{
-		if (request()->ajax())
-			if (request()->input('ibeditor'))
-				request()->request->remove('cachedtablekey');
+		foreach ($this->getFields() as $field)
+			if ($field->hasRangeFilter())
+				return true;
+
+		return false;
 	}
 
 	public function setVariables(array $extraVariables)
@@ -312,7 +314,7 @@ class Datatables
 	public function getStripeClass()
 	{
 		if ($this->stripe)
-			return 'stripe row-border';
+			return 'stripe row-border uk-table-striped';
 	}
 
 	public function getNextFieldIndex()
@@ -400,12 +402,12 @@ class Datatables
 		return $this->sourceType == 'array';
 	}
 
-	//TODO PROTEGGERE QUESTA CON DEI FILLABLE???
-
 	public function canScrollX()
 	{
 		return $this->scrollX;
 	}
+
+	//TODO PROTEGGERE QUESTA CON DEI FILLABLE???
 
 	public function getRelationName()
 	{
@@ -423,6 +425,13 @@ class Datatables
 	public function debug() : bool
 	{
 		return config('datatables.debug', false);
+	}
+
+	private function cleanCachedTableKeyParameterIfEditor()
+	{
+		if (request()->ajax())
+			if (request()->input('ibeditor'))
+				request()->request->remove('cachedtablekey');
 	}
 }
 

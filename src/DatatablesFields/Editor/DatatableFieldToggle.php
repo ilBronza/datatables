@@ -9,7 +9,7 @@ class DatatableFieldToggle extends DatatableFieldEditor
 	public ? bool $nullable = false;
 
 	public $nullIcon = 'minus';
-	public $width = '45px';
+	public $width = '1em';
 	public $htmlClasses = [
 		'ib-toggle'
 	];
@@ -37,6 +37,16 @@ class DatatableFieldToggle extends DatatableFieldEditor
 			" . $this->getLinkString("uk-icon=\"{$this->nullIcon}\"");
 	}
 
+	public function getCustomColumnDefSingleSearchResult()
+	{
+		return "
+			if(item[1])
+				item = 1;
+			else
+				item = 0;
+			";
+	}
+
 	private function _getCustomColumnDefResult()
 	{
 		return "
@@ -58,4 +68,15 @@ class DatatableFieldToggle extends DatatableFieldEditor
 
 		return $this->_getCustomColumnDefResult();
 	}
+
+	public function getValueAsRowClassScript()
+	{
+		return "
+        //' . $this->name . '
+        window.valueAsClass = data[" . $this->getIndex() . "]" . $this->getStructuredDataIndexString() . ";
+
+        $(row).addClass('" . $this->getCompiledAsRowClassPrefix() . "' + data[" . $this->getIndex() . "]" . $this->getStructuredDataIndexString() . ");
+        ";
+	}
+
 }

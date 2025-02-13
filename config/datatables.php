@@ -12,7 +12,11 @@ return [
 
 	'mustPrintIntestation' => false,
 
-    'defaultButtons' => [
+	'rangeFilter' => [
+		'enabled' => false
+	],
+
+	'defaultButtons' => [
         'search' => true,
         'selectFiltered' => true,
         'copy' => true,

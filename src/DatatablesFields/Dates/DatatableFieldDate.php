@@ -7,7 +7,7 @@ class DatatableFieldDate extends DatatableFieldCarbon
     public $dateFormat = "D/MM/YYYY";
     public $inputFieldDefaultFormat = "YYYY-MM-DD";
 	public $defaultWidth = '5em';
-	public $width = '6em';
+	public $width = '5em';
 
     public function getCustomColumnDefSingleResult()
     {

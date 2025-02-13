@@ -2,6 +2,8 @@
 
 namespace IlBronza\Datatables\Traits\DatatablesFields;
 
+use function dd;
+
 trait DatatablesFieldsColumnDefsTrait
 {
 	public function getColumnDefs()
@@ -9,15 +11,6 @@ trait DatatablesFieldsColumnDefsTrait
 		$this->setClassnameColumnDef();
 
 		return $this->columnDefs;
-	}
-
-	private function setClassnameColumnDef()
-	{
-		//add className to field columnDefs
-		if (! isset($this->columnDefs['className']))
-			$this->columnDefs['className'] = $this->getCamelName();
-
-		$this->columnDefs['className'] .= " " . $this->getTDHtmlClassesString();
 	}
 
 	public function getCustomColumnDef()
@@ -50,7 +43,7 @@ trait DatatablesFieldsColumnDefsTrait
                 if(type == 'filter')
                 {
                     " . $this->getCustomColumnDefSingleSearchResult() . "
-
+                    
                     return item;
                 }
 
@@ -167,11 +160,24 @@ trait DatatablesFieldsColumnDefsTrait
 
 	public function getValueAsRowClassScript()
 	{
-		if ($this->valueAsRowClass)
+		if (! $this->valueAsRowClass)
+			return null;
+
+		/****
+		 *
+		 *
+		 *  COME FARE QUA
+		 *
+		 * getStructuredDataIndexString dovrebbe ritornare vuoto se il campo ha il valore dentro al dato, tipo un 'flat'
+		 * getStructuredDataIndexString dovrebbe ritornare [1] se il campo è tipo un editor toh
+		 * getStructuredDataIndexString dovrebbe ritornare ['nomeChiave'] se il campo ha i valori codificati con chiavi diverse da 0 e 1
+		 *
+		 *
+		 */
 
 			return "
         //" . $this->name . "
-        window.valueAsClass = data[" . $this->getIndex() . "];
+        window.valueAsClass = data[" . $this->getIndex() . "]" . $this->getStructuredDataIndexString() . ";
 
         if(typeof window.valueAsClass !== 'undefined')
         {
@@ -201,21 +207,7 @@ trait DatatablesFieldsColumnDefsTrait
 
 	public function getCompiledAsRowClassConditionScript()
 	{
-		return "window.compiledAsClass = (data[" . $this->getIndex() . "] !== 'undefined');";
-	}
-
-	/**
-	 * set field own columnDefs
-	 */
-	private function setColumnDefs()
-	{
-		$this->columnDefs = [];
-
-		//parse through available columnDefs parameters and id set, store it
-		foreach ($this->availableColumnDefs as $ilBronzaDefinition => $datatablesDefinition)
-		{
-			$this->setColumnDef($ilBronzaDefinition, $datatablesDefinition);
-		}
+		return "window.compiledAsClass = (typeof data[" . $this->getIndex() . "] !== 'undefined');";
 	}
 
 	/**
@@ -242,5 +234,28 @@ trait DatatablesFieldsColumnDefsTrait
 			$columnDef = 'type';
 
 		$this->columnDefs[$columnDef] = $value;
+	}
+
+	private function setClassnameColumnDef()
+	{
+		//add className to field columnDefs
+		if (! isset($this->columnDefs['className']))
+			$this->columnDefs['className'] = $this->getCamelName();
+
+		$this->columnDefs['className'] .= " " . $this->getTDHtmlClassesString();
+	}
+
+	/**
+	 * set field own columnDefs
+	 */
+	private function setColumnDefs()
+	{
+		$this->columnDefs = [];
+
+		//parse through available columnDefs parameters and id set, store it
+		foreach ($this->availableColumnDefs as $ilBronzaDefinition => $datatablesDefinition)
+		{
+			$this->setColumnDef($ilBronzaDefinition, $datatablesDefinition);
+		}
 	}
 }
