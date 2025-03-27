@@ -4,15 +4,35 @@ namespace IlBronza\Datatables\DatatablesFields\Editor;
 
 class DatatableFieldToggle extends DatatableFieldEditor
 {
+	public $isButton = true;
+	public string $buttonHtmlClass = 'uk-icon-button';
 	public $trueIcon = 'check';
 	public $falseIcon = 'close';
 	public ? bool $nullable = false;
 
 	public $nullIcon = 'minus';
-	public $width = '1em';
+	public $width = '2em';
 	public $htmlClasses = [
 		'ib-toggle'
 	];
+
+	public function getButtonHtmlClass()
+	{
+		return $this->buttonHtmlClass;
+	}
+
+	public function isButton() : bool
+	{
+		return $this->isButton;
+	}
+
+	public function getFieldSpecificClasses() : array
+	{
+		if($this->isButton())
+			$this->fieldSpecificClasses[] = $this->getButtonHtmlClass();
+
+		return $this->fieldSpecificClasses;
+	}
 
 	private function getLinkString(string $iconString)
 	{

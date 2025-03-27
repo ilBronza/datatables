@@ -9,16 +9,16 @@ use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\EditorSingleFieldTrait
 class DatatableFieldDate extends DatatableFieldEditor
 {
 	use EditorSingleFieldTrait;
-    use CarbonTrait;
+	use CarbonTrait;
 
 	public $defaultWidth = '8em';
 	public $width = '8em';
-    public $inputFieldDefaultFormat = "YYYY-MM-DD";
+	public $inputFieldDefaultFormat = "YYYY-MM-DD";
 	public $fieldType = 'date';
 
 	public function transformValue($value)
 	{
-		if(! $this->requireElement())
+		if (! $this->requireElement())
 			return $value;
 
 		$this->element = $value;
@@ -31,8 +31,8 @@ class DatatableFieldDate extends DatatableFieldEditor
 
 	public function getCustomColumnDefSingleResult()
 	{
-        if(! $this->userCanEdit())
-        	return "
+		if (! $this->userCanEdit())
+			return "
 
             if(item[1])
             {

@@ -2,8 +2,6 @@
 
 namespace IlBronza\Datatables\Traits\DatatablesFields;
 
-use function dd;
-
 trait DatatablesFieldsColumnDefsTrait
 {
 	public function getColumnDefs()
@@ -35,7 +33,7 @@ trait DatatablesFieldsColumnDefsTrait
                 if(type == 'export')
                 {
                     " . $this->getCustomColumnDefSingleResultEditor() . "
-                    " . $this->getEndingResultOptionsEditor() . "
+                    " . $this->getExportResultOptionsEditor() . "
 
                     return item;
                 }
@@ -85,6 +83,11 @@ trait DatatablesFieldsColumnDefsTrait
 			return 'item[1]';
 
 		return 'item';
+	}
+
+	public function getExportResultOptionsEditor()
+	{
+		return $this->getEndingResultOptions();
 	}
 
 	public function getEndingResultOptions()
@@ -175,7 +178,7 @@ trait DatatablesFieldsColumnDefsTrait
 		 *
 		 */
 
-			return "
+		return "
         //" . $this->name . "
         window.valueAsClass = data[" . $this->getIndex() . "]" . $this->getStructuredDataIndexString() . ";
 

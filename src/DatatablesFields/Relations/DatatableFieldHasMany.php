@@ -25,7 +25,7 @@ class DatatableFieldHasMany extends DatatableFieldIterator
                 'name' => $value->{$attributeGetterMethod}()
             ];
 
-        return [
+	    return [
             'id' => $value->getKey(),
             'name' => $value->getNameForDisplayRelation()
         ];

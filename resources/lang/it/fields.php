@@ -6,4 +6,5 @@ return array (
   'mySelfSee' => 'Mostra',
   'mySelfEdit' => 'Modifica',
   'mySelfDelete' => 'Elimina',
+	'save' => 'Salva'
 );

@@ -1,14 +1,29 @@
 @headerInputHeight: 26px;
 
-
 table.datatable {
+
+  .ib-spin {
+    position: absolute;
+    left: 0.5em;
+    top: .7em;
+    background-color: rgba(255, 255, 255, 0.6) !important;
+    color: green;
+  }
+
+  .mainheader {
+    th {
+      text-align: center;
+    }
+  }
 
   .sectionheader {
 
     &.ranged-filters-table {
 
-      th {
-        height: 3 * @headerInputHeight;
+      tr:not(.summary, .inlinesearchsummary) {
+        th {
+          height: 3 * @headerInputHeight;
+        }
       }
 
       .headercell {
@@ -53,6 +68,13 @@ table.datatable {
   td {
     a {
       max-width: 100%;
+    }
+
+    > i
+    {
+      display: block;
+      width: 1em;
+      margin: auto;
     }
   }
 
@@ -134,4 +156,59 @@ table.datatable {
   {
     margin-right: 10px;
   }
+}
+
+td .uk-icon-button
+{
+  height: 20px;
+  width: 20px;
+
+  svg
+  {
+    max-width: 65%;
+  }
+}
+
+span.ib-toggle
+{
+  background-color: @booleanFalseBackground;
+  color: @booleanFalseColor;
+}
+//data-value="1"
+//select input with data-value == 1
+span.ib-toggle[data-value="1"]
+{
+  background-color: @booleanTrueBackground;
+  color: @booleanTrueColor;
+}
+
+.mySelfSave {
+
+  span {
+    display: none;
+  }
+}
+
+.editorchanged
+{
+  background-color: rgba(255, 0, 0, 0.31);
+}
+
+.editorcansave
+{
+  background-color: rgba(0, 253, 0, 0.25) !important;
+}
+
+  .editorchangedrow .mySelfSave
+  {
+    background-color: #ff4300;
+
+    span
+    {
+      cursor: pointer;
+      margin: auto;
+      color: #fff;
+      width: 1em;
+      display: block;
+    }
 }

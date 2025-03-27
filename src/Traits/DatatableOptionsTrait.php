@@ -4,157 +4,153 @@ namespace IlBronza\Datatables\Traits;
 
 use IlBronza\Datatables\ColumnOption;
 use IlBronza\Datatables\DatatablesFields\DatatableField;
-use Illuminate\Support\Str;
-
-use function dd;
+use newField;
 
 trait DatatableOptionsTrait
 {
-    public function canHideColumns()
-    {
-        if(! empty($this->canHideColumns))
-            return $this->canHideColumns;
+	public function canHideColumns()
+	{
+		if (! empty($this->canHideColumns))
+			return $this->canHideColumns;
 
-        return config('datatables.hideColumns');
-    }
+		return config('datatables.hideColumns');
+	}
 
-    public function setPageLength($pageLength)
-    {
-        $this->pageLength = $pageLength;
-    }
+	public function setPageLength($pageLength)
+	{
+		$this->pageLength = $pageLength;
+	}
 
-    public function getPageLength()
-    {
-        return $this->pageLength ?? config('datatables.pageLength', 50);
-    }
+	public function getPageLength()
+	{
+		return $this->pageLength ?? config('datatables.pageLength', 50);
+	}
 
-    public function setAutomaticCaption()
-    {
-        if($this->getCaption())
-            return ;
+	public function setAutomaticCaption()
+	{
+		if ($this->getCaption())
+			return;
 
-        $this->setCaption(
-            str_replace("-", " ", $this->getName())
-        );
-    }
+		$this->setCaption(
+			str_replace("-", " ", $this->getName())
+		);
+	}
 
-    public function setCaption(string $caption)
-    {
-        $this->caption = $caption;
-    }
+	public function setCaption(string $caption)
+	{
+		$this->caption = $caption;
+	}
 
-    public function hasFixedTableHeader()
-    {
-        if(! empty($this->fixedHeader))
-            return $this->fixedHeader;
+	public function hasFixedTableHeader()
+	{
+		if (! empty($this->fixedHeader))
+			return $this->fixedHeader;
 
-        return config('datatables.fixedHeader');        
-    }
+		return config('datatables.fixedHeader');
+	}
 
-    public function getCaption()
-    {
-        if($this->caption === false)
-            return null;
+	public function getCaption()
+	{
+		if ($this->caption === false)
+			return null;
 
-        return $this->caption ?? app('uikittemplate')->getPageTitle();
-    }
+		return $this->caption ?? app('uikittemplate')->getH1();
+	}
 
-    private function normalizeOrderOption()
-    {
-        if(! isset($this->options['order']))
-            return false;
+	/**
+	 * parse all fields and check if proper columnDef has been set
+	 * if not, it sets it
+	 */
+	public function parseOptions()
+	{
+		foreach ($this->fieldsGroups as $fieldsGroup)
+			if (isset($fieldsGroup->fields))
+				foreach ($fieldsGroup->fields as $field)
+					$this->checkFieldOptions($field);
 
-        ksort($this->options['order']);
-    }
+		$this->normalizeOrderOption();
+	}
 
-    private function addCreatedRowScript(string $script)
-    {
-        $this->createdRowScripts[] = $script;
-    }
+	private function normalizeOrderOption()
+	{
+		if (! isset($this->options['order']))
+			return false;
 
-    private function checkFieldRowCreationScripts(DatatableField $field)
-    {
-        if($script = $field->getCreatedRowScripts())
-            $this->addCreatedRowScript($script);
-    }
+		ksort($this->options['order']);
+	}
 
-    /**
-     * check if all field's columnDefs are set in datatable
-     * if not, set them
-     *
-     * @param \newField $field
-     */
-    private function checkFieldOptions(DatatableField $field)
-    {
-        $this->checkFieldRowCreationScripts($field);
+	private function addCreatedRowScript(string $script)
+	{
+		$this->createdRowScripts[] = $script;
+	}
 
-        $fieldColumnOptions = $field->getColumnOptions();
+	private function checkFieldRowCreationScripts(DatatableField $field)
+	{
+		if ($script = $field->getCreatedRowScripts())
+			$this->addCreatedRowScript($script);
+	}
 
-        foreach($fieldColumnOptions as $definition => $value)
-        {
-            $columnOption = $this->getColumnOptionByDefinition($definition);
+	/**
+	 * check if all field's columnDefs are set in datatable
+	 * if not, set them
+	 *
+	 * @param  newField  $field
+	 */
+	private function checkFieldOptions(DatatableField $field)
+	{
+		$this->checkFieldRowCreationScripts($field);
 
-            if($definition == 'order')
-                $this->addIndexToOrder($value, $field->getIndex());
+		$fieldColumnOptions = $field->getColumnOptions();
 
-            else
-                $columnOption->addIndexToValue($value, $field->getIndex());
-        }
-    }
+		foreach ($fieldColumnOptions as $definition => $value)
+		{
+			$columnOption = $this->getColumnOptionByDefinition($definition);
 
+			if ($definition == 'order')
+				$this->addIndexToOrder($value, $field->getIndex());
 
-    private function addIndexToOrder(array $value, int $index)
-    {
-        if(! isset($this->options['order']))
-            $this->options['order'] = [];
+			else
+				$columnOption->addIndexToValue($value, $field->getIndex());
+		}
+	}
 
-        $priority = $value['priority']?? 0;
-        $type = $value['type']?? 'asc';
+	private function addIndexToOrder(array $value, int $index)
+	{
+		if (! isset($this->options['order']))
+			$this->options['order'] = [];
 
-        if(! isset($this->options['order'][$priority]))
-            $this->options['order'][$priority] = [$index, $type];
-    }
+		$priority = $value['priority'] ?? 0;
+		$type = $value['type'] ?? 'asc';
 
-    /**
-     * return table columnOption by its name
-     *
-     * @param string $definition
-     *
-     * @return \columnOption
-     */
-    private function getColumnOptionByDefinition($definition)
-    {
-        if(! isset($this->columnOptions[$definition]))
-            $this->columnOptions[$definition] = $this->newColumnOption($definition);
+		if (! isset($this->options['order'][$priority]))
+			$this->options['order'][$priority] = [$index, $type];
+	}
 
-        return $this->columnOptions[$definition];
-    }
+	/**
+	 * return table columnOption by its name
+	 *
+	 * @param  string  $definition
+	 *
+	 * @return \columnOption
+	 */
+	private function getColumnOptionByDefinition($definition)
+	{
+		if (! isset($this->columnOptions[$definition]))
+			$this->columnOptions[$definition] = $this->newColumnOption($definition);
 
-    /**
-     * declared here because trait didn't support it
-     *
-     * @param string $definition
-     *
-     * @return object \columnOption
-     */
-    private function newColumnOption($definition)
-    {
-        return new ColumnOption($definition);
-    }
+		return $this->columnOptions[$definition];
+	}
 
-    /**
-     * parse all fields and check if proper columnDef has been set
-     * if not, it sets it
-     */
-    public function parseOptions()
-    {
-        foreach($this->fieldsGroups as $fieldsGroup)
-            if(isset($fieldsGroup->fields))
-                foreach($fieldsGroup->fields as $field)
-                    $this->checkFieldOptions($field);
-
-        $this->normalizeOrderOption();
-    }
-
+	/**
+	 * declared here because trait didn't support it
+	 *
+	 * @param  string  $definition
+	 *
+	 * @return object \columnOption
+	 */
+	private function newColumnOption($definition)
+	{
+		return new ColumnOption($definition);
+	}
 
 }

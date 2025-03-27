@@ -4,6 +4,7 @@ namespace IlBronza\Datatables;
 
 class DatatablesFieldOperation
 {
+    public $name;
     public string $type;
     public ? string $icon = null;
     public ? string $link = null;

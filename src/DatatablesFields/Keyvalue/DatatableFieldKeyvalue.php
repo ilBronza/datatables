@@ -13,22 +13,21 @@ class DatatableFieldKeyvalue extends DatatableField
 	use FieldPlaceholderModelTrait;
 
 	public $htmlTag = 'span';
+	public $modelClass;
 
 	public function transformValue($value)
 	{
-		if(! $value)
+		if (! $value)
 			return [
 				null,
 				$this->getNullValue()
 			];
 
-		if($this->hasStrLimit())
+		if ($this->hasStrLimit())
 			return [
 				$value,
 				Str::limit(
-					$this->getModelClass()::findCachedAttribute($value, $this->property),
-					$this->getStrLimit(),
-					$end = '.'
+					$this->getModelClass()::findCachedAttribute($value, $this->property), $this->getStrLimit(), $end = '.'
 				)
 			];
 
@@ -38,9 +37,11 @@ class DatatableFieldKeyvalue extends DatatableField
 		];
 	}
 
-	public function getLinkArrayItem()
+	public function getCustomColumnDefSingleSearchResult()
 	{
-		return "item[1]";
+		return "
+				item = item[1];
+		";
 	}
 
 	// public function getUrl() : string
@@ -69,41 +70,12 @@ class DatatableFieldKeyvalue extends DatatableField
 	// 	";
 	// }
 
-	public function getDisplayCustomColumnDefSingleResult()
+	public function getCustomColumnDef()
 	{
-		// $nullableString = $this->mustShowNull() ? 'if(item)' : 'if(item[1])';
+		// if(! $this->getEndingResultOptions())
+		//     return ;
 
 		return "
-
-		if(item[1])
-
-			item = '<" . $this->getHtmlTag() . " data-value=\'' + item[0] + '\'" . $this->getParentDataIndexString() . $this->getHtmlDataAttributesString() . " " . $this->getHtmlClassesAttributeString() . " >" . $this->getPrefix() . "" . $this->getIconHtml() . "' + " . $this->getLinkArrayItem() . " + '" . $this->getSuffix() . "</" . $this->getHtmlTagString() . ">';
-		";
-
-	}
-
-	public function getExportCustomColumnDefSingleResult()
-	{
-		return "
-				item = item[1];
-		";
-
-	}
-
-	public function getCustomColumnDefSingleSearchResult()
-	{
-		return "
-				item = item[1];
-		";
-
-	}
-
-    public function getCustomColumnDef()
-    {
-        // if(! $this->getEndingResultOptions())
-        //     return ;
-
-        return "
         {
             //" . $this->getName() . "
             targets: [" . $this->getIndex() . "],
@@ -142,4 +114,29 @@ class DatatableFieldKeyvalue extends DatatableField
                 return item;
             }
         }";
-    }}
+	}
+
+	public function getLinkArrayItem()
+	{
+		return "item[1]";
+	}
+
+	public function getDisplayCustomColumnDefSingleResult()
+	{
+		// $nullableString = $this->mustShowNull() ? 'if(item)' : 'if(item[1])';
+
+		return "
+
+		if(item[1])
+
+			item = '<" . $this->getHtmlTag() . " data-value=\'' + item[0] + '\'" . $this->getParentDataIndexString() . $this->getHtmlDataAttributesString() . " " . $this->getHtmlClassesAttributeString() . " >" . $this->getPrefix() . "" . $this->getIconHtml() . "' + " . $this->getLinkArrayItem() . " + '" . $this->getSuffix() . "</" . $this->getHtmlTagString() . ">';
+		";
+	}
+
+	public function getExportCustomColumnDefSingleResult()
+	{
+		return "
+				item = item[1];
+		";
+	}
+}

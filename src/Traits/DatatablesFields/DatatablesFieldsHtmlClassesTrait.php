@@ -55,6 +55,11 @@ trait DatatablesFieldsHtmlClassesTrait
         );
     }
 
+	public function getFieldSpecificClasses() : array
+	{
+		return $this->fieldSpecificClasses;
+	}
+
 	public function getHtmlClasses()
 	{
 		$pieces = [];
@@ -64,7 +69,7 @@ trait DatatablesFieldsHtmlClassesTrait
 
 		return array_merge(
 			$this->htmlClasses,
-			$this->fieldSpecificClasses ?? [],
+			$this->getFieldSpecificClasses(),
 			$pieces
 		);
 	}

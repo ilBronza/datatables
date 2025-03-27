@@ -2,148 +2,162 @@
 
 namespace IlBronza\Datatables\Traits;
 
+use Exception;
 use IlBronza\Datatables\DatatablesFields\DatatableField;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
+use function dd;
+use function get_class_methods;
+
 trait DatatableDataTrait
 {
-    public function prepareCachedData()
-    {
-        return cache()->remember(
-            $this->getCachedTableKey(),
-            213300,
-            function()
-            {
-                return $this->calculateData();
-            }
-        );
-    }
+	public function prepareCachedData()
+	{
+		return cache()->remember(
+			$this->getCachedTableKey(), 213300, function ()
+		{
+			return $this->calculateData();
+		}
+		);
+	}
 
-    public function setData(array $data = null)
-    {
-        $this->data = $data ?? $this->calculateData();
-    }
+	public function setData(array $data = null)
+	{
+		$this->data = $data ?? $this->calculateData();
+	}
 
-    public function getData()
-    {
-        return $this->data;
-    }
+	public function getData()
+	{
+		return $this->data;
+	}
 
-    private function getCellData(DatatableField $field, Model $element)
-    {
-        try
-        {
-            $value = $field->getFieldCellDataValue($field->name, $element);
-            // $value = $this->getCellDataValue($field->name, $element);
+	public function getTableCellDataValue(string $fieldName, $element)
+	{
+		$properties = explode(".", $fieldName);
 
-            if($field->requireElement())
-                return $field->transformValue($element);
+		do
+		{
+			$property = array_shift($properties);
 
-            return $field->transformValue($value);            
-        }
-        catch(\Exception $e)
-        {
-            return $this->handleError($e);
-        }
-    }
+			if (strpos($property, 'mySelf') === false)
+				$element = $element->$property ?? false;
+		} while (count($properties));
 
-    //UNA VOLTA ERA
-    // public function getCellDataValue(string $fieldName, $element)
-    public function getTableCellDataValue(string $fieldName, $element)
-    {
-        $properties = explode(".", $fieldName);
+		return $element;
+	}
 
-        do {
-            $property = array_shift($properties);
+	//UNA VOLTA ERA
+	// public function getCellDataValue(string $fieldName, $element)
 
-            if(strpos($property, 'mySelf') === false)
-                $element = $element->$property?? false;
+	public function calculateData()
+	{
+		// if($this->hasSummary())
+		//     return $this->calculateDataWithSummary();
 
-        } while (count($properties));
+		return $this->_calculateData();
+	}
 
-        return $element;
-    }
+	public function calculateDataWithSummary()
+	{
+		$data = [];
 
-    private function getCellDataWithSummary(DatatableField $field, Model $element)
-    {
-        $value = $this->getTableCellDataValue($field->name, $element);
+		foreach ($this->elements as $element)
+		{
+			$row = [];
 
-        if($field->requireElement())
-            return $field->transformValueWithSummary($element);
+			foreach ($this->getFields() as $field)
+				$row[] = $this->getCellDataWithSummary($field, $element);
 
-        return $field->transformValueWithSummary($value);
-    }
+			$data[] = $row;
+		}
 
-    public function calculateData()
-    {
-        // if($this->hasSummary())
-        //     return $this->calculateDataWithSummary();
+		$summaryRow = [];
 
-        return $this->_calculateData();
-    }
+		foreach ($this->getFields() as $field)
+			$summaryRow[] = $field->getSummaryResult();
 
-    public function calculateDataWithSummary()
-    {
-        $data = [];
+		$data[] = $summaryRow;
 
-        foreach($this->elements as $element)
-        {
-            $row = [];
+		return $data;
+	}
 
-            foreach($this->getFields() as $field)
-                $row[] = $this->getCellDataWithSummary($field, $element);
+	public function _calculateData()
+	{
+		$data = [];
 
-            $data[] = $row;
-        }
+		foreach ($this->elements as $element)
+		{
+			$row = [];
 
-        $summaryRow = [];
+			foreach ($this->getFields() as $field)
+				$row[] = $this->getCellData($field, $element);
 
-        foreach($this->getFields() as $field)
-            $summaryRow[] = $field->getSummaryResult();
+			$data[] = $row;
+		}
 
-        $data[] = $summaryRow;
+		return $data;
+	}
 
-        return $data;        
-    }
+	public function getCachedTableKey()
+	{
+		if ($this->cachedTableKey)
+			return $this->cachedTableKey;
 
-    public function _calculateData()
-    {
-        $data = [];
+		$this->setCachedTableKey();
 
-        foreach($this->elements as $element)
-        {
-            $row = [];
+		return $this->cachedTableKey;
+	}
 
-            foreach($this->getFields() as $field)
-                $row[] = $this->getCellData($field, $element);
+	public function hasDoublerFields()
+	{
+		foreach ($this->fields as $field)
+			if ($field->hasDoubler())
+				return true;
 
-            $data[] = $row;
-        }
+		return false;
+	}
 
-        return $data;
-    }
+	private function getCellData(DatatableField $field, Model $element)
+	{
+		if($overridingMethod = $field->getOverridingValueMethod())
+		{
+			$value = $field->getFieldCellDataValue($field->name, $element);
 
-    private function setCachedTableKey()
-    {
-        $this->cachedTableKey = Str::slug($this->getName() . Str::random(), '');
-    }
+			return $field->transformValue(
+				$value->{$overridingMethod}($field->staticVariableValue)
+			);
+		}
 
-    public function getCachedTableKey()
-    {
-        if($this->cachedTableKey)
-            return $this->cachedTableKey;
+		try
+		{
+			if ($field->requireElement())
+				return $field->transformValue($element);
 
-        $this->setCachedTableKey();
-        return $this->cachedTableKey;
-    }
+			$value = $field->getFieldCellDataValue($field->name, $element);
 
-    public function hasDoublerFields()
-    {
-        foreach($this->fields as $field)
-            if($field->hasDoubler())
-                return true;
+			// $value = $this->getCellDataValue($field->name, $element);
 
-        return false;
-    }
+			return $field->transformValue($value);
+		}
+		catch (Exception $e)
+		{
+			return $this->handleError($e);
+		}
+	}
+
+	private function getCellDataWithSummary(DatatableField $field, Model $element)
+	{
+		$value = $this->getTableCellDataValue($field->name, $element);
+
+		if ($field->requireElement())
+			return $field->transformValueWithSummary($element);
+
+		return $field->transformValueWithSummary($value);
+	}
+
+	private function setCachedTableKey()
+	{
+		$this->cachedTableKey = Str::slug($this->getName() . Str::random(), '');
+	}
 }

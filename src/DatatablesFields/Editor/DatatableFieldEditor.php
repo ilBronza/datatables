@@ -28,6 +28,8 @@ class DatatableFieldEditor extends DatatableField
 	public $spin = true;
 	public $editorProperty;
 
+	public ? bool $saveButton = null;
+
 	public ?bool $nullable = true;
 
 	public ?bool $refreshRow = null;
@@ -48,6 +50,19 @@ class DatatableFieldEditor extends DatatableField
 
 		$this->setReloadTableExtraData($this->reloadTable);
 		$this->setRefreshRowExtraData($this->refreshRow);
+	}
+
+	public function editorHasSaveButton() : bool
+	{
+		return config('datatables.editor.saveButton', false);
+	}
+
+	public function hasSaveButton() : bool
+	{
+		if(! is_null($this->saveButton))
+			return $this->saveButton;
+
+		return $this->editorHasSaveButton();
 	}
 
 	/**

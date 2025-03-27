@@ -11,6 +11,7 @@ class DatatableFieldLink extends DatatableField
 
 	public bool|string $lightbox = false;
 	public $icon = false;
+	public $faIcon;
 	public $textParameter = false;
 	public $staticText;
 	public $textMethod = false;

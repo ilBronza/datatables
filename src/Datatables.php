@@ -46,12 +46,20 @@ class Datatables
 	public $columnDisplayKey;
 	public $rowId;
 	public $fields;
+	public $summary;
+	public ?string $name;
 	public $fieldsGroups;
 	public $elements;
 	public $url;
 	public $columnDefs = [];
+
+	public $columnOptions;
 	public $createdRowScripts = [];
 	public $buttons;
+
+	public ?string $cachedTableKey;
+
+	public ?array $data;
 
 	public ?Form $form = null;
 	public ?bool $mustPrintIntestation = null;
@@ -336,6 +344,7 @@ class Datatables
 			return view('datatables::table', [
 				'table' => $this,
 				'tableSourceData' => $this->prepareCachedData()
+				// 'tableSourceData' => $this->calculateData()
 			]);
 
 		if ((request()->ajax()) && (! request()->ibFetcher))
@@ -404,7 +413,10 @@ class Datatables
 
 	public function canScrollX()
 	{
-		return $this->scrollX;
+		if(! is_null($this->scrollX))
+			return $this->scrollX;
+
+		return config('datatables.scrollX');
 	}
 
 	//TODO PROTEGGERE QUESTA CON DEI FILLABLE???

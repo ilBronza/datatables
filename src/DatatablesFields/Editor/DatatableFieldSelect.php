@@ -2,6 +2,7 @@
 
 namespace IlBronza\Datatables\DatatablesFields\Editor;
 
+use DB;
 use IlBronza\Datatables\Datatables;
 use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\EditorSingleFieldTrait;
 
@@ -14,6 +15,7 @@ use IlBronza\FileCabinet\Models\Formrow;
 
 use function dd;
 use function explode;
+use function preg_match_all;
 
 class DatatableFieldSelect extends DatatableFieldEditor
 {
@@ -90,15 +92,24 @@ class DatatableFieldSelect extends DatatableFieldEditor
 			return $formrow->getRowType()->getPossibleValuesArray();
 	    }
 
-	    $_enumStr = \DB::select(\DB::raw('SHOW COLUMNS FROM ' . $element->getTable() . ' WHERE Field = "' . $this->name . '"'));
+		return cache()->remember('getPossibleEnumValues' . $element->getTable() . 'field' . $this->name, 3600, function() use ($element)
+		{
+			// $_enumStr = \DB::select(\DB::raw('SHOW COLUMNS FROM ' . $element->getTable() . ' WHERE Field = "' . $this->name . '"'));
 
-        if(! isset($_enumStr[0]))
-        	return [];
+			$expression = DB::raw('SHOW COLUMNS FROM ' . $element->getTable() . ' WHERE Field = "' . $this->name . '"');
+			$string = $expression->getValue(DB::connection()->getQueryGrammar());
 
-        $enumStr = $_enumStr[0]->Type;
-        preg_match_all("/'([^']+)'/", $enumStr, $matches);
 
-        return $matches[1] ?? [];
+			$_enumStr = DB::select($string);
+
+			if(! isset($_enumStr[0]))
+				return [];
+
+			$enumStr = $_enumStr[0]->Type;
+			preg_match_all("/'([^']+)'/", $enumStr, $matches);
+
+			return $matches[1] ?? [];
+		});
     }
 
 	public function transformValue($value)

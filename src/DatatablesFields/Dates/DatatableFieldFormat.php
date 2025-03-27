@@ -4,7 +4,10 @@ namespace IlBronza\Datatables\DatatablesFields\Dates;
 
 class DatatableFieldFormat extends DatatableFieldCarbon
 {
-    public $format = "d-m-y";
+    public null|int|string $keyPosition = null;
+    public null|int|string $valuePosition = null;
+
+     public $format = "d-m-y";
 
     public function transformValue($value)
     {

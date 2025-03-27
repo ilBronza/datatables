@@ -77,7 +77,7 @@ trait DatatablesFieldsDisplayTrait
 		if (isset($this->translatedName))
 			return $this->translatedName;
 
-		return __($this->getTranslationPrefix() . '.' . $this->name);
+		return __($this->getTranslationPrefix() . '.' . ($this->forcedStandardName ?? $this->name));
 	}
 
 	public function getTranslationPrefix()

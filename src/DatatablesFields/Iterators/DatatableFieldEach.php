@@ -7,8 +7,12 @@ use IlBronza\Datatables\DatatablesFields\DatatableField;
 
 class DatatableFieldEach extends MultipleDatatableField
 {
+	public null|int|string $keyPosition = null;
+	public null|int|string $valuePosition = null;
+
 	public $child;
 	public $childParameters;
+	public $order;
 
 	private function manageChildType()
 	{

@@ -26,6 +26,9 @@ use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsStructuredDataIn
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsSummaryTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsUserDataTrait;
 
+use function app;
+use function dd;
+use function get_class;
 use function stripos;
 
 class DatatableField
@@ -54,15 +57,24 @@ class DatatableField
 
     public $id;
     public $name;
+	public ? string $forcedStandardName;
     public $index;
     public $avoidIcon;
+    public $order;
+    public $fetcher;
+    public $visible;
+    public $forceValue;
+
+	public ? string $overridingValueMethod = null;
     public $rowId = false;
     public $tooltip = false;
     public $summary;
     public $data = [];
 	public $mainHeader = null;
+    public $property;
     public $headerData = [];
     public $columnDefs = [];
+	public $fieldSpecificClasses = [];
     public $customColumnDefs = [];
     public $columnOptions = [];
     public $icon;
@@ -100,8 +112,12 @@ class DatatableField
     public $htmlTag;
     public $width;
     public $target;
+
+	public $modelClass;
+	public ?string $renderAs;
     public $doubler = false;
     public $jqueryFilterEvents = ['change', 'keyup'];
+
 
     public $strLimit = 0;
 
@@ -201,6 +217,16 @@ class DatatableField
         return $element;
     }
 
+	public function hasOverridingValueMethod() : bool
+	{
+		return !! $this->overridingValueMethod;
+	}
+
+	public function getOverridingValueMethod() : ? string
+	{
+		return $this->overridingValueMethod;
+	}
+
     public function getType()
     {
         return $this->type;
@@ -259,7 +285,10 @@ class DatatableField
 
         $fieldType = static::getClassNameByType(implode(".", $pieces), false);
 
-        $fullnamespace = get_class(app($package));
+		if($package == 'app')
+			$fullnamespace = "App\\";
+		else
+            $fullnamespace = get_class(app($package));
 
         $namespacePieces = explode("\\", $fullnamespace);
         array_pop($namespacePieces);
@@ -269,7 +298,7 @@ class DatatableField
 
     static function getClassNameByType(string $fieldType, bool $fullQualifiedNamespace = true) : string
     {
-        //if contains "::" in string, it's a custom field
+	    //if contains "::" in string, it's a custom field
         if(strpos($fieldType, "::") !== false)
             return static::getPackageClassNameByType($fieldType);
 

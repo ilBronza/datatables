@@ -79,3 +79,14 @@ table.datatable tr td .uk-textarea {
 .dataTables_paginate.paging_simple_numbers > * {
   margin-right: 10px;
 }
+td .uk-icon-button {
+  height: 20px;
+  width: 20px;
+}
+td .uk-icon-button svg {
+  max-width: 65%;
+}
+span[data-value="1"] {
+  background-color: forestgreen;
+  color: white;
+}

@@ -7,9 +7,9 @@
 
 	<script type="text/javascript">
 
-{{--		@if($postTableToUrl ?? false)--}}
-{{--        window.parent.postTableToUrl("#{{ $callertablename }}", "{{ $postTableToUrl }}");--}}
-{{--		@endif--}}
+	@if($postTableToUrl ?? false)
+        	window.parent.postTableToUrl("#{{ $callertablename }}", "{{ $postTableToUrl }}");
+	@endif
 
 		@if(isset($reloadAllTables))
     		window.parent.__reloadAllTables();
