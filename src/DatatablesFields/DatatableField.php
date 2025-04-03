@@ -90,6 +90,11 @@ class DatatableField
     public $filteredTable;
     public $parameter;
 
+    public $roles = null;
+
+    public ?string $translatedName = null;
+    public ? string $suffix = null;
+
 	public bool $truncateText = false;
     public $filterType;
     public $type;

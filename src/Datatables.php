@@ -57,6 +57,8 @@ class Datatables
 	public $createdRowScripts = [];
 	public $buttons;
 
+	public $extraViews = null;
+
 	public ?string $cachedTableKey;
 
 	public ?array $data;

@@ -27,6 +27,8 @@ class DatatableFieldSelect extends DatatableFieldEditor
 	public $nullValue = 'null';
 	public $nullString = 'nd';
 
+	public ? string $possibleValuesMethod = null;
+
     public function __construct(string $name, array $parameters = [], int $index = null, DatatableField $parent = null, Datatables $table = null)
 	{
 		parent::__construct($name, $parameters, $index, $parent, $table);

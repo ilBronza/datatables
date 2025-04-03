@@ -21,7 +21,7 @@ class DatatableFieldDaysToString extends DatatableField
 
 		return "
 			if((item)" . $showZerosString . ")
-				item = ((item < 0)? '-' : '') +  Math.abs(Math.floor(item)) + 'd ' + Math.abs(Math.floor((item % 1) * 8)) + 'h' ;
+				item = ((item < 0)? '-' : '') +  Math.floor(Math.abs(item)) + 'd ' + Math.floor(Math.abs((item % 1) * 8)) + 'h' ;
 
 			else item = ''";
 	}
