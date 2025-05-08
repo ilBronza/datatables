@@ -7,6 +7,10 @@
 
 	<script type="text/javascript">
 
+		@if(isset($reloadRows))
+        	window.parent.reloadTableRows("#{{ $callertablename }}", {!! $reloadRows->toJson() !!});
+		@endif
+
 	@if($postTableToUrl ?? false)
         	window.parent.postTableToUrl("#{{ $callertablename }}", "{{ $postTableToUrl }}");
 	@endif

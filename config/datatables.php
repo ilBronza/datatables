@@ -1,6 +1,14 @@
 <?php
 
 return [
+	'widths' => [
+		'boolean' => '1em'
+	],
+	'fields' => [
+		'boolean' => [
+			'nullable' => true,
+		]
+	],
     'replace_model_id_string' => env('REPLACE_MODEL_ID_STRING', 'replace_model_id_string'),
     'domStickyButtons' => env('DATATABLES_DOM_STICKY_BUTTONS', false),
     'domStickyHeader' => env('DATATABLES_STICKY_HEADER', false),

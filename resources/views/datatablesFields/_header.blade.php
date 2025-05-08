@@ -18,7 +18,7 @@
 	@endif
 </div>
 @else
-<div>
+<div class="headercell uk-text-nowrap">
 	@if($field->showLabel())
 		{{ $field->getTranslatedName() }}
 	@endif

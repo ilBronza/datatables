@@ -4,6 +4,7 @@ namespace IlBronza\Datatables\DatatablesFields\Dates;
 
 class DatatableFieldDate extends DatatableFieldCarbon
 {
+	public ?string $textAlign = 'right';
     public $dateFormat = "D/MM/YYYY";
     public $inputFieldDefaultFormat = "YYYY-MM-DD";
 	public $defaultWidth = '5em';

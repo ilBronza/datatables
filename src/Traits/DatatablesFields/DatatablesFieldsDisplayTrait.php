@@ -64,7 +64,7 @@ trait DatatablesFieldsDisplayTrait
 
 	public function getWidth()
 	{
-		return $this->width ?? false;
+		return $this->width ?? config('datatables.widths.' . $this->getType());
 	}
 
 	public function showLabel() : bool

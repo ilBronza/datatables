@@ -5,6 +5,7 @@ namespace IlBronza\Datatables\DatatablesFields\Links;
 class DatatableFieldClone extends DatatableFieldLink
 {
 	public $faIcon = 'clone';
+	public $confirmMessage = 'datatables::messages.areYouSureToCloneThisObject';
 	public ? string $translationPrefix = 'datatables::fields';
 
 	public function transformValue($value)

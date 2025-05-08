@@ -32,10 +32,11 @@ class DatatableFieldAlerts extends DatatableField
 
             	let tooltipText = '<div id=\"' + rand + '\" uk-modal><div class=\"uk-modal-dialog uk-modal-body\"><h2 class=\"uk-modal-title\">Problemi</h2><ol>';
 
-            	item.forEach(function(item, index)
-            	{
-            		tooltipText += '<li>' + item.label + ' <a class=\"uk-button uk-button-primary uk-button-small\" href=\'' + item.href + '\'>Risolvi</a></li>';
-            	});
+				if(item instanceof Array)
+	            	item.forEach(function(item, index)
+	            	{
+	            		tooltipText += '<li>' + item.label + ' <a class=\"uk-button uk-button-primary uk-button-small\" href=\'' + item.href + '\'>Risolvi</a></li>';
+	            	});
 
             	tooltipText += '</ol></div></div>';
 

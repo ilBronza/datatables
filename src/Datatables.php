@@ -91,6 +91,8 @@ class Datatables
 
 	public $filterOnEnter = false;
 
+	public string $ajaxMethod = 'GET';
+
 	public Collection $fetchers;
 
 	public function __construct()
@@ -103,6 +105,16 @@ class Datatables
 		$this->initializeButtons();
 
 		$this->setFetchers();
+	}
+
+	public function getAjaxMethod() : string
+	{
+		return $this->ajaxMethod;
+	}
+
+	public function setAjaxMethod(string $ajaxMethod)
+	{
+		$this->ajaxMethod = $ajaxMethod;
 	}
 
 	static function createStandAloneTable(array $parameters)
@@ -161,6 +173,11 @@ class Datatables
 			if (request()->rowId)
 				return $table->returnSingleElement($elements);
 
+			if (request()->rowIds)
+			{
+				return $table->returnSelectedElements($elements);
+			}
+
 			$elements = $elements();
 			$table->setElements($elements);
 			$table->setData();
@@ -199,6 +216,29 @@ class Datatables
 	public function setVariable(string $name, $value)
 	{
 		$this->variables[$name] = $value;
+	}
+
+	public function returnSelectedElements(callable $elements)
+	{
+		if ($elements instanceof Closure)
+		{
+			if (! $elements = $elements())
+				mori('nessun elemento');
+
+			if (! $firstElement = $elements->first())
+				mori('nessun elemento');
+
+			$_elements = $elements->whereIn(
+				$firstElement->getKeyName(), request()->rowIds
+			);
+
+			$this->setElements($_elements);
+			$this->setData();
+
+			return $this;
+		}
+
+		mori('non instanceof Closure, vuol dire che è una query o una collection, zio culo culo culo culo cazzo culo cazzo culo merda');		
 	}
 
 	public function returnSingleElement(callable $elements)

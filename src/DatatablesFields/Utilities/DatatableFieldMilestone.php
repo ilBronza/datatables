@@ -31,7 +31,7 @@ class DatatableFieldMilestone extends DatatableFieldFlat
 	{
 		return "
 			if((item)||(item === 0))
-				item = '<div class=\"ibmilestone\"><span>' + (100 - item) + '%</span><div style=\"width: ' + item + '%;\"></div></div>';
+				item = '<div class=\"ibmilestone\"><span>' + (Math.round((100 - item) * 100)/100) + '%</span><div style=\"width: ' + item + '%;\"></div></div>';
 
 			else item = '';
 		";		

@@ -10,14 +10,13 @@ class DatatableFieldBoolean extends DatatableField
 	public $property;
 
 
+	public ? bool $nullable = null;
 
 	public $valueAsRowClassPrefix = true;
 	public $trueIcon = 'check';
 	public $falseIcon = 'close';
 	public $nullIcon = 'minus';
-	public $width = '45px';
 	public $showOnlyTrue = false;
-	public $nullable = true;
 
 	public function transformValue($value)
 	{
@@ -73,6 +72,14 @@ class DatatableFieldBoolean extends DatatableField
 
 	}
 
+	public function isNullable()
+	{
+		if(! is_null($this->nullable))
+			return $this->nullable;
+
+		return config('datatables.fields.boolean.nullable');
+	}
+
 	private function _getCustomColumnDefResult()
 	{
 		return "
@@ -94,7 +101,7 @@ class DatatableFieldBoolean extends DatatableField
 
 	public function getCustomColumnDefSingleResult()
 	{
-		if($this->nullable)
+		if($this->isNullable())
 			return $this->_getCustomColumnDefNullableResult();
 
 		return $this->_getCustomColumnDefResult();

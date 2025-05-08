@@ -5,7 +5,10 @@ namespace IlBronza\Datatables\Traits;
 use Exception;
 use IlBronza\Datatables\DatatablesFields\DatatableField;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+
+use Throwable;
 
 use function dd;
 use function get_class_methods;
@@ -124,9 +127,17 @@ trait DatatableDataTrait
 		{
 			$value = $field->getFieldCellDataValue($field->name, $element);
 
-			return $field->transformValue(
-				$value->{$overridingMethod}($field->staticVariableValue)
-			);
+				try
+				{
+					return $field->transformValue(
+						$value->{$overridingMethod}($field->staticVariableValue)
+					);
+				}
+				catch(Throwable $e)
+				{
+					Log::critical($e->getMessage());
+					return null;
+				}
 		}
 
 		try
