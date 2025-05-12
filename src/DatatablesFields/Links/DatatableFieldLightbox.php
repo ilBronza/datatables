@@ -12,7 +12,9 @@ class DatatableFieldLightbox extends DatatableFieldLink
 
 			if(item)
 			{
-				item = '<div uk-lightbox><" . $this->getHtmlTagString() . $this->getParentDataIndexString() . $this->getHtmlDataAttributesString() . " " . $this->getHtmlClassesAttributeString() . " " . $this->getTargetHtml() . " href=\"' + " . $this->getLinkUrlString() . " + '\"  data-type=\"iframe\">" . $this->getPrefix() . "" . $this->getIconHtml() . "' + " . $this->getLinkTextString() . " + '" . $this->getSuffix() . "</" . $this->getHtmlTagString() . "></div>';
+				item = '<div uk-lightbox><" . $this->getHtmlTagString() . $this->getParentDataIndexString() . $this->getHtmlDataAttributesString() . " " . $this->getHtmlClassesAttributeString() . " " .
+			$this->getTargetHtml() . " href=\"' + " . $this->getLinkUrlString() . " + '?iframed=true\"  data-type=\"iframe\">" . $this->getPrefix() . "" . $this->getIconHtml() . "' + " . $this->getLinkTextString() . " + '" .
+			$this->getSuffix() . "</" . $this->getHtmlTagString() . "></div>';
 			}
 
 			else item = '';
