@@ -32,7 +32,7 @@ trait DatatablesFieldsColumnDefsTrait
 
                 if(type == 'export')
                 {
-                    " . $this->getCustomColumnDefSingleResultEditor() . "
+                    " . $this->getCustomColumnDefSingleResultExport() . "
                     " . $this->getExportResultOptionsEditor() . "
 
                     return item;
@@ -117,6 +117,11 @@ trait DatatablesFieldsColumnDefsTrait
 	public function getPrefix()
 	{
 		return $this->prefix ?? false;
+	}
+
+	public function getCustomColumnDefSingleResultExport()
+	{
+		return $this->getCustomColumnDefSingleResult();
 	}
 
 	public function getCustomColumnDefSingleResultEditor()

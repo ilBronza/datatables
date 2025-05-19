@@ -5,24 +5,35 @@ namespace IlBronza\Datatables\DatatablesFields\Relations;
 use IlBronza\Datatables\DatatablesFields\Iterators\DatatableFieldIterator;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsRelationsTrait;
 
+use function explode;
+
 class DatatableFieldBelongsToMany extends DatatableFieldIterator
 {
     public $pivot = false;
 
     use DatatablesFieldsRelationsTrait;
 
+	public $function = 'getNameForDisplayRelation';
+
+	public function getRelationParameterGetterName() : string
+	{
+		return $this->function;
+	}
+
     public function _transformValue($value)
     {
+		$methodName = $this->getRelationParameterGetterName();
+
         if(! $this->pivot)
             return [
                 'id' => $value->getKey(),
-                'name' => $value->getNameForDisplayRelation(),
+                'name' => $value->{$methodName}(),
             ];
 
         return [
             'pivotId' => $value->pivot->id,
             'id' => $value->getKey(),
-            'name' => $value->getNameForDisplayRelation(),
+            'name' => $value->{$methodName}(),
             'active' => ! ($value->pivot->deleted_at ?? false)
         ];
     }

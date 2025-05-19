@@ -106,4 +106,10 @@ class DatatableFieldBoolean extends DatatableField
 
 		return $this->_getCustomColumnDefResult();
 	}
+
+	public function getCustomColumnDefSingleResultExport()
+	{
+		return $this->getCustomColumnDefSingleSearchResult();
+	}
+
 }
