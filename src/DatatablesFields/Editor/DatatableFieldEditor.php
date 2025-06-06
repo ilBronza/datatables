@@ -8,12 +8,10 @@ use IlBronza\AccountManager\Models\Role;
 use IlBronza\Datatables\Datatables;
 use IlBronza\Datatables\DatatablesFields\DatatableField;
 use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\IconTextContentTrait;
-use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsStructuredDataIndexTrait;
 use Illuminate\Support\Str;
 
 use function class_basename;
 use function config;
-use function dd;
 use function is_null;
 
 class DatatableFieldEditor extends DatatableField
@@ -23,12 +21,11 @@ class DatatableFieldEditor extends DatatableField
 	public null|int|string $keyPosition = 0;
 	public null|int|string $valuePosition = 1;
 
-
 	public $ajax = true;
 	public $spin = true;
 	public $editorProperty;
 
-	public ? bool $saveButton = null;
+	public ?bool $saveButton = null;
 
 	public ?bool $nullable = true;
 
@@ -59,19 +56,10 @@ class DatatableFieldEditor extends DatatableField
 
 	public function hasSaveButton() : bool
 	{
-		if(! is_null($this->saveButton))
+		if (! is_null($this->saveButton))
 			return $this->saveButton;
 
 		return $this->editorHasSaveButton();
-	}
-
-	/**
-	 * if parameter to toggle is not declared in model's array, field name is taken as default
-	 **/
-	private function setParameterByName()
-	{
-		if (! isset($this->parameter))
-			$this->parameter = $this->name;
 	}
 
 	public function setReloadTableExtraData(bool $reloadTable = null)
@@ -159,11 +147,6 @@ class DatatableFieldEditor extends DatatableField
 			$this->addHtmlClass('spin');
 	}
 
-	public function hasSpinner()
-	{
-		return $this->spin;
-	}
-
 	public function transformValue($value)
 	{
 		if ($this->hasForceValue())
@@ -210,22 +193,6 @@ class DatatableFieldEditor extends DatatableField
 		return null;
 	}
 
-	public function getPrefixString()
-	{
-		if (! $prefix = $this->getPrefix())
-			return null;
-
-		return "<div class=\'ib-prefix\'><div>" . $prefix . "</div></div>";
-	}
-
-	public function getSuffixString()
-	{
-		if (! $suffix = $this->getSuffix())
-			return null;
-
-		return "<div class=\'ib-suffix\'><div>" . $suffix . "</div></div>";
-	}
-
 	public function getCustomColumnDefSingleSearchResult()
 	{
 		return "
@@ -249,16 +216,25 @@ class DatatableFieldEditor extends DatatableField
 		";
 	}
 
-	protected function substituteUrlParameter()
+	public function hasSpinner()
 	{
-		return "
-			let url = '" . $this->getEditorUpdateUrl() . "';
-			url = url.replace('" . config("datatables.replace_model_id_string") . "', item[0]);
+		return $this->spin;
+	}
 
-			if(item[1] === null)
-				item[1] = '';
+	public function getPrefixString()
+	{
+		if (! $prefix = $this->getPrefix())
+			return null;
 
-		";
+		return "<div class=\'ib-prefix\'><div>" . $prefix . "</div></div>";
+	}
+
+	public function getSuffixString()
+	{
+		if (! $suffix = $this->getSuffix())
+			return null;
+
+		return "<div class=\'ib-suffix\'><div>" . $suffix . "</div></div>";
 	}
 
 	public function getEditorUpdateUrl() : string
@@ -271,7 +247,8 @@ class DatatableFieldEditor extends DatatableField
 
 		if ($placeholder = $this->getPlaceholderElement())
 			if (method_exists($placeholder, 'getEditorUpdateUrl'))
-				return $placeholder->getEditorUpdateUrl();
+				if ($url = $placeholder->getEditorUpdateUrl())
+					return $url;
 
 		$routeName = $this->getUpdateRouteName();
 		$parameters = $this->getUpdateParameters();
@@ -289,16 +266,6 @@ class DatatableFieldEditor extends DatatableField
 		}
 	}
 
-
-	// <div class="uk-width-1-2@s input-group">
-	//        <input class="uk-input" type="text" placeholder="50">
-	//      <div class="input-group-append">
-	//        <div class="input-group-text">
-	//          @email
-	//        </div>
-	//      </div>
-	//    </div>
-
 	public function getCustomUpdateRouteName()
 	{
 		return $this->customUpdateRouteName;
@@ -311,6 +278,16 @@ class DatatableFieldEditor extends DatatableField
 
 		return route($routeName, $parameters);
 	}
+
+
+	// <div class="uk-width-1-2@s input-group">
+	//        <input class="uk-input" type="text" placeholder="50">
+	//      <div class="input-group-append">
+	//        <div class="input-group-text">
+	//          @email
+	//        </div>
+	//      </div>
+	//    </div>
 
 	public function getUpdateParameters()
 	{
@@ -346,7 +323,7 @@ class DatatableFieldEditor extends DatatableField
 	{
 		if ($placeholderElement = $this->getPlaceholderElement())
 		{
-			if(method_exists($placeholderElement, 'getRouteClassname'))
+			if (method_exists($placeholderElement, 'getRouteClassname'))
 				return $placeholderElement->getRouteClassname();
 
 			return Str::camel(class_basename($placeholderElement));
@@ -360,5 +337,26 @@ class DatatableFieldEditor extends DatatableField
 		$routeElementClassName = $this->getRouteElementClassName();
 
 		return $routeElementClassName . '.update';
+	}
+
+	protected function substituteUrlParameter()
+	{
+		return "
+			let url = '" . $this->getEditorUpdateUrl() . "';
+			url = url.replace('" . config("datatables.replace_model_id_string") . "', item[0]);
+
+			if(item[1] === null)
+				item[1] = '';
+
+		";
+	}
+
+	/**
+	 * if parameter to toggle is not declared in model's array, field name is taken as default
+	 **/
+	private function setParameterByName()
+	{
+		if (! isset($this->parameter))
+			$this->parameter = $this->name;
 	}
 }
