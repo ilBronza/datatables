@@ -9,4 +9,5 @@ return [
 	'next' => 'Prossimo',
 	'previous' => 'Precedente',
 	'first' => 'Prima',
+	'infoFiltered' => '(filtrati da _MAX_ record totali)',
 ];

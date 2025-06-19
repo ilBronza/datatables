@@ -10,8 +10,10 @@ use IlBronza\Datatables\Traits\DatatableColumnDisplayTrait;
 use IlBronza\Datatables\Traits\DatatableDataTrait;
 use IlBronza\Datatables\Traits\DatatableDomTrait;
 use IlBronza\Datatables\Traits\DatatableFieldsTrait;
+use IlBronza\Datatables\Traits\DatatableFiltersTrait;
 use IlBronza\Datatables\Traits\DatatableFormTrait;
 use IlBronza\Datatables\Traits\DatatableOptionsTrait;
+use IlBronza\Datatables\Traits\DatatableSaveStateTrait;
 use IlBronza\Datatables\Traits\DatatableSelectRowsTrait;
 use IlBronza\Datatables\Traits\DatatablesExtraViewsTrait;
 use IlBronza\Form\Form;
@@ -29,11 +31,13 @@ class Datatables
 	use DatatableDataTrait;
 	use DatatableFieldsTrait;
 	use DatatableColumnDefsTrait;
+	use DatatableSaveStateTrait;
 	use DatatablesExtraViewsTrait;
 	use ExtraViewsTrait;
 	use DatatableOptionsTrait;
 	use DatatableSelectRowsTrait;
 	use DatatableColumnDisplayTrait;
+	use DatatableFiltersTrait;
 
 	static $availableExtraViewsPositions = [
 		'top',
@@ -41,6 +45,12 @@ class Datatables
 		'left',
 		'right'
 	];
+
+	//DatatableSaveStateTrait
+	public ? bool $saveState = null;
+
+	//DatatableFiltersTrait
+	public ? bool $removeFiltersButton = null;
 
 	public $caption;
 	public $columnDisplayKey;
@@ -238,7 +248,7 @@ class Datatables
 			return $this;
 		}
 
-		mori('non instanceof Closure, vuol dire che è una query o una collection, zio culo culo culo culo cazzo culo cazzo culo merda');		
+		mori('non instanceof Closure, vuol dire che è una query o una collection, zio culo culo culo culo cazzo culo cazzo culo merda');
 	}
 
 	public function returnSingleElement(callable $elements)

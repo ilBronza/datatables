@@ -169,6 +169,6 @@ trait DatatableDataTrait
 
 	private function setCachedTableKey()
 	{
-		$this->cachedTableKey = Str::slug($this->getName() . Str::random(), '');
+		$this->cachedTableKey = Str::slug($this->getName() . request()?->route()?->getName() . (\Auth::id() ?? Str::random()), '');
 	}
 }

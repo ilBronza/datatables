@@ -13,7 +13,7 @@
 	   @endif
 
 	@if($alignmentString = $field->getAlignmentCssString())
-		#{{ $table->getId() }} th.{{ $field->getHtmlClassForCss() }} @if($field->isEditor()) input @endif,
+		{{-- #{{ $table->getId() }} th.{{ $field->getHtmlClassForCss() }} @if($field->isEditor()) input @endif, --}}
        	#{{ $table->getId() }} td.{{ $field->getHtmlClassForCss() }} @if($field->isEditor()) input @endif
 	{
 		{{ $alignmentString }}

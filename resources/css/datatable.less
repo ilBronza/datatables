@@ -13,6 +13,7 @@ table.datatable {
   .mainheader {
     th {
       text-align: center;
+
     }
   }
 
@@ -39,7 +40,6 @@ table.datatable {
           bottom: 0;
         }
       }
-
     }
 
     th {
@@ -61,6 +61,13 @@ table.datatable {
         right: 0;
         top: 0;
         width: auto;
+      }
+
+      input:not(:placeholder-shown):not([type="date"]),
+      input[type="date"].filter-filled {
+        background-color: #ffff1b;
+        border-color: #e0b000;
+        font-weight: bold;
       }
     }
   }
@@ -212,3 +219,4 @@ span.ib-toggle[data-value="1"]
       display: block;
     }
 }
+

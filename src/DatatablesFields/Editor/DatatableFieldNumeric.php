@@ -42,8 +42,8 @@ class DatatableFieldNumeric extends DatatableFieldEditor
     public function getValueString()
     {
     	if($this->digits !== false)
-        	return " data-originalvalue=\"' + item[1] + '\" value=\"' + ((item[1])? parseFloat(item[1]).toFixed({$this->digits}) : '') + '\" ";
+        	return " inputmode=\"decimal\"  data-originalvalue=\"' + item[1] + '\" value=\"' + ((item[1])? parseFloat(item[1]).toFixed({$this->digits}) : '') + '\" ";
 
-        return " data-originalvalue=\"' + item[1] + '\" value=\"' + item[1] + '\" ";
+        return " inputmode=\"decimal\"  data-originalvalue=\"' + item[1] + '\" value=\"' + item[1] + '\" ";
     }
 }

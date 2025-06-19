@@ -19,6 +19,71 @@
 
     window.{{ $table->getId() }}options = {
 
+
+		@if($table->hasRemoveFiltersButton())
+
+        drawCallback: function (settings) {
+            const tableId = '{{ $table->getId() }}';
+            const wrapper = $('#' + tableId + '_wrapper');
+            const infoText = wrapper.find('.dataTables_info').text();
+            const button = wrapper.find('button.clearfilters');
+
+            const filterMarker = 'filtrati da'; // se tradotto, usa direttamente la stringa localizzata
+            const filtersActive = infoText.includes(filterMarker);
+
+            button.toggleClass('uk-button-danger', filtersActive);
+        },
+
+		@endif
+
+        @if($table->hasSaveState())
+        stateSave: true,
+
+        stateSaveParams: function (settings, data) {
+                // salva i valori dei filtri custom
+                data.filters = {};
+                $('#{{ $table->getId() }} thead input, #{{ $table->getId() }} tfoot input').each(function () {
+                    data.filters[$(this).attr('name') || $(this).attr('id')] = $(this).val();
+                });
+            },
+
+        stateLoadParams: function (settings, data) {
+
+            // ripristina i valori visivi
+            setTimeout(function () {
+
+                console.log('data.filters');
+                console.log(data.filters);
+
+                if (data.filters) {
+                    $('#{{ $table->getId() }} thead input, #{{ $table->getId() }} tfoot input').each(function () {
+                        const key = $(this).attr('name') || $(this).attr('id');
+                        if (data.filters[key] !== undefined) {
+                            $(this).val(data.filters[key]);
+
+                        if ($(this).attr('type') === 'date') {
+                            $(this).trigger('change');
+                        } else {
+                            $(this).trigger('input');
+                        }
+
+                            console.log('this');
+                            console.log(this);
+
+                            $(this).trigger('change');
+                            $(this).trigger('input');
+
+                            {{-- $(this).trigger('input'); // forza DataTables a rileggere il filtro --}}
+
+                            $(this).toggleClass('filter-filled', !!data.filters[key]);
+                        }
+                    });
+                }
+            }, 0);
+        },
+
+		@endif
+
 		@if($table->hasFixedTableHeader())
         fixedHeader: true,
 		@endif
@@ -35,7 +100,9 @@
 		@endif
         keys: true,
         language: {
+            thousands: "{{ config('datatables.thousandsSeparator', '.') }}",
             lengthMenu: "{!! __('datatables::datatables.show_MENU_entries') !!}",
+            infoFiltered : "{!! __('datatables::datatables.infoFiltered') !!}",
             info: "{!! __('datatables::datatables.showing_START_to_END_of_TOTAL_entries') !!}",
             search: "{!! __('datatables::datatables.generalSearchTitle') !!}",
             searchPlaceholder: "{!! __('datatables::datatables.searchPlaceholder') !!}",
@@ -184,6 +251,31 @@
             extend: 'fieldsVisibility',
             className: 'fieldsvisibility',
         },
+
+			@if($table->hasRemoveFiltersButton())
+
+        {
+            text: 'Rimuovi filtri',
+            className: 'clearfilters',
+            action: function (e, dt, node, config) {
+                // reset input e select nei thead e tfoot
+                $('#{{ $table->getId() }} thead input, #{{ $table->getId() }} tfoot input, #{{ $table->getId() }} thead select, #{{ $table->getId() }} tfoot select').each(function () {
+                    $(this).val('').removeClass('filter-filled').trigger('input').trigger('change');
+                });
+
+                // reset eventuali filtri range custom
+                Object.keys(window).forEach(function (key) {
+                    if (key.startsWith('range{{ $table->getId() }}')) {
+                        delete window[key];
+                    }
+                });
+
+                // ricarica la tabella senza filtri
+                dt.search('').columns().search('').draw();
+            }
+        },
+
+			@endif
 
 		@if($table->hasSearchButton())
         // 'search',
