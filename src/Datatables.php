@@ -11,6 +11,7 @@ use IlBronza\Datatables\Traits\DatatableDataTrait;
 use IlBronza\Datatables\Traits\DatatableDomTrait;
 use IlBronza\Datatables\Traits\DatatableFieldsTrait;
 use IlBronza\Datatables\Traits\DatatableFiltersTrait;
+use IlBronza\Datatables\Traits\DatatableFixedColumnsTrait;
 use IlBronza\Datatables\Traits\DatatableFormTrait;
 use IlBronza\Datatables\Traits\DatatableOptionsTrait;
 use IlBronza\Datatables\Traits\DatatableSaveStateTrait;
@@ -38,6 +39,7 @@ class Datatables
 	use DatatableSelectRowsTrait;
 	use DatatableColumnDisplayTrait;
 	use DatatableFiltersTrait;
+	use DatatableFixedColumnsTrait;
 
 	static $availableExtraViewsPositions = [
 		'top',
@@ -51,6 +53,9 @@ class Datatables
 
 	//DatatableFiltersTrait
 	public ? bool $removeFiltersButton = null;
+
+	public int $fixedColumnsLeft = 0;
+	public int $fixedColumnsRight = 0;
 
 	public $caption;
 	public $columnDisplayKey;

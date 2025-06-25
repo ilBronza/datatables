@@ -18,6 +18,12 @@ return [
 
     'scrollX' => false,
 
+	'fixedColumns' => [
+		'enabled' => false,
+	],
+
+	'saveState' => false,
+
 	'debug' => true,
 
 	'pageLength' => 50,

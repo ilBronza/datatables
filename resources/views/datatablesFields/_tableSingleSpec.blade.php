@@ -19,6 +19,16 @@
 
     window.{{ $table->getId() }}options = {
 
+        @if($table->hasFixedColumns())
+        scrollX: true,
+
+			@if(!! $table->getFixedColumnsLeft())
+			fixedColumns: {
+				leftColumns: {{ $table->getFixedColumnsLeft() }}
+			},
+			@endif
+
+        @endif
 
 		@if($table->hasRemoveFiltersButton())
 
@@ -32,6 +42,11 @@
             const filtersActive = infoText.includes(filterMarker);
 
             button.toggleClass('uk-button-danger', filtersActive);
+
+            //HIGHLIGHT VISITED LINKS
+			if (typeof window.highlightVisitedLinks === 'function') {
+				window.highlightVisitedLinks();
+			}
         },
 
 		@endif
@@ -43,6 +58,7 @@
                 // salva i valori dei filtri custom
                 data.filters = {};
                 $('#{{ $table->getId() }} thead input, #{{ $table->getId() }} tfoot input').each(function () {
+                    // console.log($(this).attr('name'));
                     data.filters[$(this).attr('name') || $(this).attr('id')] = $(this).val();
                 });
             },
@@ -52,7 +68,7 @@
             // ripristina i valori visivi
             setTimeout(function () {
 
-                console.log('data.filters');
+				console.log('data.filters');
                 console.log(data.filters);
 
                 if (data.filters) {
@@ -67,9 +83,9 @@
                             $(this).trigger('input');
                         }
 
-                            console.log('this');
+{{--                             console.log('this');
                             console.log(this);
-
+ --}}
                             $(this).trigger('change');
                             $(this).trigger('input');
 
