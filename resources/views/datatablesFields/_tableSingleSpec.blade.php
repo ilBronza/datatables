@@ -17,7 +17,29 @@
     }
 	@else false @endisset ;
 
+        {{--jQuery(document).ready(function () {--}}
+        {{--    $(window).resize(function()--}}
+		{{--	{--}}
+        {{--        console.log(dtHeight);--}}
+        {{--        const element = document.querySelector('#{{ $table->getId() }}');--}}
+        {{--        const rect = element.getBoundingClientRect();--}}
+
+        {{--        const viewportHeight = window.innerHeight;--}}
+
+        {{--        let dtHeight = viewportHeight - rect.top;--}}
+
+        {{--        $('#{{ $table->getId() }}').find('.dataTables_scrollBody').css('height', (dtHeight + 'px'));--}}
+		{{--	});--}}
+		{{--});--}}
+
     window.{{ $table->getId() }}options = {
+
+            // scrollResize: true,
+            // scrollX: true,
+            // scrollY: 100,
+            // scrollCollapse: true,
+            // paging: false,
+            // lengthChange: false,
 
         @if($table->hasFixedColumns())
         scrollX: true,
@@ -68,34 +90,29 @@
             // ripristina i valori visivi
             setTimeout(function () {
 
-				console.log('data.filters');
-                console.log(data.filters);
-
                 if (data.filters) {
                     $('#{{ $table->getId() }} thead input, #{{ $table->getId() }} tfoot input').each(function () {
                         const key = $(this).attr('name') || $(this).attr('id');
                         if (data.filters[key] !== undefined) {
                             $(this).val(data.filters[key]);
 
-                        if ($(this).attr('type') === 'date') {
-                            $(this).trigger('change');
-                        } else {
-                            $(this).trigger('input');
-                        }
+                            let field = this;
 
-{{--                             console.log('this');
-                            console.log(this);
- --}}
-                            $(this).trigger('change');
-                            $(this).trigger('input');
-
-                            {{-- $(this).trigger('input'); // forza DataTables a rileggere il filtro --}}
+                            // Triggers per compatibilità
+                            setTimeout(function ()
+                            {
+                                $(field).trigger('input').trigger('change').trigger('keyup');
+                            }, 100);
 
                             $(this).toggleClass('filter-filled', !!data.filters[key]);
                         }
                     });
+
+                    // Forza il ricalcolo
+                    const tableInstance = $('#{{ $table->getId() }}').DataTable();
+                    tableInstance.draw();
                 }
-            }, 0);
+			}, 0);
         },
 
 		@endif
@@ -161,12 +178,14 @@
 
 		@if($scripts = $table->getCreatedRowScripts())
 
-        //uash uash
         createdRow: function (row, data, dataIndex)
         {
+            //start createdRow
 			@foreach ($scripts as $script)
-					{!! $script !!}
+						{!! $script !!}
 					@endforeach
+
+			//end createdRow
         },
 		@endif
 

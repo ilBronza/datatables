@@ -187,12 +187,17 @@ trait DatatablesFieldsColumnDefsTrait
         //" . $this->name . "
         window.valueAsClass = data[" . $this->getIndex() . "]" . $this->getStructuredDataIndexString() . ";
 
+
         if(typeof window.valueAsClass !== 'undefined')
         {
             if(typeof window.valueAsClass !== 'string')
+            {
                 window.valueAsClass = JSON.stringify(window.valueAsClass);
+            }
 
+            $(row).removeClass('" . $this->getValueAsRowClassPrefix() . "');
             $(row).addClass('" . $this->getValueAsRowClassPrefix() . "' + window.valueAsClass.replace(/[^a-zA-Z0-9 ]/g, ' '));
+
         }
 
         ";

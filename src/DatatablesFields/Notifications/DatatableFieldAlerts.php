@@ -35,7 +35,7 @@ class DatatableFieldAlerts extends DatatableField
 				if(item instanceof Array)
 	            	item.forEach(function(item, index)
 	            	{
-	            		tooltipText += '<li>' + item.label + ' <a class=\"uk-button uk-button-primary uk-button-small\" href=\'' + item.href + '\'>Risolvi</a></li>';
+	            		tooltipText += '<li>' + item.label + ' <a target=\'' + item.target + '\' class=\"uk-button uk-button-primary uk-button-small\" href=\'' + item.href + '\'>Risolvi</a></li>';
 	            	});
 
             	tooltipText += '</ol></div></div>';

@@ -40,17 +40,47 @@ trait DatatableFormTrait
 		return $this;
 	}
 
-	public function createPostButton(array $parameters)
+	public function createBulkEditButton(array $parameters)
+	{
+		$button = $this->_createPostButton($parameters);
+
+		$button->setAsIframe();
+
+		$this->getForm()->addClosureButton($button);
+	}
+
+	public function _createPostButton(array $parameters) : Button
 	{
 		$button = Button::create($parameters);
 
 		$button->setPrimary();
-		
+
 		$button->setData('tableid', $this->getId());
 
 		$button->setSubmitTableButton();
 
+		return $button;
+	}
+
+	public function createPostButton(array $parameters) : Button
+	{
+		$button = $this->_createPostButton($parameters);
+
+		// if($button->name == 'products::buttons.addRows')
+		// 	dd($button);
+
 		$this->getForm()->addClosureButton($button);
+
+		return $button;
+	}
+
+	public function createPostButtonSamePage(array $parameters) : Button
+	{
+		$button = $this->createPostButton($parameters);
+
+		$button->setRedirectSubmit(false);
+
+		return $button;
 	}
 
 	public function getPostFields() : array
