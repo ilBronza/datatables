@@ -166,7 +166,7 @@ class DatatableFieldEditor extends DatatableField
 		if (! $this->requireElement())
 			return $value;
 
-		$this->element = $value;
+		$this->element = $this->getFieldCellDataValue($this->name, $value);
 
 		if ($this->editorValueFunction)
 			return [
@@ -341,7 +341,6 @@ class DatatableFieldEditor extends DatatableField
 
 	protected function substituteUrlParameter()
 	{
-		dd()
 		return "
 			let url = '" . $this->getEditorUpdateUrl() . "';
 			url = url.replace('" . config("datatables.replace_model_id_string") . "', item[0]);
