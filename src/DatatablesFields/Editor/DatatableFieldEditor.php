@@ -341,6 +341,7 @@ class DatatableFieldEditor extends DatatableField
 
 	protected function substituteUrlParameter()
 	{
+		dd()
 		return "
 			let url = '" . $this->getEditorUpdateUrl() . "';
 			url = url.replace('" . config("datatables.replace_model_id_string") . "', item[0]);

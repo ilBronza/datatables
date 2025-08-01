@@ -16,7 +16,7 @@ class DatatableFieldFetcher extends DatatableFieldLink
 
 		return [
 			$this->_getKey($value),
-			$value->{$this->textParameter}
+			$value?->{$this->textParameter} ?? '-'
 		];
 	}
 

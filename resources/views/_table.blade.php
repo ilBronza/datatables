@@ -127,6 +127,7 @@
 							data-nullable="true"
 						@endif
 
+						data-form-id="{{ $field->getFormId() }}"
 						data-showDuplicates="{{ $field->hasDoubler() }}"
 						data-range-filter="{{ $field->hasRangeFilter() }}"
 						data-filter-type="{{ $field->getFilterType() }}"

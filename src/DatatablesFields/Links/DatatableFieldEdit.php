@@ -6,7 +6,7 @@ class DatatableFieldEdit extends DatatableFieldLink
 {
 	public ? string $translationPrefix = 'datatables::fields';
 
-	public $icon = 'file-edit';
+	public $faIcon = 'pen-to-square';
 	public $method = 'getEditUrl';
 
 	public function getEditMethodName()

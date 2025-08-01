@@ -3,6 +3,7 @@
 namespace IlBronza\Datatables\Traits\DatatablesFields;
 
 use IlBronza\Datatables\DatatablesFields\DatatableField;
+use Illuminate\Support\Facades\Log;
 
 trait DatatablesFieldsParentingTrait
 {
@@ -22,7 +23,19 @@ trait DatatablesFieldsParentingTrait
 
 	public function addChildField()
 	{
-		$childName = $this->getChildName();
+		try
+		{
+			if($childName = $this->getChildName())
+			{
+				$childPlaceholderElement = $this->getPlaceholderElement()->{$childName}()->make();
+
+				$this->childParameters['placeholderElement'] = $childPlaceholderElement;
+			}			
+		}
+		catch(\Exception $e)
+		{
+			Log::critical($e->getMessage());
+		}
 
 		$this->child = static::createByType(
 			$childName,

@@ -78,6 +78,57 @@ npm run development
 ## Usage
 
 
+### Form in table header and submit cell
+
+You can populate a form in the header of the table and use a table cell as the submit button.  
+This feature is useful for quick inline filters or actions. To enable it, use the `DatatableFieldSubmit` field type in your configuration.
+
+create a submit field
+```
+class DatatableFieldAddUnitloads extends DatatableFieldSubmit
+{
+    public $function = 'getAddUnitloadsToDeliveryUrl';
+}
+```
+
+add the field to the table header
+```
+public function addPostFieldsToTable()
+{
+	$unitloads = Unitload::gpc()::whereIn('id', request()->unitloads)->get();
+
+	foreach($unitloads as $unitload)
+		$this->getTable()->addPostField(
+			FormField::createFromArray([
+				'label' => $unitload->getName() . ' (' . $unitload->getQuantity() . ')',
+				'type' => 'text',
+				'disabled' => true,
+				'name' => 'unitloads[]',
+				'value' => $unitload->getKey(),
+			])
+		);
+}
+```
+
+use the created field in fields configuration
+
+```
+static function getFieldsGroup() : array
+{
+    return 
+    [
+        'fields' => 
+        [
+            'mySelfAddToDelivery' => 'warehouse::deliveries.addUnitloads'
+        ]
+    ];
+}
+```
+
+
+
+
+### Add data to headerData
 Example for add data to th
 
 ```

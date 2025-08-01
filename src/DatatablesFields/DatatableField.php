@@ -3,18 +3,20 @@
 namespace IlBronza\Datatables\DatatablesFields;
 
 use Auth;
-use IlBronza\Datatables\DatatablesFields\Editor\DatatableFieldEditor;
 use IlBronza\Datatables\DatatableFieldsGroup;
 use IlBronza\Datatables\Datatables;
+use IlBronza\Datatables\DatatablesFields\Editor\DatatableFieldEditor;
 use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\CssTrait;
 use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\DataAttributesTrait;
 use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\HtmlClassesAttributesTrait;
 use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\TextAlignTrait;
+use IlBronza\Datatables\DatatablesFields\Form\Form;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsColumnDefsTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsDisplayTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsElementTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsFetcherTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsFiltersTrait;
+use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsFormTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsHtmlClassesTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsIdentifiersTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsOperationsTrait;
@@ -25,7 +27,6 @@ use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsSortingTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsStructuredDataIndexTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsSummaryTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsUserDataTrait;
-
 use function app;
 use function dd;
 use function get_class;
@@ -48,6 +49,10 @@ class DatatableField
     use DatatablesFieldsElementTrait;
     use DatatablesFieldsParentingTrait;
     use DatatablesFieldsUserDataTrait;
+
+
+    use DatatablesFieldsFormTrait;
+    public ? Form $form = null;
 
 	use TextAlignTrait;
 	use CssTrait;
@@ -244,7 +249,7 @@ class DatatableField
 
     public function requiresKey()
     {
-        if(isset($this->fetcher))
+        if($this->getFetcherData())
         {
             if($this->isFlatType())
                 return false;
