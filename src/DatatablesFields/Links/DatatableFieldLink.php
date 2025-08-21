@@ -15,26 +15,9 @@ class DatatableFieldLink extends DatatableField
 	public $textParameter = false;
 	public $staticText;
 	public $textMethod = false;
-	public $defaultWidth = '25px';
 	public $showNull = false;
 	public $dataAttributes = [];
 	public $htmlTag = 'a';
-	// public $filterType = 'none';
-
-	/**
-	 * return field default width based on text existence or just icon
-	 *
-	 * if link contains text, default width is null, if is just icon, default width will be 25px
-	 *
-	 * return mixed
-	 */
-    public function getWidth()
-    {
-		if(! $this->textParameter)
-			return $this->defaultWidth;
-
-		return $this->width;
-    }
 
     public function isSortable()
     {

@@ -2,9 +2,17 @@
 
 namespace IlBronza\Datatables\Traits\DatatablesFields;
 
+use Exception;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
+use function array_map;
+use function config;
+use function explode;
+use function get_class;
+use function implode;
 use function is_null;
+use function str_replace;
 
 trait DatatablesFieldsDisplayTrait
 {
@@ -48,13 +56,48 @@ trait DatatablesFieldsDisplayTrait
 		return true;
 	}
 
+	public function getWidthFromConfig() : string
+	{
+		$class = get_class($this);
+
+		[$_project, $field] = explode('\\DatatablesFields\\', $class);
+
+		$projectPieces = explode('\\', $_project);
+
+		$project = Str::camel(
+			$projectPieces[0] == 'App' ? $projectPieces[0] : $projectPieces[1]
+		);
+
+		$pieces = explode('\\', $field);
+
+		$configPieces = array_map(function ($item)
+		{
+			return Str::camel($item);
+		}, $pieces);
+
+		$configString = $project . '.datatableFieldWidths.' . implode('.', $configPieces);
+
+		if ($width = config($configString, false))
+			return $width;
+
+		Log::critical("Datatables field width not found for {$configString}");
+
+		// if($this->width)
+		// 	return $this->width;
+
+		// if($this->defaultWidth)
+		// 	return $this->defaultWidth;
+
+		if ($this->debug())
+			throw new Exception("Datatables field width not found for {$configString}");
+
+		return "22em";
+	}
+
 	public function manageWidth(array $parameters)
 	{
-		if ($parameters['width'] ?? false)
-			return;
-
-		if ($width = $this->getDefaultWidth())
-			$this->width = $width;
+		if (! ($this->width = $parameters['width'] ?? false))
+			$this->width = $this->getWidthFromConfig();
 	}
 
 	public function getDefaultWidth()

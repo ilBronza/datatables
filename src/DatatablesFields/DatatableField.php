@@ -10,7 +10,6 @@ use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\CssTrait;
 use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\DataAttributesTrait;
 use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\HtmlClassesAttributesTrait;
 use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\TextAlignTrait;
-use IlBronza\Datatables\DatatablesFields\Form\Form;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsColumnDefsTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsDisplayTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsElementTrait;
@@ -27,10 +26,6 @@ use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsSortingTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsStructuredDataIndexTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsSummaryTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsUserDataTrait;
-use function app;
-use function dd;
-use function get_class;
-use function stripos;
 
 class DatatableField
 {
@@ -52,7 +47,7 @@ class DatatableField
 
 
     use DatatablesFieldsFormTrait;
-    public ? Form $form = null;
+    public $form = null;
 
 	use TextAlignTrait;
 	use CssTrait;
@@ -134,8 +129,6 @@ class DatatableField
     public ? string $translationPrefix = null;
 
     public DatatableFieldsGroup $fieldsGroup;
-
-    public $defaultWidth = '120px';
 
     public $canDrawTable = true;
 

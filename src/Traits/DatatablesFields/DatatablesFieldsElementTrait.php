@@ -41,7 +41,7 @@ trait DatatablesFieldsElementTrait
         if($this->parent ?? false)
             return $this->placeholderElement = $this->parent->provideChildPlaceholderElement($this);
 
-        if(! $this->getPlaceholderElement())
+        // if(! $this->getPlaceholderElement())
     	   $this->placeholderElement = $this->table->getPlaceholderElement();
     }
 

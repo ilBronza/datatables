@@ -17,32 +17,10 @@
     }
 	@else false @endisset ;
 
-        {{--jQuery(document).ready(function () {--}}
-        {{--    $(window).resize(function()--}}
-		{{--	{--}}
-        {{--        console.log(dtHeight);--}}
-        {{--        const element = document.querySelector('#{{ $table->getId() }}');--}}
-        {{--        const rect = element.getBoundingClientRect();--}}
-
-        {{--        const viewportHeight = window.innerHeight;--}}
-
-        {{--        let dtHeight = viewportHeight - rect.top;--}}
-
-        {{--        $('#{{ $table->getId() }}').find('.dataTables_scrollBody').css('height', (dtHeight + 'px'));--}}
-		{{--	});--}}
-		{{--});--}}
-
     window.{{ $table->getId() }}options = {
 
-            // scrollResize: true,
-            // scrollX: true,
-            // scrollY: 100,
-            // scrollCollapse: true,
-            // paging: false,
-            // lengthChange: false,
-
-        @if($table->hasFixedColumns())
-        scrollX: true,
+            @if($table->hasFixedColumns())
+        		scrollX: false,
 
 			@if(!! $table->getFixedColumnsLeft())
 			fixedColumns: {
@@ -124,9 +102,19 @@
         //SCROLLX genera parecchi problemi con il grab della tabella HTML se attivo. non trova più i data etc
         //TODO
 
-		{{--		@if($table->canScrollX())--}}
-				{{--		scrollX: {{ $table->canScrollX() ? 'true' : 'false' }},--}}
-				{{--		@endif--}}
+        /**
+		 *
+		 *
+		 * occhio che se scroll Y perde il mainheader sulle tabelle del relation manager, mistero non si sa perché zio culofreno
+         */
+
+		@if($table->canScrollX())
+			scrollY: '200px', /* valore qualsiasi iniziale, anche 200 */
+			scrollCollapse: true,
+			autoWidth: false,
+
+        	scrollX: {{ $table->canScrollX() ? 'true' : 'false' }},
+		@endif
 
 				@if($caption = $table->getCaption())
         caption: "{!! $caption !!}",

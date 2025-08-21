@@ -8,6 +8,8 @@ class DatatableFieldPrimary extends DatatableField
 	public $rowId = true;
 	public $visible = false;
 
+	public $width = '12em';
+
 	public function transformValue($value)
 	{
 		if(! $value)

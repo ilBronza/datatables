@@ -166,7 +166,7 @@ class DatatableFieldEditor extends DatatableField
 		if (! $this->requireElement())
 			return $value;
 
-		$this->element = $this->getFieldCellDataValue($this->name, $value);
+		$this->element = $value;
 
 		if ($this->editorValueFunction)
 			return [

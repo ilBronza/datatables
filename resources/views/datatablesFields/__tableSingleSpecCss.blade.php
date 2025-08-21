@@ -23,17 +23,17 @@
 /*lemme lemme*/
 /*{!! json_encode($field->name) !!}*/
 
-    @if(! empty($field->width))
+    @if((! empty($width = $field->width))&&($width != 'auto'))
 
-#{{ $table->getId() }} th.{{ $field->getHtmlClassForCss() }},
-#{{ $table->getId() }} td.{{ $field->getHtmlClassForCss() }}
-{
-		/*lemme lemme*/
-	/*{!! json_encode($field->name) !!}*/
-    min-width: {{ $field->getWidth() }}!important;
-    max-width: {{ $field->getWidth() }}!important;
-    width: {{ $field->getWidth() }}!important;
-}
+		#{{ $table->getId() }} th.{{ $field->getHtmlClassForCss() }},
+		#{{ $table->getId() }} td.{{ $field->getHtmlClassForCss() }},
+		#{{ $table->getId() }}_wrapper th.{{ $field->getHtmlClassForCss() }},
+		#{{ $table->getId() }}_wrapper td.{{ $field->getHtmlClassForCss() }}
+		{
+			min-width: {{ $width }}!important;
+			max-width: {{ $width }}!important;
+			width: {{ $width }}!important;
+		}
     @endif
 
 @endforeach

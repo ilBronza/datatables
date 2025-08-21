@@ -468,6 +468,11 @@ class Datatables
 		return $this->sourceType == 'array';
 	}
 
+	public function setScrollX(bool $scrollX)
+	{
+		$this->scrollX = $scrollX;
+	}
+
 	public function canScrollX()
 	{
 		if(! is_null($this->scrollX))
