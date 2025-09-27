@@ -13,20 +13,3 @@ trait DatatableFiltersTrait
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

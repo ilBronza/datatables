@@ -1,0 +1,240 @@
+
+
+
+
+
+
+body  table tr *
+{
+    outline: 2px solid green!important;
+}
+
+
+
+
+.sis-buttons-header
+{
+    background-color: #fff;
+    padding: 12px;
+}
+
+table.dataTable thead th,
+table.dataTable tfoot th
+{
+    vertical-align: middle;
+}
+
+.dataTable tbody input.uk-input
+{
+    padding: 1px;
+}
+
+.ib-toggle,
+.ib-ajax
+{
+    cursor: pointer;
+}
+
+.ib-spin
+{
+    position: absolute;
+    left: 4px;
+    top: 3px;
+    background-color: rgba(2, 122, 32, 0.7)!important;
+    color: #fff;
+}
+
+.datatablefilter
+{
+    position: relative;
+}
+
+.filterfunctions
+{
+    position: absolute;
+    top: -14px;
+    left: 19px!important;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+}
+
+.filterfunctions > *
+{
+    text-align: center;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+}
+
+.datatable tbody *
+{
+    font-size: 12px;
+    line-height: 16px;
+}
+
+table.dataTable thead th:hover
+{
+    position: relative;
+}
+
+table.dataTable thead th, table.dataTable thead td
+{
+    padding: 0px!important;
+}
+
+table.dataTable thead th:hover:after
+{
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 18px;
+    height: 22px;
+    position: absolute;
+    top: -14px;
+    left: 0px;
+    content: ' ';
+    display: block;
+    background-image: url(/images/vendor/datatables.net-dt/sort_both.png?8b117fa…)!important;
+}
+
+table.dataTable thead th.sorting_desc:hover:after
+{
+    background-image: url(/images/vendor/datatables.net-dt/sort_desc.png?c4196d3…) !important;
+}
+
+table.dataTable thead th.sorting_asc:hover:after
+{
+    background-image: url(/images/vendor/datatables.net-dt/sort_asc.png?4bba591…) !important;
+}
+
+td
+{
+    max-width: 140px;
+}
+
+nobr
+{
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1em;
+}
+
+.uk-text-truncate br
+{
+    display: none!important;
+}
+
+.uk-text-truncate
+{
+    display: inline-block;
+}
+
+.uk-text-truncate *
+{
+    display: inline!important;
+}
+
+.doubled,
+.doubled *
+{
+    font-weight: bold!important;
+    color: red!important;
+}
+
+
+.fieldoperations
+{
+    position: absolute;
+    background-color: #ffffffdd;
+    top: 0;
+    left: 30px;
+    border: 1px solid #ccc;
+    display: inline-block;
+}
+
+.fieldoperations span
+{
+    float: left;
+    color: #000!important;
+    display: inline-block;
+    padding: 2px;
+    cursor: pointer;
+}
+
+.fieldoperations span:hover
+{
+    background-color: #ddd;
+}
+
+.fieldoperations span + span
+{
+    margin-left: 5px;
+}
+
+table.dataTable tbody td.select-checkbox:before, table.dataTable tbody th.select-checkbox:before,
+table.dataTable tbody td.select-checkbox:after, table.dataTable tbody th.select-checkbox:after
+{
+    position: relative;
+    top: auto;
+}
+
+.uk-navbar-nav > li > a.uk-button
+{
+    color: #fff;
+}
+
+table.jsondfieldtable th,
+table.jsondfieldtable td
+{
+    padding: 1px!important;
+    font-size: 0.7em;
+}
+
+table.jsondfieldtable th.uk-text-truncate
+{
+    min-width: 60px;
+}
+
+.dataTables_length select
+{
+    max-width: 60px;
+}
+
+.dataTables_length
+{
+    margin-left: 10px;
+    width: 140px;
+}
+
+.dataTables_wrapper .dataTables_info
+{
+    padding-top: 0;
+}
+
+
+.ibmilestone
+{
+    width: 100%;
+    max-width: 250px;
+    height: 1em;
+    background: linear-gradient(90deg, rgba(0,241,7,1) 40%, rgba(245,255,0,1) 70%, rgba(255,0,0,1) 100%);
+    position: relative;
+}
+
+.ibmilestone span
+{
+    position: absolute;
+    top: 0px;
+    font-size: 1em;
+    line-height: 1em;
+    left: 10px;
+}
+
+.ibmilestone > div
+{
+    height: 100%;
+    float: right;
+    background-color: #fff;
+    text-align: right;
+}

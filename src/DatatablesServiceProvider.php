@@ -51,7 +51,7 @@ class DatatablesServiceProvider extends ServiceProvider
     {
         return ['datatables'];
     }
-    
+
     /**
      * Console-specific booting.
      *

@@ -14,9 +14,7 @@
 		placeholder="{{ $field->getTranslatedName() }}"
 	@endif
 
-	name="{{ $field->name }}"
+	name="{{ ($isFooter ?? false)? 'footer' : '' }}{{ $field->name }}"
 	autocomplete="notautocomplete{{ rand(0, 99999999) }}"
 	data-filtertype="{{ $field->getFilterType() }}"
 	/>
-
-	@include('datatables::datatablesFields.filters.filterfunctions')

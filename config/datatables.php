@@ -6,16 +6,31 @@ return [
 	],
 
 	'datatableFieldWidths' => [
+		'datatableFieldJson' => '30em',
+		'datatableFieldInteger' => 'auto',
 		'datatableFieldFunction' => 'auto',
 		'datatableFieldSelectRowCheckbox' => '1.5em',
 		'datatableFieldFlat' => 'auto',
 		'datatableFieldBoolean' => '1em',
 		'datatableFieldTranslatedClassBasename' => 'auto',
 
+		'clients' => [
+			'datatableFieldColor' => '3em'
+		],
+
+		'html' => [
+			'datatableFieldTag' => 'auto',
+		],
+
 
 		'dates' => [
 			'datatableFieldDatetime' => '12em',
-			'datatableFieldDate' => '5em'
+			'datatableFieldDate' => '5.7em',
+			'datatableFieldTimestamp' => 'auto',
+
+			'fromString' => [
+				'datatableFieldDate' => '5.7em'
+			]
 		],
 		'relations' => [
 			'datatableFieldHasMany' => 'auto',
@@ -42,6 +57,9 @@ return [
 			'datatableFieldSee' => '2em',
 			'datatableFieldEdit' => '2em',
 			'datatableFieldLink' => '2em',
+			'datatableFieldPdf' => '2em',
+			'datatableFieldFetcher' => 'auto'
+
 		],
 		'editor' => [
 			'datatableFieldToggle' => '2em',
@@ -52,6 +70,8 @@ return [
 			'datatableFieldSelect' => '12em',
 
 			'datatableFieldColor' => '3em',
+
+			'datatableFieldAjax' => 'auto',
 
 			'dates' => [
 				'datatableFieldDatetime' => '12em',

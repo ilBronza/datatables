@@ -4,117 +4,121 @@ namespace IlBronza\Datatables\Traits\DatatablesFields;
 
 trait DatatablesFieldsParametersTrait
 {
-    static $overrideGuardedFields = [
-        'defaultFilterType'
-    ];
+	static $overrideGuardedFields = [
+		'defaultFilterType'
+	];
 
-    public function getName() : ? string
-    {
-        return $this->name;
-    }
+	static function getOverrideGuardedFields()
+	{
+		return static::$overrideGuardedFields;
+	}
 
-    public function manageRefreshRow(array $parameters)
-    {
-        if(isset($parameters['refreshRow']))
-            $this->setDataAttribute('refreshRow', $parameters['refreshRow']);
-    }
+	static function extractOverrideableParametersNameByType(string $fieldType)
+	{
+		$className = static::getClassNameByType($fieldType);
 
-    public function setParameters(array $parameters)
-    {
-        foreach($parameters as $name => $parameter)
-            if(! in_array($name, ['htmlClasses', 'data']))
-                $this->setParameter($name, $parameter);
+		$field = new $className('placeholder');
 
-        $this->manageRefreshRow($parameters);
-    }
+		$parameters = array_keys(
+			get_object_vars($field)
+		);
 
-    public function setParameter($name, $parameter)
-    {
-        if(! is_int($name))
-            $this->$name = $parameter;
+		return array_diff($parameters, static::getOverrideGuardedFields());
+	}
 
-        else
-            $this->$parameter = [];
-    }
+	public function getName() : ?string
+	{
+		return $this->name;
+	}
 
-    public function setDataAttribute(string $name, string $value)
-    {
-        $this->data[$name] = $value;
-    }
+	public function manageRefreshRow(array $parameters)
+	{
+		if (isset($parameters['refreshRow']))
+			$this->setDataAttribute('refreshRow', $parameters['refreshRow']);
+	}
 
-    public function setDataAttributes(array $parameters = [])
-    {
-        $this->data = array_merge(
-            $this->data ?? [],
-            $parameters['data'] ?? []
-        );
-    }
+	public function setParameters(array $parameters)
+	{
+		foreach ($parameters as $name => $parameter)
+			if (! in_array($name, ['htmlClasses', 'data']))
+				$this->setParameter($name, $parameter);
 
-    public function setHeaderDataAttributes(array $parameters = [])
-    {
-        $this->headerData = array_merge(
-            $this->headerData ?? [],
-            $parameters['headerData'] ?? []
-        );
+		$this->manageRefreshRow($parameters);
+	}
 
-        if($this->parent)
-            foreach($this->headerData as $name => $value)
-                $this->parent->setHeaderDataAttribute($name, $value);
-    }
+	public function setParameter($name, $parameter)
+	{
+		if (! is_int($name))
+			$this->$name = $parameter;
 
-    public function setHeaderDataAttribute(string $name, $value)
-    {
-        if($this->parent)
-            $this->parent->setHeaderDataAttribute($name, $value);
+		else
+			$this->$parameter = [];
+	}
 
-        $this->headerData[$name] = $value;
-    }
+	public function setDataAttribute(string $name, string $value)
+	{
+		$this->data[$name] = $value;
+	}
 
-    public function parseFieldSpecificHeaderData()
-    {
-        
-    }
+	public function setDataAttributes(array $parameters = [])
+	{
+		$this->data = array_merge(
+			$this->data ?? [], $parameters['data'] ?? []
+		);
+	}
 
-    public function getHeaderData()
-    {
-        $this->parseFieldSpecificHeaderData();
+	public function setHeaderDataAttributes(array $parameters = [])
+	{
+		$this->headerData = array_merge(
+			$this->headerData ?? [], $parameters['headerData'] ?? []
+		);
 
-        return $this->headerData;
-    }
+		if ($this->parent)
+			foreach ($this->headerData as $name => $value)
+				$this->parent->setHeaderDataAttribute($name, $value);
+	}
 
-    static function getOverrideGuardedFields()
-    {
-        return static::$overrideGuardedFields;
-    }
+	public function setHeaderDataAttribute(string $name, $value)
+	{
+		if ($this->parent)
+			$this->parent->setHeaderDataAttribute($name, $value);
 
-    static function extractOverrideableParametersNameByType(string $fieldType)
-    {
-        $className = static::getClassNameByType($fieldType);
+		$this->headerData[$name] = $value;
+	}
 
-        $field = new $className('placeholder');
+	public function parseFieldSpecificHeaderData() {}
+	public function parseFieldSpecificFooterData() {}
 
-        $parameters = array_keys(
-            get_object_vars($field)
-        );
 
-        return array_diff($parameters, static::getOverrideGuardedFields());
-    }
+	public function getHeaderData()
+	{
+		$this->parseFieldSpecificHeaderData();
 
-    public function hasDoublerClass()
-    {
-        return in_array('doubler', $this->headerHtmlClasses);
-    }
+		return $this->headerData;
+	}
 
-    public function checkConfirmMessage()
-    {
-        if(! ($this->confirmMessage ?? false))
-            return ;
+	public function getFooterData()
+	{
+		$this->parseFieldSpecificFooterData();
 
-        $this->setHeaderDataAttribute('confirm', __($this->confirmMessage));
-    }
+		return $this->footerData;
+	}
 
-    public function hasForceValue()
-    {
-        return isset($this->forceValue);
-    }
+	public function hasDoublerClass()
+	{
+		return in_array('doubler', $this->headerHtmlClasses);
+	}
+
+	public function checkConfirmMessage()
+	{
+		if (! ($this->confirmMessage ?? false))
+			return;
+
+		$this->setHeaderDataAttribute('confirm', __($this->confirmMessage));
+	}
+
+	public function hasForceValue()
+	{
+		return isset($this->forceValue);
+	}
 }

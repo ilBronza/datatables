@@ -43,10 +43,12 @@ run npm install from terminal
 npm install
 ```
 
-add these line to resources/js/app.js to include the required modules
+copy the file `vendor/ilbronza/datatables/resources/js/ilBronza.datatables.js` to `resources/js/ilBronza.datatables.js`
+add these line to resources/js/app.js to include the required modules. All other js files are included directly from vendor folder
 ``` bash
 require('./ilBronza.datatables.js');
 ```
+
 keep in mind that it needs jQuery and jquery-ui, if you didn't required yet add to yout resources/js/app.js file
 ``` bash
 import $ from 'jquery';

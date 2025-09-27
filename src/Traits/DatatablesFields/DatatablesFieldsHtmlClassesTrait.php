@@ -9,51 +9,58 @@ use function implode;
 
 trait DatatablesFieldsHtmlClassesTrait
 {
-    public function getValueAsRowClassPrefix()
-    {
-        if($this->valueAsRowClassPrefix)
-            return Str::slug($this->name);
+	public function getValueAsRowClassPrefix()
+	{
+		if ($this->valueAsRowClassPrefix)
+			return Str::slug($this->name);
 
-        return null;
-    }
+		return null;
+	}
 
-    public function getCompiledAsRowClassPrefix()
-    {
-        if($this->compiledAsRowClassPrefix === false)
-            return null;
+	public function getCompiledAsRowClassPrefix()
+	{
+		if ($this->compiledAsRowClassPrefix === false)
+			return null;
 
-        return $this->compiledAsRowClassPrefix ?? $this->getSluggedName();
-    }
+		return $this->compiledAsRowClassPrefix ?? $this->getSluggedName();
+	}
 
-    public function addHeaderHtmlClass(string $class)
-    {
-        if(! in_array($class, $this->headerHtmlClasses))
-            $this->headerHtmlClasses[] = $class;
-    }
+	public function addHeaderHtmlClass(string $class)
+	{
+		if (! in_array($class, $this->headerHtmlClasses))
+			$this->headerHtmlClasses[] = $class;
+	}
 
-    public function getHeaderHtmlClasses()
-    {
-        if(! $this->isSortable())
-            $this->headerHtmlClasses[] = 'no-sort';
+	public function getHeaderHtmlClasses()
+	{
+		if (! $this->isSortable())
+			$this->headerHtmlClasses[] = 'no-sort';
 
-        return implode(" ", $this->headerHtmlClasses);
-    }
-    
-    public function addHtmlClass(string $htmlClass)
-    {
-        $this->htmlClasses[] = $htmlClass;
-    }
+		return implode(' ', $this->headerHtmlClasses);
+	}
 
-    public function setHtmlClasses(array $parameters = [])
-    {
-        if($this->hasTooltip())
-            $this->addHtmlClass('tooltip');
+	public function getFooterHtmlClasses()
+	{
+		if (! $this->isSortable())
+			$this->footerHtmlClasses[] = 'no-sort';
 
-        $this->htmlClasses = array_merge(
-            $this->htmlClasses,
-            $parameters['htmlClasses'] ?? []
-        );
-    }
+		return implode(' ', $this->footerHtmlClasses);
+	}
+
+	public function addHtmlClass(string $htmlClass)
+	{
+		$this->htmlClasses[] = $htmlClass;
+	}
+
+	public function setHtmlClasses(array $parameters = [])
+	{
+		if ($this->hasTooltip())
+			$this->addHtmlClass('tooltip');
+
+		$this->htmlClasses = array_merge(
+			$this->htmlClasses, $parameters['htmlClasses'] ?? []
+		);
+	}
 
 	public function getFieldSpecificClasses() : array
 	{
@@ -64,13 +71,11 @@ trait DatatablesFieldsHtmlClassesTrait
 	{
 		$pieces = [];
 
-		if($this->truncateText())
+		if ($this->truncateText())
 			$pieces[] = 'uk-text-truncate';
 
 		return array_merge(
-			$this->htmlClasses,
-			$this->getFieldSpecificClasses(),
-			$pieces
+			$this->htmlClasses, $this->getFieldSpecificClasses(), $pieces
 		);
 	}
 
@@ -90,12 +95,12 @@ trait DatatablesFieldsHtmlClassesTrait
 	}
 
 	public function getHtmlClassForCss()
-    {
-        return $this->getCamelName();
-    }
+	{
+		return $this->getCamelName();
+	}
 
-    public function getHtmlClass()
-    {
-        return $this->getHtmlClassesString();
-    }
+	public function getHtmlClass()
+	{
+		return $this->getHtmlClassesString();
+	}
 }

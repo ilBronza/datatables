@@ -1,0 +1,554 @@
+@import "./datatables.variables.less";
+
+
+.placeholder() {
+  font-weight: 300;
+  color: #bbb;
+}
+
+
+table.dataTable
+{
+    border-collapse: separate;
+    -webkit-border-horizontal-spacing: 2px;
+    -webkit-border-vertical-spacing: 2px;
+
+    tr.selected,
+    tr.selected > *,
+    tr.selected > * > a
+    {
+      box-shadow: inset 0 0 0 9999px rgba(13, 110, 253, 0.9);
+      color: white !important;        
+    }
+
+    .uk-icon-button
+    {
+      cursor: pointer;
+      height: 1.5em;
+      width: 1.5em;
+      border: 1px solid #bbb;
+
+      svg
+      {
+        max-width: 1em;
+      }
+    }
+
+  th 
+  {
+    &.hidelabel
+    {
+      .dt-column-title,
+      .dt-column-order
+      {
+        display: none;
+      }
+    }
+
+    /**
+     * DEVONO STARE SEPARATI O NON VANNO
+     **/
+
+    input::placeholder
+    {
+      .placeholder();
+    }
+
+    input::-webkit-input-placeholder
+    {
+      .placeholder();
+    }
+
+    input::-moz-placeholder
+    {
+      .placeholder();
+    }
+
+    input::-ms-input-placeholder
+    {
+      .placeholder();
+    }
+
+    /**
+     * END DEVONO STARE SEPARATI O NON VANNO
+     **/
+
+
+  }
+}
+
+  .tablecaption
+  {
+    font-size: @captionSize;
+    color: @secondTextColor;
+    text-transform: uppercase;
+  }
+
+table.datatable {
+
+  .columnsintestations,
+  .columns
+  {
+    background-color: @intestationsBackgroundColor;
+  }
+
+  .columns
+  {
+    .filter-filled
+    {
+      background-color: @filterFilledBackgroundColor;
+      color: @filterFilledColor;
+    }
+  }
+
+  .fieldoperations
+  {
+    position: absolute;
+    background-color: #ffffffdd;
+    top: 0;
+    left: 30px;
+    border: 1px solid #ccc;
+    display: inline-block;
+
+    span
+    {
+      float: left;
+      color: #000!important;
+      display: inline-block;
+      padding: 2px;
+      cursor: pointer;
+
+      &:hover
+      {
+        background-color: #ddd;
+      }
+
+      & + span
+      {
+        margin-left: 5px;
+      }
+    }
+
+    .close
+    {
+      float: none;
+    }
+  }
+
+  tfoot
+  {
+    .filterfunctions
+    {
+      .changesorting,
+      .hidecolumn
+      {
+        display: none;
+      }
+
+      top: 1px;
+    }
+  }
+
+  input
+  {
+    max-height: 26px;
+    width: 100%;
+    padding: 0;
+
+    &[type="date"]:not(:hover)
+    {
+      &::-webkit-inner-spin-button,
+      &::-webkit-calendar-picker-indicator {
+        opacity: 0;
+        position: absolute; /* evita che cambi layout */
+        right: 0;           /* resta cliccabile in fondo */
+        width: 100%;        /* o solo una parte, a tua scelta */
+        cursor: pointer;
+      }
+    }
+  }
+
+  //input[type="date"]::-webkit-calendar-picker-indicator {
+  //  opacity: 0;              /* invisibile */
+  //  background:transparent;  /* sfondo trasparente */
+  //  cursor: pointer;         /* mano quando ci passi sopra */
+  //}
+
+  .columnsintestations
+  {
+    .dt-column-title
+    {
+      overflow: hidden;
+    }
+  }
+
+  .dt-column-title
+  {
+    position: relative;
+    width: 100%;
+    display: inline-block;
+    text-wrap: nowrap;
+    text-overflow: clip;
+
+    font-weight: @columnTitleFontWeight;
+  }
+}
+
+/**
+ *
+ * START sorting
+ *
+ **/
+
+.filterfunctions
+{
+  position: absolute;
+  top: -20px;
+  right: -15px!important;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  z-index: 9999;
+}
+
+th:hover .filterfunctions
+{
+  display: inline-flex!important;   /* inline = largo quanto i contenuti */
+}
+
+.datatablefilter
+{
+  position: relative;
+}
+
+.dt-ordering-desc .filterfunctions .changesorting .fa-solid.fa-sort
+{
+  --fa: "\f0dd";
+}
+
+.dt-ordering-asc .filterfunctions .changesorting .fa-solid.fa-sort
+{
+  --fa: "\f0de";
+}
+
+.dt-column-order
+{
+  display: none;
+}
+
+/**
+ *
+ * END sorting
+ *
+ **/
+
+/**
+ *
+ * START fields
+ *
+ **/
+
+.doubled,
+.doubled *
+{
+  font-weight: bold!important;
+  color: red!important;
+}
+
+.editorcansave
+{
+  background-color: rgba(0, 253, 0, 0.25) !important;
+}
+
+  .editorchangedrow td.mySelfSave
+  {
+    background-color: #ff4300;
+
+    span.ib-editor-save
+    {
+      cursor: pointer;
+      margin: auto;
+      color: #fff;
+      width: 1em;
+      display: block;
+    }
+}
+
+
+span.ib-editor-save {
+    display: none;
+}
+
+span.ib-toggle[data-value="1"]
+{
+  background-color: @booleanTrueBackground;
+  color: @booleanTrueColor;
+}
+
+span.ib-toggle[data-value="0"]
+{
+  background-color: @booleanFalseBackground;
+  color: @booleanFalseColor;
+}
+
+.ib-spin
+{
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: #ccc9;
+
+  > span
+  {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.6) !important;
+    color: green;
+  }
+}
+
+
+
+/**
+ *
+ * END fields
+ *
+ **/
+
+/***
+START BUTTONS
+***/
+
+.dt-buttons {
+  margin-bottom: 3px;
+}
+
+/***
+END BUTTONS
+***/
+
+
+
+
+
+//table.datatable {
+//
+//  .ib-spin {
+//    position: absolute;
+//    left: 0.5em;
+//    top: .7em;
+//    background-color: rgba(255, 255, 255, 0.6) !important;
+//    color: green;
+//  }
+//
+//  .mainheader {
+//    th {
+//      text-align: center;
+//    }
+//  }
+//
+//  .sectionheader {
+//
+//    background-color: #f9f9f9;
+//
+//    &.ranged-filters-table {
+//
+//      tr:not(.summary, .inlinesearchsummary) {
+//        th {
+//          height: 3 * @headerInputHeight;
+//        }
+//      }
+//
+//
+//
+//
+//      .headercell {
+//        width: 100%;
+//        height: 100%;
+//        position: relative;
+//
+//        &.single-filter .datatablefilter,
+//        &.range-filter .range-filters-container {
+//          width: 100%;
+//
+//          position: absolute;
+//          bottom: 0;
+//        }
+//      }
+//    }
+//
+//    th {
+//
+//      input {
+//        font-size: 0.7rem;
+//        font-weight: normal;
+//      }
+//
+//      input[type="date"]::-webkit-inner-spin-button,
+//      input[type="date"]::-webkit-calendar-picker-indicator {
+//        background: transparent;
+//        bottom: 0;
+//        color: transparent;
+//        cursor: pointer;
+//        height: auto;
+//        left: 0;
+//        position: absolute;
+//        right: 0;
+//        top: 0;
+//        width: auto;
+//      }
+//
+//      input:not(:placeholder-shown):not([type="date"]),
+//      input[type="date"].filter-filled {
+//        background-color: #ffff1b;
+//        border-color: #e0b000;
+//        font-weight: bold;
+//      }
+//    }
+//  }
+//
+//  td {
+//    a {
+//      max-width: 100%;
+//    }
+//
+//    > i
+//    {
+//      display: block;
+//      width: 1em;
+//      margin: auto;
+//    }
+//  }
+//
+//  .headercell {
+//    background-color: white;
+//
+//    .uk-text-truncate {
+//      & + .datatablefilter,
+//      & + .range-filters-container {
+//        input {
+//          border-left: none;
+//          border-bottom: none;
+//          border-right: none;
+//        }
+//      }
+//    }
+//
+//
+//  }
+//
+//  th {
+//    .uk-input,
+//    .uk-select,
+//    .uk-textarea {
+//      padding: 0 2px;
+//    }
+//
+//
+//    &.sorting_asc {
+//      color: blue;
+//    }
+//
+//    &.sorting_desc {
+//      color: #0081d5;
+//    }
+//  }
+//
+//  tbody tr td {
+//    padding: 4px 4px;
+//
+//    //&.workingdayselector {
+//    //
+//    //  width: auto;
+//    //
+//    //  padding: 4px 2px;
+//    //
+//    //  &.am {
+//    //    padding-right: 0px;
+//    //  }
+//    //
+//    //  &.pm {
+//    //    padding-left: 0px;
+//    //  }
+//    //
+//    //  select.uk-select {
+//    //    height: 26px !important;
+//    //
+//    //    &.dayselect {
+//    //      max-width: 30px !important;
+//    //
+//    //    }
+//    //  }
+//    //}
+//  }
+//
+//  tr td {
+//    .uk-input,
+//    .uk-select,
+//    .uk-textarea {
+//      padding: 0 2px;
+//    }
+//  }
+//}
+//
+//.dataTables_paginate.paging_simple_numbers
+//{
+//  > *
+//  {
+//    margin-right: 10px;
+//  }
+//}
+//
+//td .uk-icon-button
+//{
+//  height: 20px;
+//  width: 20px;
+//
+//  svg
+//  {
+//    max-width: 65%;
+//  }
+//}
+//
+//span.ib-toggle
+//{
+//  background-color: @booleanFalseBackground;
+//  color: @booleanFalseColor;
+//}
+////data-value="1"
+////select input with data-value == 1
+
+//.editorchanged
+//{
+//  background-color: rgba(255, 0, 0, 0.31);
+//}
+//
+//.editorcansave
+//{
+//  background-color: rgba(0, 253, 0, 0.25) !important;
+//}
+//
+//  .editorchangedrow .mySelfSave
+//  {
+//    background-color: #ff4300;
+//
+//    span
+//    {
+//      cursor: pointer;
+//      margin: auto;
+//      color: #fff;
+//      width: 1em;
+//      display: block;
+//    }
+//}
+//
+//.DTFC_LeftWrapper
+//{
+//  .even
+//  {
+//    background-color: #f9f9f9;
+//  }
+//}

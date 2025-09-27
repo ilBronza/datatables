@@ -1,3 +1,76 @@
+
+/**
+ *
+ * START sorting
+ *
+ **/
+
+th:hover .filterfunctions
+{
+    display: inline-flex!important;   /* inline = largo quanto i contenuti */
+}
+
+.datatablefilter
+{
+    position: relative;
+}
+
+.dt-ordering-desc .filterfunctions .changesorting .fa-solid.fa-sort
+{
+    --fa: "\f0dd";
+}
+
+.dt-ordering-asc .filterfunctions .changesorting .fa-solid.fa-sort
+{
+    --fa: "\f0de";
+}
+
+.filterfunctions
+{
+    position: absolute;
+    top: -20px;
+    left: 5px!important;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    z-index: 9999;
+}
+
+.dt-column-order
+{
+    display: none;
+}
+
+/**
+ *
+ * END sorting
+ *
+ **/
+
+
+.filterfunctions > *
+{
+    text-align: center;
+    display: inline-block;
+    width: 1.4em;
+    height: 1.4em;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .sis-buttons-header
 {
     background-color: #fff;
@@ -128,6 +201,10 @@ nobr
     color: red!important;
 }
 
+.fieldoperations .close
+{
+    float: none;
+}
 
 .fieldoperations
 {

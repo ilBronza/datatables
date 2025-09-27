@@ -57,8 +57,9 @@
         stateSaveParams: function (settings, data) {
                 // salva i valori dei filtri custom
                 data.filters = {};
-                $('#{{ $table->getId() }} thead input, #{{ $table->getId() }} tfoot input').each(function () {
-                    // console.log($(this).attr('name'));
+
+                $('#{{ $table->getId() }} .columns input').each(function ()
+                {
                     data.filters[$(this).attr('name') || $(this).attr('id')] = $(this).val();
                 });
             },
@@ -68,28 +69,30 @@
             // ripristina i valori visivi
             setTimeout(function () {
 
-                if (data.filters) {
-                    $('#{{ $table->getId() }} thead input, #{{ $table->getId() }} tfoot input').each(function () {
-                        const key = $(this).attr('name') || $(this).attr('id');
-                        if (data.filters[key] !== undefined) {
-                            $(this).val(data.filters[key]);
+                $("table[data-realid='{{ $table->getId() }}'] .columns input").each(function () {
 
-                            let field = this;
+                    const key = $(this).attr('name') || $(this).attr('id');
 
-                            // Triggers per compatibilità
-                            setTimeout(function ()
-                            {
-                                $(field).trigger('input').trigger('change').trigger('keyup');
-                            }, 100);
+                    if (data.filters[key]) {
 
-                            $(this).toggleClass('filter-filled', !!data.filters[key]);
-                        }
-                    });
+                        $(this).val(data.filters[key]).change();
 
-                    // Forza il ricalcolo
-                    const tableInstance = $('#{{ $table->getId() }}').DataTable();
-                    tableInstance.draw();
-                }
+{{--                         let field = this;
+
+                        // Triggers per compatibilità
+                        setTimeout(function ()
+                        {
+                            $(field).trigger('change');
+                        }, 100); --}}
+
+                        $(this).addClass('filter-filled');
+                    }
+                });
+
+                // Forza il ricalcolo
+                const tableInstance = $('#{{ $table->getId() }}').DataTable();
+
+                tableInstance.draw();
 			}, 0);
         },
 
@@ -117,7 +120,7 @@
 		@endif
 
 				@if($caption = $table->getCaption())
-        caption: "{!! $caption !!}",
+        captionText: "{!! $caption !!}",
 		@endif
         keys: true,
         language: {
@@ -136,7 +139,7 @@
         },
 
 		@if($dom = $table->getCustomDom())
-        dom: '{!! $dom !!}', //sgarruio
+        dom: '{!! $dom !!}',
 		@endif
 
 		@if($table->isAjaxTable())
@@ -225,14 +228,16 @@
 
     window.{{ $table->getId() }}columnDefs = [
         {
-            "targets": 'no-sort',
+            // "targets": 'no-sort',
+            "targets": '_all',
             "orderable": false
         }@if(count($table->columnDefs)||(count($table->customColumnDefs))),
 
 			@if($table->hasSelectRowCheckboxes())
         {
             orderable: false,
-            className: 'select-checkbox',
+            // className: 'select-checkbox',
+            render: $.fn.dataTable.render.select(),
             targets: 0,
         },
 			@endif
@@ -282,8 +287,9 @@
             className: 'clearfilters',
             action: function (e, dt, node, config) {
                 // reset input e select nei thead e tfoot
-                $('#{{ $table->getId() }} thead input, #{{ $table->getId() }} tfoot input, #{{ $table->getId() }} thead select, #{{ $table->getId() }} tfoot select').each(function () {
-                    $(this).val('').removeClass('filter-filled').trigger('input').trigger('change');
+                $("table[data-realid='{{ $table->getId() }}'] .columns input").each(function ()
+                {
+                    $(this).val('').removeClass('filter-filled');
                 });
 
                 // reset eventuali filtri range custom

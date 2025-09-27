@@ -6,6 +6,7 @@ class DatatableFieldSelectRowCheckbox extends DatatableField
 {
 	public $width = '20px';
 	public $filterable = false;
+	public $showLabel = false;
 
 	public function transformValue($value)
 	{

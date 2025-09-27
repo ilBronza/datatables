@@ -1,0 +1,217 @@
+table.dataTable {
+  border-collapse: separate;
+  -webkit-border-horizontal-spacing: 2px;
+  -webkit-border-vertical-spacing: 2px;
+}
+table.dataTable tr.selected,
+table.dataTable tr.selected > *,
+table.dataTable tr.selected > * > a {
+  box-shadow: inset 0 0 0 9999px rgba(13, 110, 253, 0.9);
+  color: white !important;
+}
+table.dataTable .uk-icon-button {
+  cursor: pointer;
+  height: 1.5em;
+  width: 1.5em;
+  border: 1px solid #bbb;
+}
+table.dataTable .uk-icon-button svg {
+  max-width: 1em;
+}
+table.dataTable th {
+  /**
+     * DEVONO STARE SEPARATI O NON VANNO
+     **/
+  /**
+     * END DEVONO STARE SEPARATI O NON VANNO
+     **/
+}
+table.dataTable th.hidelabel .dt-column-title,
+table.dataTable th.hidelabel .dt-column-order {
+  display: none;
+}
+table.dataTable th input::placeholder {
+  font-weight: 300;
+  color: #bbb;
+}
+table.dataTable th input::-webkit-input-placeholder {
+  font-weight: 300;
+  color: #bbb;
+}
+table.dataTable th input::-moz-placeholder {
+  font-weight: 300;
+  color: #bbb;
+}
+table.dataTable th input::-ms-input-placeholder {
+  font-weight: 300;
+  color: #bbb;
+}
+.tablecaption {
+  font-size: 24px;
+  color: blue;
+  text-transform: uppercase;
+}
+table.datatable .columnsintestations,
+table.datatable .columns {
+  background-color: #f0f0f0;
+}
+table.datatable .columns .filter-filled {
+  background-color: yellow;
+  color: black;
+}
+table.datatable .fieldoperations {
+  position: absolute;
+  background-color: #ffffffdd;
+  top: 0;
+  left: 30px;
+  border: 1px solid #ccc;
+  display: inline-block;
+}
+table.datatable .fieldoperations span {
+  float: left;
+  color: #000 !important;
+  display: inline-block;
+  padding: 2px;
+  cursor: pointer;
+}
+table.datatable .fieldoperations span:hover {
+  background-color: #ddd;
+}
+table.datatable .fieldoperations span + span {
+  margin-left: 5px;
+}
+table.datatable .fieldoperations .close {
+  float: none;
+}
+table.datatable tfoot .filterfunctions {
+  top: 1px;
+}
+table.datatable tfoot .filterfunctions .changesorting,
+table.datatable tfoot .filterfunctions .hidecolumn {
+  display: none;
+}
+table.datatable input {
+  max-height: 26px;
+  width: 100%;
+  padding: 0;
+}
+table.datatable input[type="date"]:not(:hover)::-webkit-inner-spin-button,
+table.datatable input[type="date"]:not(:hover)::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  position: absolute;
+  /* evita che cambi layout */
+  right: 0;
+  /* resta cliccabile in fondo */
+  width: 100%;
+  /* o solo una parte, a tua scelta */
+  cursor: pointer;
+}
+table.datatable .columnsintestations .dt-column-title {
+  overflow: hidden;
+}
+table.datatable .dt-column-title {
+  position: relative;
+  width: 100%;
+  display: inline-block;
+  text-wrap: nowrap;
+  text-overflow: clip;
+  font-weight: normal;
+}
+/**
+ *
+ * START sorting
+ *
+ **/
+.filterfunctions {
+  position: absolute;
+  top: -20px;
+  right: -15px !important;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  z-index: 9999;
+}
+th:hover .filterfunctions {
+  display: inline-flex !important;
+  /* inline = largo quanto i contenuti */
+}
+.datatablefilter {
+  position: relative;
+}
+.dt-ordering-desc .filterfunctions .changesorting .fa-solid.fa-sort {
+  --fa: "\f0dd";
+}
+.dt-ordering-asc .filterfunctions .changesorting .fa-solid.fa-sort {
+  --fa: "\f0de";
+}
+.dt-column-order {
+  display: none;
+}
+/**
+ *
+ * END sorting
+ *
+ **/
+/**
+ *
+ * START fields
+ *
+ **/
+.doubled,
+.doubled * {
+  font-weight: bold!important;
+  color: red!important;
+}
+.editorcansave {
+  background-color: rgba(0, 253, 0, 0.25) !important;
+}
+.editorchangedrow td.mySelfSave {
+  background-color: #ff4300;
+}
+.editorchangedrow td.mySelfSave span.ib-editor-save {
+  cursor: pointer;
+  margin: auto;
+  color: #fff;
+  width: 1em;
+  display: block;
+}
+span.ib-editor-save {
+  display: none;
+}
+span.ib-toggle[data-value="1"] {
+  background-color: rgba(13, 168, 13, 0.68);
+  color: white;
+}
+span.ib-toggle[data-value="0"] {
+  background-color: rgba(250, 177, 21, 0.61);
+  color: white;
+}
+.ib-spin {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: #ccc9;
+}
+.ib-spin > span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255, 255, 255, 0.6) !important;
+  color: green;
+}
+/**
+ *
+ * END fields
+ *
+ **/
+/***
+START BUTTONS
+***/
+.dt-buttons {
+  margin-bottom: 3px;
+}
+/***
+END BUTTONS
+***/
