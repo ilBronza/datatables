@@ -38,7 +38,8 @@ return [
 			'datatableFieldBelongsToMany' => 'auto'
 		],
 		'numbers' => [
-			'datatableFieldNumber2' => '4em'
+			'datatableFieldNumber2' => '4em',
+			'datatableFieldPrice' => '4em',
 		],
 		'users' => [
 			'datatableFieldName' => 'auto',
@@ -58,6 +59,7 @@ return [
 			'datatableFieldEdit' => '2em',
 			'datatableFieldLink' => '2em',
 			'datatableFieldPdf' => '2em',
+			'datatableFieldClone' => '2em',
 			'datatableFieldFetcher' => 'auto'
 
 		],

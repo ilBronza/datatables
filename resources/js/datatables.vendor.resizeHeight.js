@@ -7,30 +7,46 @@ jQuery(document).ready(function ($)
 
         function fitWindowWrapper()
         {
-            console.log('maranzo');
+            console.log('ricalcolo altezze tabelle');
 
-            var el = document.querySelector('.dataTables_scrollBody');
+            var els = document.querySelectorAll('.dataTables_scrollBody, .dt-scroll-body');
 
-            if (!el)
-                el = document.querySelector('.dt-scroll-body');
+            els.forEach(function(el) {
+                var rect = el.getBoundingClientRect();
+                var safeInset = (typeof CSS !== 'undefined' && CSS.supports('padding-bottom: env(safe-area-inset-bottom)'))
+                    ? (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-bottom')) || 0)
+                    : 0;
 
-            if (!el)
-                return;
+                var available = window.innerHeight - rect.top - BOTTOM_OFFSET - safeInset;
+                if (available < 100) available = 100;
 
-            // posizione dell’elemento rispetto al viewport ad ogni ricalcolo
-            var rect = el.getBoundingClientRect();
-            var safeInset = (typeof CSS !== 'undefined' && CSS.supports('padding-bottom: env(safe-area-inset-bottom)'))
-                ? (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-bottom')) || 0)
-                : 0;
+                el.style.maxHeight = (available - 100) + 'px';
 
-            var available = window.innerHeight - rect.top - BOTTOM_OFFSET - safeInset;
-            // fallback di sicurezza
-            if (available < 100) available = 100;
-
-            el.style.maxHeight = (available - 100) + 'px';
+                console.log('Tabella aggiornata con maxHeight:', el.style.maxHeight);
+            });
 
 
-            console.log(el.style.maxHeight);
+
+
+            // var el = document.querySelector('.dataTables_scrollBody');
+            //
+            // if (!el)
+            //     el = document.querySelector('.dt-scroll-body');
+            //
+            // if (!el)
+            //     return;
+            //
+            // // posizione dell’elemento rispetto al viewport ad ogni ricalcolo
+            // var rect = el.getBoundingClientRect();
+            // var safeInset = (typeof CSS !== 'undefined' && CSS.supports('padding-bottom: env(safe-area-inset-bottom)'))
+            //     ? (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-bottom')) || 0)
+            //     : 0;
+            //
+            // var available = window.innerHeight - rect.top - BOTTOM_OFFSET - safeInset;
+            // // fallback di sicurezza
+            // if (available < 100) available = 100;
+            //
+            // el.style.maxHeight = (available - 100) + 'px';
         }
 
         // primo calcolo quando il DOM è pronto

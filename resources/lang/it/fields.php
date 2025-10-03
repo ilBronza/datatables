@@ -7,5 +7,6 @@ return array (
 	'mySelfEdit' => 'Modifica',
 	'mySelfShow' => 'Mostra',
   'mySelfDelete' => 'Elimina',
-	'save' => 'Salva'
+	'save' => 'Salva',
+	'mySelfClone' => 'Duplica'
 );

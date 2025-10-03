@@ -19,15 +19,37 @@ require('datatables.net-searchpanes-dt');
 require('datatables.net-select-dt');
 
 
-require('../../vendor/ilbronza/datatables/resources/js/datatables.vendor.ajaxButton.min.js');
-require('../../vendor/ilbronza/datatables/resources/js/datatables.vendor.ajaxCall.min.js');
-require('../../vendor/ilbronza/datatables/resources/js/datatables.vendor.buttons.min.js');
-require('../../vendor/ilbronza/datatables/resources/js/datatables.vendor.columnVisibility.min.js');
-require('../../vendor/ilbronza/datatables/resources/js/datatables.vendor.datatablesFields.min.js');
-require('../../vendor/ilbronza/datatables/resources/js/datatables.vendor.duplicates.min.js');
-require('../../vendor/ilbronza/datatables/resources/js/datatables.vendor.filtering.min.js');
-require('../../vendor/ilbronza/datatables/resources/js/datatables.vendor.sorting.min.js');
-require('../../vendor/ilbronza/datatables/resources/js/datatables.vendor.summary.min.js');
-require('../../vendor/ilbronza/datatables/resources/js/datatables.vendor.utilities.min.js');
-require('../../vendor/ilbronza/datatables/resources/js/datatables.vendor.main.min.js');
-require('../../vendor/ilbronza/datatables/resources/js/datatables.vendor.resizeHeight.js');
+/**
+ *  FILES letti nella stessa cartella di questo
+ */
+
+require('./datatables.vendor.ajaxButton.min.js');
+require('./datatables.vendor.ajaxCall.min.js');
+require('./datatables.vendor.buttons.min.js');
+require('./datatables.vendor.columnVisibility.min.js');
+require('./datatables.vendor.datatablesFields.min.js');
+require('./datatables.vendor.duplicates.min.js');
+require('./datatables.vendor.filtering.min.js');
+require('./datatables.vendor.sorting.min.js');
+require('./datatables.vendor.summary.min.js');
+require('./datatables.vendor.utilities.min.js');
+require('./datatables.vendor.main.min.js');
+require('./datatables.vendor.resizeHeight.js');
+
+/**
+ *  FILES letti in vendor con percorso relativo
+ */
+
+//
+// require('../../vendor/ilbronza/datatables/resources/js/datatables.vendor.ajaxButton.min.js');
+// require('../../vendor/ilbronza/datatables/resources/js/datatables.vendor.ajaxCall.min.js');
+// require('../../vendor/ilbronza/datatables/resources/js/datatables.vendor.buttons.min.js');
+// require('../../vendor/ilbronza/datatables/resources/js/datatables.vendor.columnVisibility.min.js');
+// require('../../vendor/ilbronza/datatables/resources/js/datatables.vendor.datatablesFields.min.js');
+// require('../../vendor/ilbronza/datatables/resources/js/datatables.vendor.duplicates.min.js');
+// require('../../vendor/ilbronza/datatables/resources/js/datatables.vendor.filtering.min.js');
+// require('../../vendor/ilbronza/datatables/resources/js/datatables.vendor.sorting.min.js');
+// require('../../vendor/ilbronza/datatables/resources/js/datatables.vendor.summary.min.js');
+// require('../../vendor/ilbronza/datatables/resources/js/datatables.vendor.utilities.min.js');
+// require('../../vendor/ilbronza/datatables/resources/js/datatables.vendor.main.min.js');
+// require('../../vendor/ilbronza/datatables/resources/js/datatables.vendor.resizeHeight.js');
