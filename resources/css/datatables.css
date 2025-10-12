@@ -3,6 +3,15 @@ table.dataTable {
   -webkit-border-horizontal-spacing: 2px;
   -webkit-border-vertical-spacing: 2px;
 }
+table.dataTable .mainheader .dt-column-header {
+  text-align: center;
+}
+table.dataTable .mainheader .selectRow.dt-select {
+  outline: 1px solid red;
+}
+table.dataTable .mainheader .selectRow.dt-select .dt-column-title {
+  display: none;
+}
 table.dataTable tr.selected,
 table.dataTable tr.selected > *,
 table.dataTable tr.selected > * > a {

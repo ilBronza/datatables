@@ -7,8 +7,6 @@ jQuery(document).ready(function ($)
 
         function fitWindowWrapper()
         {
-            console.log('ricalcolo altezze tabelle');
-
             var els = document.querySelectorAll('.dataTables_scrollBody, .dt-scroll-body');
 
             els.forEach(function(el) {
@@ -18,11 +16,9 @@ jQuery(document).ready(function ($)
                     : 0;
 
                 var available = window.innerHeight - rect.top - BOTTOM_OFFSET - safeInset;
-                if (available < 100) available = 100;
+                if (available < 500) available = 500;
 
                 el.style.maxHeight = (available - 100) + 'px';
-
-                console.log('Tabella aggiornata con maxHeight:', el.style.maxHeight);
             });
 
 

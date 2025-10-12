@@ -53,6 +53,7 @@ return [
 		'links' => [
 			'datatableFieldLinkCachedProperty' => 'auto',
 			'datatableFieldArchive' => '2em',
+			'datatableFieldUnDelete' => '2em',
 			'datatableFieldDelete' => '2em',
 			'datatableFieldEmail' => '18em',
 			'datatableFieldSee' => '2em',

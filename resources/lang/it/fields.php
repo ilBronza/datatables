@@ -6,7 +6,8 @@ return array (
   'mySelfSee' => 'Mostra',
 	'mySelfEdit' => 'Modifica',
 	'mySelfShow' => 'Mostra',
-  'mySelfDelete' => 'Elimina',
+  	'mySelfDelete' => 'Elimina',
+  	'mySelfUnDelete' => 'Ripristina',
 	'save' => 'Salva',
 	'mySelfClone' => 'Duplica'
 );

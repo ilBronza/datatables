@@ -23,7 +23,7 @@
 /*lemme lemme*/
 /*{!! json_encode($field->name) !!}*/
 
-    @if((! empty($width = $field->width))&&($width != 'auto'))
+    @if((! empty($width = $field->getWidth()))&&($width != 'auto'))
 
 		#{{ $table->getId() }} th.{{ $field->getHtmlClassForCss() }},
 		#{{ $table->getId() }} td.{{ $field->getHtmlClassForCss() }},
