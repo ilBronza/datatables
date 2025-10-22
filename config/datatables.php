@@ -6,6 +6,7 @@ return [
 	],
 
 	'datatableFieldWidths' => [
+		'datatableFieldIcon' => '2em',
 		'datatableFieldJson' => '30em',
 		'datatableFieldInteger' => 'auto',
 		'datatableFieldFunction' => 'auto',
@@ -16,6 +17,10 @@ return [
 
 		'clients' => [
 			'datatableFieldColor' => '3em'
+		],
+
+		'media' => [
+			'datatableFieldMedia' => 'auto',
 		],
 
 		'html' => [
@@ -57,6 +62,7 @@ return [
 			'datatableFieldDelete' => '2em',
 			'datatableFieldEmail' => '18em',
 			'datatableFieldSee' => '2em',
+			'datatableFieldSeeName' => '2em',
 			'datatableFieldEdit' => '2em',
 			'datatableFieldLink' => '2em',
 			'datatableFieldPdf' => '2em',
