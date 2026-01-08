@@ -112,7 +112,11 @@
          */
 
 		@if($table->canScrollX())
-			scrollY: '200px', /* valore qualsiasi iniziale, anche 200 */
+
+            @if($table->canScrollY())
+			scrollY: '600px', /* valore qualsiasi iniziale, anche 200 */
+            @endif
+
 			scrollCollapse: true,
 			autoWidth: false,
 
@@ -347,7 +351,7 @@
             className: 'removesummary',
         },
 		@if($table->hasInlineSearch())
-        // 'removeInlineSearch',
+        	'removeInlineSearch',
 			@endif
 			@endif
 

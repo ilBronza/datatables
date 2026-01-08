@@ -4,7 +4,7 @@ namespace IlBronza\Datatables\DatatablesFields\Links;
 
 class DatatableFieldSeen extends DatatableFieldAjax
 {
-    public $icon = 'check';
+    public $faIcon = 'check';
     public $textParameter = false;
 	public $dataAttributes = [
 		'type' => 'POST'

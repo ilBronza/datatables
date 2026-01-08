@@ -6,20 +6,21 @@ use IlBronza\Datatables\DatatablesFields\DatatableFieldFlat;
 
 class DatatableFieldMilestone extends DatatableFieldFlat
 {
+	public ? string $translationPrefix = 'datatables::fields';
+	public ? string $forcedStandardName = 'milestone';
+
 	public $width = '120px';
 	public $milestoneColor = '#0c0';
 
     public function transformValue($value)
     {
-    	if(is_numeric($value))
-    	{
-    		if($value > 100)
-    			$value = 100;
+    	if(! is_numeric($value))
+			return null;
 
-    		return round(100 - $value, 2);
-    	}
+		if($value > 100)
+			$value = 100;
 
-    	return null;
+		return round(100 - $value, 2);
     }
 
 	public function getMilestoneColor()

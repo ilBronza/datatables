@@ -4,6 +4,7 @@ namespace IlBronza\Datatables\DatatablesFields;
 
 class DatatableFieldPrimary extends DatatableField
 {
+	public ?string $translationPrefix = 'datatables::fields';
 	public $requireElement = true;
 	public $rowId = true;
 	public $visible = false;

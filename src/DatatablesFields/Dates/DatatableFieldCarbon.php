@@ -16,7 +16,14 @@ class DatatableFieldCarbon extends DatatableField
 
     public function transformValue($value)
     {
-        return $value->timestamp ?? null;
+        if(! $value)
+            return null;
+
+        $date = $value->format('Y-m-d'); // QUI: prendi il giorno "di calendario" che vuoi preservare
+
+        return \Carbon\Carbon::createFromFormat('Y-m-d', $date, 'UTC')
+            ->startOfDay()
+            ->timestamp;
     }
 
 	public function getCompiledAsRowClassScript()

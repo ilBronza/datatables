@@ -176,8 +176,10 @@ class DatatableFieldLink extends DatatableField
 
 	public function getCustomColumnDefSingleSearchResult()
 	{
+		$itemString = $this->hasText()? 'item[0]' : 'item';
+
 		return '
-            return item[1];
+            return ' . $itemString . ';
         ';
 	}
 

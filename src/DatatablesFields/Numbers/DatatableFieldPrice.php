@@ -23,6 +23,13 @@ class DatatableFieldPrice extends DatatableField
 		return " if(item) item = item.replace('.', ''); ";
 	}
 
+	public function getCustomColumnDefSingleSortResult()
+	{
+		return "
+			return item.replace('" . $this->thousandsSeparator . "', '').replace('" . $this->suffix . "', '');
+		";
+	}
+
 	public function transformValue($value)
 	{
 		if (! $value)

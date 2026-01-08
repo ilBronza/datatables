@@ -10,13 +10,23 @@ jQuery(document).ready(function ($)
             var els = document.querySelectorAll('.dataTables_scrollBody, .dt-scroll-body');
 
             els.forEach(function(el) {
+
+                var wrapper = el.closest('.dataTables_wrapper, .dt-container');
+                if (! wrapper) return;
+
+                var table = wrapper.querySelector('table.dataTable');
+                if (! table) return;
+
+                if ( $(table).hasClass('related-table'))
+                    return;
+
                 var rect = el.getBoundingClientRect();
                 var safeInset = (typeof CSS !== 'undefined' && CSS.supports('padding-bottom: env(safe-area-inset-bottom)'))
                     ? (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-bottom')) || 0)
                     : 0;
 
                 var available = window.innerHeight - rect.top - BOTTOM_OFFSET - safeInset;
-                if (available < 500) available = 500;
+                if (available < 1000) available = 1000;
 
                 el.style.maxHeight = (available - 100) + 'px';
             });

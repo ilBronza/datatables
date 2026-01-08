@@ -1,3 +1,7 @@
+.ib-td-color {
+  display: table-cell;
+  width: 100%;
+}
 table.dataTable {
   border-collapse: separate;
   -webkit-border-horizontal-spacing: 2px;
@@ -26,6 +30,29 @@ table.dataTable .uk-icon-button {
 }
 table.dataTable .uk-icon-button svg {
   max-width: 1em;
+}
+table.dataTable td i {
+  width: 1.4em;
+  height: 1.4em;
+  line-height: 1.4em;
+  border: 1px solid #bbb;
+  border-radius: 300px;
+}
+table.dataTable td i.fa-check {
+  color: green;
+  background-color: rgba(0, 128, 0, 0.1);
+}
+table.dataTable td i.fa-check.ib-alarm {
+  color: red;
+  background-color: rgba(255, 0, 0, 0.4);
+}
+table.dataTable td i.fa-close {
+  color: red;
+  background-color: rgba(255, 0, 0, 0.4);
+}
+table.dataTable td i.fa-close.ib-alarm {
+  color: green;
+  background-color: rgba(0, 128, 0, 0.1);
 }
 table.dataTable th {
   /**
@@ -191,6 +218,14 @@ span.ib-toggle[data-value="1"] {
   color: white;
 }
 span.ib-toggle[data-value="0"] {
+  background-color: rgba(250, 177, 21, 0.61);
+  color: white;
+}
+span.ib-togglealarm[data-value="0"] {
+  background-color: rgba(13, 168, 13, 0.68);
+  color: white;
+}
+span.ib-togglealarm[data-value="1"] {
   background-color: rgba(250, 177, 21, 0.61);
   color: white;
 }

@@ -103,7 +103,10 @@
 			@endforeach
 		@endif
 
-		@include('datatables::uikit.footer._footer')
+		@if($table->hasFooterFilters())
+			@include('datatables::uikit.footer._footer')
+		@endif
+
 	</table>
 
 </div>

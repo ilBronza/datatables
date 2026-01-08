@@ -36,8 +36,13 @@ class DatatableFieldToggle extends DatatableFieldEditor
 
 	private function getLinkString(string $iconString)
 	{
+		if (! $classes = $this->getHtmlClassesString())
+			return ;
+
+		$classString = " class=\"{$classes} fa-solid fa-{$iconString}\" ";
+
 		return "
-			item = '<span data-value=\"' + item[1] + '\" " . $this->getParentDataIndexString() . $this->getHtmlDataAttributesString() . $this->getHtmlClassesAttributeString() . $iconString . " ></span>';
+			item = '<span data-value=\"' + item[1] + '\" " . $this->getParentDataIndexString() . $this->getHtmlDataAttributesString() . $classString . " ></span>';
 		";
 	}
 
@@ -48,13 +53,13 @@ class DatatableFieldToggle extends DatatableFieldEditor
 		" . $this->substituteUrlParameter() . "
 
 		if(item[1])
-			" . $this->getLinkString("uk-icon=\"{$this->trueIcon}\"") . "
+			" . $this->getLinkString($this->trueIcon) . "
 
 		else if((item[1] === 0)||(item[1] === false))
-			" . $this->getLinkString("uk-icon=\"{$this->falseIcon}\"") . "
+			" . $this->getLinkString($this->falseIcon) . "
 
 		else
-			" . $this->getLinkString("uk-icon=\"{$this->nullIcon}\"");
+			" . $this->getLinkString($this->nullIcon);
 	}
 
 	public function getCustomColumnDefSingleSearchResult()
@@ -74,10 +79,10 @@ class DatatableFieldToggle extends DatatableFieldEditor
 		" . $this->substituteUrlParameter() . "
 
 		if(item[1])
-			" . $this->getLinkString("uk-icon=\"{$this->trueIcon}\"") . "
+			" . $this->getLinkString($this->trueIcon) . "
 
 		else
-			" . $this->getLinkString("uk-icon=\"{$this->falseIcon}\"") . "
+			" . $this->getLinkString($this->falseIcon) . "
 		";
 	}
 

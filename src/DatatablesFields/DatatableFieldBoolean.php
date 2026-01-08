@@ -10,7 +10,7 @@ class DatatableFieldBoolean extends DatatableField
 	public $property;
 
 
-	public ? bool $nullable = null;
+	public bool $nullable = true;
 
 	public $valueAsRowClassPrefix = true;
 	public $trueIcon = 'check';
@@ -20,13 +20,14 @@ class DatatableFieldBoolean extends DatatableField
 
 	public function transformValue($value)
 	{
-		if(is_null($value))
-			return ;
+		if( is_null($value))
+			if($this->isNullable())
+				return ;
 
 		return !! $value;
 	}
 
-	private function getBooleanString(string $iconString)
+	protected function getBooleanString(string $iconString)
 	{
 		$classes = $this->getHtmlClassesString();
 
@@ -92,12 +93,19 @@ class DatatableFieldBoolean extends DatatableField
 		";
 	}
 
-    public function getCustomColumnDefSingleSearchResult()
-    {
-        return "
+	public function getCustomColumnDefSingleSearchResult()
+	{
+		return '
             return (item)? 1 : 0;
-        ";
-    }
+        ';
+	}
+
+	public function _getCustomColumnDefSingleSearchResult()
+	{
+		return '
+            item = (item)? "1 true" : "0 false";
+        ';
+	}
 
 	public function getCustomColumnDefSingleResult()
 	{
