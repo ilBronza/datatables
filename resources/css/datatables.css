@@ -1,3 +1,7 @@
+.editorchanged,
+input.editorchanged {
+  background-color: rgba(129, 99, 255, 0.21);
+}
 .ib-td-color {
   display: table-cell;
   width: 100%;
