@@ -263,3 +263,10 @@ START BUTTONS
 /***
 END BUTTONS
 ***/
+.toggle-vis-container li.ib-colvis-item .ib-colvis-gear {
+  color: #000;
+  opacity: 0.05;
+}
+.toggle-vis-container li.ib-colvis-item:hover .ib-colvis-gear {
+  opacity: 1;
+}

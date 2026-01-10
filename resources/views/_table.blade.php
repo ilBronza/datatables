@@ -1,5 +1,7 @@
 @include('datatables::datatablesFields._tableSingleSpec')
 
+@include('datatables::datatablesFields._columnSettingsForm')
+
 @if(! request()->input('justTable', false))
 	{{-- @include('datatables::__extraViews', ['position' => 'top']) --}}
 
@@ -21,25 +23,33 @@
 			uk-toggle="target: #offcanvastogglefields{{ $table->getId() }}">Fields visibility
 	</button>
 
-	<div id="offcanvastogglefields{{ $table->getId() }}" uk-offcanvas>
+	<div id="offcanvastogglefields{{ $table->getId() }}" uk-offcanvas="mode: push">
 		<div class="uk-offcanvas-bar">
 
 			<button class="uk-offcanvas-close" type="button" uk-close></button>
 
 			<ul id="togglefields{{ $table->getId() }}"
 				class="uk-nav uk-dropdown-nav toggle-vis-container table{{ $table->getId() }}"
-				data-tableid="{{ $table->getId() }}">
+				data-tableid="{{ $table->getId() }}"
+			>
 				@foreach($table->getFields() as $field)
-					<li>
+					<li class="ib-colvis-item uk-flex">
 						<a
 								href="javascript:void(0)"
-								class="toggle-vis @if($field->isVisible()) uk-text-bold @endif {{ $field->getFieldName() }}"
+								class="uk-width-expand toggle-vis @if($field->isVisible()) uk-text-bold @endif {{ $field->getFieldName() }}"
 								data-column="{{ $field->getIndex() }}"
 								data-name="{{ $field->getFieldName() }}"
 								data-visibility="{{ ($field->isVisible() ? 1 : 0) }}"
 								style="color: black;"
 						>
 							{{ $field->getTranslatedName() }}
+						</a>
+
+						<a
+								href="javascript:void(0)"
+								class="ib-colvis-gear uk-width-auto"
+						>
+							<i class="fa-solid fa-gear"></i>
 						</a>
 					</li>
 				@endforeach
@@ -119,3 +129,5 @@
 	@endif
 
 @endif
+
+
