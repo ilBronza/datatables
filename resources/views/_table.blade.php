@@ -33,7 +33,7 @@
 				data-tableid="{{ $table->getId() }}"
 			>
 				@foreach($table->getFields() as $field)
-					<li class="ib-colvis-item uk-flex">
+					<li class="ib-colvis-item uk-flex uk-flex-wrap">
 						<a
 								href="javascript:void(0)"
 								class="uk-width-expand toggle-vis @if($field->isVisible()) uk-text-bold @endif {{ $field->getFieldName() }}"

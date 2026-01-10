@@ -1,4 +1,4 @@
-	<div class="colvis-settings-form" id="colvis-settings-form-template">
+<div class="colvis-settings-form" id="colvis-settings-form-template" style="display:none;">
 
 		<div class="uk-grid-small" uk-grid>
 				<div class="uk-card uk-card-body uk-padding-small">
