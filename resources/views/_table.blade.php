@@ -24,7 +24,7 @@
 	</button>
 
 	<div id="offcanvastogglefields{{ $table->getId() }}" uk-offcanvas="mode: push">
-		<div class="uk-offcanvas-bar">
+		<div class="uk-offcanvas-bar uk-padding-small">
 
 			<button class="uk-offcanvas-close" type="button" uk-close></button>
 
