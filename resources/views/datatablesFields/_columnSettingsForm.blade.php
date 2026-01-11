@@ -5,6 +5,19 @@
 
 					<h4 class="uk-heading-divider">Style</h4>
 
+					{{-- Width --}}
+					<div class="uk-margin-small">
+						<label class="uk-form-label">Width (px)</label>
+						<input
+							type="number"
+							class="uk-input ib-style"
+							data-style="width"
+							min="20"
+							step="1"
+							value=""
+						>
+					</div>
+
 					{{-- Font style --}}
 					<div class="uk-margin-small">
 						<label class="uk-form-label">Font style</label>
@@ -71,8 +84,6 @@
 							<option value="right">Right</option>
 						</select>
 					</div>
-
-					<h4 class="uk-heading-divider uk-margin-top">Colors</h4>
 
 					{{-- Text color --}}
 					<div class="uk-margin-small">
