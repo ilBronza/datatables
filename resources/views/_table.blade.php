@@ -29,8 +29,9 @@
 			<button class="uk-offcanvas-close" type="button" uk-close></button>
 
 			<ul id="togglefields{{ $table->getId() }}"
-				class="uk-nav uk-dropdown-nav toggle-vis-container table{{ $table->getId() }}"
+				class="uk-nav uk-dropdown-nav ib-colvis-container toggle-vis-container table{{ $table->getId() }}"
 				data-tableid="{{ $table->getId() }}"
+				data-settings-store-url="{{ $table->getColumnVisibilityStoreUrl() }}"
 			>
 				@foreach($table->getFields() as $field)
 					<li class="ib-colvis-item uk-flex uk-flex-wrap">

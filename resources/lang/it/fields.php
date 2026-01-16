@@ -1,6 +1,7 @@
 <?php
 
 return array (
+	'color' => 'Colore',
 	'search' => 'Cerca',
 	'selectRow' => 'Seleziona riga',
 	'primary' => 'Id',

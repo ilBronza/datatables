@@ -9,10 +9,15 @@ use function route;
 
 trait DatatableColumnDisplayTrait
 {
-	public function getColumnDisplayRoute()
-	{
-		return route('datatables.columnShowing.update', ['tableKey' => $this->getColumnDisplayKey()]);
-	}
+    public function getColumnDisplayRoute()
+    {
+        return route('datatables.columnShowing.update', ['tableKey' => $this->getColumnDisplayKey()]);
+    }
+
+    public function getColumnVisibilityStoreUrl()
+    {
+        return route('datatables.columnSettings.update', ['tableKey' => $this->getColumnDisplayKey()]);
+    }
 
 	public function usesColumnDisplay()
     {

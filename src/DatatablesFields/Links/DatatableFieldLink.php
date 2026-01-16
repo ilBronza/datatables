@@ -178,6 +178,8 @@ class DatatableFieldLink extends DatatableField
 	{
 		$itemString = $this->hasText()? 'item[0]' : 'item';
 
+		return 'item[1]';
+
 		return '
             return ' . $itemString . ';
         ';

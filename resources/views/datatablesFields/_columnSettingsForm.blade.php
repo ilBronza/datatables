@@ -4,6 +4,7 @@
 			<div class="">
 
 					{{-- Width --}}
+
 					<div class="uk-margin-small uk-flex">
 						<label class="uk-form-label">Width (px)</label>
 						<input
@@ -299,7 +300,7 @@
 
 						<button
 								type="button"
-								class="uk-button uk-button-default uk-button-small ib-save-settings-button"
+								class="uk-button uk-button-default uk-button-small ib-colvis-save"
 								data-value="save"
 								uk-tooltip="Save"
 						>

@@ -30,7 +30,9 @@ class DatatableUserData extends Model
 
 		static::retrieved(function ($item)
 		{
-			$item->touch();
+			static::where('id', $item->getKey())->update([
+				'updated_at' => Carbon::now()
+			]);
 		});
 
 		static::saving(function ($item)
@@ -69,6 +71,17 @@ class DatatableUserData extends Model
 	static function usesDatabase()
 	{
 		return ! Auth::guest();
+	}
+
+	public function addColumnSettings(string $columnName, int $columnIndex, array $settings)
+	{
+		$this->data->addColumnSettings(
+			$columnName,
+			$columnIndex,
+			$settings
+		);
+
+		$this->save();
 	}
 
 	static function provideByTableKey(string $tableKey)
