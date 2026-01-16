@@ -4,7 +4,7 @@ namespace IlBronza\Datatables\DatatablesFields\Links;
 
 class DatatableFieldCallto extends DatatableFieldLink
 {
-	public $icon = 'link';
+	public $faIcon = 'link';
 	public $phoneParameter;
 
 	public $textMethod = false;

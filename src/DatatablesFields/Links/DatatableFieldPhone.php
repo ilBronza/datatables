@@ -4,7 +4,7 @@ namespace IlBronza\Datatables\DatatablesFields\Links;
 
 class DatatableFieldPhone extends DatatableFieldLink
 {
-	public $icon = 'receiver';
+	public $faIcon = 'phone';
 
 	public function transformValue($value)
 	{

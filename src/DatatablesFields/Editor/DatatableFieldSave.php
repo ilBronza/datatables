@@ -23,13 +23,6 @@ class DatatableFieldSave extends DatatableField
 		";
 	}
 
-//	public $icon = 'trash';
-//	public $confirmMessage = 'datatables::messages.areYouSureToDeleteThisObject';
-//	public $textParameter = false;
-//	public $dataAttributes = [
-//		'type' => 'DELETE'
-//	];
-
 	public function transformValue($value)
 	{
 		return null;

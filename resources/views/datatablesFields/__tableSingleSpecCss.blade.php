@@ -38,4 +38,38 @@
 
 @endforeach
 
+@foreach(($table->getDatatableUserData()->columnsSettings ?? []) as $name => $parameters)
+
+	@foreach($parameters['selectors'] as $selector => $selectorParameters)
+
+		#{{ $table->getId() }} {{ substr($selector, 0, 2) }}.{{$name}} {{ substr($selector, 2) }}
+		{
+			@foreach($selectorParameters as $cssRule => $value)
+				{{ $cssRule }}: {{ $value }};
+			@endforeach
+		}
+
+	@endforeach
+
+
+
+@endforeach
+
+
 </style>
+
+@foreach(($table->getDatatableUserData()->columnsSettings ?? []) as $name => $parameters)
+
+	@foreach($parameters['selectors'] as $selector => $selectorParameters)
+
+		#{{ $table->getId() }} {{ substr($selector, 0, 2) }}.{{$name}} {{ substr($selector, 2) }}
+		{
+			@foreach($selectorParameters as $cssRule => $value)
+				{{ $cssRule }}: {{ $value }};<br />
+			@endforeach
+		}
+
+	@endforeach
+
+@endforeach
+

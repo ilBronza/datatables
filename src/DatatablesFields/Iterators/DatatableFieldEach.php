@@ -14,7 +14,7 @@ class DatatableFieldEach extends MultipleDatatableField
 	public $childParameters;
 	public $order;
 
-	private function manageChildType()
+	protected function manageChildType()
 	{
 		$this->addChildField();
 	}
@@ -37,6 +37,9 @@ class DatatableFieldEach extends MultipleDatatableField
 		}
 		catch(\Throwable $e)
 		{
+			if($this->debug())
+				throw $e;
+
 			return $this->handleError($e);
 		}
 	}
@@ -51,11 +54,19 @@ class DatatableFieldEach extends MultipleDatatableField
 		return $this->child->getCustomColumnDefSingleResult();
 	}
 
+	public function getSearchJavascriptString()
+	{
+		if(method_exists($this->child, '_getCustomColumnDefSingleSearchResult'))
+			return $this->child->_getCustomColumnDefSingleSearchResult();
+
+		return $this->child->getCustomColumnDefSingleResult();
+	}
+
 	public function getCustomColumnDef()
 	{
 		// $singleColumnDef = (method_exists($this->child, 'getColumnDefSingleResult')) ? $this->child->getColumnDefSingleResult() : 'item;';
 
-		return "
+		$result = "
 		{
 			//" . $this->getName() . "
 			targets: [" . $this->getIndex() . "],
@@ -82,9 +93,29 @@ class DatatableFieldEach extends MultipleDatatableField
 
 					return result;
 				}
+				
+                if(type == 'filter')
+                {
+					let result = '';
+
+					let i = 0;
+
+					data.forEach(function(item)
+					{
+						" . $this->getSearchJavascriptString() . "
+
+						if(item)
+							result += item + ' ';
+					});
+
+					return result;
+                }
+
 
 				return data;
 			}
 		}";
+
+		return $result;
 	}
 }

@@ -6,7 +6,7 @@ use IlBronza\Datatables\DatatablesFields\Links\DatatableFieldLink as BaseDatatab
 
 class DatatableFieldLink extends BaseDatatableFieldLink
 {
-	public $icon = 'link';
+	public $faIcon = 'link';
 	public $textParameter = true;
 	public $dataAttributes = [];
 

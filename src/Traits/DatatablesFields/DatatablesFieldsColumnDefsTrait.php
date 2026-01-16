@@ -2,6 +2,8 @@
 
 namespace IlBronza\Datatables\Traits\DatatablesFields;
 
+use Illuminate\Support\Str;
+
 trait DatatablesFieldsColumnDefsTrait
 {
 	public function getColumnDefs()
@@ -144,8 +146,8 @@ trait DatatablesFieldsColumnDefsTrait
 	public function getCustomColumnDefSingleSortResult()
 	{
 		return "
-            return item;
-        ";
+			return item;
+		";
 	}
 
 	public function getColumnDefSingleResult()
@@ -255,7 +257,7 @@ trait DatatablesFieldsColumnDefsTrait
 		if (! isset($this->columnDefs['className']))
 			$this->columnDefs['className'] = $this->getCamelName();
 
-		$this->columnDefs['className'] .= " " . $this->getTDHtmlClassesString();
+		$this->columnDefs['className'] .= " " . $this->getTDHtmlClassesString() . " " . Str::slug($this->getTranslatedName());
 	}
 
 	/**

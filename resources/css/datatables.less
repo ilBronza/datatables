@@ -1,14 +1,25 @@
 @import "./datatables.variables.less";
 
+.editorchanged,
+input.editorchanged
+{
+    background-color: rgba(129, 99, 255, 0.21);
+}
+
 
 .placeholder() {
   font-weight: 300;
   color: #bbb;
 }
 
+.ib-td-color {
+  display: table-cell;
+  width: 100%;
+}
 
 table.dataTable
 {
+
   .mainheader
   {
     .dt-column-header
@@ -53,7 +64,45 @@ table.dataTable
       }
     }
 
-  th 
+  td
+  {
+    i
+    {
+      width: @tdIconsSize;
+      height: @tdIconsSize;
+      line-height: @tdIconsSize;
+
+      border: 1px solid #bbb;
+      border-radius: 300px;
+
+      &.fa-check
+      {
+        color: green;
+        background-color: fade(green, 10%);
+
+        &.ib-alarm
+        {
+          color: red;
+          background-color: fade(red, 40%);
+        }
+      }
+
+      &.fa-close
+      {
+        color: red;
+        background-color: fade(red, 40%);
+
+        &.ib-alarm
+        {
+          color: green;
+          background-color: fade(green, 10%);
+        }
+      }
+
+    }
+  }
+
+  th
   {
     &.hidelabel
     {
@@ -304,6 +353,18 @@ span.ib-toggle[data-value="1"]
 }
 
 span.ib-toggle[data-value="0"]
+{
+  background-color: @booleanFalseBackground;
+  color: @booleanFalseColor;
+}
+
+span.ib-togglealarm[data-value="0"]
+{
+  background-color: @booleanTrueBackground;
+  color: @booleanTrueColor;
+}
+
+span.ib-togglealarm[data-value="1"]
 {
   background-color: @booleanFalseBackground;
   color: @booleanFalseColor;
@@ -571,3 +632,29 @@ END BUTTONS
 //    background-color: #f9f9f9;
 //  }
 //}
+
+body.uk-offcanvas-container
+{
+  padding-right: 350px;
+}
+
+.toggle-vis-container
+{
+  li.ib-colvis-item
+  {
+    .ib-colvis-gear
+    {
+      color: #000;
+      opacity: 0.05;
+    }
+
+    &:hover
+    {
+      .ib-colvis-gear
+      {
+        opacity: 1;
+      }
+    }
+  }
+}
+

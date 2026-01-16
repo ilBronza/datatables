@@ -83,6 +83,8 @@ class Datatables
 
 	public array $htmlClasses = [];
 
+	public ? bool $footerFilters;
+
 	public $getRowIdIndex = false;
 	public $stripe = true;
 	public $pageLength = null;
@@ -100,6 +102,7 @@ class Datatables
 	public ?bool $csvButton = null;
 
 	public $scrollX = true;
+	public ? bool $scrollY = null;
 
 	public $domStickyButtons;
 	public $domStickyHeader;
@@ -468,6 +471,11 @@ class Datatables
 		return $this->sourceType == 'array';
 	}
 
+	public function setScrollY(bool $scrollY)
+	{
+		$this->scrollY = $scrollY;
+	}
+
 	public function setScrollX(bool $scrollX)
 	{
 		$this->scrollX = $scrollX;
@@ -479,6 +487,14 @@ class Datatables
 			return $this->scrollX;
 
 		return config('datatables.scrollX');
+	}
+
+	public function canScrollY()
+	{
+		if(! is_null($this->scrollY))
+			return $this->scrollY;
+
+		return config('datatables.scrollY');		
 	}
 
 	//TODO PROTEGGERE QUESTA CON DEI FILLABLE???

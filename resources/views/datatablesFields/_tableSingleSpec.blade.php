@@ -112,7 +112,11 @@
          */
 
 		@if($table->canScrollX())
-			scrollY: '200px', /* valore qualsiasi iniziale, anche 200 */
+
+            @if($table->canScrollY())
+			scrollY: '600px', /* valore qualsiasi iniziale, anche 200 */
+            @endif
+
 			scrollCollapse: true,
 			autoWidth: false,
 
@@ -347,7 +351,7 @@
             className: 'removesummary',
         },
 		@if($table->hasInlineSearch())
-        // 'removeInlineSearch',
+        	'removeInlineSearch',
 			@endif
 			@endif
 
@@ -398,9 +402,21 @@
 				{!! $jsMethodText !!}
             }
 			@endif
-        } @if(! $loop->last), @endif
+        },
 		@endif
 		@endforeach
+        {
+            // Save all dirty inline-editor inputs for this table (visibility handled by JS via uk-hidden)
+            text: '{{ __('datatables::buttons.save') ?? 'Save' }}',
+            className: 'ib-save-dt-inputs uk-hidden',
+            attr: {
+                id: 'ib-save-dt-inputs-{{ $table->getId() }}'
+            },
+            action: function (e, dt, node, config) {
+                // Handled by delegated click listener in datatables.vendor.ajaxButton.min.js
+                e.preventDefault();
+            }
+        },
     ];
 
 </script>

@@ -1,16 +1,20 @@
 <?php
 
 return array (
+	'color' => 'Colore',
 	'search' => 'Cerca',
+	'selectRow' => 'Seleziona riga',
+	'primary' => 'Id',
+	'mySelfPrimary' => 'Id',
 	'fieldsVisibilityLabel' => 'Campi visibili',
-  'mySelfSee' => 'Mostra',
+    'mySelfSee' => 'Mostra',
 	'mySelfEdit' => 'Modifica',
 	'mySelfShow' => 'Mostra',
   	'mySelfDelete' => 'Elimina',
   	'mySelfUnDelete' => 'Ripristina',
 	'save' => 'Salva',
 	'mySelfClone' => 'Duplica',
-
+	'milestone' => 'Completamento',
 	'client' => 'Cliente',
 	'destination' => 'Destinazione',
 
@@ -49,5 +53,5 @@ return array (
 
 	'orderProductPhase' => [
      'product' => 'Prodotto',
-    ],
+	  ],
 );

@@ -11,5 +11,18 @@ trait DatatableFiltersTrait
 
 		return config('datatables.removeFiltersButton', false);
 	}
+
+	public function setFooterFilters(bool $footerFilters)
+	{
+		$this->footerFilters = $footerFilters;
+	}
+
+	public function hasFooterFilters() : bool
+	{
+		if(isset($this->footerFilters))
+			return $this->footerFilters;
+
+		return config('datatables.footerFilters');
+	}
 }
 

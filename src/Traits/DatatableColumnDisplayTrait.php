@@ -5,6 +5,8 @@ namespace IlBronza\Datatables\Traits;
 use IlBronza\Datatables\Models\DatatableUserData;
 use Illuminate\Support\Str;
 
+use function route;
+
 trait DatatableColumnDisplayTrait
 {
     public function getColumnDisplayRoute()
@@ -12,7 +14,12 @@ trait DatatableColumnDisplayTrait
         return route('datatables.columnShowing.update', ['tableKey' => $this->getColumnDisplayKey()]);
     }
 
-    public function usesColumnDisplay()
+    public function getColumnVisibilityStoreUrl()
+    {
+        return route('datatables.columnSettings.update', ['tableKey' => $this->getColumnDisplayKey()]);
+    }
+
+	public function usesColumnDisplay()
     {
         return true;
     }

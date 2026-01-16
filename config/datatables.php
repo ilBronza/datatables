@@ -6,13 +6,15 @@ return [
 	],
 
 	'datatableFieldWidths' => [
+		'datatableFieldColor' => '2em',
 		'datatableFieldIcon' => '2em',
 		'datatableFieldJson' => '30em',
 		'datatableFieldInteger' => 'auto',
 		'datatableFieldFunction' => 'auto',
 		'datatableFieldSelectRowCheckbox' => '1.5em',
 		'datatableFieldFlat' => 'auto',
-		'datatableFieldBoolean' => '1em',
+		'datatableFieldBoolean' => '1.5em',
+		'datatableFieldBooleanAlarm' => '1.5em',
 		'datatableFieldTranslatedClassBasename' => 'auto',
 
 		'clients' => [
@@ -31,7 +33,9 @@ return [
 		'dates' => [
 			'datatableFieldDatetime' => '12em',
 			'datatableFieldDate' => '5.7em',
+			'datatableFieldSecondsToMinutes' => '5em',
 			'datatableFieldTimestamp' => 'auto',
+			'datatableFieldSecondsToString' => '3em',
 
 			'fromString' => [
 				'datatableFieldDate' => '5.7em'
@@ -45,6 +49,7 @@ return [
 		'numbers' => [
 			'datatableFieldNumber2' => '4em',
 			'datatableFieldPrice' => '4em',
+			'datatableFieldFloor' => '4em'
 		],
 		'users' => [
 			'datatableFieldName' => 'auto',
@@ -83,6 +88,7 @@ return [
 			'datatableFieldAjax' => 'auto',
 
 			'dates' => [
+				'datatableFieldTime' => '4em',
 				'datatableFieldDatetime' => '12em',
 				'datatableFieldDate' => '7em'
 			],
@@ -90,7 +96,8 @@ return [
 
 		'utilities' => [
 			'datatableFieldRemoveNamespace' => 'auto',
-			'datatableFieldMilestone' => '15em'
+			'datatableFieldMilestone' => '15em',
+			'datatableFieldSorting' => '2em'
 		],
 
 		'datatableFieldPrimary' => '12em'
@@ -109,6 +116,7 @@ return [
     'useTooltips' => env('DATATABLES_USE_TOOLTIPS', true),
 
     'scrollX' => false,
+    'scrollY' => true,
 
 	'fixedColumns' => [
 		'enabled' => false,
@@ -121,6 +129,8 @@ return [
 	'pageLength' => 50,
 
 	'mustPrintIntestation' => false,
+
+	'footerFilters' => true,
 
 	'rangeFilter' => [
 		'enabled' => false

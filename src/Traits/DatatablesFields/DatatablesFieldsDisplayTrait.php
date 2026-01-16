@@ -107,6 +107,10 @@ trait DatatablesFieldsDisplayTrait
 
 	public function getWidth()
 	{
+		// $columnSettings = $this->getTable()->getDatatableUserData()->getColumnSettingsByField($this);
+
+		// dd($columnSettings);
+
 		return $this->width ?? config('datatables.widths.' . $this->getType());
 	}
 

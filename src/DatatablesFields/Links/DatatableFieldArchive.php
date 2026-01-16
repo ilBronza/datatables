@@ -4,7 +4,7 @@ namespace IlBronza\Datatables\DatatablesFields\Links;
 
 class DatatableFieldArchive extends DatatableFieldAjax
 {
-    public $icon = 'album';
+    public $faIcon = 'box-archive';
     public $confirmMessage = 'datatables::messages.areYouSureToDeleteThisObject';
     public $textParameter = false;
 	public $dataAttributes = [

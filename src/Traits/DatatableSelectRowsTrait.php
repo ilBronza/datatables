@@ -18,7 +18,9 @@ trait DatatableSelectRowsTrait
     {
         $fieldsGroup = $this->createFieldsGroup('selectRow');
 
-        $selectRowField = $this->addField('selectRow', ["type" => "selectRowCheckbox"]);
+        $selectRowField = $this->addField('selectRow', [
+			"type" => "selectRowCheckbox"
+        ]);
         $fieldsGroup->addField('selectRow', $selectRowField);
 
         $primaryField = $this->addField('primary', ["type" => "primary"]);

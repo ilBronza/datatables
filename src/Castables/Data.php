@@ -2,6 +2,9 @@
 
 namespace IlBronza\Datatables\Castables;
 
+use IlBronza\Datatables\DatatablesFields\DatatableField;
+use function collect;
+
 class Data
 {
 	public $columns;
@@ -14,6 +17,8 @@ class Data
 			return ;
 
 		$data = json_decode($value, true);
+
+		$this->columnsSettings = $data['columnsSettings'] ?? [];
 
 		foreach($data['columns'] ?? [] as $column)
 			$this->columns->push(DatatableColumn::refresh($column));
@@ -41,6 +46,26 @@ class Data
 	{
 		$column = $this->getcolumnsItem($columnName);
 		$column->show();
+	}
+
+	public function addColumnSettings(string $columnName, int $columnIndex, array $settings)
+	{
+		$this->columnsSettings[$columnName] = array_merge(
+			$settings,
+			['index' => $columnIndex]
+		);
+	}
+
+	public function getColumnSettingsByField(DatatableField $field)
+	{
+		dd($field->getFieldName());
+		dd(
+			get_class_methods($field)
+			
+		);
+
+		dd($this->columnsSettings);
+
 	}
 }
 

@@ -14,6 +14,9 @@ class DatatableFieldColor extends DatatableFieldEditor
 		'ib-editor-color'
 	];
 
+	public ? string $translationPrefix = 'datatables::fields';
+	public ? string $forcedStandardName = 'color';
+
 	public function getCustomColumnDefSingleResult()
 	{
         if(! $this->userCanEdit())

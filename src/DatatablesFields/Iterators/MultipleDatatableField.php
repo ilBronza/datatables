@@ -3,7 +3,6 @@
 namespace IlBronza\Datatables\DatatablesFields\Iterators;
 
 use IlBronza\Datatables\DatatablesFields\DatatableField;
-use Illuminate\Support\Facades\Log;
 
 class MultipleDatatableField extends DatatableField
 {
@@ -31,6 +30,9 @@ class MultipleDatatableField extends DatatableField
 		}
 		catch (\Throwable $e)
 		{
+			if($this->debug())
+				throw $e;
+
 			return collect();
 		}
 	}
