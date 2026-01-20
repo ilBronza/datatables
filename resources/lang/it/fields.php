@@ -44,14 +44,12 @@ return array (
 	//  ],
     // ],
 
-	//  'fields' => [
-        'orderProductPhase' => [
-            'order' => 'Ordine', // oppure "Ordinamento" a seconda del contesto
-        ],
-    // ],
-
-
 	'orderProductPhase' => [
      'product' => 'Prodotto',
+	 'order' => 'Ordine',
 	  ],
+
+	
+
+	
 );
