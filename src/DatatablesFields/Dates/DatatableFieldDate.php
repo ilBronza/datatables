@@ -38,5 +38,22 @@ class DatatableFieldDate extends DatatableFieldCarbon
 
             else item = ''";
     }
+
+    public function getCustomColumnDefSingleResultExport()
+    {
+        return "
+            if(item)
+            {
+                let date = moment.unix(item);
+
+                if(date.isValid())
+                    item = date.format('YYYY-MM-DD');
+            }
+
+            else item = ''";
+    }
+
+
+    
 }
 

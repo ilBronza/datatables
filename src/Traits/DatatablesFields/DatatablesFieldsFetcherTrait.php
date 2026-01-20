@@ -14,6 +14,9 @@ trait DatatablesFieldsFetcherTrait
 		if( isset($this->fetcherData))
 			return $this->fetcherData;
 
+		if( isset($this->fetcher))
+			return $this->fetcher;
+
 		return null;
 	}
 

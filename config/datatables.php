@@ -72,7 +72,8 @@ return [
 			'datatableFieldLink' => '2em',
 			'datatableFieldPdf' => '2em',
 			'datatableFieldClone' => '2em',
-			'datatableFieldFetcher' => 'auto'
+			'datatableFieldFetcher' => 'auto',
+			'datatableFieldSeen' => '2em'
 
 		],
 		'editor' => [
