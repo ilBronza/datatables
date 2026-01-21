@@ -107,11 +107,25 @@ trait DatatablesFieldsDisplayTrait
 
 	public function getWidth()
 	{
-		// $columnSettings = $this->getTable()->getDatatableUserData()->getColumnSettingsByField($this);
+		$defaultWidth = $this->width ?? config('datatables.widths.' . $this->getType());
 
-		// dd($columnSettings);
+		if(! $columnSettings = $this->getTable()->getDatatableUserData()->getColumnSettingsByField($this))
+			return $defaultWidth;
 
-		return $this->width ?? config('datatables.widths.' . $this->getType());
+		if(! $selectors = $columnSettings['selectors'] ?? false)
+			return $defaultWidth;
+
+		if($tdSettings = $selectors['td'] ?? false)
+			if(isset($tdSettings['width']))
+				return $tdSettings['width'];
+
+		$width = 0;
+
+		foreach($selectors as $selector => $parameters)
+			if(isset($parameters['width']))
+				$width = max($width, (int) str_replace(['em', 'px', '%'], '', $parameters['width']));
+
+		return $width;
 	}
 
 	public function showLabel() : bool

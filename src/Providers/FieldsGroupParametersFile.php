@@ -14,12 +14,19 @@ abstract class FieldsGroupParametersFile
 
 	abstract static function getFieldsGroup() : array;
 
+	static function getTracedFieldsGroup()
+	{
+		app('uikittemplate')->addFieldsGroupName(static::class);
+
+		return static::getFieldsGroup();
+	}
+
 	static function create()
 	{
 		$fieldsGroup = new static();
 
 		$fieldsGroup->setParameters(
-			static::getFieldsGroup()
+			static::getTracedFieldsGroup()
 		);
 
 		return $fieldsGroup;

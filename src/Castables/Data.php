@@ -58,14 +58,10 @@ class Data
 
 	public function getColumnSettingsByField(DatatableField $field)
 	{
-		dd($field->getFieldName());
-		dd(
-			get_class_methods($field)
-			
-		);
+		if(isset($this->columnsSettings[$field->getFieldName()]))
+			return $this->columnsSettings[$field->getFieldName()];
 
-		dd($this->columnsSettings);
-
+		return [];
 	}
 }
 

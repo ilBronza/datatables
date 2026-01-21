@@ -40,9 +40,11 @@
 
 @foreach(($table->getDatatableUserData()->columnsSettings ?? []) as $name => $parameters)
 
+
+
 	@foreach($parameters['selectors'] as $selector => $selectorParameters)
 
-		#{{ $table->getId() }} {{ substr($selector, 0, 2) }}.{{$name}} {{ substr($selector, 2) }}
+		#{{ $table->getId() }} {{ substr($selector, 0, 2) }}.{{ Str::camel($name) }} {{ substr($selector, 2) }}
 		{
 			@foreach($selectorParameters as $cssRule => $value)
 				{{ $cssRule }}: {{ $value }};
@@ -62,10 +64,10 @@
 
 	@foreach($parameters['selectors'] as $selector => $selectorParameters)
 
-		#{{ $table->getId() }} {{ substr($selector, 0, 2) }}.{{$name}} {{ substr($selector, 2) }}
+		#{{ $table->getId() }} {{ substr($selector, 0, 2) }}.{{ Str::camel($name) }} {{ substr($selector, 2) }}
 		{
 			@foreach($selectorParameters as $cssRule => $value)
-				{{ $cssRule }}: {{ $value }};<br />
+				{{ Str::($cssRule) }}: {{ $value }};<br />
 			@endforeach
 		}
 

@@ -257,7 +257,14 @@ trait DatatablesFieldsColumnDefsTrait
 		if (! isset($this->columnDefs['className']))
 			$this->columnDefs['className'] = $this->getCamelName();
 
-		$this->columnDefs['className'] .= " " . $this->getTDHtmlClassesString() . " " . Str::slug($this->getTranslatedName());
+		try
+		{
+			$this->columnDefs['className'] .= " " . $this->getTDHtmlClassesString() . " " . Str::slug($this->getTranslatedName());
+		}
+		catch(\Exception $e)
+		{
+			dd([$this->getTDHtmlClassesString(), ($this->getTranslatedName())]);
+		}
 	}
 
 	/**
