@@ -58,8 +58,8 @@ class Data
 
 	public function getColumnSettingsByField(DatatableField $field)
 	{
-		if(isset($this->columnsSettings[$field->getFieldName()]))
-			return $this->columnsSettings[$field->getFieldName()];
+		if(isset($this->columnsSettings[$field->getCamelName()]))
+			return $this->columnsSettings[$field->getCamelName()];
 
 		return [];
 	}

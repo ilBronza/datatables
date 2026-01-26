@@ -1,6 +1,40 @@
 <?php
 
 return [
+
+
+	'fonts' => [
+
+        // ---- Modern / UI (Google Fonts – molto leggibili)
+        'Inter' => '"Inter", "Helvetica Neue", Helvetica, Arial, sans-serif',
+        'Roboto' => '"Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif',
+        'Open Sans' => '"Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif',
+        'Lato' => '"Lato", "Helvetica Neue", Helvetica, Arial, sans-serif',
+        'Montserrat' => '"Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif',
+        'Poppins' => '"Poppins", "Helvetica Neue", Helvetica, Arial, sans-serif',
+        'Nunito' => '"Nunito", "Helvetica Neue", Helvetica, Arial, sans-serif',
+
+        // ---- Web-safe classici
+        'Arial' => 'Arial, Helvetica, sans-serif',
+        'Helvetica' => '"Helvetica Neue", Helvetica, Arial, sans-serif',
+        'Verdana' => 'Verdana, Geneva, sans-serif',
+        'Tahoma' => 'Tahoma, Geneva, sans-serif',
+        'Trebuchet MS' => '"Trebuchet MS", Helvetica, sans-serif',
+
+        // ---- Serif (per report / stampa)
+        'Times New Roman' => '"Times New Roman", Times, serif',
+        'Georgia' => 'Georgia, "Times New Roman", serif',
+        'Merriweather' => '"Merriweather", Georgia, serif',
+        'Playfair Display' => '"Playfair Display", Georgia, serif',
+
+        // ---- Monospace (codici / numeri / colonne tecniche)
+        'Courier New' => '"Courier New", Courier, monospace',
+        'Source Code Pro' => '"Source Code Pro", monospace',
+        'JetBrains Mono' => '"JetBrains Mono", monospace',
+        'Fira Code' => '"Fira Code", monospace',
+    ],
+
+
 	'widths' => [
 		'boolean' => '1em'
 	],

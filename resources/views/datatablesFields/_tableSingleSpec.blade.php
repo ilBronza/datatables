@@ -419,6 +419,10 @@
         },
     ];
 
+    window.__ibColumnStyleDraftByTable = window.__ibColumnStyleDraftByTable || {};
+
+    window.__ibColumnStyleDraftByTable['{{ $table->getId() }}'] = {!! json_encode($table->getDatatableUserData()->columnsSettings ?? [])  !!};
+
 </script>
 
 @include('datatables::datatablesFields.__tableSingleSpecCss')

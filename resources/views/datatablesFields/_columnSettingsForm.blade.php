@@ -29,7 +29,7 @@
 
 						<div class="uk-width-1-3">
 							<label class="uk-form-label uk-display-block">Background</label>
-							<input type="color" class="uk-input ib-style" data-style="backgroundColor" value="#ffffff">
+							<input type="color" class="uk-input ib-style" data-style="background-color" value="#ffffff">
 						</div>
 
 					</div>
@@ -46,7 +46,7 @@
 								<input
 										type="range"
 										class="uk-range ib-style"
-										data-style="fontSize"
+										data-style="font-size"
 										min="10"
 										max="32"
 										step="1"
@@ -60,7 +60,7 @@
 								<input
 										type="range"
 										class="uk-range ib-style"
-										data-style="letterSpacing"
+										data-style="letter-spacing"
 										min="-1"
 										max="6"
 										step="0.5"
@@ -75,7 +75,7 @@
 							{{-- Font style --}}
 							<div>
 
-								<div class="uk-button-group ib-style-buttons" data-style="fontStyle">
+								<div class="uk-button-group ib-style-buttons" data-style="font-style">
 									<button
 											type="button"
 											class="uk-button uk-button-default uk-button-small ib-style-button"
@@ -96,10 +96,12 @@
 								</div>
 							</div>
 
+
+
 							{{-- Font weight --}}
 							<div>
 
-								<div class="uk-button-group ib-style-buttons" data-style="fontWeight">
+								<div class="uk-button-group ib-style-buttons" data-style="font-weight">
 									<button
 											type="button"
 											class="uk-button uk-button-default uk-button-small ib-style-button"
@@ -140,10 +142,56 @@
 
 						</div>
 
-						<div class="uk-flex uk-flex-between">
+					{{-- Text transform --}}
+					<div class="uk-margin-small">
+
+						<div class="uk-button-group ib-style-buttons" data-style="text-transform">
+							<button
+									style="text-transform: none;"
+									type="button"
+									class="uk-button uk-button-default uk-button-small ib-style-button"
+									data-value="none"
+									uk-tooltip="None"
+							>
+								-
+							</button>
+
+							<button
+									style="text-transform: none;"
+									type="button"
+									class="uk-button uk-button-default uk-button-small ib-style-button"
+									data-value="uppercase"
+									uk-tooltip="UPPERCASE"
+							>
+								AA
+							</button>
+
+							<button
+									style="text-transform: none;"
+									type="button"
+									class="uk-button uk-button-default uk-button-small ib-style-button"
+									data-value="lowercase"
+									uk-tooltip="lowercase"
+							>
+								aa
+							</button>
+
+							<button
+									style="text-transform: none;"
+									type="button"
+									class="uk-button uk-button-default uk-button-small ib-style-button"
+									data-value="capitalize"
+									uk-tooltip="Capitalize"
+							>
+								Ab
+							</button>
+						</div>
+					</div>
+
+					<div class="uk-flex uk-flex-between">
 
 								<div>
-									<div class="uk-button-group ib-style-buttons" data-style="textDecoration">
+									<div class="uk-button-group ib-style-buttons" data-style="text-decoration">
 										<button
 												type="button"
 												class="uk-button uk-button-default uk-button-small ib-style-button"
@@ -176,7 +224,7 @@
 
 							{{-- Letter spacing --}}
 							<div>
-								<div class="uk-button-group ib-style-buttons" data-style="textAlign">
+								<div class="uk-button-group ib-style-buttons" data-style="text-align">
 									<button
 											type="button"
 											class="uk-button uk-button-default uk-button-small ib-style-button"
@@ -212,21 +260,15 @@
 					<div class="uk-margin-small">
 						<label class="uk-form-label">Font family</label>
 
-						<div class="uk-button-group ib-style-buttons" data-style="textAlign">
-							<select class="uk-select ib-style" data-style="fontFamily">
+						<div class="uk-button-group ib-style-buttons" data-style="font-family">
+							<select class="uk-select ib-style" data-style="font-family">
 								<option value="inherit" style="font-family: inherit;">Inherit</option>
 
-								<optgroup label="Sans-serif" style="font-family: Arial, Helvetica, sans-serif;">
-									<option value="Arial, Helvetica, sans-serif" style="font-family: Arial, Helvetica, sans-serif;">Arial</option>
-								</optgroup>
-
-								<optgroup label="Serif" style="font-family: 'Times New Roman', Times, serif;">
-									<option value="'Times New Roman', Times, serif" style="font-family: 'Times New Roman', Times, serif;">Times New Roman</option>
-								</optgroup>
-
-								<optgroup label="Monospace" style="font-family: 'Courier New', Courier, monospace;">
-									<option value="'Courier New', Courier, monospace" style="font-family: 'Courier New', Courier, monospace;">Courier New</option>
-								</optgroup>
+@foreach(config('datatables.fonts') as $label => $stack)
+    <option value="{{ $stack }}" style="font-family: {{ $stack }};">
+        {{ $label }}
+    </option>
+@endforeach
 							</select>
 						</div>
 					</div>
@@ -235,7 +277,7 @@
 					<div class="uk-margin-small">
 						<label class="uk-form-label uk-display-block">Text overflow</label>
 
-						<div class="uk-button-group ib-style-buttons" data-style="textOverflowMode">
+						<div class="uk-button-group ib-style-buttons" data-style="text-overflow-mode">
 							<button
 								type="button"
 								class="uk-button uk-button-default uk-button-small ib-style-button"

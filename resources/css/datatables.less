@@ -6,6 +6,11 @@ input.editorchanged
     background-color: rgba(129, 99, 255, 0.21);
 }
 
+.ib-has-active-filters
+{
+    background-color: red !important;
+    color: white !important;
+}
 
 .placeholder() {
   font-weight: 300;
@@ -19,6 +24,24 @@ input.editorchanged
 
 table.dataTable
 {
+  tbody
+  {
+    tr
+    {
+      &.ib-row-focused
+      {
+        background-color: #39f3;
+      }
+
+      td.focus
+      {
+        outline: none;
+        outline-offset: 0;
+        background-color: #39f4;
+      }  
+    }
+
+  }
 
   .mainheader
   {
@@ -654,6 +677,55 @@ body.uk-offcanvas-container
       {
         opacity: 1;
       }
+    }
+  }
+}
+
+/* =====================================================
+ * DataTables processing overlay
+ * ===================================================== */
+
+.dt-processing
+{
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  background-color: rgba(255, 255, 255, 0.75);
+  z-index: 1000;
+  pointer-events: all;
+
+  &:not([style*="display: none"])
+  {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  & > div + div
+  {
+    display: none;
+  }
+
+  & > div:first-child
+  {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:after
+    {
+      font-weight: 900;
+      content: "Processing"; /* fa-spinner */
+      font-size: 3em;
+      color: green;
     }
   }
 }

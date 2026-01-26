@@ -2,6 +2,10 @@
 input.editorchanged {
   background-color: rgba(129, 99, 255, 0.21);
 }
+.ib-has-active-filters {
+  background-color: red !important;
+  color: white !important;
+}
 .ib-td-color {
   display: table-cell;
   width: 100%;
@@ -10,6 +14,14 @@ table.dataTable {
   border-collapse: separate;
   -webkit-border-horizontal-spacing: 2px;
   -webkit-border-vertical-spacing: 2px;
+}
+table.dataTable tbody tr.ib-row-focused {
+  background-color: #39f3;
+}
+table.dataTable tbody tr td.focus {
+  outline: none;
+  outline-offset: 0;
+  background-color: #39f4;
 }
 table.dataTable .mainheader .dt-column-header {
   text-align: center;
@@ -272,4 +284,42 @@ body.uk-offcanvas-container {
 }
 .toggle-vis-container li.ib-colvis-item:hover .ib-colvis-gear {
   opacity: 1;
+}
+/* =====================================================
+ * DataTables processing overlay
+ * ===================================================== */
+.dt-processing {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.75);
+  z-index: 1000;
+  pointer-events: all;
+}
+.dt-processing:not([style*="display: none"]) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dt-processing > div + div {
+  display: none;
+}
+.dt-processing > div:first-child {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dt-processing > div:first-child:after {
+  font-weight: 900;
+  content: "Processing";
+  /* fa-spinner */
+  font-size: 3em;
+  color: green;
 }
