@@ -47,6 +47,7 @@ window.parent.___reloadTable(
 
 window.parent.closeLightbox();
 window.parent.closeModal();
+window.parent.__ibForceUnlockBodyScroll();
 
 
 

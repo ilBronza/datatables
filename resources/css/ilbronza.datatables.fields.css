@@ -49,23 +49,6 @@ table.dataTable tfoot th
     position: relative;
 }
 
-.filterfunctions
-{
-    position: absolute;
-    top: -14px;
-    left: 19px!important;
-    background-color: rgba(0, 0, 0, 0.5);
-    color: #fff;
-}
-
-.filterfunctions > *
-{
-    text-align: center;
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-}
-
 .datatable tbody *
 {
     font-size: 12px;

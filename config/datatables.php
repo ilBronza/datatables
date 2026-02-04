@@ -174,9 +174,7 @@ return [
 	'defaultButtons' => [
         'search' => true,
 		'reload' => true,
-        'selectFiltered' => true,
         'copy' => true,
         'csv' => true,
-        'doubler' => true,
     ]
 ];

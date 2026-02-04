@@ -55,6 +55,9 @@ class DatatableField
 	use HtmlClassesAttributesTrait;
 	use DataAttributesTrait;
 
+
+	public bool $requiresRowSelectCheckbox = false;
+
 	public $id;
 	public $name;
 	public ?string $forcedStandardName;

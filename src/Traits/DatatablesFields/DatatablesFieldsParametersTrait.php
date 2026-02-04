@@ -121,4 +121,9 @@ trait DatatablesFieldsParametersTrait
 	{
 		return isset($this->forceValue);
 	}
+
+	public function requiresSelectRowCheckboxes() : bool
+	{
+		return $this->requiresRowSelectCheckbox;
+	}
 }

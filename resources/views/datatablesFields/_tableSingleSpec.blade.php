@@ -194,7 +194,6 @@
 				@if($name == 'order')
         "{{ $name }}":
             [
-                //{!! json_encode($value) !!}
 				@foreach($value as $index => $order)
 				{!! json_encode($order) !!}@if(! $loop->last),@endif
 				@endforeach
@@ -207,28 +206,6 @@
 	@endif
 	@endforeach
     }
-
-
-    // window.{{ $table->getId() }}options = @if(count($table->options)) {
-    //     @foreach($table->options as $name => $value)
-
-    //     @if($name == 'order')
-    //     "{{ $name }}" : 
-    //     [
-    //         @foreach($value as $index => $order)
-
-    //         {!! json_encode($order) !!}@if(! $loop->last),
-    //             @endif
-    //         @endforeach
-
-    //     ],
-    //     @else
-    //     "{{ $name }}" : {!! json_encode($value) !!},
-    //     @endif
-
-    // @endforeach
-    // }
-    // @endif ;
 
     window.{{ $table->getId() }}columnDefs = [
         {
@@ -278,16 +255,45 @@
 		@endif ];
 
     window.{{ $table->getId() }}buttons = [
-
         {
-            extend: 'fieldsVisibility',
-            className: 'fieldsvisibility',
+            extend: 'collection',
+            text: '<i class="fa-solid fa-table"></i>',
+            buttons: [
+					@if($table->hasReloadButton())
+                {
+                    extend: 'reload',
+                    className: 'reload',
+                }, @endif
+					@if($table->hasCopyButton())
+                {
+                    extend: 'copy',
+                    className: 'copy',
+                },
+					@endif
+					@if($table->hasCsvButton())
+                {
+                    extend: 'csv',
+                    className: 'csv',
+                    exportOptions: {
+                        orthogonal: 'export'
+                    }
+                },
+				@endif
+                {
+                    extend: 'fieldsVisibility',
+                    className: 'fieldsvisibility',
+                },
+
+
+
+            ]
         },
+
 
 			@if($table->hasRemoveFiltersButton())
 
         {
-            text: 'Rimuovi filtri',
+            text: '<i uk-tooltip="Rimuovi filtri" class="fa-solid fa-filter-circle-xmark"></i>',
             className: 'clearfilters',
             action: function (e, dt, node, config) {
                 // reset input e select nei thead e tfoot
@@ -310,30 +316,12 @@
 
 			@endif
 
-		@if($table->hasSearchButton())
-        // 'search',
-			@endif
-
-			@if($table->hasReloadButton())
-        {
-            extend: 'reload',
-            className: 'reload',
-        },
-			@endif
-
-			@if($table->hasSelectFilteredButton())
-        {
-            className: 'selectfiltered',
-            text: '{{ trans('datatables::buttons.selectFiltered') }}',
-            action: function (e, dt, node, config)
-            {
-                dt.rows({search: 'applied'}).select();
-            }
-        },
+		@if($table->hasSelectFilteredButton())
         // 'selectAll',
         {
             extend: 'selectNone',
-            className: 'selectnone',
+			text: '<i uk-tooltip="Deseleziona tutti" class="fa-regular fa-circle-xmark"></i>',
+        className: 'selectnone',
         },
         {
             extend: 'selectedRows',
@@ -341,36 +329,18 @@
         },
 		@endif
 
-				@if($table->hasDoublerButton())
-            'doubler',
-			@endif
+{{--		@if($table->hasDoublerButton())--}}
+{{--            'doubler',--}}
+{{--		@endif--}}
 
 			@if($table->hasSummary())
         {
             extend: 'removeSummary',
             className: 'removesummary',
         },
-		@if($table->hasInlineSearch())
-        	'removeInlineSearch',
-			@endif
 			@endif
 
-			@if($table->hasCopyButton())
-        {
-            extend: 'copy',
-            className: 'copy',
-        },
-			@endif
 
-			@if($table->hasCsvButton())
-        {
-            extend: 'csv',
-            className: 'csv',
-            exportOptions: {
-                orthogonal: 'export'
-            }
-        },
-		@endif
 
 				@foreach ($table->getButtons() as $button)
 				@if(is_string($button))

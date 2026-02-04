@@ -1,8 +1,8 @@
 	<th
-			@if(config('datatables.useTooltips'))
+{{-- 			@if(config('datatables.useTooltips'))
 				uk-tooltip="offset: 20; title: {{ $field->getTranslatedName() }}"
 			@endif
-
+ --}}
 			class="{{ $field->getHeaderHtmlClasses() }} {{ Str::slug($field->getTranslatedName()) }}"
 
 			data-ajaxExtraData="{{ $field->getJsonAjaxExtraData() }}"

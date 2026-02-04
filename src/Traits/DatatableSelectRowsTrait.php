@@ -21,11 +21,22 @@ trait DatatableSelectRowsTrait
         $selectRowField = $this->addField('selectRow', [
 			"type" => "selectRowCheckbox"
         ]);
+
         $fieldsGroup->addField('selectRow', $selectRowField);
 
         $primaryField = $this->addField('primary', ["type" => "primary"]);
         $fieldsGroup->addField('primary', $primaryField);
 
         $this->selectRowCheckboxes = true;
+    }
+
+    public function fieldsGroupsRequiresSelectRowCheckboxes(array $fieldsGroups) : bool
+    {
+        foreach($fieldsGroups as $fieldsGroup)
+            foreach($fieldsGroup['fields'] as $name => $parameters)
+                if($this->craeteField($name, $parameters)->requiresSelectRowCheckboxes())
+                    return true;
+
+        return false;
     }
 }

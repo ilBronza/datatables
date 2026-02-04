@@ -2,9 +2,9 @@
 
 namespace IlBronza\Datatables\DatatablesFields\Numbers;
 
-use IlBronza\Datatables\DatatablesFields\DatatableField;
+use IlBronza\Datatables\DatatablesFields\Numbers\DatatableFieldBaseNumber;
 
-class DatatableFieldRound extends DatatableField
+class DatatableFieldRound extends DatatableFieldBaseNumber
 {
 	public $decimals = 2;
 

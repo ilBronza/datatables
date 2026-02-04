@@ -171,7 +171,7 @@ class Datatables
 
 		$table->cleanCachedTableKeyParameterIfEditor();
 
-		if ($selectRowCheckboxes)
+		if (($selectRowCheckboxes) || $table->fieldsGroupsRequiresSelectRowCheckboxes($fieldsGroups))
 			$table->setRowSelectCheckboxes();
 
 		$table->setVariables($extraVariables ?? []);
@@ -347,11 +347,6 @@ class Datatables
 	public function getVariable(string $name)
 	{
 		return $this->variables[$name] ?? null;
-	}
-
-	public function hasInlineSearch()
-	{
-		return true;
 	}
 
 	public function getUrl()

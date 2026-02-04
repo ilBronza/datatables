@@ -16,7 +16,7 @@ abstract class FieldsGroupParametersFile
 
 	static function getTracedFieldsGroup()
 	{
-		app('uikittemplate')->addFieldsGroupName(static::class);
+		app('uikittemplate')->addFieldsGroupsNames(static::class);
 
 		return static::getFieldsGroup();
 	}

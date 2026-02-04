@@ -7,8 +7,6 @@
 @include('datatables::uikit.header.__headerTHs')
 @include('datatables::uikit.header.__headerFilters')
 
-@if($table->hasSummary())
-	@include('datatables::uikit.header._headerSummary')
-@endif
+@include('datatables::uikit.header._headerSummary')
 
 </thead>

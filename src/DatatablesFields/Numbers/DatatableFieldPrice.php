@@ -2,10 +2,10 @@
 
 namespace IlBronza\Datatables\DatatablesFields\Numbers;
 
-use IlBronza\Datatables\DatatablesFields\DatatableField;
 use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\DecimalsTrait;
+use IlBronza\Datatables\DatatablesFields\Numbers\DatatableFieldBaseNumber;
 
-class DatatableFieldPrice extends DatatableField
+class DatatableFieldPrice extends DatatableFieldBaseNumber
 {
 	use DecimalsTrait;
 

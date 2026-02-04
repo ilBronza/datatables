@@ -4,13 +4,13 @@ namespace IlBronza\Datatables\DatatablesFields\Numbers;
 
 use IlBronza\Datatables\DatatablesFields\Numbers\DatatableFieldBaseNumber;
 
-class DatatableFieldFloor extends DatatableFieldBaseNumber
+class DatatableFieldInteger extends DatatableFieldBaseNumber
 {
 	// public $requiresPlaceholderElement = true;
 
 	public function transformValue($value)
 	{
-		if(is_null($value))
+		if(! $value)
 			return ;
 
 		return floor($value);
