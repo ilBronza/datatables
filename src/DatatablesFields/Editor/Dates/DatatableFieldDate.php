@@ -58,7 +58,7 @@ class DatatableFieldDate extends DatatableFieldEditor
 				item[1] = date.format('" . $this->getInputFieldDefaultDateFormat() . "');
 		}
 
-		item = '<input " . $this->getValueString() . $this->getTypeString() . " class=\"" . $classes . " uk-input ib-editor-text\" data-url=\"' + url + '\" data-field=\"{$this->parameter}\" />';
+		item = '<input " . $this->getValueString() . $this->getTypeString() . " class=\"" . $classes . " uk-input ib-editor-text ' + ((item[1])? 'ib-compiled' : '') + '\" data-url=\"' + url + '\" data-field=\"{$this->parameter}\" />';
 
 		";
 	}

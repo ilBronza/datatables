@@ -92,7 +92,7 @@ trait DatatableDomTrait
 	{
 		$this->hasStickyButtons();
 
-		return '<"sis-buttons-header"<"sis-buttons"B><"uk-clearfix"><"sis-header uk-flex uk-flex-middle uk-child-width-1-3"<"uk-flex uk-flex-middle"ril><"tablecaption"><f>>>tip';
+		return '<"sis-buttons-header"<"sis-buttons"B><"uk-clearfix"><"sis-header uk-flex uk-flex-middle uk-child-width-1-3"<"uk-flex uk-flex-middle"ril><"tablecaption uk-h2"><f>>>tip';
 	}
 
 }

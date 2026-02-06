@@ -225,12 +225,11 @@ table.dataTable
   }
 }
 
-  .tablecaption
-  {
-    font-size: @captionSize;
-    color: @secondTextColor;
-    text-transform: uppercase;
-  }
+.tablecaption
+{
+  font-size: @captionSize;
+  text-transform: uppercase;
+}
 
 table.datatable {
 
@@ -238,6 +237,11 @@ table.datatable {
   .columns
   {
     background-color: @intestationsBackgroundColor;
+  }
+
+  .ib-compiled
+  {
+    color: @inputTextcolor;
   }
 
   .columns
@@ -297,7 +301,7 @@ table.datatable {
     }
   }
 
-  input
+  input.uk-input
   {
     max-height: 26px;
     width: 100%;
@@ -305,6 +309,8 @@ table.datatable {
 
     &[type="date"]:not(:hover)
     {
+      color: @inputPlaceholderColor;
+
       &::-webkit-inner-spin-button,
       &::-webkit-calendar-picker-indicator {
         opacity: 0;
@@ -313,14 +319,19 @@ table.datatable {
         width: 100%;        /* o solo una parte, a tua scelta */
         cursor: pointer;
       }
+
+      &.ib-compiled
+      {
+        color: @inputTextcolor;
+      }
+
+      // input[type="date"]::-webkit-datetime-edit-month-field,
+      // input[type="date"]::-webkit-datetime-edit-day-field,
+      // input[type="date"]::-webkit-datetime-edit-year-field {
+      //     color: #ddd;
+      // }
     }
   }
-
-  //input[type="date"]::-webkit-calendar-picker-indicator {
-  //  opacity: 0;              /* invisibile */
-  //  background:transparent;  /* sfondo trasparente */
-  //  cursor: pointer;         /* mano quando ci passi sopra */
-  //}
 
   .columnsintestations
   {
@@ -558,20 +569,6 @@ END BUTTONS
 //      input {
 //        font-size: 0.7rem;
 //        font-weight: normal;
-//      }
-//
-//      input[type="date"]::-webkit-inner-spin-button,
-//      input[type="date"]::-webkit-calendar-picker-indicator {
-//        background: transparent;
-//        bottom: 0;
-//        color: transparent;
-//        cursor: pointer;
-//        height: auto;
-//        left: 0;
-//        position: absolute;
-//        right: 0;
-//        top: 0;
-//        width: auto;
 //      }
 //
 //      input:not(:placeholder-shown):not([type="date"]),

@@ -137,11 +137,6 @@ table.dataTable th input::-ms-input-placeholder {
   font-weight: 300;
   color: #bbb;
 }
-.tablecaption {
-  font-size: 24px;
-  color: blue;
-  text-transform: uppercase;
-}
 table.datatable .columnsintestations,
 table.datatable .columns {
   background-color: #f0f0f0;
