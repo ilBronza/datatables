@@ -90,6 +90,7 @@ return [
 		],
 		'models' => [
 			'datatableFieldCachedModelProperty' => 'auto',
+			'datatableFieldCachedModel' => 'auto',
 			'datatableFieldClassname' => 'auto'
 		],
 		'iterators' => [

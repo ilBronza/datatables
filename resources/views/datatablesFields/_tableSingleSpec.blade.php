@@ -259,11 +259,6 @@
             extend: 'collection',
             text: '<i class="fa-solid fa-table"></i>',
             buttons: [
-					@if($table->hasReloadButton())
-                {
-                    extend: 'reload',
-                    className: 'reload',
-                }, @endif
 					@if($table->hasCopyButton())
                 {
                     extend: 'copy',
@@ -289,6 +284,11 @@
             ]
         },
 
+        @if($table->hasReloadButton())
+        {
+            extend: 'reload',
+            className: 'reload',
+        }, @endif
 
 			@if($table->hasRemoveFiltersButton())
 
