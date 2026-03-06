@@ -26,7 +26,10 @@ class DatatableFieldPrice extends DatatableFieldBaseNumber
 	public function getCustomColumnDefSingleSortResult()
 	{
 		return "
-			return item.replace('" . $this->thousandsSeparator . "', '').replace('" . $this->suffix . "', '');
+			if(item)
+				item.replace('" . $this->thousandsSeparator . "', '').replace('" . $this->suffix . "', '')
+				
+			return item;
 		";
 	}
 

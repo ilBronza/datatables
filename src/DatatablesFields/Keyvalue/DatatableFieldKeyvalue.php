@@ -99,6 +99,7 @@ class DatatableFieldKeyvalue extends DatatableField
 
                 if(type == 'filter')
                 {
+                	//here
                     " . $this->getCustomColumnDefSingleSearchResult() . "
 
                     return item;

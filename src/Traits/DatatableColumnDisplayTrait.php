@@ -72,7 +72,7 @@ trait DatatableColumnDisplayTrait
             $this->getColumnDisplayKey()
         );
 
-        $this->datatableUserData = $datatableUserDataModel->data;
+        $this->datatableUserData = $datatableUserDataModel?->data ?? DatatableUserData::make()->data;
 
         return $this->datatableUserData;
     }

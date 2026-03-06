@@ -9,7 +9,7 @@ class DatatableFieldColor extends DatatableField
 {
     // public $parameter = 'color_id';
     public $method = 'getFirstColorId';
-	public $width = '25px';
+	public $width = '55px';
 
     public function transformValue($value)
     {

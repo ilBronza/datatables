@@ -345,9 +345,10 @@ class DatatableFieldEditor extends DatatableField
 			let url = '" . $this->getEditorUpdateUrl() . "';
 			url = url.replace('" . config("datatables.replace_model_id_string") . "', item[0]);
 
-			if(item[1] === null)
+			if(typeof item[1] === 'undefined')
 				item[1] = '';
-
+			else if(item[1] === null)
+				item[1] = '';
 		";
 	}
 

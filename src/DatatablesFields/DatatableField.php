@@ -68,6 +68,9 @@ class DatatableField
 	public $visible;
 	public $forceValue;
 
+	public null|int|string $keyPosition = null;
+	public null|int|string $valuePosition = null;
+
 	public ?string $overridingValueMethod = null;
 	public $rowId = false;
 	public $tooltip = false;

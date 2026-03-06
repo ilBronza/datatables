@@ -8,11 +8,11 @@ use function array_slice;
 use function array_splice;
 use function dd;
 
-abstract class FieldsGroupParametersFile
+class FieldsGroupParametersFile
 {
 	public $parameters;
 
-	abstract static function getFieldsGroup() : array;
+	// abstract static function getFieldsGroup() : array;
 
 	static function getTracedFieldsGroup()
 	{

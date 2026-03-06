@@ -42,6 +42,7 @@ trait DatatablesFieldsColumnDefsTrait
 
                 if(type == 'filter')
                 {
+                	//there
                     " . $this->getCustomColumnDefSingleSearchResult() . "
                     
                     return item;
