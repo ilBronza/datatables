@@ -65,7 +65,11 @@ trait DatatablesFieldsDisplayTrait
 
 		$projectPieces = explode('\\', $_project);
 
-		$project = Str::camel(
+		// $project = Str::camel(
+		// 	$projectPieces[0] == 'App' ? $projectPieces[0] : $projectPieces[1]
+		// );
+
+		$project = strtolower(
 			$projectPieces[0] == 'App' ? $projectPieces[0] : $projectPieces[1]
 		);
 

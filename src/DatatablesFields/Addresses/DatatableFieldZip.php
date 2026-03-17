@@ -4,6 +4,6 @@ namespace IlBronza\Datatables\DatatablesFields\Addresses;
 
 use IlBronza\Datatables\DatatablesFields\DatatableField;
 
-class DatatableFieldProvince extends DatatableField
+class DatatableFieldZip extends DatatableField
 {
 }
