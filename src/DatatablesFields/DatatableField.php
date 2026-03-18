@@ -129,7 +129,7 @@ class DatatableField
 	public $modelClass;
 	public ?string $renderAs;
 	public $doubler = false;
-	public $jqueryFilterEvents = ['change', 'keyup'];
+	public $jqueryFilterEvents = null;
 
 	public $strLimit = 0;
 
@@ -237,6 +237,15 @@ class DatatableField
 	public function isEditor() : bool
 	{
 		return $this instanceof DatatableFieldEditor;
+	}
+
+	/**
+	 * Returns save-related settings for this field (e.g. saveTrigger).
+	 * Override in editor fields to provide actual values.
+	 */
+	public function getSaveSettings() : array
+	{
+		return [];
 	}
 
 	public function addExtradata(string $key, mixed $value)

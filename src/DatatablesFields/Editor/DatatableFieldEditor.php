@@ -54,6 +54,13 @@ class DatatableFieldEditor extends DatatableField
 		return config('datatables.editor.saveButton', false);
 	}
 
+	public function getSaveSettings() : array
+	{
+		return [
+			'saveTrigger' => config('datatables.editor.saveTrigger', 'enter'),
+		];
+	}
+
 	public function hasSaveButton() : bool
 	{
 		if (! is_null($this->saveButton))

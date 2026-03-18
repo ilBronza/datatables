@@ -89,6 +89,8 @@
 				data-filter-draw-on-events="true"
 			@endif
 
+			data-editor-save-trigger="{{ config('datatables.editor.saveTrigger', 'enter') }}"
+
 			@if($table->hasSummary())
 				data-summary="true"
 			@endif

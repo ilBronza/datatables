@@ -393,6 +393,9 @@
 
     window.__ibColumnStyleDraftByTable['{{ $table->getId() }}'] = {!! json_encode($table->getDatatableUserData()->columnsSettings ?? [])  !!};
 
+    window.__ibDatatableFieldSettings = window.__ibDatatableFieldSettings || {};
+    window.__ibDatatableFieldSettings['{{ $table->getId() }}'] = {!! json_encode($table->getFieldSettingsArray()) !!};
+
 </script>
 
 @include('datatables::datatablesFields.__tableSingleSpecCss')

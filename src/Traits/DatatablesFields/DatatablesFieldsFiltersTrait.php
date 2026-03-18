@@ -37,7 +37,11 @@ trait DatatablesFieldsFiltersTrait
 
     public function getJqueryFilterEvents()
     {
-        return $this->jqueryFilterEvents;
+        if ($this->jqueryFilterEvents !== null) {
+            return $this->jqueryFilterEvents;
+        }
+        $trigger = config('datatables.filterTrigger', 'enter');
+        return $trigger === 'blur' ? ['change', 'blur'] : ['change', 'keyup'];
     }
 
     public function getJqueryFilterEventsString()

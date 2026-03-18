@@ -40,6 +40,8 @@ return [
 	],
 
 	'datatableFieldWidths' => [
+		'datatableFieldJsonObjects' => 'auto',
+		'datatableFieldFlatRowClass' => '8em',
 		'datatableFieldColor' => '2em',
 		'datatableFieldIcon' => '2em',
 		'datatableFieldJson' => '30em',
@@ -50,6 +52,13 @@ return [
 		'datatableFieldBoolean' => '1.5em',
 		'datatableFieldBooleanAlarm' => '1.5em',
 		'datatableFieldTranslatedClassBasename' => 'auto',
+
+		'addresses' => [
+			'datatableFieldStreet' => '10em',
+			'datatableFieldCity' => '7em',
+			'datatableFieldProvince' => '3em',
+			'datatableFieldZip' => '4em'
+		],
 
 		'clients' => [
 			'datatableFieldColor' => '3em'
@@ -168,6 +177,19 @@ return [
 	'mustPrintIntestation' => false,
 
 	'footerFilters' => true,
+
+	/**
+	 * Filter trigger: 'enter' = apply on keyup (each keystroke + Enter) | 'blur' = apply on blur
+	 */
+	'filterTrigger' => env('DATATABLES_FILTER_TRIGGER', 'enter'),
+
+	/**
+	 * Editor save trigger: 'enter' = save on Enter key | 'blur' = save when field loses focus
+	 */
+	'editor' => [
+		'saveButton' => false,
+		'saveTrigger' => env('DATATABLES_EDITOR_SAVE_TRIGGER', 'enter'),
+	],
 
 	'rangeFilter' => [
 		'enabled' => false

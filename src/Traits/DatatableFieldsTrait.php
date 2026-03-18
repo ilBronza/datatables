@@ -183,6 +183,21 @@ trait DatatableFieldsTrait
         return $this->fields->sortBy('index');
     }
 
+    /**
+     * Returns per-field settings array for JavaScript (e.g. saveTrigger per field).
+     * Keyed by field name.
+     *
+     * @return array<string, array>
+     */
+    public function getFieldSettingsArray() : array
+    {
+        $settings = [];
+        foreach ($this->getFields() as $field) {
+            $settings[$field->getFieldName()] = $field->getSaveSettings();
+        }
+        return $settings;
+    }
+
     public function getFieldByName(string $fieldName)
     {
         return $this->fields->firstWhere('name', $fieldName);
