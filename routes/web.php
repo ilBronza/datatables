@@ -4,7 +4,7 @@ use IlBronza\Datatables\Http\Controllers\ColumnSettingsController;
 use IlBronza\Datatables\Http\Controllers\ColumnShowingController;
 
 Route::group([
-	'middleware' => ['web', 'auth'],
+	'middleware' => ['web', 'auth', 'datatables.roles'],
 	'prefix' => 'datatables-manager',
 	'namespace' => 'IlBronza\Datatables\Http\Controllers'
 ], function()

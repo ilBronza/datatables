@@ -2,6 +2,11 @@
 
 return [
 
+	'defaultRoles' => [
+	],
+
+	'routeRoles' => [
+	],
 
 	'fonts' => [
 

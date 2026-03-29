@@ -3,6 +3,7 @@
 namespace IlBronza\Datatables;
 
 use IlBronza\CRUD\Traits\IlBronzaPackages\IlBronzaServiceProviderPackagesTrait;
+use IlBronza\Datatables\Http\Middleware\DatatablesMiddlewareRolesPermissions;
 use Illuminate\Support\ServiceProvider;
 
 class DatatablesServiceProvider extends ServiceProvider
@@ -17,6 +18,8 @@ class DatatablesServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+
+        $this->app['router']->aliasMiddleware('datatables.roles', DatatablesMiddlewareRolesPermissions::class);
 
         // Publishing is only necessary when using the CLI.
         if ($this->app->runningInConsole()) {
