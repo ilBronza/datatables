@@ -134,6 +134,7 @@ class DatatableField
 	public $strLimit = 0;
 
 	public ?string $translationPrefix = null;
+	public ?string $intestationIcon = null;
 
 	public DatatableFieldsGroup $fieldsGroup;
 

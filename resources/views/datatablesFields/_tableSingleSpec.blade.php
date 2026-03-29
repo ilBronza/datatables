@@ -265,7 +265,7 @@
                     className: 'copy',
                 },
 					@endif
-					@if($table->hasCsvButton())
+                    @if($table->hasCsvButton())
                 {
                     extend: 'csv',
                     className: 'csv',
@@ -273,7 +273,16 @@
                         orthogonal: 'export'
                     }
                 },
-				@endif
+                @endif
+                @if($table->hasExcelButton())
+                {
+                    extend: 'excel',
+                    className: 'excel',
+                    exportOptions: {
+                        orthogonal: 'export'
+                    }
+                },
+                @endif
                 {
                     extend: 'fieldsVisibility',
                     className: 'fieldsvisibility',

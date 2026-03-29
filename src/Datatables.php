@@ -100,6 +100,7 @@ class Datatables
 	public $datatableUserData;
 	public ?bool $copyButton = null;
 	public ?bool $csvButton = null;
+	public ?bool $excelButton = null;
 
 	public $scrollX = true;
 	public ? bool $scrollY = null;

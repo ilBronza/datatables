@@ -44,6 +44,14 @@ trait DatatableButtonsTrait
 		return config('datatables.defaultButtons.copy', true);
 	}
 
+	public function hasExcelButton() : bool
+	{
+		if (! is_null($this->excelButton))
+			return $this->excelButton;
+
+		return config('datatables.defaultButtons.excel', true);
+	}
+
 	public function hasCsvButton() : bool
 	{
 		if (! is_null($this->csvButton))

@@ -1,4 +1,5 @@
 window.moment = require('moment');
+window.JSZip = require('jszip');
 
 require('datatables.net-dt');
 require('datatables.net-autofill-dt');

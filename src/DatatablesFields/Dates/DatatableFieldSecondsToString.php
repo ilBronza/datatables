@@ -9,6 +9,13 @@ class DatatableFieldSecondsToString extends DatatableField
 	public $showSeconds = true;
 	public $showZeros = false;
 
+	public function getCustomColumnDefSingleResultExport()
+	{
+		return "
+			//areo qua tutto gratis
+		";
+	}
+
 	public function getCustomColumnDefSingleResult()
 	{
 		$secondsString = ($this->showSeconds)? "item += seconds + '\"';" : "";

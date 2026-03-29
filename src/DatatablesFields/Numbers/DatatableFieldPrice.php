@@ -23,6 +23,11 @@ class DatatableFieldPrice extends DatatableFieldBaseNumber
 		return " if(item) item = item.replace('.', ''); ";
 	}
 
+	public function getCustomColumnDefSingleResultExport()
+	{
+		return "";
+	}
+
 	public function getCustomColumnDefSingleSortResult()
 	{
 		return "

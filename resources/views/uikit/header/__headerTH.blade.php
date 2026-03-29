@@ -3,4 +3,7 @@ class="{{ $field->getHeaderHtmlClasses() }} {{ Str::slug($field->getTranslatedNa
 	<div @if(! $field->showLabel()) class=" uk-hidden" @endif>
 		{!! $field->getTranslatedName() !!}
 	</div>
+	@if($icon = $field->getInstationIconString())
+		{!! $icon !!}
+	@endif
 </th>

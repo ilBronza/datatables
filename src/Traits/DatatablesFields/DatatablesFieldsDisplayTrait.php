@@ -3,9 +3,9 @@
 namespace IlBronza\Datatables\Traits\DatatablesFields;
 
 use Exception;
+use IlBronza\Buttons\Icons\FaIcon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-
 use function array_map;
 use function config;
 use function dd;
@@ -187,4 +187,11 @@ trait DatatablesFieldsDisplayTrait
 		return $this->tooltip;
 	}
 
+	public function getInstationIconString() : ? string
+	{
+		if($this->intestationIcon)
+			return FaIcon::inline($this->intestationIcon);
+
+		return null;
+	}
 }
