@@ -325,6 +325,21 @@
 
 			@endif
 
+		@if($table->hasMainHeader())
+        {
+            text: '<i uk-tooltip="{{ e(__('datatables::buttons.toggleMainHeaderTooltip')) }}" class="fa-solid fa-object-group"></i>',
+            className: 'togglemainheader',
+            action: function (e, dt, node, config) {
+                const tableId = '{{ $table->getId() }}';
+                const $rows = $('#' + tableId + '_wrapper').find('thead tr.mainheader');
+                $rows.toggleClass('uk-hidden');
+                $(node).toggleClass('uk-button-primary', $rows.first().hasClass('uk-hidden'));
+                dt.columns.adjust();
+            }
+        },
+
+		@endif
+
 		@if($table->hasSelectFilteredButton())
         // 'selectAll',
         {

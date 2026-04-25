@@ -41,7 +41,7 @@ class DatatableFieldBoolean extends DatatableField
 		 * **/
 
 		return "
-			item = '<i class=\"fa-solid fa-{$iconString}\"></i>';
+			item = '<i class=\"fa-{$this->iconType} fa-{$iconString}\"></i>';
 		";
 	}
 

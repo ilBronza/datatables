@@ -36,6 +36,7 @@ require('./datatables.vendor.summary.min.js');
 require('./datatables.vendor.utilities.min.js');
 require('./datatables.vendor.main.min.js');
 require('./datatables.vendor.resizeHeight.js');
+require('./datatables.vendor.cleaveNumeric.js');
 
 /**
  *  FILES letti in vendor con percorso relativo

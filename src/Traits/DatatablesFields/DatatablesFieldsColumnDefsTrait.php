@@ -264,7 +264,7 @@ trait DatatablesFieldsColumnDefsTrait
 		}
 		catch(\Exception $e)
 		{
-			dd([$this->getTDHtmlClassesString(), ($this->getTranslatedName())]);
+			dd([$e->getMessage(), $this->getCamelName(), $this, $this->getTDHtmlClassesString(), ($this->getTranslatedName())]);
 		}
 	}
 

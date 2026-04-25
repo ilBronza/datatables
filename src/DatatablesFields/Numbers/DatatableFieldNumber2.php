@@ -2,21 +2,8 @@
 
 namespace IlBronza\Datatables\DatatablesFields\Numbers;
 
-class DatatableFieldNumber2 extends DatatableFieldPrice
+use IlBronza\Datatables\DatatablesFields\Numbers\DatatableFieldFormatted;
+
+class DatatableFieldNumber2 extends DatatableFieldFormatted
 {
-	public ?string $suffix = null;
-
-	public function transformValue($value)
-	{
-		if (! $value)
-			return;
-
-		return $value;
-	}
-
-	public function getExportResultOptionsEditor()
-	{
-		return "";
-	}
-
 }

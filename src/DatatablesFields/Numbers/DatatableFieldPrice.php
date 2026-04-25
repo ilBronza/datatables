@@ -43,6 +43,11 @@ class DatatableFieldPrice extends DatatableFieldBaseNumber
 		if (! $value)
 			return;
 
-		return number_format($value, $this->getDecimals(), $this->decimalSeparator, $this->thousandsSeparator);
+		return number_format(
+			$value,
+			$this->getDecimals(),
+			$this->decimalSeparator,
+			$this->thousandsSeparator
+		);
 	}
 }

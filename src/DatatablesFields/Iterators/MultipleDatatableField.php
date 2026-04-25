@@ -21,6 +21,9 @@ class MultipleDatatableField extends DatatableField
 
 	public function transformValue($value)
 	{
+		if(! $value)
+			return collect();
+
 		try
 		{
 			return $value->map(function ($item)

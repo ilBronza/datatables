@@ -85,6 +85,7 @@ class DatatableField
 	public $customColumnDefs = [];
 	public $columnOptions = [];
 	public $icon;
+	public string $iconType = 'solid';
 	public $showLabel = true;
 	public $htmlClasses = [];
 	public $tDHtmlClasses = [];

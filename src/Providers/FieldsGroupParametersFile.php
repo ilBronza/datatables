@@ -2,6 +2,9 @@
 
 namespace IlBronza\Datatables\Providers;
 
+use IlBronza\Products\Models\Interfaces\SellableItemInterface;
+use IlBronza\Products\Providers\Helpers\Sellables\SellablePriceDatatableFieldsHelper;
+use Illuminate\Database\Eloquent\Model;
 use function array_keys;
 use function array_search;
 use function array_slice;
@@ -14,11 +17,11 @@ class FieldsGroupParametersFile
 
 	// abstract static function getFieldsGroup() : array;
 
-	static function getTracedFieldsGroup()
+	static function getTracedFieldsGroup(Model $model = null)
 	{
 		app('uikittemplate')->addFieldsGroupsNames(static::class);
 
-		return static::getFieldsGroup();
+		return static::getFieldsGroup($model);
 	}
 
 	static function create()
