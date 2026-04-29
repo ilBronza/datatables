@@ -340,6 +340,24 @@
 
 		@endif
 
+        {
+            text: '<i uk-tooltip="{{ e(__('datatables::buttons.toggleFiltersTooltip')) }}" class="fa-solid fa-filter"></i>',
+            className: 'togglefilters',
+            action: function (e, dt, node, config) {
+                const tableId = '{{ $table->getId() }}';
+                const $wrapper = $('#' + tableId + '_wrapper');
+
+                const $headerFilterRow = $wrapper.find('thead tr.columns');
+                const $footerFilterRow = $wrapper.find('tfoot tr.columns');
+
+                $headerFilterRow.toggleClass('uk-hidden');
+                $footerFilterRow.toggleClass('uk-hidden');
+
+                $(node).toggleClass('uk-button-primary', $headerFilterRow.first().hasClass('uk-hidden'));
+                dt.columns.adjust();
+            }
+        },
+
 		@if($table->hasSelectFilteredButton())
         // 'selectAll',
         {
