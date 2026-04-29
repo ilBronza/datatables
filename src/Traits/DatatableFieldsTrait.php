@@ -3,6 +3,7 @@
 namespace IlBronza\Datatables\Traits;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 use IlBronza\Datatables\DatatableFieldsGroup;
 use IlBronza\Datatables\DatatablesFields\DatatableField;
@@ -196,6 +197,49 @@ trait DatatableFieldsTrait
             $settings[$field->getFieldName()] = $field->getSaveSettings();
         }
         return $settings;
+    }
+
+    /**
+     * Returns logical column-groups declared on fields via `fieldsGroupsDefinitions`.
+     *
+     * Output shape:
+     * [
+     *   'custom' => ['name' => 'custom', 'slug' => 'custom', 'cssClass' => 'ib-dt-fieldsgroup-custom'],
+     *   ...
+     * ]
+     */
+    public function getFieldsGroupsDefinitions() : array
+    {
+        $out = [];
+
+        foreach ($this->getFields() as $field)
+        {
+            if (! method_exists($field, 'getFieldsGroupsDefinitions'))
+                continue;
+
+            foreach (($field->getFieldsGroupsDefinitions() ?? []) as $groupName)
+            {
+                if (! is_string($groupName))
+                    continue;
+
+                $groupName = trim($groupName);
+                if ($groupName === '')
+                    continue;
+
+                if (isset($out[$groupName]))
+                    continue;
+
+                $slug = Str::slug($groupName);
+
+                $out[$groupName] = [
+                    'name' => $groupName,
+                    'slug' => $slug,
+                    'cssClass' => 'ib-dt-fieldsgroup-' . $slug,
+                ];
+            }
+        }
+
+        return $out;
     }
 
     public function getFieldByName(string $fieldName)

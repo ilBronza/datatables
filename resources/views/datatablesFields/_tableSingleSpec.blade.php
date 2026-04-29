@@ -358,6 +358,11 @@
             }
         },
 
+        {
+            extend: 'fieldsGroups',
+            className: 'fieldsgroups'
+        },
+
 		@if($table->hasSelectFilteredButton())
         // 'selectAll',
         {
@@ -437,6 +442,9 @@
 
     window.__ibDatatableFieldSettings = window.__ibDatatableFieldSettings || {};
     window.__ibDatatableFieldSettings['{{ $table->getId() }}'] = {!! json_encode($table->getFieldSettingsArray()) !!};
+
+    window.__ibDatatableFieldsGroups = window.__ibDatatableFieldsGroups || {};
+    window.__ibDatatableFieldsGroups['{{ $table->getId() }}'] = {!! json_encode($table->getFieldsGroupsDefinitions()) !!};
 
 </script>
 

@@ -80,6 +80,54 @@ class DatatableField
 	public $property;
 	public $headerData = [];
 	public $footerData = [];
+
+	/**
+	 * Logical column-groups (used by UI/JS to show/hide columns in bulk).
+	 *
+	 * Supported shapes:
+	 * - list: ['custom', 'economical']
+	 * - map:  ['custom' => true, 'economical' => true]  (truthy keys are kept)
+	 * - map:  ['custom' => 'custom', 'economical' => 'economical'] (values are kept)
+	 */
+	public array $fieldsGroupsDefinitions = [];
+
+	public function getFieldsGroupsDefinitions() : array
+	{
+		$raw = $this->fieldsGroupsDefinitions ?? [];
+
+		if (! is_array($raw))
+			return [];
+
+		$out = [];
+
+		foreach ($raw as $k => $v)
+		{
+			// list: [0 => 'custom']
+			if (is_int($k))
+			{
+				if (is_string($v) && ($v = trim($v)))
+					$out[] = $v;
+
+				continue;
+			}
+
+			// map: ['custom' => true]
+			if (is_bool($v) || is_numeric($v) || is_null($v))
+			{
+				if ($v && is_string($k) && ($k = trim($k)))
+					$out[] = $k;
+
+				continue;
+			}
+
+			// map: ['custom' => 'custom']
+			if (is_string($v) && ($v = trim($v)))
+				$out[] = $v;
+		}
+
+		return array_values(array_unique($out));
+	}
+
 	public $columnDefs = [];
 	public $fieldSpecificClasses = [];
 	public $customColumnDefs = [];

@@ -9,6 +9,34 @@ use function implode;
 
 trait DatatablesFieldsHtmlClassesTrait
 {
+	protected function getFieldsGroupsCssClasses() : array
+	{
+		if (! method_exists($this, 'getFieldsGroupsDefinitions'))
+			return [];
+
+		$groups = $this->getFieldsGroupsDefinitions();
+
+		if (! is_array($groups))
+			return [];
+
+		$out = [];
+
+		foreach ($groups as $groupName)
+		{
+			if (! is_string($groupName))
+				continue;
+
+			$groupName = trim($groupName);
+
+			if ($groupName === '')
+				continue;
+
+			$out[] = 'ib-dt-fieldsgroup-' . Str::slug($groupName);
+		}
+
+		return $out;
+	}
+
 	public function getValueAsRowClassPrefix()
 	{
 		if ($this->valueAsRowClassPrefix)
@@ -36,7 +64,7 @@ trait DatatablesFieldsHtmlClassesTrait
 		if (! $this->isSortable())
 			$this->headerHtmlClasses[] = 'no-sort';
 
-		return implode(' ', $this->headerHtmlClasses);
+		return implode(' ', array_merge($this->headerHtmlClasses, $this->getFieldsGroupsCssClasses()));
 	}
 
 	public function getFooterHtmlClasses()
@@ -44,7 +72,7 @@ trait DatatablesFieldsHtmlClassesTrait
 		if (! $this->isSortable())
 			$this->footerHtmlClasses[] = 'no-sort';
 
-		return implode(' ', $this->footerHtmlClasses);
+		return implode(' ', array_merge($this->footerHtmlClasses, $this->getFieldsGroupsCssClasses()));
 	}
 
 	public function addHtmlClass(string $htmlClass)
