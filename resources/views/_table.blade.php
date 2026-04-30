@@ -98,6 +98,7 @@
 			@if($table->usesColumnDisplay())
 				data-columndisplayroute="{{ $table->getColumnDisplayRoute() }}"
 			@endif
+			data-uisettingsroute="{{ $table->getUiSettingsStoreUrl() }}"
 
 			{!! $table->getDomStickynessDataAttribute() !!}
 

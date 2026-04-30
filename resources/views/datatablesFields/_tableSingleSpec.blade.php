@@ -333,8 +333,23 @@
                 const tableId = '{{ $table->getId() }}';
                 const $rows = $('#' + tableId + '_wrapper').find('thead tr.mainheader');
                 $rows.toggleClass('uk-hidden');
-                $(node).toggleClass('uk-button-primary', $rows.first().hasClass('uk-hidden'));
+                const hidden = $rows.first().hasClass('uk-hidden');
+                $(node).toggleClass('uk-button-primary', hidden);
                 dt.columns.adjust();
+
+                // persist UI setting
+                try {
+                    const $table = $('#' + tableId);
+                    const url = $table.data('uisettingsroute');
+                    if (url) {
+                        $.ajax({
+                            url: url,
+                            dataType: 'json',
+                            type: 'POST',
+                            data: { key: 'mainHeaderHidden', value: hidden ? 1 : 0 }
+                        });
+                    }
+                } catch (err) {}
             }
         },
 
@@ -353,8 +368,23 @@
                 $headerFilterRow.toggleClass('uk-hidden');
                 $footerFilterRow.toggleClass('uk-hidden');
 
-                $(node).toggleClass('uk-button-primary', $headerFilterRow.first().hasClass('uk-hidden'));
+                const hidden = $headerFilterRow.first().hasClass('uk-hidden');
+                $(node).toggleClass('uk-button-primary', hidden);
                 dt.columns.adjust();
+
+                // persist UI setting
+                try {
+                    const $table = $('#' + tableId);
+                    const url = $table.data('uisettingsroute');
+                    if (url) {
+                        $.ajax({
+                            url: url,
+                            dataType: 'json',
+                            type: 'POST',
+                            data: { key: 'filtersHidden', value: hidden ? 1 : 0 }
+                        });
+                    }
+                } catch (err) {}
             }
         },
 
@@ -445,6 +475,9 @@
 
     window.__ibDatatableFieldsGroups = window.__ibDatatableFieldsGroups || {};
     window.__ibDatatableFieldsGroups['{{ $table->getId() }}'] = {!! json_encode($table->getFieldsGroupsDefinitions()) !!};
+
+    window.__ibDatatableUiSettings = window.__ibDatatableUiSettings || {};
+    window.__ibDatatableUiSettings['{{ $table->getId() }}'] = {!! json_encode($table->getDatatableUserData()->uiSettings ?? []) !!};
 
 </script>
 

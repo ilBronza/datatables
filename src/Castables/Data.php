@@ -8,8 +8,10 @@ use function collect;
 class Data
 {
 	public $columns;
+	public array $uiSettings = [];
+	public array $columnsSettings = [];
 
-	public function __construct(string $value = null)
+	public function __construct(?string $value = null)
 	{
 		$this->columns = collect();
 
@@ -19,6 +21,7 @@ class Data
 		$data = json_decode($value, true);
 
 		$this->columnsSettings = $data['columnsSettings'] ?? [];
+		$this->uiSettings = $data['uiSettings'] ?? [];
 
 		foreach($data['columns'] ?? [] as $column)
 			$this->columns->push(DatatableColumn::refresh($column));
@@ -54,6 +57,16 @@ class Data
 			$settings,
 			['index' => $columnIndex]
 		);
+	}
+
+	public function setUiSetting(string $key, mixed $value) : void
+	{
+		$this->uiSettings[$key] = $value;
+	}
+
+	public function getUiSetting(string $key, mixed $default = null) : mixed
+	{
+		return $this->uiSettings[$key] ?? $default;
 	}
 
 	public function getColumnSettingsByField(DatatableField $field)

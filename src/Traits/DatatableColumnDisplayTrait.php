@@ -19,6 +19,11 @@ trait DatatableColumnDisplayTrait
         return route('datatables.columnSettings.update', ['tableKey' => $this->getColumnDisplayKey()]);
     }
 
+    public function getUiSettingsStoreUrl()
+    {
+        return route('datatables.uiSettings.update', ['tableKey' => $this->getColumnDisplayKey()]);
+    }
+
 	public function usesColumnDisplay()
     {
         return true;
