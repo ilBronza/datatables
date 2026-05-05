@@ -34,14 +34,9 @@
 
         drawCallback: function (settings) {
             const tableId = '{{ $table->getId() }}';
-            const wrapper = $('#' + tableId + '_wrapper');
-            const infoText = wrapper.find('.dataTables_info').text();
-            const button = wrapper.find('button.clearfilters');
-
-            const filterMarker = 'filtrati da'; // se tradotto, usa direttamente la stringa localizzata
-            const filtersActive = infoText.includes(filterMarker);
-
-            button.toggleClass('uk-button-danger', filtersActive);
+            if (typeof window.ibSyncClearFiltersButtonForTable === 'function') {
+                window.ibSyncClearFiltersButtonForTable(tableId);
+            }
 
             //HIGHLIGHT VISITED LINKS
 			if (typeof window.highlightVisitedLinks === 'function') {
@@ -280,6 +275,10 @@
                     }
                 });
 
+                if (typeof window.ibSyncClearFiltersButtonForTable === 'function') {
+                    window.ibSyncClearFiltersButtonForTable('{{ $table->getId() }}');
+                }
+
                 // ricarica la tabella senza filtri
                 dt.search('').columns().search('').draw();
             }
@@ -318,7 +317,7 @@
 		@endif
 
         {
-            text: '<i uk-tooltip="{{ e(__('datatables::buttons.toggleFiltersTooltip')) }}" class="fa-solid fa-filter"></i>',
+            text: '<i class="fa-solid fa-filter-circle-xmark"></i> Nascondi ricerche',
             className: 'togglefilters',
             action: function (e, dt, node, config) {
                 const tableId = '{{ $table->getId() }}';
@@ -330,8 +329,10 @@
                 $headerFilterRow.toggleClass('uk-hidden');
                 $footerFilterRow.toggleClass('uk-hidden');
 
-                const hidden = $headerFilterRow.first().hasClass('uk-hidden');
-                $(node).toggleClass('uk-button-primary', hidden);
+                if (typeof window.ibSetToggleFiltersButtonLabel === 'function') {
+                    window.ibSetToggleFiltersButtonLabel($(node), tableId);
+                }
+
                 dt.columns.adjust();
 
                 // persist UI setting
@@ -343,7 +344,7 @@
                             url: url,
                             dataType: 'json',
                             type: 'POST',
-                            data: { key: 'filtersHidden', value: hidden ? 1 : 0 }
+                            data: { key: 'filtersHidden', value: ($headerFilterRow.first().hasClass('uk-hidden') ? 1 : 0) }
                         });
                     }
                 } catch (err) {}
