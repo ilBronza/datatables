@@ -259,30 +259,6 @@
             extend: 'collection',
             text: '<i class="fa-solid fa-table"></i>',
             buttons: [
-					@if($table->hasCopyButton())
-                {
-                    extend: 'copy',
-                    className: 'copy',
-                },
-					@endif
-                    @if($table->hasCsvButton())
-                {
-                    extend: 'csv',
-                    className: 'csv',
-                    exportOptions: {
-                        orthogonal: 'export'
-                    }
-                },
-                @endif
-                @if($table->hasExcelButton())
-                {
-                    extend: 'excel',
-                    className: 'excel',
-                    exportOptions: {
-                        orthogonal: 'export'
-                    }
-                },
-                @endif
                 {
                     extend: 'fieldsVisibility',
                     className: 'fieldsvisibility',
@@ -388,11 +364,6 @@
             }
         },
 
-        {
-            extend: 'fieldsGroups',
-            className: 'fieldsgroups'
-        },
-
 		@if($table->hasSelectFilteredButton())
         // 'selectAll',
         {
@@ -464,6 +435,38 @@
                 e.preventDefault();
             }
         },
+
+		@if($table->hasCsvButton())
+        {
+            extend: 'csv',
+            className: 'csv uk-hidden ib-dt-hidden-export',
+            exportOptions: {
+                orthogonal: 'export'
+            }
+        },
+		@endif
+
+		@if($table->hasExcelButton())
+        {
+            extend: 'excel',
+            className: 'excel uk-hidden ib-dt-hidden-export',
+            exportOptions: {
+                orthogonal: 'export'
+            }
+        },
+		@endif
+
+		@if($table->hasCopyButton())
+        {
+            extend: 'copy',
+            className: 'copy uk-hidden ib-dt-hidden-export',
+        },
+		@endif
+
+        {
+            extend: 'utils',
+            className: 'utils'
+        },
     ];
 
     window.__ibColumnStyleDraftByTable = window.__ibColumnStyleDraftByTable || {};
@@ -478,6 +481,20 @@
 
     window.__ibDatatableUiSettings = window.__ibDatatableUiSettings || {};
     window.__ibDatatableUiSettings['{{ $table->getId() }}'] = {!! json_encode($table->getDatatableUserData()->uiSettings ?? []) !!};
+
+    window.__ibDatatableUtilsButtons = window.__ibDatatableUtilsButtons || {};
+    window.__ibDatatableUtilsButtons['{{ $table->getId() }}'] = [
+			@if($table->hasCopyButton())
+        'copy',
+			@endif
+			@if($table->hasCsvButton())
+        'csv',
+			@endif
+			@if($table->hasExcelButton())
+        'excel',
+			@endif
+        'fieldsGroups',
+    ];
 
 </script>
 
