@@ -255,16 +255,13 @@
 		@endif ];
 
     window.{{ $table->getId() }}buttons = [
+		@if($table->canHideColumns())
         {
-            extend: 'collection',
-            text: '<i class="fa-solid fa-table"></i>',
-            buttons: [
-                {
-                    extend: 'fieldsVisibility',
-                    className: 'fieldsvisibility',
-                },
-            ]
+            extend: 'fieldsVisibility',
+            className: 'fieldsvisibility',
+            text: "{{ __('datatables::fields.fieldsVisibilityLabel') }}",
         },
+		@endif
 
         @if($table->hasReloadButton())
         {
