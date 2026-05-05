@@ -263,9 +263,6 @@
                     extend: 'fieldsVisibility',
                     className: 'fieldsvisibility',
                 },
-
-
-
             ]
         },
 
@@ -365,14 +362,19 @@
         },
 
 		@if($table->hasSelectFilteredButton())
-        // 'selectAll',
+        {
+            extend: 'selectAll',
+			text: '<i uk-tooltip="Seleziona tutti" class="fa-regular fa-circle-check"></i> Seleziona tutti',
+            className: 'selectall',
+        },
         {
             extend: 'selectNone',
-			text: '<i uk-tooltip="Deseleziona tutti" class="fa-regular fa-circle-xmark"></i>',
+			text: '<i uk-tooltip="Deseleziona tutti" class="fa-regular fa-circle-xmark"></i> Deseleziona tutti',
         className: 'selectnone',
         },
         {
             extend: 'selectedRows',
+			text: '<i uk-tooltip="Solo selezionate" class="fa-solid fa-eye"></i> Solo selezionate',
             className: 'selectedrows',
         },
 		@endif
