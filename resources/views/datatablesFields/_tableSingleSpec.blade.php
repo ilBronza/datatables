@@ -255,14 +255,6 @@
 		@endif ];
 
     window.{{ $table->getId() }}buttons = [
-		@if($table->canHideColumns())
-        {
-            extend: 'fieldsVisibility',
-            className: 'fieldsvisibility',
-            text: "{{ __('datatables::fields.fieldsVisibilityLabel') }}",
-        },
-		@endif
-
         @if($table->hasReloadButton())
         {
             extend: 'reload',
@@ -462,6 +454,13 @@
         },
 		@endif
 
+		@if($table->canHideColumns())
+        {
+            extend: 'fieldsVisibility',
+            className: 'fieldsvisibility uk-hidden ib-dt-hidden-export',
+        },
+		@endif
+
         {
             extend: 'utils',
             className: 'utils'
@@ -491,6 +490,9 @@
 			@endif
 			@if($table->hasExcelButton())
         'excel',
+			@endif
+			@if($table->canHideColumns())
+        'fieldsVisibility',
 			@endif
         'fieldsGroups',
     ];
