@@ -6,7 +6,7 @@ use IlBronza\Datatables\DatatablesFields\DatatableField;
 
 class DatatableFieldMedia extends DatatableField
 {
-	protected $collection = null;
+	protected $collection = 'default';
 	protected $conversionName = 'table';
 	protected bool $lightbox = true;
 
