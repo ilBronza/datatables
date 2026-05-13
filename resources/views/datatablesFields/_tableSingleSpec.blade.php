@@ -478,6 +478,13 @@
     window.__ibDatatableFieldsGroups = window.__ibDatatableFieldsGroups || {};
     window.__ibDatatableFieldsGroups['{{ $table->getId() }}'] = {!! json_encode($table->getFieldsGroupsDefinitions()) !!};
 
+    window.__ibDatatableColumnIndexToFieldName = window.__ibDatatableColumnIndexToFieldName || {};
+    window.__ibDatatableColumnIndexToFieldName['{{ $table->getId() }}'] = {!! json_encode(
+        $table->getFields()->mapWithKeys(function ($field) {
+            return [$field->getIndex() => $field->getFieldName()];
+        })->all()
+    ) !!};
+
     window.__ibDatatableUiSettings = window.__ibDatatableUiSettings || {};
     window.__ibDatatableUiSettings['{{ $table->getId() }}'] = {!! json_encode($table->getDatatableUserData()->uiSettings ?? []) !!};
 
