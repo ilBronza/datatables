@@ -6,6 +6,11 @@ class DatatableFieldToggle extends DatatableFieldEditor
 {
 	public bool $requiresRowSelectCheckbox = true;
 
+	public function isBulkEditable() : bool
+	{
+		return true;
+	}
+
 	public $isButton = true;
 	public string $buttonHtmlClass = 'uk-icon-button';
 	public $trueIcon = 'check';

@@ -6,6 +6,13 @@ use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\EditorSingleFieldTrait
 
 class DatatableFieldNumeric extends DatatableFieldEditor
 {
+	public bool $requiresRowSelectCheckbox = true;
+
+	public function isBulkEditable() : bool
+	{
+		return true;
+	}
+
 	public function transformValue($value)
 	{
 		if (isset($this->solveElement))

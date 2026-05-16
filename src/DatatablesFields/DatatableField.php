@@ -58,6 +58,11 @@ class DatatableField
 
 	public bool $requiresRowSelectCheckbox = false;
 
+	public function isBulkEditable() : bool
+	{
+		return false;
+	}
+
 	public $id;
 	public $name;
 	public ?string $forcedStandardName;

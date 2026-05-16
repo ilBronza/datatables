@@ -2,7 +2,7 @@
 
 namespace IlBronza\Datatables\Traits;
 
-use IlBronza\Datatables\DatatablesFields\Editor\DatatableFieldToggle;
+use IlBronza\Datatables\DatatablesFields\DatatableField;
 use Illuminate\Support\Collection;
 
 trait DatatableSelectRowsTrait
@@ -40,27 +40,31 @@ trait DatatableSelectRowsTrait
     {
         foreach($fieldsGroups as $fieldsGroup)
             foreach($fieldsGroup['fields'] as $name => $parameters)
-                if($this->craeteField($name, $parameters)->requiresSelectRowCheckboxes())
+            {
+                $field = $this->craeteField($name, $parameters);
+
+                if($field->requiresSelectRowCheckboxes() || $field->isBulkEditable())
                     return true;
+            }
 
         return false;
     }
 
-    public function getToggleableFields() : Collection
+    public function getBulkEditableFields() : Collection
     {
         return $this->getFields()->filter(
-            fn ($field) => $field instanceof DatatableFieldToggle
+            fn (DatatableField $field) => $field->isBulkEditable()
         );
     }
 
-    public function hasToggleableFields() : bool
+    public function hasBulkEditableFields() : bool
     {
-        return $this->getToggleableFields()->isNotEmpty();
+        return $this->getBulkEditableFields()->isNotEmpty();
     }
 
-    public function getToggleableFieldsArray() : array
+    public function getBulkEditableFieldsArray() : array
     {
-        return $this->getToggleableFields()->map(function (DatatableFieldToggle $field)
+        return $this->getBulkEditableFields()->map(function (DatatableField $field)
         {
             $fieldData = $field->getFieldSpecificData();
 
@@ -68,15 +72,36 @@ trait DatatableSelectRowsTrait
                 'name' => $field->getFieldName(),
                 'parameter' => $fieldData['field'] ?? $field->getFieldName(),
                 'index' => $field->getIndex(),
-                'nullable' => $field->isNullable(),
                 'label' => $field->getTranslatedName(),
-                'updateUrl' => $field->getEditorUpdateUrl(),
             ];
         })->values()->all();
     }
 
+    public function hasBulkEditButton() : bool
+    {
+        return $this->hasSelectRowCheckboxes() && $this->hasBulkEditableFields();
+    }
+
     public function hasBulkToggleButton() : bool
     {
-        return $this->hasSelectRowCheckboxes() && $this->hasToggleableFields();
+        return $this->hasBulkEditButton();
+    }
+
+    /** @deprecated use getBulkEditableFields() */
+    public function getToggleableFields() : Collection
+    {
+        return $this->getBulkEditableFields();
+    }
+
+    /** @deprecated use hasBulkEditableFields() */
+    public function hasToggleableFields() : bool
+    {
+        return $this->hasBulkEditableFields();
+    }
+
+    /** @deprecated use getBulkEditableFieldsArray() */
+    public function getToggleableFieldsArray() : array
+    {
+        return $this->getBulkEditableFieldsArray();
     }
 }

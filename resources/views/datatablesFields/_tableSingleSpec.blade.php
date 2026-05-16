@@ -351,7 +351,7 @@
             }
         },
 
-		@if($table->hasBulkToggleButton())
+		@if($table->hasBulkEditButton())
         {
             extend: 'bulkToggle',
             className: 'ib-dt-bulk-toggle',
@@ -492,14 +492,18 @@
         })->all()
     ) !!};
 
-		@if($table->hasBulkToggleButton())
-    window.__ibDatatableToggleableFields = window.__ibDatatableToggleableFields || {};
-    window.__ibDatatableToggleableFields['{{ $table->getId() }}'] = {!! json_encode($table->getToggleableFieldsArray()) !!};
+		@if($table->hasBulkEditButton())
+    window.__ibDatatableBulkEditableFields = window.__ibDatatableBulkEditableFields || {};
+    window.__ibDatatableBulkEditableFields['{{ $table->getId() }}'] = {!! json_encode($table->getBulkEditableFieldsArray()) !!};
+    window.__ibDatatableToggleableFields = window.__ibDatatableBulkEditableFields;
     window.__ibDatatableBulkToggleLabels = window.__ibDatatableBulkToggleLabels || {};
     window.__ibDatatableBulkToggleLabels['{{ $table->getId() }}'] = {!! json_encode([
         'button' => __('datatables::buttons.bulkToggle'),
         'yes' => __('datatables::buttons.bulkToggleYes'),
         'no' => __('datatables::buttons.bulkToggleNo'),
+        'apply' => __('datatables::buttons.bulkToggleApply'),
+        'setValue' => __('datatables::buttons.bulkToggleSetValue'),
+        'chooseValue' => __('datatables::buttons.bulkToggleChooseValue'),
         'noSelection' => __('datatables::buttons.bulkToggleNoSelection'),
         'confirm' => __('datatables::buttons.bulkToggleConfirm'),
         'error' => __('datatables::buttons.bulkToggleError'),

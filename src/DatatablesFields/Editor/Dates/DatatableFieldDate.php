@@ -11,10 +11,17 @@ class DatatableFieldDate extends DatatableFieldEditor
 	use EditorSingleFieldTrait;
 	use CarbonTrait;
 
+	public bool $requiresRowSelectCheckbox = true;
+
 	public $defaultWidth = '8em';
 	public $width = '8em';
 	public $inputFieldDefaultFormat = "YYYY-MM-DD";
 	public $fieldType = 'date';
+
+	public function isBulkEditable() : bool
+	{
+		return true;
+	}
 
 	public function transformValue($value)
 	{
