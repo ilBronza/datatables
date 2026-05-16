@@ -351,6 +351,13 @@
             }
         },
 
+		@if($table->hasBulkToggleButton())
+        {
+            extend: 'bulkToggle',
+            className: 'ib-dt-bulk-toggle',
+        },
+		@endif
+
 		@if($table->hasSelectFilteredButton())
         {
             extend: 'selectAll',
@@ -484,6 +491,19 @@
             return [$field->getIndex() => $field->getFieldName()];
         })->all()
     ) !!};
+
+		@if($table->hasBulkToggleButton())
+    window.__ibDatatableToggleableFields = window.__ibDatatableToggleableFields || {};
+    window.__ibDatatableToggleableFields['{{ $table->getId() }}'] = {!! json_encode($table->getToggleableFieldsArray()) !!};
+    window.__ibDatatableBulkToggleLabels = window.__ibDatatableBulkToggleLabels || {};
+    window.__ibDatatableBulkToggleLabels['{{ $table->getId() }}'] = {!! json_encode([
+        'button' => __('datatables::buttons.bulkToggle'),
+        'yes' => __('datatables::buttons.bulkToggleYes'),
+        'no' => __('datatables::buttons.bulkToggleNo'),
+        'noSelection' => __('datatables::buttons.bulkToggleNoSelection'),
+        'confirm' => __('datatables::buttons.bulkToggleConfirm'),
+    ]) !!};
+		@endif
 
     window.__ibDatatableUiSettings = window.__ibDatatableUiSettings || {};
     window.__ibDatatableUiSettings['{{ $table->getId() }}'] = {!! json_encode($table->getDatatableUserData()->uiSettings ?? []) !!};

@@ -193,7 +193,7 @@ return [
 	 */
 	'editor' => [
 		'saveButton' => false,
-		'saveTrigger' => env('DATATABLES_EDITOR_SAVE_TRIGGER', 'enter'),
+		'saveTrigger' => env('DATATABLES_EDITOR_SAVE_TRIGGER', 'blur'),
 	],
 
 	'rangeFilter' => [

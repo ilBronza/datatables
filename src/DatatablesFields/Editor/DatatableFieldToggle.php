@@ -4,6 +4,8 @@ namespace IlBronza\Datatables\DatatablesFields\Editor;
 
 class DatatableFieldToggle extends DatatableFieldEditor
 {
+	public bool $requiresRowSelectCheckbox = true;
+
 	public $isButton = true;
 	public string $buttonHtmlClass = 'uk-icon-button';
 	public $trueIcon = 'check';
