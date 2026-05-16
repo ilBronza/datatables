@@ -6,8 +6,36 @@ use IlBronza\Datatables\DatatablesFields\DatatableField;
 use IlBronza\Datatables\DatatablesFields\Editor\DatatableFieldEditor;
 use Illuminate\Support\Collection;
 
+use function config;
+use function is_null;
+
 trait DatatableSelectRowsTrait
 {
+    protected ?bool $bulkEditFromController = null;
+
+    public function setBulkEditFromController(?bool $bulkEdit) : self
+    {
+        $this->bulkEditFromController = $bulkEdit;
+
+        return $this;
+    }
+
+    public function getBulkEdit() : bool
+    {
+        if (! is_null($this->bulkEdit))
+            return (bool) $this->bulkEdit;
+
+        if (! is_null($this->bulkEditFromController))
+            return (bool) $this->bulkEditFromController;
+
+        return (bool) config('datatables.bulkEdit', false);
+    }
+
+    public function hasBulkEdit() : bool
+    {
+        return $this->getBulkEdit();
+    }
+
     public function getFirstFieldsGroup()
     {
         return $this->fieldsGroups->first();
@@ -44,7 +72,10 @@ trait DatatableSelectRowsTrait
             {
                 $field = $this->craeteField($name, $parameters);
 
-                if($field->requiresSelectRowCheckboxes() || $field->isBulkEditable())
+                if ($field->requiresSelectRowCheckboxes())
+                    return true;
+
+                if ($this->hasBulkEdit() && $field->isBulkEditable())
                     return true;
             }
 
@@ -53,6 +84,9 @@ trait DatatableSelectRowsTrait
 
     public function getBulkEditableFields() : Collection
     {
+        if (! $this->hasBulkEdit())
+            return collect();
+
         return $this->getFields()->filter(
             fn (DatatableField $field) => $field->isBulkEditable()
         );
@@ -81,7 +115,9 @@ trait DatatableSelectRowsTrait
 
     public function hasBulkEditButton() : bool
     {
-        return $this->hasSelectRowCheckboxes() && $this->hasBulkEditableFields();
+        return $this->hasBulkEdit()
+            && $this->hasSelectRowCheckboxes()
+            && $this->hasBulkEditableFields();
     }
 
     public function hasBulkToggleButton() : bool

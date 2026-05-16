@@ -96,6 +96,7 @@ class Datatables
 	public $canHideColumns;
 	public $customButtons;
 	public $selectRowCheckboxes;
+	public ?bool $bulkEdit = null;
 	public $placeholderElement;
 	public $datatableUserData;
 	public ?bool $copyButton = null;
@@ -164,13 +165,16 @@ class Datatables
 		return $table;
 	}
 
-	static function create(string $name, array $fieldsGroups, $elements, bool $selectRowCheckboxes = false, array $extraVariables = null, string $modelClass = null)
+	static function create(string $name, array $fieldsGroups, $elements, bool $selectRowCheckboxes = false, array $extraVariables = null, string $modelClass = null, ?bool $bulkEditFromController = null)
 	{
 		$table = new static();
 
 		$table->setMainModelElement($modelClass);
 
 		$table->cleanCachedTableKeyParameterIfEditor();
+
+		if (! is_null($bulkEditFromController))
+			$table->setBulkEditFromController($bulkEditFromController);
 
 		if (($selectRowCheckboxes) || $table->fieldsGroupsRequiresSelectRowCheckboxes($fieldsGroups))
 			$table->setRowSelectCheckboxes();
