@@ -507,6 +507,10 @@
         'noSelection' => __('datatables::buttons.bulkToggleNoSelection'),
         'confirm' => __('datatables::buttons.bulkToggleConfirm'),
         'error' => __('datatables::buttons.bulkToggleError'),
+        'save' => __('datatables::buttons.save'),
+        'selectedRows' => __('datatables::buttons.bulkToggleSelectedRows'),
+        'noFields' => __('datatables::buttons.bulkToggleNoFields'),
+        'clear' => __('datatables::buttons.bulkToggleClear'),
     ]) !!};
 		@endif
 

@@ -3,6 +3,7 @@
 namespace IlBronza\Datatables\Traits;
 
 use IlBronza\Datatables\DatatablesFields\DatatableField;
+use IlBronza\Datatables\DatatablesFields\Editor\DatatableFieldEditor;
 use Illuminate\Support\Collection;
 
 trait DatatableSelectRowsTrait
@@ -73,6 +74,7 @@ trait DatatableSelectRowsTrait
                 'parameter' => $fieldData['field'] ?? $field->getFieldName(),
                 'index' => $field->getIndex(),
                 'label' => $field->getTranslatedName(),
+                'nullable' => $field instanceof DatatableFieldEditor && $field->isNullable(),
             ];
         })->values()->all();
     }
