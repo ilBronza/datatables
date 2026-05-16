@@ -502,6 +502,7 @@
         'no' => __('datatables::buttons.bulkToggleNo'),
         'noSelection' => __('datatables::buttons.bulkToggleNoSelection'),
         'confirm' => __('datatables::buttons.bulkToggleConfirm'),
+        'error' => __('datatables::buttons.bulkToggleError'),
     ]) !!};
 		@endif
 
