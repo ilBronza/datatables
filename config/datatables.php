@@ -206,6 +206,7 @@ return [
 		'reload' => true,
         'copy' => true,
         'csv' => true,
+		'selectFiltered' => true,
     ],
 
 	'bulkEdit' => env('DATATABLES_BULK_EDIT', false),

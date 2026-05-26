@@ -16,4 +16,6 @@ return [
 	'bulkToggleSelectedRows' => ':count righe selezionate',
 	'bulkToggleNoFields' => 'Nessun campo modificabile sulle righe selezionate.',
 	'bulkToggleClear' => 'Svuota',
+	'selectFiltered' => 'Seleziona filtrati',
+	'selectFilteredTooltip' => 'Seleziona filtrati',
 ];

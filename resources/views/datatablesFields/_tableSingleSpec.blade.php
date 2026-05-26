@@ -360,8 +360,8 @@
 
 		@if($table->hasSelectFilteredButton())
         {
-            extend: 'selectAll',
-			text: '<i uk-tooltip="Seleziona tutti" class="fa-regular fa-circle-check"></i> Seleziona tutti',
+            extend: 'selectFiltered',
+			text: '<i uk-tooltip="{{ __('datatables::buttons.selectFilteredTooltip') }}" class="fa-regular fa-circle-check"></i> {{ __('datatables::buttons.selectFiltered') }}',
             className: 'selectall',
         },
         {
