@@ -75,7 +75,13 @@ class DatatableFieldsGroup
 		{
 			$field = $this->getFieldByName($fieldName);
 
-			$field->assignSummary($_summary);
+			if (! $field)
+				continue;
+
+			if (is_array($_summary))
+				$field->assignSummaryConfig($_summary, $this);
+			else
+				$field->assignSummary($_summary);
 		}
 	}
 }

@@ -128,6 +128,12 @@ trait DatatableFieldsTrait
 
         foreach($summary as $fieldName => $summaryType)
         {
+            if (is_array($summaryType))
+                $summaryType = $summaryType['type'] ?? null;
+
+            if (! $summaryType)
+                continue;
+
             if(! $this->hasSummaryType($summaryType))
                 $this->summary[$summaryType] = [];
 

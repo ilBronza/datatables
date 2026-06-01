@@ -2,13 +2,54 @@
 
 namespace IlBronza\Datatables\Traits\DatatablesFields;
 
+use IlBronza\Datatables\DatatableFieldsGroup;
 use Spatie\Permission\Models\Role;
 
 trait DatatablesFieldsSummaryTrait
 {
+    public ?array $summaryOperands = null;
+
     public function getSummaryType()
     {
         return $this->summary;
+    }
+
+    public function getSummaryDataAttributes() : array
+    {
+        if ($this->summary !== 'marginPercent' || empty($this->summaryOperands))
+            return [];
+
+        return [
+            'summary-revenue-field' => $this->summaryOperands['revenue'],
+            'summary-cost-field' => $this->summaryOperands['cost'],
+        ];
+    }
+
+    public function assignSummaryConfig(array $config, DatatableFieldsGroup $group) : void
+    {
+        $type = $config['type'] ?? null;
+
+        if (! $type)
+            return;
+
+        $this->summary = $type;
+
+        if ($type !== 'marginPercent')
+            return;
+
+        $revenueName = $config['revenue'] ?? '';
+        $costName = $config['cost'] ?? '';
+
+        if (! $revenueName || ! $costName)
+            return;
+
+        if (! $group->getFieldByName($revenueName) || ! $group->getFieldByName($costName))
+            return;
+
+        $this->summaryOperands = [
+            'revenue' => $revenueName,
+            'cost' => $costName,
+        ];
     }
 
     public function getSummaryResult()
@@ -98,9 +139,10 @@ trait DatatablesFieldsSummaryTrait
         return $value;
     }
 
-    public function assignSummary(string $summary)
+    public function assignSummary(string $summary) : void
     {
         $this->summary = $summary;
+        $this->summaryOperands = null;
     }
 
 

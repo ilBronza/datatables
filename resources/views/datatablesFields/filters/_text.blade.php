@@ -1,8 +1,6 @@
 
 <input
-	@if($summary = $field->getSummaryType())
-	data-summary="{{ $summary }}"
-	@endif
+	@include('datatables::datatablesFields.filters._summaryDataAttributes')
 
 	class="uk-input"
 
