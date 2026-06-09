@@ -36,6 +36,8 @@ class DatatableFieldSelect extends DatatableFieldEditor
 
 	public ? string $possibleValuesMethod = null;
 
+	public ? string $possibleValuesRoute = null;
+
     public function __construct(string $name, array $parameters = [], int $index = null, DatatableField $parent = null, Datatables $table = null)
 	{
 		parent::__construct($name, $parameters, $index, $parent, $table);
@@ -49,9 +51,9 @@ class DatatableFieldSelect extends DatatableFieldEditor
 			$list = array_merge([$this->nullValue => $this->nullString], $list);
 
 		$this->setHeaderDataAttribute(
-			'possibleValues',
+			'possibleValuesLegacy',
 			json_encode($list)
-		);        
+		);
     }
 
     public function getPossibleEnumValuesArray()

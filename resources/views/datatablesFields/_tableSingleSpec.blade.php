@@ -482,6 +482,25 @@
     window.__ibDatatableFieldSettings = window.__ibDatatableFieldSettings || {};
     window.__ibDatatableFieldSettings['{{ $table->getId() }}'] = {!! json_encode($table->getFieldSettingsArray()) !!};
 
+    window.__ibDatatableSelectPossibleValues = window.__ibDatatableSelectPossibleValues || {};
+    window.__ibDatatableSelectPossibleValues['{{ $table->getId() }}'] = {};
+@foreach($table->getFields() as $field)
+    @if($field instanceof \IlBronza\Datatables\DatatablesFields\Editor\DatatableFieldSelect && ! $field instanceof \IlBronza\Datatables\DatatablesFields\Editor\DatatableFieldSelectCell)
+        @php
+            $selectPossibleValues = $field->getPossibleEnumValuesArray();
+
+            if ($field->isNullable())
+                $selectPossibleValues = array_merge([$field->nullValue => $field->nullString], $selectPossibleValues);
+
+            $selectFieldDefinition = ['list' => $selectPossibleValues];
+
+            if ($field->possibleValuesRoute ?? null)
+                $selectFieldDefinition['route'] = $field->possibleValuesRoute;
+        @endphp
+    window.__ibDatatableSelectPossibleValues['{{ $table->getId() }}']['{{ $field->getFieldName() }}'] = {!! json_encode($selectFieldDefinition) !!};
+    @endif
+@endforeach
+
     window.__ibDatatableFieldsGroups = window.__ibDatatableFieldsGroups || {};
     window.__ibDatatableFieldsGroups['{{ $table->getId() }}'] = {!! json_encode($table->getFieldsGroupsDefinitions()) !!};
 
