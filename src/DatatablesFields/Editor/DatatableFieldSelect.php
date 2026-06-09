@@ -152,13 +152,35 @@ class DatatableFieldSelect extends DatatableFieldEditor
 
 		$propertyName = $this->editorProperty ?? $this->name;
 
-		$selected = $this->getPossibleEnumValuesArray()[$value->{$propertyName}] ?? $this->nullString;
+		$selected = $this->getSelectOptionLabel(
+			$this->getPossibleEnumValuesArray(),
+			$value->{$propertyName} ?? null
+		);
 
 		return [
 			$this->element->getKey(),
 			$value->{$propertyName} ?? $this->nullValue,
 			$selected
 		];
+	}
+
+	protected function getSelectOptionLabel(array $possibleValues, $key) : string
+	{
+		if ($key === null || $key === $this->nullValue)
+			return $possibleValues['null'] ?? $this->nullString;
+
+		if (isset($possibleValues['groups']) && is_array($possibleValues['groups']))
+		{
+			foreach ($possibleValues['groups'] as $options)
+			{
+				if (isset($options[$key]))
+					return $options[$key];
+			}
+
+			return $this->nullString;
+		}
+
+		return $possibleValues[$key] ?? $this->nullString;
 	}
 
 	public function getCustomColumnDefSingleResult()
