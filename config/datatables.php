@@ -206,6 +206,7 @@ return [
 		'reload' => true,
         'copy' => true,
         'csv' => true,
+        'excel' => true,
 		'selectFiltered' => true,
     ],
 
