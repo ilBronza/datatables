@@ -41,7 +41,7 @@ class DatatableFieldPrice extends DatatableFieldBaseNumber
 	public function transformValue($value)
 	{
 		if (! $value)
-			return;
+			$value = 0;
 
 		return number_format(
 			$value,
