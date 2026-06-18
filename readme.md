@@ -164,6 +164,30 @@ Example for fetcher field
     ],
 ```
 
+## Refresh dei campi form dopo draw / save riga
+
+Le pagine edit possono registrare campi del form da rileggere dal server quando le tabelle cambiano (es. totali e margini ricalcolati). I campi si registrano come selettori in:
+
+``` javascript
+window.dtEditorRefreshingFieldList.push('input[name=total_cost]');
+```
+
+(es. il blade `orderQuotationPage` di Products li popola da `getFieldsToUpdateOnTableEdit()`).
+
+Il refresh parte automaticamente in due momenti:
+
+1. **Dopo il save di un campo editor in tabella** — `window.dtRefreshFieldsList()` viene chiamata nella success di `__ibCallAjax`.
+2. **A ogni `draw.dt`** (reload ajax, paginazione, sort, init, `reloadAllTables`) — con throttling trailing: la prima draw arma un timer, le draw successive nella finestra vengono assorbite, allo scadere parte un solo refresh.
+
+``` javascript
+// finestra di throttling del refresh su draw (default 1000ms)
+window.__ibDtRefreshFieldsListOnDrawThrottleMs = 1000;
+```
+
+Se la lista `dtEditorRefreshingFieldList` è vuota il listener è un no-op: le pagine senza campi registrati non fanno alcuna chiamata.
+
+`dtRefreshFieldsList()` delega a `dtRefreshFieldsListBatch()` (pacchetto FormField): i selettori vengono risolti in nomi campo e richiesti al server con **una sola POST cumulativa** (`ib-editor-read-batch`), invece di una chiamata per campo. Vedi il readme di `ilbronza/formfield` per l'API completa del batch.
+
 ## DatatableFieldClasses
 
 ``` bash

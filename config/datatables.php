@@ -50,6 +50,7 @@ return [
 		'datatableFieldColor' => '2em',
 		'datatableFieldIcon' => '2em',
 		'datatableFieldJson' => '30em',
+		'datatableFieldNumeric' => 'auto',
 		'datatableFieldInteger' => 'auto',
 		'datatableFieldFunction' => 'auto',
 		'datatableFieldSelectRowCheckbox' => '1.5em',
