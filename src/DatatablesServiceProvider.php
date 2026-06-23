@@ -78,9 +78,9 @@ class DatatablesServiceProvider extends ServiceProvider
 
         // Publishing assets.
         $this->publishes([
-            __DIR__.'/../resources/js' => base_path('resources/js'),
-            __DIR__.'/../resources/sass' => base_path('resources/sass'),
-            __DIR__.'/../resources/css' => base_path('resources/css'),
+            __DIR__.'/../resources/assets/js' => base_path('resources/js'),
+            __DIR__.'/../resources/assets/sass' => base_path('resources/sass'),
+            __DIR__.'/../resources/assets/css' => base_path('resources/css'),
         ], 'datatables.assets');
 
         // Publishing the translation files.
