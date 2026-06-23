@@ -37,7 +37,7 @@ class DatatablesServiceProvider extends ServiceProvider
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'datatables');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'datatables');
         $this->mergeConfigFrom(__DIR__.'/../config/datatables.php', 'datatables');
-        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+        $this->loadRoutesFrom(__DIR__.'/../routes/datatables.php');
 
         // Register the service the package provides.
         $this->app->singleton('datatables', function ($app) {
