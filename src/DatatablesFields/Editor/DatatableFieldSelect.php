@@ -33,6 +33,7 @@ class DatatableFieldSelect extends DatatableFieldEditor
 
 	public $nullValue = 'null';
 	public $nullString = 'nd';
+	public $default = null;
 
 	public ? string $possibleValuesMethod = null;
 
@@ -151,15 +152,16 @@ class DatatableFieldSelect extends DatatableFieldEditor
 			];
 
 		$propertyName = $this->editorProperty ?? $this->name;
+		$selectedValue = $value->{$propertyName} ?? $this->default;
 
 		$selected = $this->getSelectOptionLabel(
 			$this->getPossibleEnumValuesArray(),
-			$value->{$propertyName} ?? null
+			$selectedValue
 		);
 
 		return [
 			$this->element->getKey(),
-			$value->{$propertyName} ?? $this->nullValue,
+			$selectedValue,
 			$selected
 		];
 	}
