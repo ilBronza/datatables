@@ -33,7 +33,8 @@ class DatatableFieldSelect extends DatatableFieldEditor
 
 	public $nullValue = 'null';
 	public $nullString = 'nd';
-	public $default = null;
+	public $default = "null";
+	public bool $associative = false;
 
 	public ? string $possibleValuesMethod = null;
 
@@ -42,6 +43,11 @@ class DatatableFieldSelect extends DatatableFieldEditor
     public function __construct(string $name, array $parameters = [], int $index = null, DatatableField $parent = null, Datatables $table = null)
 	{
 		parent::__construct($name, $parameters, $index, $parent, $table);
+	}
+
+	public function isAssociative()
+	{
+		return $this->associative;
 	}
 
     public function parseFieldSpecificHeaderData()
@@ -63,12 +69,15 @@ class DatatableFieldSelect extends DatatableFieldEditor
 			if($element = $this->element ?? $this->getPlaceholderElement())
 				return $element->{$method}();
 
+		if(isset($this->possibleValuesArray))
+			return $this->possibleValuesArray;
+
         $values = $this->getPossibleEnumValues();
 
         $result = [];
 
-        foreach($values as $value)
-            $result[$value] = $value;
+		foreach($values as $value)
+			$result[$value] = $value;        	
 
         return $result;
     }
