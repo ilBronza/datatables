@@ -114,6 +114,7 @@ return [
 		],
 		'links' => [
 			'datatableFieldLinkCachedProperty' => 'auto',
+			'datatableFieldAjax' => 'auto',
 			'datatableFieldArchive' => '2em',
 			'datatableFieldUnDelete' => '2em',
 			'datatableFieldDelete' => '2em',
