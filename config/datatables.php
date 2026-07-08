@@ -188,7 +188,7 @@ return [
 	'footerFilters' => true,
 
 	/**
-	 * Filter trigger: 'enter' = apply on keyup (each keystroke + Enter) | 'blur' = apply on blur
+	 * Filter trigger: 'enter' = apply only on Enter key (+ change) | 'keyup' = apply on each keystroke | 'blur' = apply on blur
 	 */
 	'filterTrigger' => env('DATATABLES_FILTER_TRIGGER', 'enter'),
 

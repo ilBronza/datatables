@@ -41,7 +41,15 @@ trait DatatablesFieldsFiltersTrait
             return $this->jqueryFilterEvents;
         }
         $trigger = config('datatables.filterTrigger', 'enter');
-        return $trigger === 'blur' ? ['change', 'blur'] : ['change', 'keyup'];
+
+        if ($trigger === 'blur')
+            return ['change', 'blur'];
+
+        if ($trigger === 'keyup')
+            return ['change', 'keyup'];
+
+        // 'enter': virtual event handled in JS, fires only on Enter key
+        return ['change', 'enter'];
     }
 
     public function getJqueryFilterEventsString()
