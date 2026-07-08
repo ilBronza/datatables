@@ -130,6 +130,7 @@ return [
 
 		],
 		'editor' => [
+			'datatableFieldFileUpload' => 'auto',
 			'datatableFieldToggle' => '2em',
 			'datatableFieldSave' => '2em',
 			'datatableFieldPrice' => '6em',
