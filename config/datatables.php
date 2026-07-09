@@ -57,6 +57,7 @@ return [
 		'datatableFieldFlat' => 'auto',
 		'datatableFieldBoolean' => '1.5em',
 		'datatableFieldBooleanAlarm' => '1.5em',
+		'datatableFieldFileDownload' => 'auto',
 		'datatableFieldTranslatedClassBasename' => 'auto',
 
 		'addresses' => [
