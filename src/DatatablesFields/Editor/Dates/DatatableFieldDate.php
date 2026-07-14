@@ -17,6 +17,7 @@ class DatatableFieldDate extends DatatableFieldEditor
 	public $width = '8em';
 	public $inputFieldDefaultFormat = "YYYY-MM-DD";
 	public $fieldType = 'date';
+	public $defaultFilterType = 'date';
 
 	public function isBulkEditable() : bool
 	{
