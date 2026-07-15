@@ -198,8 +198,14 @@ trait DatatablesFieldsColumnDefsTrait
                 window.valueAsClass = JSON.stringify(window.valueAsClass);
             }
 
-            $(row).removeClass('" . $this->getValueAsRowClassPrefix() . "');
-            $(row).addClass('" . $this->getValueAsRowClassPrefix() . "' + window.valueAsClass.replace(/[^a-zA-Z0-9 ]/g, ' '));
+            window.valueAsClass = '" . $this->getValueAsRowClassPrefix() . "' + window.valueAsClass.replace(/[^a-zA-Z0-9 ]/g, ' ');
+            window.previousValueAsClass = $(row).data(" . json_encode('ibDtValueAsRowClass' . $this->getIndex()) . ");
+
+            if(window.previousValueAsClass)
+                $(row).removeClass(window.previousValueAsClass);
+
+            $(row).addClass(window.valueAsClass);
+            $(row).data(" . json_encode('ibDtValueAsRowClass' . $this->getIndex()) . ", window.valueAsClass);
 
         }
 
