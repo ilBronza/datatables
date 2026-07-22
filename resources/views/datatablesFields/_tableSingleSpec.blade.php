@@ -144,8 +144,9 @@
 		@if($table->isAjaxTable())
         //ajaxxalo
         ajax: {
-            url: window.addParameterToURL(window.addParameterToURL("{{ $table->getUrl() }}", 'cachedtablekey', "{{ $table->getCachedTableKey() }}"), 'model', '{{ $table->getRelationName() }}'),
-			type: '{{ $table->getAjaxMethod() }}',
+            {{-- url: window.addParameterToURL(window.addParameterToURL("{{ $table->getUrl() }}", 'cachedtablekey', "{{ $table->getCachedTableKey() }}"), 'model', '{{ $table->getRelationName() }}'), --}}
+            url: window.addParameterToURL("{{ $table->getUrl() }}", 'model', '{{ $table->getRelationName() }}'),
+            type: '{{ $table->getAjaxMethod() }}',
             dataSrc: function (json)
             {
                 let data = window.transformDataBySummaryExistence("{{ $table->getId() }}", "{{ $table->hasSummary() }}", json);

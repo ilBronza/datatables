@@ -104,11 +104,18 @@ class DatatableFieldToggle extends DatatableFieldEditor
 	public function getValueAsRowClassScript()
 	{
 		return "
-        //' . $this->name . '
-        window.valueAsClass = data[" . $this->getIndex() . "]" . $this->getStructuredDataIndexString() . ";
+	        //' . $this->name . '
+	        window.valueAsClass = data[" . $this->getIndex() . "]" . $this->getStructuredDataIndexString() . ";
 
-        $(row).addClass('" . $this->getCompiledAsRowClassPrefix() . "' + data[" . $this->getIndex() . "]" . $this->getStructuredDataIndexString() . ");
-        ";
+	        window.valueAsClass = '" . $this->getCompiledAsRowClassPrefix() . "' + window.valueAsClass;
+	        window.previousValueAsClass = $(row).data(" . json_encode('ibDtValueAsRowClass' . $this->getIndex()) . ");
+
+	        if(window.previousValueAsClass)
+	            $(row).removeClass(window.previousValueAsClass);
+
+	        $(row).addClass(window.valueAsClass);
+	        $(row).data(" . json_encode('ibDtValueAsRowClass' . $this->getIndex()) . ", window.valueAsClass);
+	        ";
 	}
 
 }

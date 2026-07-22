@@ -65,6 +65,7 @@ class Datatables
 	public ?string $name;
 	public $fieldsGroups;
 	public $elements;
+	public $elementsProvider;
 	public $url;
 	public $columnDefs = [];
 
@@ -94,6 +95,7 @@ class Datatables
 	public $modelClass;
 	public $dom;
 	public $canHideColumns;
+	public ?bool $canEditColumnStyles = null;
 	public $customButtons;
 	public $selectRowCheckboxes;
 	public ?bool $bulkEdit = null;
@@ -142,15 +144,16 @@ class Datatables
 		$name = $parameters['name'];
 		$fieldsGroups = $parameters['fieldsGroups'] ?? 'index';
 		$elements = $parameters['elements'];
+		$elementsProvider = is_callable($elements) ? $elements : function () use ($elements)
+		{
+			return $elements;
+		};
 		$selectRowCheckboxes = $parameters['selectRowCheckboxes'] ?? false;
 		$extraVariables = $parameters['extraVariables'] ?? null;
 		$modelClass = $parameters['modelClass'] ?? null;
 
 		$table = static::create(
-			$name, $fieldsGroups, function () use ($elements)
-		{
-			return $elements;
-		}, $selectRowCheckboxes, $extraVariables, $modelClass
+			$name, $fieldsGroups, $elementsProvider, $selectRowCheckboxes, $extraVariables, $modelClass
 		);
 
 		if ((request()->ajax()) && (request()->model))
@@ -159,6 +162,7 @@ class Datatables
 		$table->setArrayTable();
 
 		unset($parameters['fieldsGroups']);
+		unset($parameters['elements']);
 
 		$table->bind($parameters);
 
@@ -180,15 +184,16 @@ class Datatables
 			$table->setRowSelectCheckboxes();
 
 		$table->setVariables($extraVariables ?? []);
+		$table->setElementsProvider($elements);
 
 		if ((request()->ajax()) && (! request()->ibFetcher))
 		{
-			if (($table->cachedTableKey = request()->input('cachedtablekey')) && ($data = cache()->pull($table->cachedTableKey)))
-			{
-				$table->setData($data, $selectRowCheckboxes);
-
-				return $table;
-			}
+			// if (($table->cachedTableKey = request()->input('cachedtablekey')) && ($data = cache()->pull($table->cachedTableKey)))
+			// {
+			// 	$table->setData($data, $selectRowCheckboxes);
+			//
+			// 	return $table;
+			// }
 
 			$table->addFieldsGroups($fieldsGroups);
 			// $table->addFields($fields);
@@ -214,7 +219,7 @@ class Datatables
 		$table->setName($name);
 		$table->setUrl(request()->url());
 
-		$table->setElements($elements());
+		// $table->setElements($elements());
 
 		// $table->setAutomaticCaption();
 
@@ -293,6 +298,22 @@ class Datatables
 	public function setElements(Collection $elements = null)
 	{
 		$this->elements = $elements;
+	}
+
+	public function setElementsProvider(callable $elementsProvider)
+	{
+		$this->elementsProvider = $elementsProvider;
+	}
+
+	public function resolveElements()
+	{
+		if ($this->elements)
+			return;
+
+		if (! $this->elementsProvider)
+			return;
+
+		$this->setElements(($this->elementsProvider)());
 	}
 
 	public function setName(string $name)
@@ -415,7 +436,8 @@ class Datatables
 				"data" => $this->getData()
 			];
 
-		$this->prepareCachedData();
+		if (! $this->isAjaxTable())
+			$this->prepareCachedData();
 		$this->parseColumnDefs();
 
 		$this->parseOptions();
@@ -433,10 +455,14 @@ class Datatables
 		$this->parseColumnDefs();
 		$this->parseOptions();
 
-		return view('datatables::_table', [
+		$viewData = [
 			'table' => $this,
-			'tableSourceData' => $this->calculateData()
-		])->render();
+		];
+
+		if (! $this->isAjaxTable())
+			$viewData['tableSourceData'] = $this->calculateData();
+
+		return view('datatables::_table', $viewData)->render();
 	}
 
 	public function render()
@@ -524,4 +550,3 @@ class Datatables
 				request()->request->remove('cachedtablekey');
 	}
 }
-

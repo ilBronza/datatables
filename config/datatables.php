@@ -116,6 +116,7 @@ return [
 		'links' => [
 			'datatableFieldLinkCachedProperty' => 'auto',
 			'datatableFieldAjax' => 'auto',
+			'datatableFieldInlineEdit' => '2em',
 			'datatableFieldArchive' => '2em',
 			'datatableFieldUnDelete' => '2em',
 			'datatableFieldDelete' => '2em',
@@ -169,6 +170,7 @@ return [
     'domStickyHeader' => env('DATATABLES_STICKY_HEADER', false),
     'fixedHeader' =>  env('DATATABLES_FIXED_HEADER', false),
     'hideColumns' => env('DATATABLES_HIDE_COLUMNS', true),
+    'columnSettings' => env('DATATABLES_COLUMN_SETTINGS', false),
     'useTooltips' => env('DATATABLES_USE_TOOLTIPS', true),
 
     'scrollX' => false,

@@ -54,6 +54,8 @@ trait DatatableDataTrait
 
 	public function calculateData()
 	{
+		$this->resolveElements();
+
 		// if($this->hasSummary())
 		//     return $this->calculateDataWithSummary();
 

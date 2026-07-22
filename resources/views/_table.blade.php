@@ -1,6 +1,8 @@
 @include('datatables::datatablesFields._tableSingleSpec')
 
-@include('datatables::datatablesFields._columnSettingsForm')
+@if($table->canEditColumnStyles() && $table->canHideColumns())
+	@include('datatables::datatablesFields._columnSettingsForm')
+@endif
 
 @if(! request()->input('justTable', false))
 	{{-- @include('datatables::__extraViews', ['position' => 'top']) --}}
@@ -46,12 +48,14 @@
 							{{ $field->getTranslatedName() }}
 						</a>
 
-						<a
-								href="javascript:void(0)"
-								class="ib-colvis-gear uk-width-auto"
-						>
-							<i class="fa-solid fa-gear"></i>
-						</a>
+						@if($table->canEditColumnStyles())
+							<a
+									href="javascript:void(0)"
+									class="ib-colvis-gear uk-width-auto"
+							>
+								<i class="fa-solid fa-gear"></i>
+							</a>
+						@endif
 					</li>
 				@endforeach
 			</ul>
@@ -78,7 +82,7 @@
 
 			@if($table->isAjaxTable())
 				data-url="{{ $table->getUrl() }}"
-			data-cachedtablekey="{{ $table->getCachedTableKey() }}"
+			{{-- data-cachedtablekey="{{ $table->getCachedTableKey() }}" --}}
 			@endif
 
 			@if($table->getRelationName())
@@ -133,5 +137,3 @@
 	@endif
 
 @endif
-
-

@@ -9,6 +9,7 @@ return array (
 	'fieldsVisibilityLabel' => 'Campi visibili',
     'mySelfSee' => 'Mostra',
 	'mySelfEdit' => 'Modifica',
+	'inlineEdit' => 'Modifica inline',
 	'mySelfShow' => 'Mostra',
   	'mySelfDelete' => 'Elimina',
   	'mySelfUnDelete' => 'Ripristina',

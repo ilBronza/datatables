@@ -16,6 +16,14 @@ trait DatatableOptionsTrait
 		return config('datatables.hideColumns');
 	}
 
+	public function canEditColumnStyles() : bool
+	{
+		if (! is_null($this->canEditColumnStyles))
+			return (bool) $this->canEditColumnStyles;
+
+		return (bool) config('datatables.columnSettings', false);
+	}
+
 	public function setPageLength($pageLength)
 	{
 		$this->pageLength = $pageLength;
