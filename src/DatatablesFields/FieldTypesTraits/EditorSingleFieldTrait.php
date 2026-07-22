@@ -40,7 +40,7 @@ trait EditorSingleFieldTrait
 			$attributes[] = 'data-' . e($name) . '="' . e($value) . '"';
 
 		$value = e($this->getInlineEditValue());
-		$classes = e(trim($this->getHtmlClassesString() . ' uk-input ib-editor-text'));
+		$classes = e(trim($this->getHtmlClassesString() . ' uk-input ib-editor-text ib-datatable-inline-edit-field'));
 
 		return '<input ' . implode(' ', $attributes) . ' data-originalvalue="' . $value . '" value="' . $value . '" type="' . e($this->getEditorFieldType()) . '" class="' . $classes . '" />';
 	}
