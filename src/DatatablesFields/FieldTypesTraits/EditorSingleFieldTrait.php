@@ -19,6 +19,32 @@ trait EditorSingleFieldTrait
 		return " type=\"" . $this->getEditorFieldType() . "\" ";
 	}
 
+	public function getInlineEditValue() : string
+	{
+		$property = $this->editorProperty ?? $this->name;
+
+		return (string) ($this->element->{$property} ?? '');
+	}
+
+	public function getInlineEditHtml() : string
+	{
+		if (! $this->userCanEdit())
+			return '';
+
+		$dataAttributes = $this->getDataAttributes();
+		$dataAttributes['url'] = $this->getInlineEditUpdateUrl();
+
+		$attributes = [];
+
+		foreach ($dataAttributes as $name => $value)
+			$attributes[] = 'data-' . e($name) . '="' . e($value) . '"';
+
+		$value = e($this->getInlineEditValue());
+		$classes = e(trim($this->getHtmlClassesString() . ' uk-input ib-editor-text'));
+
+		return '<input ' . implode(' ', $attributes) . ' data-originalvalue="' . $value . '" value="' . $value . '" type="' . e($this->getEditorFieldType()) . '" class="' . $classes . '" />';
+	}
+
 	public function returnFlat()
 	{
 		return "
@@ -47,4 +73,3 @@ trait EditorSingleFieldTrait
         ";
 	}
 }
-

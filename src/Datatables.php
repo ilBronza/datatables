@@ -4,6 +4,7 @@ namespace IlBronza\Datatables;
 
 use App\Models\Appointment;
 use Closure;
+use IlBronza\Datatables\DatatablesFields\Editor\DatatableFieldEditor;
 use IlBronza\Datatables\Traits\DatatableButtonsTrait;
 use IlBronza\Datatables\Traits\DatatableColumnDefsTrait;
 use IlBronza\Datatables\Traits\DatatableColumnDisplayTrait;
@@ -19,6 +20,7 @@ use IlBronza\Datatables\Traits\DatatableSelectRowsTrait;
 use IlBronza\Datatables\Traits\DatatablesExtraViewsTrait;
 use IlBronza\Form\Form;
 use IlBronza\Form\Traits\ExtraViewsTrait;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
@@ -224,6 +226,30 @@ class Datatables
 		// $table->setAutomaticCaption();
 
 		return $table;
+	}
+
+	public static function createInlineEditTable(string $name, array $fieldsGroup, Model $element) : static
+	{
+		$table = new static();
+
+		$table->setMainModelElement($element::class);
+		$table->setElements(collect([$element]));
+		$table->addFieldsGroups([$name => $fieldsGroup]);
+
+		foreach ($table->getFields() as $field)
+		{
+			if ($field instanceof DatatableFieldEditor)
+				$field->setInlineEditElement($element);
+		}
+
+		return $table;
+	}
+
+	public function getInlineEditFields() : Collection
+	{
+		return $this->getFields()->filter(
+			fn ($field) => $field instanceof DatatableFieldEditor
+		);
 	}
 
 	public function hasRangeFilter() : bool
@@ -470,6 +496,11 @@ class Datatables
 		$this->parseColumnDefs();
 
 		return view('datatables::_table', ['table' => $this]);
+	}
+
+	public function renderInlineEdit() : string
+	{
+		return view('datatables::inlineEdit', ['table' => $this])->render();
 	}
 
 	public function getId()

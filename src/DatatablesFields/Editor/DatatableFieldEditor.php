@@ -273,6 +273,22 @@ class DatatableFieldEditor extends DatatableField
 		}
 	}
 
+	public function setInlineEditElement(object $element) : self
+	{
+		$this->element = $element;
+
+		return $this;
+	}
+
+	public function getInlineEditUpdateUrl() : string
+	{
+		return str_replace(
+			config('datatables.replace_model_id_string'),
+			$this->element->getKey(),
+			$this->getEditorUpdateUrl()
+		);
+	}
+
 	public function getCustomUpdateRouteName()
 	{
 		return $this->customUpdateRouteName;

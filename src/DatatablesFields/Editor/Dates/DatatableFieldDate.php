@@ -37,6 +37,20 @@ class DatatableFieldDate extends DatatableFieldEditor
 		];
 	}
 
+	public function getInlineEditValue() : string
+	{
+		$property = $this->editorProperty ?? $this->name;
+		$value = $this->element->{$property} ?? null;
+
+		if (! $value)
+			return '';
+
+		if (method_exists($value, 'format'))
+			return $value->format('Y-m-d');
+
+		return (string) $value;
+	}
+
 	public function getCustomColumnDefSingleResult()
 	{
 		if (! $this->userCanEdit())
