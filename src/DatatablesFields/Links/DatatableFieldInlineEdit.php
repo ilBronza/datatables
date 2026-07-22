@@ -11,6 +11,7 @@ class DatatableFieldInlineEdit extends DatatableFieldAjax
 
 	public $faIcon = 'pen-to-square';
 	public $method = 'getInlineEditUrl';
+	public bool $sendAjaxPayload = false;
 
 	public $dataAttributes = [
 		'type' => 'GET',

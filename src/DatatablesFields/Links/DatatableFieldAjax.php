@@ -4,6 +4,12 @@ namespace IlBronza\Datatables\DatatablesFields\Links;
 
 class DatatableFieldAjax extends DatatableFieldLink
 {
+	/**
+	 * Controls whether the table-header and clicked-element data attributes are
+	 * appended to the Ajax request.
+	 */
+	public bool $sendAjaxPayload = true;
+
 	public $dataAttributes = [
 		'type' => 'POST'
 	];
@@ -17,5 +23,15 @@ class DatatableFieldAjax extends DatatableFieldLink
 		);
 
 		return parent::getHtmlClassesAttributeString();
+	}
+
+	public function getFieldSpecificData() : array
+	{
+		return array_merge(
+			parent::getFieldSpecificData(),
+			[
+				'send-ajax-payload' => $this->sendAjaxPayload ? 'true' : 'false',
+			]
+		);
 	}
 }
