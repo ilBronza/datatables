@@ -73,7 +73,7 @@ class DatatableFieldSelectCell extends DatatableFieldSelect
 		if(item[3])
 			possibleValuesAttr = ' data-possible-values=\"' + JSON.stringify(item[3]).replace(/\\\"/g, '&quot;') + '\"';
 
-		item = '<select data-populated=\"false\"' + possibleValuesAttr + ' " . $this->getValueString() . " class=\"" . $classes . " uk-select ib-editor-select\" data-url=\"' + url + '\" data-field=\"{$this->parameter}\">' + selected + '</select>';
+		item = '<select data-populated=\"false\"" . $this->getCustomValueModeDataAttribute() . "' + possibleValuesAttr + ' " . $this->getValueString() . " class=\"" . $classes . " uk-select ib-editor-select\" data-url=\"' + url + '\" data-field=\"{$this->parameter}\">' + selected + '</select>';
 
 		";
 	}

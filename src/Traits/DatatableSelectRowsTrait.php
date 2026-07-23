@@ -109,6 +109,7 @@ trait DatatableSelectRowsTrait
                 'index' => $field->getIndex(),
                 'label' => $field->getTranslatedName(),
                 'nullable' => $field instanceof DatatableFieldEditor && $field->isNullable(),
+                'customValueMode' => $fieldData['custom-value-mode'] ?? false,
             ];
         })->values()->all();
     }

@@ -36,6 +36,7 @@ class DatatableFieldSelect extends DatatableFieldEditor
 	public $default = "null";
 	public bool $associative = false;
 	public ?array $possibleValuesArray = null;
+	public bool $customValueMode = false;
 
 	public ? string $possibleValuesMethod = null;
 
@@ -49,6 +50,26 @@ class DatatableFieldSelect extends DatatableFieldEditor
 	public function isAssociative()
 	{
 		return $this->associative;
+	}
+
+	public function hasCustomValueMode() : bool
+	{
+		return $this->customValueMode;
+	}
+
+	public function getFieldSpecificData() : array
+	{
+		return array_merge(parent::getFieldSpecificData(), [
+			'custom-value-mode' => $this->hasCustomValueMode(),
+		]);
+	}
+
+	protected function getCustomValueModeDataAttribute() : string
+	{
+		if (! $this->hasCustomValueMode())
+			return '';
+
+		return ' data-custom-value-mode="true"';
 	}
 
     public function parseFieldSpecificHeaderData()
@@ -204,6 +225,9 @@ class DatatableFieldSelect extends DatatableFieldEditor
 		$dataAttributes['url'] = $this->getInlineEditUpdateUrl();
 		$dataAttributes['inline-source-field'] = $this->name;
 
+		if (! $this->hasCustomValueMode())
+			unset($dataAttributes['custom-value-mode']);
+
 		$attributes = [];
 
 		foreach ($dataAttributes as $name => $value)
@@ -223,7 +247,7 @@ class DatatableFieldSelect extends DatatableFieldEditor
 			$optionsHtml .= '<option value="' . e($optionValue) . '"' . $selected . '>' . e($label) . '</option>';
 		}
 
-		$classes = e(trim($this->getHtmlClassesString() . ' uk-select ib-editor-text ib-datatable-inline-edit-field'));
+		$classes = e(trim($this->getHtmlClassesString() . ' uk-select ib-editor-text ib-editor-select ib-datatable-inline-edit-field'));
 
 		return '<select ' . implode(' ', $attributes) . ' data-originalvalue="' . e($value) . '" class="' . $classes . '">' . $optionsHtml . '</select>';
 	}
@@ -244,7 +268,7 @@ class DatatableFieldSelect extends DatatableFieldEditor
 		if(item)
 			selected = '<option selected value=\"' + item[1] + '\">' + item[2] + '</option>';
 
-		item = '<select data-populated=\"false\" " . $this->getValueString() . " class=\"" . $classes . " uk-select ib-editor-select\" data-url=\"' + url + '\" data-field=\"{$this->parameter}\">' + selected + '</select>';
+		item = '<select data-populated=\"false\"" . $this->getCustomValueModeDataAttribute() . " " . $this->getValueString() . " class=\"" . $classes . " uk-select ib-editor-select\" data-url=\"' + url + '\" data-field=\"{$this->parameter}\">' + selected + '</select>';
 
 		";
 	}
