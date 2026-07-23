@@ -8,6 +8,18 @@ use newField;
 
 trait DatatableOptionsTrait
 {
+	public function setHasSorting(bool $hasSorting) : static
+	{
+		$this->hasSorting = $hasSorting;
+
+		return $this;
+	}
+
+	public function hasSorting() : bool
+	{
+		return $this->hasSorting;
+	}
+
 	public function canHideColumns()
 	{
 		if (! empty($this->canHideColumns))

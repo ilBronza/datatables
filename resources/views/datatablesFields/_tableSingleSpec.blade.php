@@ -205,8 +205,7 @@
 
     window.{{ $table->getId() }}columnDefs = [
         {
-            // "targets": 'no-sort',
-            "targets": '_all',
+            "targets": '{{ $table->hasSorting() ? 'no-sort' : '_all' }}',
             "orderable": false
         }@if(count($table->columnDefs)||(count($table->customColumnDefs))),
 
