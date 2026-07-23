@@ -4,7 +4,12 @@ namespace IlBronza\Datatables;
 
 use App\Models\Appointment;
 use Closure;
+use IlBronza\Datatables\DatatablesFields\DatatableField;
+use IlBronza\Datatables\DatatablesFields\DatatableFieldPrimary;
+use IlBronza\Datatables\DatatablesFields\DatatableFieldSelectRowCheckbox;
 use IlBronza\Datatables\DatatablesFields\Editor\DatatableFieldEditor;
+use IlBronza\Datatables\DatatablesFields\Editor\DatatableFieldFileUpload;
+use IlBronza\Datatables\DatatablesFields\Links\DatatableFieldLink;
 use IlBronza\Datatables\Traits\DatatableButtonsTrait;
 use IlBronza\Datatables\Traits\DatatableColumnDefsTrait;
 use IlBronza\Datatables\Traits\DatatableColumnDisplayTrait;
@@ -228,8 +233,11 @@ class Datatables
 		return $table;
 	}
 
-	public static function createInlineEditTable(string $name, array $fieldsGroup, Model $element) : static
+	public static function createInlineEditTable(string $name, array $fieldsGroup, Model $element, ?array $sourceFieldsGroup = null) : static
 	{
+		if ($sourceFieldsGroup)
+			$fieldsGroup = static::makeInlineEditFieldsGroup($name, $fieldsGroup, $sourceFieldsGroup, $element);
+
 		$table = new static();
 
 		$table->setMainModelElement($element::class);
@@ -243,6 +251,73 @@ class Datatables
 		}
 
 		return $table;
+	}
+
+	/**
+	 * Build the child-row fields from the table that opened it.
+	 *
+	 * Inline fields override source fields of the same name. Every remaining
+	 * data column uses the source field's inline type or the text editor, while
+	 * action, identity and file controls stay out of the batch editor.
+	 */
+	public static function makeInlineEditFieldsGroup(string $name, array $inlineFieldsGroup, array $sourceFieldsGroup, Model $element) : array
+	{
+		$inlineFields = $inlineFieldsGroup['fields'] ?? [];
+		$sourceTable = new static();
+
+		$sourceTable->setMainModelElement($element::class);
+		$sourceTable->setElements(collect([$element]));
+		$sourceTable->addFieldsGroups([$name => $sourceFieldsGroup]);
+
+		$fields = [];
+		$usedInlineFields = [];
+
+		foreach ($sourceTable->getFields() as $sourceField)
+		{
+			$sourceFieldName = $sourceField->getFieldName();
+			$inlineFieldName = static::findInlineEditFieldForSourceField($inlineFields, $sourceFieldName);
+
+			if ($inlineFieldName)
+			{
+				$fields[$inlineFieldName] = $inlineFields[$inlineFieldName];
+				$usedInlineFields[$inlineFieldName] = true;
+
+				continue;
+			}
+
+			if (! static::canCreateInlineField($sourceField))
+				continue;
+
+			$fields[$sourceFieldName] = [
+				'type' => $sourceField->getInlineFieldType(),
+				'inlineEditProperty' => $sourceFieldName,
+				'translatedName' => $sourceField->getTranslatedName(),
+			];
+		}
+
+		foreach ($inlineFields as $inlineFieldName => $inlineField)
+			if (! isset($usedInlineFields[$inlineFieldName]))
+				$fields[$inlineFieldName] = $inlineField;
+
+		return [
+			'translationPrefix' => $inlineFieldsGroup['translationPrefix'] ?? $sourceFieldsGroup['translationPrefix'] ?? null,
+			'fields' => $fields,
+		];
+	}
+
+	protected static function findInlineEditFieldForSourceField(array $inlineFields, string $sourceFieldName) : ?string
+	{
+		return array_key_exists($sourceFieldName, $inlineFields)
+			? $sourceFieldName
+			: null;
+	}
+
+	protected static function canCreateInlineField(DatatableField $field) : bool
+	{
+		return (! $field instanceof DatatableFieldPrimary)
+			&& (! $field instanceof DatatableFieldSelectRowCheckbox)
+			&& (! $field instanceof DatatableFieldLink)
+			&& (! $field instanceof DatatableFieldFileUpload);
 	}
 
 	public function getInlineEditFields() : Collection

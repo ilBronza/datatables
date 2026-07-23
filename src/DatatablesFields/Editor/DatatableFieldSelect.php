@@ -35,6 +35,7 @@ class DatatableFieldSelect extends DatatableFieldEditor
 	public $nullString = 'nd';
 	public $default = "null";
 	public bool $associative = false;
+	public ?array $possibleValuesArray = null;
 
 	public ? string $possibleValuesMethod = null;
 
@@ -192,6 +193,39 @@ class DatatableFieldSelect extends DatatableFieldEditor
 		}
 
 		return $possibleValues[$key] ?? $this->nullString;
+	}
+
+	public function getInlineEditHtml() : string
+	{
+		if (! $this->userCanEdit())
+			return '';
+
+		$dataAttributes = $this->getDataAttributes();
+		$dataAttributes['url'] = $this->getInlineEditUpdateUrl();
+		$dataAttributes['inline-source-field'] = $this->name;
+
+		$attributes = [];
+
+		foreach ($dataAttributes as $name => $value)
+			$attributes[] = 'data-' . e($name) . '="' . e($value) . '"';
+
+		$value = $this->getInlineEditValue();
+		$options = $this->getPossibleEnumValuesArray();
+
+		if ($this->isNullable())
+			$options = array_merge([$this->nullValue => $this->nullString], $options);
+
+		$optionsHtml = '';
+
+		foreach ($options as $optionValue => $label)
+		{
+			$selected = (string) $optionValue === (string) $value ? ' selected' : '';
+			$optionsHtml .= '<option value="' . e($optionValue) . '"' . $selected . '>' . e($label) . '</option>';
+		}
+
+		$classes = e(trim($this->getHtmlClassesString() . ' uk-select ib-editor-text ib-datatable-inline-edit-field'));
+
+		return '<select ' . implode(' ', $attributes) . ' data-originalvalue="' . e($value) . '" class="' . $classes . '">' . $optionsHtml . '</select>';
 	}
 
 	public function getCustomColumnDefSingleResult()

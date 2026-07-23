@@ -39,6 +39,12 @@ class DatatableFieldEditor extends DatatableField
 	//defines if vlaue is retrieved by a methd called on field element
 	public $editorValueFunction = false;
 
+	/**
+	 * Property path used only while rendering an inline-edit control.
+	 * The submitted field name remains the editor parameter.
+	 */
+	public ?string $inlineEditProperty = null;
+
 	public function __construct(string $name, array $parameters = [], int $index = null, DatatableField $parent = null, Datatables $table = null)
 	{
 		parent::__construct($name, $parameters, $index, $parent, $table);

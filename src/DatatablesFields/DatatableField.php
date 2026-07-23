@@ -77,6 +77,7 @@ class DatatableField
 	public null|int|string $valuePosition = null;
 
 	public ?string $overridingValueMethod = null;
+	public ?string $inlineFieldType = null;
 	public $rowId = false;
 	public $tooltip = false;
 	public $summary;
@@ -349,6 +350,11 @@ class DatatableField
 	public function getType()
 	{
 		return $this->type;
+	}
+
+	public function getInlineFieldType() : string
+	{
+		return $this->inlineFieldType ?? 'editor.text';
 	}
 
 	public function isFlatType()

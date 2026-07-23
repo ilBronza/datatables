@@ -21,9 +21,9 @@ trait EditorSingleFieldTrait
 
 	public function getInlineEditValue() : string
 	{
-		$property = $this->editorProperty ?? $this->name;
+		$property = $this->inlineEditProperty ?? $this->editorProperty ?? $this->name;
 
-		return (string) ($this->element->{$property} ?? '');
+		return (string) data_get($this->element, $property, '');
 	}
 
 	public function getInlineEditHtml() : string
@@ -33,6 +33,7 @@ trait EditorSingleFieldTrait
 
 		$dataAttributes = $this->getDataAttributes();
 		$dataAttributes['url'] = $this->getInlineEditUpdateUrl();
+		$dataAttributes['inline-source-field'] = $this->name;
 
 		$attributes = [];
 

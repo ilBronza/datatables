@@ -11,6 +11,7 @@ class DatatableFieldDate extends DatatableFieldEditor
 	use EditorSingleFieldTrait;
 	use CarbonTrait;
 
+	public ?string $inlineFieldType = 'editor.dates.date';
 	public bool $requiresRowSelectCheckbox = true;
 
 	public $defaultWidth = '8em';
