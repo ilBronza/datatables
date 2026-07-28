@@ -392,12 +392,15 @@ trait DatatableFieldsTrait
     // }
 
 
-    public function setMainModelElement(string $modelClass = null)
+    public function setMainModelElement(string $modelClass = null) : static
     {
         if(! $modelClass)
-            return ;
+            return $this;
 
+        $this->setModelClass($modelClass);
         $this->placeholderElement = new $modelClass();
+
+        return $this;
     }
 
     public function getPlaceholderElement()
@@ -413,7 +416,6 @@ trait DatatableFieldsTrait
         return $this->placeholderElement;
     }
 }
-
 
 
 

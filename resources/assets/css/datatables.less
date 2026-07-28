@@ -38,6 +38,55 @@ input.editorchanged
   font-weight: bold;
 }
 
+@keyframes ib-datatable-row-broadcast-updated
+{
+  0%
+  {
+    background-color: rgba(0, 200, 120, .38);
+    outline: 2px solid rgba(0, 200, 120, .85);
+    outline-offset: -2px;
+  }
+
+  100%
+  {
+    background-color: transparent;
+    outline: 2px solid transparent;
+    outline-offset: -2px;
+  }
+}
+
+@keyframes ib-datatable-cell-broadcast-updated
+{
+  0%
+  {
+    background-color: rgba(255, 193, 7, .52);
+    outline: 2px solid rgba(255, 152, 0, .95);
+    outline-offset: -2px;
+  }
+
+  100%
+  {
+    background-color: transparent;
+    outline: 2px solid transparent;
+    outline-offset: -2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce)
+{
+  table.dataTable tbody tr.ib-datatable-row-broadcast-updated > *
+  {
+    animation: none;
+    background-color: rgba(0, 200, 120, .20);
+  }
+
+  table.dataTable tbody .ib-datatable-cell-broadcast-updated
+  {
+    animation: none;
+    background-color: rgba(255, 193, 7, .30);
+  }
+}
+
 .dt-scroll-head
 {
   .inlinesearchsummary,
@@ -49,6 +98,11 @@ input.editorchanged
 
 table.dataTable
 {
+  tbody > tr.ib-datatable-inline-edit-open
+  {
+    display: none;
+  }
+
   th
   {
     &.dt-ordering-asc
@@ -66,6 +120,16 @@ table.dataTable
   {
     tr
     {
+      &.ib-datatable-row-broadcast-updated > *
+      {
+        animation: ib-datatable-row-broadcast-updated 1.6s ease-out;
+      }
+
+      .ib-datatable-cell-broadcast-updated
+      {
+        animation: ib-datatable-cell-broadcast-updated 2.2s ease-out;
+      }
+
       &.ib-row-focused
       {
         background-color: #39f3!important;
@@ -125,6 +189,30 @@ table.dataTable
       {
         max-width: 1em;
       }
+    }
+
+    .ib-datatable-inline-create-cell-content
+    {
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+      min-width: 0;
+
+      > .ib-datatable-inline-create-field,
+      > .ib-datatable-inline-edit-field
+      {
+        flex: 1 1 auto;
+        min-width: 0;
+      }
+    }
+
+    .ib-datatable-inline-create-actions
+    {
+      display: inline-flex;
+      flex: 0 0 auto;
+      align-items: center;
+      gap: .2rem;
+      white-space: nowrap;
     }
 
   .ibmilestone

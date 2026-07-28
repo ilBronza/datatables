@@ -29,6 +29,13 @@ class DatatableFieldInlineEdit extends DatatableFieldAjax
 		'response-data-type' => 'html',
 	];
 
+	public function getDataAttributes() : array
+	{
+		return array_merge(parent::getDataAttributes(), [
+			'cancel-label' => __('datatables::buttons.cancel'),
+		]);
+	}
+
 	public function __construct(string $name, array $parameters = [], ?int $index = null, ?DatatableField $parent = null, ?Datatables $table = null)
 	{
 		parent::__construct($name, $parameters, $index, $parent, $table);

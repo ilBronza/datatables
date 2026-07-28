@@ -22,6 +22,40 @@ input.editorchanged {
   color: white;
   font-weight: bold;
 }
+@keyframes ib-datatable-row-broadcast-updated {
+  0% {
+    background-color: rgba(0, 200, 120, 0.38);
+    outline: 2px solid rgba(0, 200, 120, 0.85);
+    outline-offset: -2px;
+  }
+  100% {
+    background-color: transparent;
+    outline: 2px solid transparent;
+    outline-offset: -2px;
+  }
+}
+@keyframes ib-datatable-cell-broadcast-updated {
+  0% {
+    background-color: rgba(255, 193, 7, 0.52);
+    outline: 2px solid rgba(255, 152, 0, 0.95);
+    outline-offset: -2px;
+  }
+  100% {
+    background-color: transparent;
+    outline: 2px solid transparent;
+    outline-offset: -2px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  table.dataTable tbody tr.ib-datatable-row-broadcast-updated > * {
+    animation: none;
+    background-color: rgba(0, 200, 120, 0.2);
+  }
+  table.dataTable tbody .ib-datatable-cell-broadcast-updated {
+    animation: none;
+    background-color: rgba(255, 193, 7, 0.3);
+  }
+}
 table.dataTable {
   border-collapse: separate;
   -webkit-border-horizontal-spacing: 2px;
@@ -35,6 +69,12 @@ table.dataTable th.dt-ordering-desc {
 }
 table.dataTable tbody tr.ib-row-focused {
   background-color: #39f3 !important;
+}
+table.dataTable tbody tr.ib-datatable-row-broadcast-updated > * {
+  animation: ib-datatable-row-broadcast-updated 1.6s ease-out;
+}
+table.dataTable tbody tr .ib-datatable-cell-broadcast-updated {
+  animation: ib-datatable-cell-broadcast-updated 2.2s ease-out;
 }
 table.dataTable tbody tr td.focus {
   outline: none;
@@ -65,6 +105,24 @@ table.dataTable .uk-icon-button {
 }
 table.dataTable .uk-icon-button svg {
   max-width: 1em;
+}
+table.dataTable .ib-datatable-inline-create-cell-content {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-width: 0;
+}
+table.dataTable .ib-datatable-inline-create-cell-content > .ib-datatable-inline-create-field,
+table.dataTable .ib-datatable-inline-create-cell-content > .ib-datatable-inline-edit-field {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+table.dataTable .ib-datatable-inline-create-actions {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.2rem;
+  white-space: nowrap;
 }
 table.dataTable .ibmilestone {
   width: 100%;

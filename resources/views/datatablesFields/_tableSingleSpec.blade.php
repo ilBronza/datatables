@@ -473,6 +473,31 @@
             extend: 'utils',
             className: 'utils'
         },
+
+        @if($table->hasInlineCreate())
+        {
+            text: '<i class="fa-solid fa-plus"></i> {{ e(__('datatables::buttons.inlineCreate')) }}',
+            className: 'ib-datatable-inline-create-button uk-button-primary',
+            attr: {
+                'data-create-label': {!! json_encode(__('datatables::buttons.inlineCreate')) !!},
+                'data-save-label': {!! json_encode(__('datatables::buttons.save')) !!},
+                'data-cancel-label': {!! json_encode(__('datatables::buttons.cancel')) !!}
+            },
+            action: function (e, dt, node, config) {
+                e.preventDefault();
+
+                const $table = $(dt.table().node());
+
+                window.loadDatatableInlineCreateRow(
+                    dt,
+                    node,
+                    e,
+                    $table.data('inlineCreateUrl'),
+                    $table.data('storeUrl')
+                );
+            }
+        },
+        @endif
     ];
 
     window.__ibColumnStyleDraftByTable = window.__ibColumnStyleDraftByTable || {};
@@ -550,7 +575,9 @@
 			@if($table->canHideColumns())
         'fieldsVisibility',
 			@endif
+			@if($table->canUseFieldsGroups())
         'fieldsGroups',
+			@endif
     ];
 
 </script>

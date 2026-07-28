@@ -139,6 +139,7 @@ return [
 			'datatableFieldNumeric' => '6em',
 			'datatableFieldText' => 'auto',
 			'datatableFieldSelect' => '12em',
+			'datatableFieldSelectOrFlat' => '12em',
 
 			'datatableFieldColor' => '3em',
 
@@ -170,8 +171,13 @@ return [
     'domStickyHeader' => env('DATATABLES_STICKY_HEADER', false),
     'fixedHeader' =>  env('DATATABLES_FIXED_HEADER', false),
     'hideColumns' => env('DATATABLES_HIDE_COLUMNS', true),
+    'fieldsGroups' => env('DATATABLES_FIELDS_GROUPS', true),
     'columnSettings' => env('DATATABLES_COLUMN_SETTINGS', false),
     'useTooltips' => env('DATATABLES_USE_TOOLTIPS', true),
+
+	'modelBroadcasts' => [
+		'enabled' => env('DATATABLES_MODEL_BROADCASTS_ENABLED', false),
+	],
 
     'scrollX' => false,
     'scrollY' => true,

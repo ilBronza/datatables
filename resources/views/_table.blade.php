@@ -85,8 +85,26 @@
 			{{-- data-cachedtablekey="{{ $table->getCachedTableKey() }}" --}}
 			@endif
 
+			@if($table->hasInlineCreate())
+				data-store-url="{{ $table->getInlineCreateStoreUrl() }}"
+				data-inline-create-url="{{ $table->getInlineCreateUrl() }}"
+			@endif
+
 			@if($table->getRelationName())
 				data-relation="{{ $table->getRelationName() }}"
+			@endif
+
+			@if($channel = $table->getModelBroadcastChannel())
+				data-model-broadcast-channel="{{ $channel }}"
+				data-model-broadcast-model="{{ $table->modelClass }}"
+
+				@if($createdFetchUrl = $table->getModelBroadcastCreatedFetchUrl())
+					data-model-broadcast-created-fetch-url="{{ $createdFetchUrl }}"
+				@endif
+
+				@if($createdFetchRequestHook = $table->getModelBroadcastCreatedFetchRequestHook())
+					data-model-broadcast-created-fetch-hook="{{ $createdFetchRequestHook }}"
+				@endif
 			@endif
 
 			@if($table->drawOnFieldsEvents())

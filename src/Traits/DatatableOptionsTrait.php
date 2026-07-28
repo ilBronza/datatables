@@ -6,6 +6,8 @@ use IlBronza\Datatables\ColumnOption;
 use IlBronza\Datatables\DatatablesFields\DatatableField;
 use newField;
 
+use function method_exists;
+
 trait DatatableOptionsTrait
 {
 	public function setHasSorting(bool $hasSorting) : static
@@ -13,6 +15,50 @@ trait DatatableOptionsTrait
 		$this->hasSorting = $hasSorting;
 
 		return $this;
+	}
+
+	public function setHasInlineCreate(bool $hasInlineCreate) : static
+	{
+		$this->hasInlineCreate = $hasInlineCreate;
+
+		return $this;
+	}
+
+	public function hasInlineCreate() : bool
+	{
+		return $this->hasInlineCreate;
+	}
+
+	public function getInlineCreateStoreUrl() : string
+	{
+		$placeholderModel = $this->placeholderElement ?? $this->getPlaceholderElement();
+
+		if (method_exists($placeholderModel, 'getStoreUrl'))
+			return $placeholderModel->getStoreUrl();
+
+		if (method_exists($placeholderModel, 'getKeyedRoute'))
+			return $placeholderModel->getKeyedRoute('store', [], false);
+
+		throw new \LogicException(
+			'Unable to resolve the inline-create store URL for ' . $placeholderModel::class
+			. ': implement getStoreUrl() on the model.'
+		);
+	}
+
+	public function getInlineCreateUrl() : string
+	{
+		$placeholderModel = $this->placeholderElement ?? $this->getPlaceholderElement();
+
+		if (method_exists($placeholderModel, 'getInlineCreateUrl'))
+			return $placeholderModel->getInlineCreateUrl();
+
+		if (method_exists($placeholderModel, 'getKeyedRoute'))
+			return $placeholderModel->getKeyedRoute('inlineCreate', [], false);
+
+		throw new \LogicException(
+			'Unable to resolve the inline-create fields URL for ' . $placeholderModel::class
+			. ': implement getInlineCreateUrl() on the model.'
+		);
 	}
 
 	public function hasSorting() : bool
@@ -26,6 +72,14 @@ trait DatatableOptionsTrait
 			return $this->canHideColumns;
 
 		return config('datatables.hideColumns');
+	}
+
+	public function canUseFieldsGroups() : bool
+	{
+		if (! is_null($this->canUseFieldsGroups))
+			return $this->canUseFieldsGroups;
+
+		return (bool) config('datatables.fieldsGroups', true);
 	}
 
 	public function canEditColumnStyles() : bool

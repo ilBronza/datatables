@@ -44,6 +44,7 @@ class DatatableFieldEditor extends DatatableField
 	 * The submitted field name remains the editor parameter.
 	 */
 	public ?string $inlineEditProperty = null;
+	public ?string $inlineCreateStoreUrl = null;
 
 	public function __construct(string $name, array $parameters = [], int $index = null, DatatableField $parent = null, Datatables $table = null)
 	{
@@ -286,8 +287,20 @@ class DatatableFieldEditor extends DatatableField
 		return $this;
 	}
 
+	public function setInlineCreateElement(object $element, string $storeUrl) : self
+	{
+		$this->element = $element;
+		$this->inlineCreateStoreUrl = $storeUrl;
+		$this->addHtmlClass('ib-datatable-inline-create-field');
+
+		return $this;
+	}
+
 	public function getInlineEditUpdateUrl() : string
 	{
+		if ($this->inlineCreateStoreUrl)
+			return $this->inlineCreateStoreUrl;
+
 		return str_replace(
 			config('datatables.replace_model_id_string'),
 			$this->element->getKey(),

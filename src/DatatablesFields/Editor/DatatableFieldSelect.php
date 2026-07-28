@@ -38,6 +38,8 @@ class DatatableFieldSelect extends DatatableFieldEditor
 	public ?array $possibleValuesArray = null;
 	public bool $customValueMode = false;
 
+	public ? bool $forceAlphabeticalSorting = false;
+
 	public ? string $possibleValuesMethod = null;
 
 	public ? string $possibleValuesRoute = null;
@@ -127,12 +129,15 @@ class DatatableFieldSelect extends DatatableFieldEditor
 
 			$formDataPieces = explode(",", $pieces[1]);
 
-//		    $form = Form::gpc()::findCachedByField('slug', $formDataPieces[0]);
 		    $formrow = Formrow::gpc()::findCachedByField('slug', $formDataPieces[1]);
 
-//		    $dossierrow = DossierCreatorHelper::getOrFakeDossierrowByTargetFormFormrow($element, $form, $formrow);
+			$result = $formrow->getRowType()->getPossibleValuesArray();
 
-			return $formrow->getRowType()->getPossibleValuesArray();
+		    if($this->forceAlphabeticalSorting)
+		    	ksort($result);
+
+		    return $result;
+
 	    }
 
 		return cache()->remember('getPossibleEnumValues' . $element->getTable() . 'field' . $this->name, 3600, function() use ($element)

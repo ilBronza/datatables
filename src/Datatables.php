@@ -19,6 +19,7 @@ use IlBronza\Datatables\Traits\DatatableFieldsTrait;
 use IlBronza\Datatables\Traits\DatatableFiltersTrait;
 use IlBronza\Datatables\Traits\DatatableFixedColumnsTrait;
 use IlBronza\Datatables\Traits\DatatableFormTrait;
+use IlBronza\Datatables\Traits\DatatableModelBroadcastsTrait;
 use IlBronza\Datatables\Traits\DatatableOptionsTrait;
 use IlBronza\Datatables\Traits\DatatableSaveStateTrait;
 use IlBronza\Datatables\Traits\DatatableSelectRowsTrait;
@@ -43,6 +44,7 @@ class Datatables
 	use DatatablesExtraViewsTrait;
 	use ExtraViewsTrait;
 	use DatatableOptionsTrait;
+	use DatatableModelBroadcastsTrait;
 	use DatatableSelectRowsTrait;
 	use DatatableColumnDisplayTrait;
 	use DatatableFiltersTrait;
@@ -103,6 +105,7 @@ class Datatables
 	public $modelClass;
 	public $dom;
 	public $canHideColumns;
+	public ?bool $canUseFieldsGroups = null;
 	public ?bool $canEditColumnStyles = null;
 	public $customButtons;
 	public $selectRowCheckboxes;
@@ -112,6 +115,7 @@ class Datatables
 	public ?bool $copyButton = null;
 	public ?bool $csvButton = null;
 	public ?bool $excelButton = null;
+	public bool $hasInlineCreate = false;
 
 	public $scrollX = true;
 	public ? bool $scrollY = null;
@@ -206,10 +210,10 @@ class Datatables
 			$table->addFieldsGroups($fieldsGroups);
 			// $table->addFields($fields);
 
-			if (request()->rowId)
+			if (request()->has('rowId'))
 				return $table->returnSingleElement($elements);
 
-			if (request()->rowIds)
+			if (request()->has('rowIds'))
 			{
 				return $table->returnSelectedElements($elements);
 			}
@@ -254,8 +258,24 @@ class Datatables
 		return $table;
 	}
 
+	public static function createInlineCreateTable(string $name, array $fieldsGroup, Model $element, ?array $sourceFieldsGroup = null) : static
+	{
+		$table = static::createInlineEditTable(
+			$name,
+			$fieldsGroup,
+			$element,
+			$sourceFieldsGroup
+		);
+		$storeUrl = $table->getInlineCreateStoreUrl();
+
+		foreach ($table->getInlineEditFields() as $field)
+			$field->setInlineCreateElement($element, $storeUrl);
+
+		return $table;
+	}
+
 	/**
-	 * Build the child-row fields from the table that opened it.
+	 * Build inline edit/create fields from the source table.
 	 *
 	 * Inline fields override source fields of the same name. Every remaining
 	 * data column uses the source field's inline type or the text editor, while
@@ -382,11 +402,13 @@ class Datatables
 				mori('nessun elemento');
 
 			$element = $elements->firstWhere(
-				$firstElement->getKeyName(), request()->rowId
+				$firstElement->getKeyName(), request()->input('rowId')
 			);
 
 			$collection = collect();
-			$collection->push($element);
+
+			if ($element)
+				$collection->push($element);
 
 			$this->setElements($collection);
 			$this->setData();
@@ -467,9 +489,16 @@ class Datatables
 		return static::$availableExtraViewsPositions;
 	}
 
-	public function addBaseModelClass(string $modelClass)
+	public function setModelClass(?string $modelClass) : static
 	{
 		$this->modelClass = $modelClass;
+
+		return $this;
+	}
+
+	public function addBaseModelClass(string $modelClass) : static
+	{
+		return $this->setModelClass($modelClass);
 	}
 
 	public function getVariable(string $name)
@@ -577,6 +606,11 @@ class Datatables
 	public function renderInlineEdit() : string
 	{
 		return view('datatables::inlineEdit', ['table' => $this])->render();
+	}
+
+	public function renderInlineCreate() : string
+	{
+		return view('datatables::inlineCreate', ['table' => $this])->render();
 	}
 
 	public function getId()

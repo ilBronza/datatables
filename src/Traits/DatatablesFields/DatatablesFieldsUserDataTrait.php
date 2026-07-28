@@ -24,6 +24,11 @@ trait DatatablesFieldsUserDataTrait
 
     public function getDatatableUserDataParameter(string $key)
     {
+        // When users cannot choose column visibility, do not let an old
+        // per-user preference keep a column hidden with no way to restore it.
+        if ($key === 'visible' && $this->table && ! $this->table->canHideColumns())
+            return null;
+
         $userData = $this->getDatatableUserData();
 
         return $userData->$key ?? null;

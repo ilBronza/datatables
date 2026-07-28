@@ -1,7 +1,9 @@
 <?php
 
 return [
+	'inlineCreate' => 'Aggiungi',
 	'save' => 'Salva',
+	'cancel' => 'Annulla',
 	'toggleMainHeaderTooltip' => 'Mostra o nascondi intestazione raggruppata',
 	'toggleFiltersTooltip' => 'Mostra o nascondi celle di filtro',
 	'bulkToggle' => 'Modifiche multiple',
