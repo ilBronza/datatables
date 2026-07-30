@@ -12,6 +12,19 @@ The integration follows the Crud package contract exactly:
 - event: `.crud.model.changed`;
 - payload: `model`, `key`, `text`, and `action`.
 
+## Broadcast origin
+
+Ajax mutations initiated by a DataTable send their browser-tab and table
+identifiers to Crud. Crud returns them in the event as an optional `origin`
+object. Datatables ignores an event only when both identifiers match the
+receiving table, avoiding the redundant refresh after its own mutation while
+still updating other tables and browser tabs.
+
+The identifiers use the request headers
+`X-IB-Datatable-Browser-Tab-Id` and `X-IB-Datatable-Table-Id`. They are
+correlation metadata only and must never be used for authentication or
+authorization.
+
 One Echo subscription is shared by all tables listening to the same model. A
 destroyed table is removed from that subscription, so a rendered fragment can
 be initialized again without adding another listener.

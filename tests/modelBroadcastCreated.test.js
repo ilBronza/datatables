@@ -71,7 +71,13 @@ function boot(options = {}) {
         Promise,
         Set,
         clearTimeout,
-        setTimeout,
+        setTimeout(callback, delay) {
+            // Keep animation cleanup from extending the test process lifetime.
+            if (delay >= 1000)
+                return 0;
+
+            return setTimeout(callback, delay);
+        },
     };
 
     vm.runInNewContext(moduleSource, {
@@ -97,7 +103,12 @@ function boot(options = {}) {
         echoListeners[channel + ':.crud.model.changed'](payload);
     }
 
-    return { addTable, ajaxCalls, emit };
+    return {
+        addTable,
+        ajaxCalls,
+        browserTabId: window.ibGetDatatableBrowserTabId(),
+        emit,
+    };
 }
 
 function makeTable({
@@ -107,7 +118,7 @@ function makeTable({
     serverSide = false,
 } = {}) {
     const rows = [];
-    const calls = { added: [], draws: [], reloads: 0 };
+    const calls = { added: [], addedNodes: [], draws: [], reloads: 0 };
     const table = {
         attributes: {
             'data-model-broadcast-channel': channel,
@@ -136,8 +147,35 @@ function makeTable({
         row: {
             add(row) {
                 calls.added.push(row);
+                const classNames = new Set();
+                const node = {
+                    classList: {
+                        add(className) {
+                            classNames.add(className);
+                        },
+                        contains(className) {
+                            return classNames.has(className);
+                        },
+                        remove(className) {
+                            classNames.delete(className);
+                        },
+                    },
+                    offsetWidth: 0,
+                };
+                const addedRow = {
+                    draw(resetPaging) {
+                        calls.draws.push(resetPaging);
+                        return addedRow;
+                    },
+                    node() {
+                        return node;
+                    },
+                };
+
+                calls.addedNodes.push(node);
                 rows.push({ id: row[0], data: row });
-                return datatable;
+
+                return addedRow;
             },
         },
         rows() {
@@ -178,6 +216,32 @@ test('fetches and adds a created row with a string key', async () => {
     assert.equal(fixture.calls.reloads, 0);
 });
 
+test('ignores a created event emitted by the originating table only', async () => {
+    const runtime = boot();
+    const sourceFixture = makeTable({ id: 'orders' });
+    const otherFixture = makeTable({ id: 'orders-summary' });
+    runtime.addTable(sourceFixture.table);
+    runtime.addTable(otherFixture.table);
+
+    runtime.emit('channel.crud-events.models/order', {
+        action: 'created',
+        key: 'ORD-SELF',
+        model: 'App\\Models\\Order',
+        origin: {
+            browserTabId: runtime.browserTabId,
+            tableId: 'orders',
+        },
+    });
+
+    await wait(140);
+    await wait(0);
+
+    assert.equal(sourceFixture.calls.added.length, 0);
+    assert.equal(sourceFixture.calls.reloads, 0);
+    assert.equal(otherFixture.calls.added.length, 1);
+    assert.equal(otherFixture.calls.reloads, 0);
+});
+
 test('adds the mapped row through the client-side DataTables API', async () => {
     const runtime = boot({
         ajax() {
@@ -197,6 +261,10 @@ test('adds the mapped row through the client-side DataTables API', async () => {
 
     assert.deepEqual(fixture.calls.added, [[42, 'Mapped order']]);
     assert.deepEqual(fixture.calls.draws, [false]);
+    assert.equal(
+        fixture.calls.addedNodes[0].classList.contains('ib-datatable-row-broadcast-created'),
+        true
+    );
     assert.equal(fixture.calls.reloads, 0);
 });
 

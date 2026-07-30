@@ -34,6 +34,18 @@ input.editorchanged {
     outline-offset: -2px;
   }
 }
+@keyframes ib-datatable-row-broadcast-created {
+  0% {
+    background-color: rgba(33, 150, 243, 0.38);
+    outline: 2px solid rgba(21, 101, 192, 0.9);
+    outline-offset: -2px;
+  }
+  100% {
+    background-color: transparent;
+    outline: 2px solid transparent;
+    outline-offset: -2px;
+  }
+}
 @keyframes ib-datatable-cell-broadcast-updated {
   0% {
     background-color: rgba(255, 193, 7, 0.52);
@@ -50,6 +62,10 @@ input.editorchanged {
   table.dataTable tbody tr.ib-datatable-row-broadcast-updated > * {
     animation: none;
     background-color: rgba(0, 200, 120, 0.2);
+  }
+  table.dataTable tbody tr.ib-datatable-row-broadcast-created > * {
+    animation: none;
+    background-color: rgba(33, 150, 243, 0.2);
   }
   table.dataTable tbody .ib-datatable-cell-broadcast-updated {
     animation: none;
@@ -72,6 +88,9 @@ table.dataTable tbody tr.ib-row-focused {
 }
 table.dataTable tbody tr.ib-datatable-row-broadcast-updated > * {
   animation: ib-datatable-row-broadcast-updated 1.6s ease-out;
+}
+table.dataTable tbody tr.ib-datatable-row-broadcast-created > * {
+  animation: ib-datatable-row-broadcast-created 1.8s ease-out;
 }
 table.dataTable tbody tr .ib-datatable-cell-broadcast-updated {
   animation: ib-datatable-cell-broadcast-updated 2.2s ease-out;
