@@ -127,7 +127,6 @@ class Datatables
 
 	public string $ajaxMethod = 'GET';
 
-	public Collection $fetchers;
 
 	public function __construct()
 	{
@@ -139,6 +138,14 @@ class Datatables
 		$this->initializeButtons();
 
 		$this->setFetchers();
+	}
+
+	public function getFetchersFromController(object $controller) : static
+	{
+		if (! method_exists($controller, 'getFetchers'))
+			throw new \InvalidArgumentException('The controller must expose a getFetchers method.');
+
+		return $this->setFetchers($controller->getFetchers());
 	}
 
 	public function getAjaxMethod() : string
@@ -552,6 +559,9 @@ class Datatables
 
 	public function renderPage()
 	{
+		if (request()->ibFetcher)
+			return $this->renderPortion();
+
 		if ($this->isFlatTable())
 			return view('datatables::table', [
 				'table' => $this,

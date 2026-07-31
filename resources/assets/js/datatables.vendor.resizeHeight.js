@@ -26,9 +26,10 @@ jQuery(document).ready(function ($)
                     : 0;
 
                 var available = window.innerHeight - rect.top - BOTTOM_OFFSET - safeInset;
-                if (available < 1000) available = 1000;
+                var minHeight = parseInt(table.getAttribute('data-scroll-body-min-height'), 10);
+                if (isNaN(minHeight) || minHeight < 0) minHeight = 100;
 
-                el.style.maxHeight = (available - 100) + 'px';
+                el.style.maxHeight = Math.max(available - 100, minHeight) + 'px';
             });
 
 

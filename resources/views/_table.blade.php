@@ -64,6 +64,19 @@
 
 @endif
 
+@php($hasSideExtraViews = ! request()->input('justTable', false) && $table->hasExtraViewsPositions(['left', 'right']))
+
+@if($hasSideExtraViews)
+	<div class="uk-grid-small" uk-grid>
+		@if($table->hasExtraViewsPositions('left'))
+			<aside class="uk-width-auto">
+				{!! $table->renderExtraViews('left') !!}
+			</aside>
+		@endif
+
+		<div class="uk-width-expand">
+@endif
+
 <div class="uk-width-auto">
 
 	<table
@@ -112,6 +125,7 @@
 			@endif
 
 			data-editor-save-trigger="{{ config('datatables.editor.saveTrigger', 'enter') }}"
+			data-scroll-body-min-height="{{ config('datatables.scrollBodyMinHeight', 100) }}"
 
 			@if($table->hasSummary())
 				data-summary="true"
@@ -146,6 +160,17 @@
 	</table>
 
 </div>
+
+@if($hasSideExtraViews)
+		</div>
+
+		@if($table->hasExtraViewsPositions('right'))
+			<aside class="uk-width-auto">
+				{!! $table->renderExtraViews('right') !!}
+			</aside>
+		@endif
+	</div>
+@endif
 
 @if(! request()->input('justTable', false))
 	{{-- @include('datatables::__extraViews', ['position' => 'bottom']) --}}
