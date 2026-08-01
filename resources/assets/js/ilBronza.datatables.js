@@ -32,6 +32,7 @@ require('./datatables.vendor.datatablesFields.min.js');
 require('./datatables.vendor.duplicates.min.js');
 require('./datatables.vendor.filtering.min.js');
 require('./datatables.vendor.modelBroadcasts.min.js');
+require('./datatables.vendor.selection.min.js');
 require('./datatables.vendor.sorting.min.js');
 require('./datatables.vendor.summary.min.js');
 require('./datatables.vendor.utilities.min.js');

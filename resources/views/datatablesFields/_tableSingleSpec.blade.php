@@ -558,6 +558,27 @@
     ]) !!};
 		@endif
 
+		@if($table->hasSelectionDropdown())
+    window.__ibDatatableSelectionDropdown = window.__ibDatatableSelectionDropdown || {};
+    window.__ibDatatableSelectionDropdown['{{ $table->getId() }}'] = true;
+
+    window.__ibDatatableSelectionPage = window.__ibDatatableSelectionPage || {};
+    window.__ibDatatableSelectionPage['{{ $table->getId() }}'] = {{ $table->hasSelectPageItem() ? 'true' : 'false' }};
+
+    window.__ibDatatableSelectionLabels = window.__ibDatatableSelectionLabels || {};
+    window.__ibDatatableSelectionLabels['{{ $table->getId() }}'] = {!! json_encode([
+        'trigger' => __('datatables::buttons.selectionTrigger'),
+        'selectFiltered' => __('datatables::buttons.selectionSelectFiltered'),
+        'selectPage' => __('datatables::buttons.selectionSelectPage'),
+        'selectNone' => __('datatables::buttons.selectionSelectNone'),
+        'outsideFilter' => __('datatables::buttons.selectionOutsideFilter'),
+        'showSelected' => __('datatables::buttons.selectionShowSelected'),
+        'disabledHint' => __('datatables::buttons.selectionDisabledHint'),
+        'banner' => __('datatables::buttons.selectionBanner'),
+        'bannerShowAll' => __('datatables::buttons.selectionBannerShowAll'),
+    ]) !!};
+		@endif
+
     window.__ibDatatableUiSettings = window.__ibDatatableUiSettings || {};
     window.__ibDatatableUiSettings['{{ $table->getId() }}'] = {!! json_encode($table->getDatatableUserData()->uiSettings ?? []) !!};
 

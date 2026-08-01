@@ -929,3 +929,64 @@ body.uk-offcanvas-container
   background-color: @primaryColor;
   color: #fff;
 }
+
+
+/**
+ * START SELECTION
+ *
+ * Azioni di selezione in intestazione: il checkbox di Select e il caret
+ * che apre il dropdown vivono sempre nella stessa cella, anche quando
+ * c'e' la mainheader (vedi ibDtRelocateSelectAll in
+ * datatables.vendor.selection.min.js).
+ */
+
+th.ib-dt-selection-header
+{
+  white-space: nowrap;
+
+  input[type="checkbox"]
+  {
+    vertical-align: middle;
+    margin: 0;
+  }
+
+  .ib-dt-selection-caret
+  {
+    display: inline-block;
+    vertical-align: middle;
+    // stacca il caret dal checkbox: troppo vicini = select-all involontari
+    margin-left: 6px;
+    padding: 2px 4px;
+    line-height: 1;
+    color: inherit;
+    opacity: .55;
+
+    &:hover
+    {
+      opacity: 1;
+      text-decoration: none;
+    }
+  }
+}
+
+.ib-dt-selection-menu
+{
+  .ib-dt-selection-item
+  {
+    white-space: nowrap;
+  }
+
+  .ib-dt-selection-hint
+  {
+    opacity: .7;
+  }
+}
+
+.ib-dt-selection-banner
+{
+  padding: 6px 12px;
+}
+
+/**
+ * END SELECTION
+ */

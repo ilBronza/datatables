@@ -133,6 +133,7 @@ return [
 
 		],
 		'editor' => [
+			'datatableFieldSelectCell' => 'auto',
 			'datatableFieldFileUpload' => 'auto',
 			'datatableFieldToggle' => '2em',
 			'datatableFieldSave' => '2em',
@@ -155,6 +156,7 @@ return [
 
 		'utilities' => [
 			'datatableFieldRemoveNamespace' => 'auto',
+			'datatableFieldSelectRowCheckboxCell' => '2em',
 			'datatableFieldMilestone' => '15em',
 			'datatableFieldSorting' => '2em'
 		],
@@ -222,8 +224,28 @@ return [
         'copy' => true,
         'csv' => true,
         'excel' => true,
-		'selectFiltered' => true,
+
+		/**
+		 * Vecchi bottoni di selezione in toolbar (seleziona filtrati /
+		 * deseleziona tutti / solo selezionate). Sostituiti dal dropdown
+		 * in intestazione, si riattivano mettendo true.
+		 */
+		'selectFiltered' => false,
     ],
+
+	'selection' => [
+
+		/**
+		 * Dropdown delle azioni di selezione accanto al checkbox
+		 * principale in intestazione.
+		 */
+		'headerDropdown' => true,
+
+		/**
+		 * Voce «seleziona questa pagina» dentro il dropdown.
+		 */
+		'selectPage' => true,
+	],
 
 	'bulkEdit' => env('DATATABLES_BULK_EDIT', false),
 ];

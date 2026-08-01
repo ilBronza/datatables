@@ -20,7 +20,20 @@ trait DatatableButtonsTrait
 		if (! $this->hasSelectRowCheckboxes())
 			return false;
 
-		return config('datatables.defaultButtons.selectFiltered', true);
+		return config('datatables.defaultButtons.selectFiltered', false);
+	}
+
+	public function hasSelectionDropdown() : bool
+	{
+		if (! $this->hasSelectRowCheckboxes())
+			return false;
+
+		return config('datatables.selection.headerDropdown', true);
+	}
+
+	public function hasSelectPageItem() : bool
+	{
+		return config('datatables.selection.selectPage', true);
 	}
 
 	public function hasSearchButton() : bool

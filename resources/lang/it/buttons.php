@@ -20,4 +20,14 @@ return [
 	'bulkToggleClear' => 'Svuota',
 	'selectFiltered' => 'Seleziona filtrati',
 	'selectFilteredTooltip' => 'Seleziona filtrati',
+
+	'selectionTrigger' => 'Azioni di selezione',
+	'selectionSelectFiltered' => 'Seleziona filtrati',
+	'selectionSelectPage' => 'Seleziona questa pagina',
+	'selectionSelectNone' => 'Deseleziona tutte',
+	'selectionOutsideFilter' => ':count fuori filtro',
+	'selectionShowSelected' => 'Mostra solo selezionate',
+	'selectionDisabledHint' => 'Stai già vedendo solo le selezionate',
+	'selectionBanner' => 'Stai vedendo solo :count righe selezionate',
+	'selectionBannerShowAll' => 'Mostra tutte',
 ];
