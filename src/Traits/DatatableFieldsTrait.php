@@ -190,6 +190,17 @@ trait DatatableFieldsTrait
         return $this->fields->sortBy('index');
     }
 
+	public function getNullLastColumnIndexes() : array
+	{
+		$result = [];
+
+		foreach ($this->getFields() as $field)
+			if (method_exists($field, 'hasNullLastOrdering') && $field->hasNullLastOrdering())
+				$result[] = $field->getIndex();
+
+		return $result;
+	}
+
     /**
      * Returns per-field settings array for JavaScript (e.g. saveTrigger per field).
      * Keyed by field name.
@@ -416,7 +427,6 @@ trait DatatableFieldsTrait
         return $this->placeholderElement;
     }
 }
-
 
 
 

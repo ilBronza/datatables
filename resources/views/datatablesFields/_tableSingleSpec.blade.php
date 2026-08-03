@@ -6,6 +6,10 @@
 
         window.{{ $table->getId() }}FilteredSelected = false;
 
+    window.{{ $table->getId() }}hasSorting = {{ $table->hasSorting() ? 'true' : 'false' }};
+
+    window.{{ $table->getId() }}nullLastColumns = {!! json_encode($table->getNullLastColumnIndexes()) !!};
+
     window.{{ $table->getId() }}rowReorder = @isset($table->dragAndDrop) {
 
 		@if(isset($table->dragAndDrop->selector))

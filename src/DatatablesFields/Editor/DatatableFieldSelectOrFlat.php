@@ -19,9 +19,7 @@ class DatatableFieldSelectOrFlat extends DatatableFieldSelect
 	public function returnFlat()
 	{
 		return "
-
-			item = '<span>' + (typeof item[2] === 'undefined' ? item[1] : item[2]) + '</span>';
-
+			item = '<span>' + (typeof item[1] === 'undefined' ? item[1] : item[1]) + '</span>';
 		";
 	}
 
