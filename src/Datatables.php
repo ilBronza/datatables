@@ -190,6 +190,8 @@ class Datatables
 
 	static function create(string $name, array $fieldsGroups, $elements, bool $selectRowCheckboxes = false, array $extraVariables = null, string $modelClass = null, ?bool $bulkEditFromController = null)
 	{
+		ini_set('memory_limit', '512M');
+
 		$table = new static();
 
 		$table->setMainModelElement($modelClass);
