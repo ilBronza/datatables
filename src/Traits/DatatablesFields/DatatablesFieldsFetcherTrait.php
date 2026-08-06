@@ -47,7 +47,28 @@ trait DatatablesFieldsFetcherTrait
 
 		$htmlClass = $fetcherData['type'] . 'fetcher' . $fetcherData['mode'];
 
+		$this->addFetcherHtmlClass($htmlClass);
+
+		$url = $this->getFetcherUrl($fetcherData);
+
+		$this->setHeaderDataAttribute('fetch', $url);
+//		$this->setHeaderDataAttribute('fetchmode', $fetcherData['mode']);
+		$this->setHeaderDataAttribute('fetchtarget', $fetcherData['target']);
+	}
+
+	/**
+	 * i campi che non vogliono la classe fetcher sull'elemento principale
+	 * sovrascrivono questo metodo e se la piazzano dove serve
+	 **/
+	protected function addFetcherHtmlClass(string $htmlClass)
+	{
 		$this->addHtmlClass($htmlClass);
+	}
+
+	protected function getFetcherUrl(array $fetcherData) : ? string
+	{
+		if(isset($fetcherData['url']))
+			return $fetcherData['url'];
 
 		$element = $this->getPlaceholderElement();
 
@@ -55,10 +76,7 @@ trait DatatablesFieldsFetcherTrait
 			$element->{$element->getKeyName()} = (config('datatables.replace_model_id_string'));
 
 		$urlMethod = $fetcherData['urlMethod'];
-		$url = $element->{$urlMethod}();
 
-		$this->setHeaderDataAttribute('fetch', $url);
-//		$this->setHeaderDataAttribute('fetchmode', $fetcherData['mode']);
-		$this->setHeaderDataAttribute('fetchtarget', $fetcherData['target']);
+		return $element->{$urlMethod}();
 	}
 }
