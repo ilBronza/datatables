@@ -26,6 +26,7 @@ require('datatables.net-select-dt');
 
 require('./datatables.vendor.ajaxButton.min.js');
 require('./datatables.vendor.ajaxCall.min.js');
+require('./datatables.vendor.editorRowLock.js');
 require('./datatables.vendor.buttons.min.js');
 require('./datatables.vendor.columnVisibility.min.js');
 require('./datatables.vendor.datatablesFields.min.js');
