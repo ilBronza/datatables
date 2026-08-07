@@ -6,7 +6,6 @@ $(document).ready(function()
         rowRefreshes: {},
         tableRowReloads: {},
         tableReloads: {},
-        pendingDraws: {},
     };
 
     function getContext(target)
@@ -85,11 +84,6 @@ $(document).ready(function()
             window.reloadDatatable(tableReload);
         }
 
-        if (state.pendingDraws[tableId])
-        {
-            delete state.pendingDraws[tableId];
-            $('#' + tableId).DataTable().draw(false);
-        }
     }
 
     function unlock(target)
@@ -113,27 +107,6 @@ $(document).ready(function()
             delete state.locks[context.key];
             flush(context.tableId);
         }, 0);
-    }
-
-    function installPreDrawGuard(settings)
-    {
-        if (! settings || settings.__ibEditorRowLockInstalled)
-            return;
-
-        settings.__ibEditorRowLockInstalled = true;
-        settings.aoPreDrawCallback.push({
-            sName: 'ibEditorRowLock',
-            fn: function()
-            {
-                const tableId = $(settings.nTable).attr('id');
-
-                if (! tableId || ! tableHasLock(tableId))
-                    return true;
-
-                state.pendingDraws[tableId] = true;
-                return false;
-            }
-        });
     }
 
     function getTableIdFromSelector(tableSelector)
@@ -230,7 +203,15 @@ $(document).ready(function()
         }
     }
 
-    const focusableSelector = 'table.datatable tbody input, table.datatable tbody select, table.datatable tbody textarea, table.datatable tbody button, table.datatable tbody a[href], table.datatable tbody [tabindex], table.datatable tbody [contenteditable="true"]';
+    // Only inline editors need refresh protection. Locking generic links and
+    // buttons could leave a table locked after an ordinary row interaction.
+    const focusableSelector = [
+        'table.datatable tbody .ib-editor-text',
+        'table.datatable tbody .ib-editor-select',
+        'table.datatable tbody .ib-editor-color',
+        'table.datatable tbody .ib-editor-custom-value',
+        'table.datatable tbody .ib-editor-file-upload',
+    ].join(', ');
 
     document.addEventListener('pointerdown', function(event)
     {
@@ -255,14 +236,6 @@ $(document).ready(function()
         if (target)
             unlock(target);
     }, true);
-
-    $(document).on('init.dt', function(event, settings)
-    {
-        installPreDrawGuard(settings);
-    });
-
-    if ($.fn.dataTable && $.fn.dataTable.settings)
-        $.fn.dataTable.settings.forEach(installPreDrawGuard);
 
     installRefreshGuards();
     setTimeout(installRefreshGuards, 0);
