@@ -342,6 +342,35 @@ th:hover .filterfunctions {
   display: inline-flex !important;
   /* inline = largo quanto i contenuti */
 }
+.header-sorting {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-50%);
+  color: #777;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease-in-out, color 120ms ease-in-out;
+}
+.columnsintestations th:hover .header-sorting,
+.columnsintestations th:focus-within .header-sorting {
+  opacity: 1;
+  pointer-events: auto;
+}
+.header-sorting:hover,
+.header-sorting:focus {
+  color: #1c3fff;
+  opacity: 1;
+  pointer-events: auto;
+}
+.header-sorting:focus {
+  outline: 2px solid #1c3fff;
+  outline-offset: 2px;
+}
 .datatablefilter {
   position: relative;
 }

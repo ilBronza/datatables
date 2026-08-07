@@ -48,6 +48,9 @@ trait DatatableSelectRowsTrait
 
     public function setRowSelectCheckboxes()
     {
+        if ($this->hasSelectRowCheckboxes())
+            return;
+
         $fieldsGroup = $this->createFieldsGroup('selectRow');
 
         $selectRowField = $this->addField('selectRow', [
@@ -56,13 +59,19 @@ trait DatatableSelectRowsTrait
 
         $fieldsGroup->addField('selectRow', $selectRowField);
 
-        $primaryField = $this->addField('mySelfPrimary', [
-            'type' => 'primary',
-            'forcedStandardName' => 'mySelfPrimary',
-        ]);
-        $fieldsGroup->addField('mySelfPrimary', $primaryField);
+        if (! isset($this->fields['mySelfPrimary']))
+        {
+            $primaryField = $this->addField('mySelfPrimary', [
+                'type' => 'primary',
+                'forcedStandardName' => 'mySelfPrimary',
+            ]);
+            $fieldsGroup->addField('mySelfPrimary', $primaryField);
+        }
 
         $this->selectRowCheckboxes = true;
+
+        $this->condensateIndexes();
+        $this->parseRowId();
     }
 
     public function fieldsGroupsRequiresSelectRowCheckboxes(array $fieldsGroups) : bool

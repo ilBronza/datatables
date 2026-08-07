@@ -42,7 +42,7 @@ trait DatatableFieldsTrait
                 }
     }
 
-    private function condensateIndexes()
+    protected function condensateIndexes()
     {
         $index = 0;
 
