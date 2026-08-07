@@ -4,6 +4,8 @@ namespace IlBronza\Datatables\DatatablesFields;
 
 class DatatableFieldNumeric extends DatatableField
 {
+	public $datatableType = 'numeric';
+
 	public $digits = 2;
 
 	public function transformValue($value)

@@ -8,4 +8,6 @@ use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsColumnDefsNumber
 class DatatableFieldBaseNumber extends DatatableField
 {
 	use DatatablesFieldsColumnDefsNumbersNullLastTrait;
+
+	public $datatableType = 'numeric';
 }

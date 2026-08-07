@@ -30,11 +30,26 @@ class DatatableFieldPrice extends DatatableFieldBaseNumber
 
 	public function getCustomColumnDefSingleSortResult()
 	{
+		$decimalSeparator = json_encode($this->decimalSeparator);
+		$thousandsSeparator = json_encode($this->thousandsSeparator);
+
 		return "
-			if(item)
-				item.replace('" . $this->thousandsSeparator . "', '').replace('" . $this->suffix . "', '')
-				
-			return item;
+			if(item === null || item === '')
+				return item;
+
+			const decimalSeparator = {$decimalSeparator};
+			const thousandsSeparator = {$thousandsSeparator};
+			let value = String(item).replace(/\\u00a0/g, '').trim();
+
+			if(thousandsSeparator)
+				value = value.split(thousandsSeparator).join('');
+
+			if(decimalSeparator && decimalSeparator !== '.')
+				value = value.split(decimalSeparator).join('.');
+
+			const numericValue = Number(value);
+
+			return Number.isFinite(numericValue) ? numericValue : null;
 		";
 	}
 
