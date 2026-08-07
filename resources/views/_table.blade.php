@@ -125,6 +125,7 @@
 			@endif
 
 			data-editor-save-trigger="{{ config('datatables.editor.saveTrigger', 'enter') }}"
+			data-editor-saved-feedback-duration="{{ max(0, (int) config('datatables.editor.savedFeedbackDuration', 5000)) }}"
 			data-scroll-body-min-height="{{ config('datatables.scrollBodyMinHeight', 100) }}"
 
 			@if($table->hasSummary())

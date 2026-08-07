@@ -26,6 +26,59 @@ $(document).ready(function()
         return { tableId: tableId, rowId: rowId, key: tableId + ':' + rowId };
     }
 
+    function getRowContext(tableId, rowId)
+    {
+        const normalizedRowId = rowId === null || typeof rowId === 'undefined'
+            ? ''
+            : String(rowId).trim();
+
+        if (! tableId || ! normalizedRowId)
+            return null;
+
+        return {
+            tableId: tableId,
+            rowId: normalizedRowId,
+            key: tableId + ':' + normalizedRowId,
+        };
+    }
+
+    function setRowRefreshPending(context, pending)
+    {
+        if (! context)
+            return;
+
+        const row = document.getElementById(context.rowId);
+
+        if (! row || $(row).closest('table').attr('id') !== context.tableId)
+            return;
+
+        const $row = $(row);
+        const $cell = $row.children('td, th').first();
+
+        if (! $cell.length)
+            return;
+
+        if (! pending)
+        {
+            $row.removeClass('ib-datatable-row-refresh-pending');
+            $cell.removeClass('ib-datatable-row-refresh-pending-cell');
+            $cell.children('.ib-datatable-row-refresh-pending-spinner').remove();
+            return;
+        }
+
+        $row.addClass('ib-datatable-row-refresh-pending');
+        $cell.addClass('ib-datatable-row-refresh-pending-cell');
+
+        if (! $cell.children('.ib-datatable-row-refresh-pending-spinner').length)
+        {
+            $cell.prepend(
+                '<span class="ib-datatable-row-refresh-pending-spinner" role="status" aria-label="Aggiornamento in attesa">' +
+                    '<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>' +
+                '</span>'
+            );
+        }
+    }
+
     function tableHasLock(tableId)
     {
         return Object.keys(state.locks).some(function(key)
@@ -62,6 +115,7 @@ $(document).ready(function()
 
             const params = state.rowRefreshes[key];
             delete state.rowRefreshes[key];
+            setRowRefreshPending(getRowContext(tableId, key.slice(tableId.length + 1)), false);
             window.__refreshRow(params);
         });
 
@@ -69,6 +123,12 @@ $(document).ready(function()
         if (rowReload)
         {
             delete state.tableRowReloads[tableId];
+
+            (Array.isArray(rowReload.rowIds) ? rowReload.rowIds : []).forEach(function(rowId)
+            {
+                setRowRefreshPending(getRowContext(tableId, rowId), false);
+            });
+
             window.reloadTableRows(
                 rowReload.tableId,
                 rowReload.rowIds,
@@ -141,6 +201,7 @@ $(document).ready(function()
                     if (context && tableHasLock(context.tableId))
                     {
                         state.rowRefreshes[context.key] = params;
+                        setRowRefreshPending(context, true);
                         return true;
                     }
 
@@ -168,6 +229,11 @@ $(document).ready(function()
                             preserveSelectionIds: preserveSelectionIds,
                             onRowsReloaded: onRowsReloaded,
                         };
+
+                        (Array.isArray(rowIds) ? rowIds : []).forEach(function(rowId)
+                        {
+                            setRowRefreshPending(getRowContext(domId, rowId), true);
+                        });
 
                         return true;
                     }
