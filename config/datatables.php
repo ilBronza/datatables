@@ -213,7 +213,7 @@ return [
 		'saveButton' => false,
 		'saveTrigger' => env('DATATABLES_EDITOR_SAVE_TRIGGER', 'blur'),
 		// Milliseconds the successful-save check remains visible on the updated cell.
-		'savedFeedbackDuration' => env('DATATABLES_EDITOR_SAVED_FEEDBACK_DURATION', 5000),
+		'savedFeedbackDuration' => env('DATATABLES_EDITOR_SAVED_FEEDBACK_DURATION', 1000),
 	],
 
 	'rangeFilter' => [

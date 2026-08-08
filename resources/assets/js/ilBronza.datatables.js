@@ -1,6 +1,10 @@
 window.moment = require('moment');
 window.JSZip = require('jszip');
 
+// Published alongside this file in resources/css: importing it here makes
+// Laravel Mix / Webpack watch and rebuild the DataTables styles from LESS.
+require('../css/datatables.less');
+
 require('datatables.net-dt');
 require('datatables.net-autofill-dt');
 require('datatables.net-buttons-dt');

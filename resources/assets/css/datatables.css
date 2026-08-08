@@ -59,17 +59,17 @@ input.editorchanged {
   }
 }
 @keyframes ib-datatable-editor-saved-feedback {
-  0%, 8% {
+  0% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0.75);
+    transform: scale(0.7);
   }
-  16%, 78% {
-    opacity: 0.72;
-    transform: translate(-50%, -50%) scale(1);
+  14%, 72% {
+    opacity: 1;
+    transform: scale(1);
   }
   100% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(1.08);
+    transform: scale(0.9);
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -111,13 +111,15 @@ table.dataTable tbody tr .ib-datatable-cell-broadcast-updated {
 }
 table.dataTable tbody tr .ib-datatable-editor-saved-feedback {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 0.2em;
+  right: 0.35em;
+  z-index: 3;
   color: #198754;
-  font-size: 1.5em;
+  font-size: 1.15em;
   line-height: 1;
+  text-shadow: 0 1px 2px white;
   pointer-events: none;
-  animation: ib-datatable-editor-saved-feedback 5s ease-out forwards;
+  animation: ib-datatable-editor-saved-feedback 1.5s ease-out forwards;
 }
 table.dataTable tbody tr .ib-datatable-editor-saved-feedback i {
   width: auto;

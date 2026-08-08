@@ -91,22 +91,22 @@ input.editorchanged
 
 @keyframes ib-datatable-editor-saved-feedback
 {
-  0%, 8%
+  0%
   {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(.75);
+    transform: scale(.7);
   }
 
-  16%, 78%
+  14%, 72%
   {
-    opacity: .72;
-    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    transform: scale(1);
   }
 
   100%
   {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(1.08);
+    transform: scale(.9);
   }
 }
 
@@ -182,13 +182,15 @@ table.dataTable
       .ib-datatable-editor-saved-feedback
       {
         position: absolute;
-        top: 50%;
-        left: 50%;
+        top: 1em;
+        left: 1em;
+        z-index: 3;
         color: #198754;
-        font-size: 1.5em;
+        font-size: 1em;
         line-height: 1;
+        text-shadow: 0 1px 2px white;
         pointer-events: none;
-        animation: ib-datatable-editor-saved-feedback 5s ease-out forwards;
+        animation: ib-datatable-editor-saved-feedback 1.5s ease-out forwards;
 
         i
         {
@@ -197,6 +199,19 @@ table.dataTable
           line-height: 1;
           border: 0;
         }
+      }
+
+      select + .ib-datatable-editor-saved-feedback
+      {
+        left: unset;
+        right: 2em;
+      }
+
+      input[type="text"]:not(.dtprice) + .ib-datatable-editor-saved-feedback,
+      input[type="date"] + .ib-datatable-editor-saved-feedback
+      {
+        left: unset;
+        right: 1em;
       }
 
       &.ib-row-focused
