@@ -42,5 +42,7 @@
 		initCleaveNumericsInRoot(this);
 	}
 
+	window.ibDtInitCleaveNumericsInRoot = initCleaveNumericsInRoot;
+
 	$(document).on('draw.dt', 'table.dataTable', onTableDraw);
 })(window.jQuery);

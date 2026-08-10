@@ -196,15 +196,8 @@ $(document).ready(function()
             {
                 const guardedRefreshRow = function(params)
                 {
-                    const context = params && params.target ? getContext(params.target) : null;
-
-                    if (context && tableHasLock(context.tableId))
-                    {
-                        state.rowRefreshes[context.key] = params;
-                        setRowRefreshPending(context, true);
-                        return true;
-                    }
-
+                    // Row refreshes patch only non-focused, non-dirty cells.
+                    // Table/row reloads remain guarded because they still draw.
                     return refreshRow.apply(this, arguments);
                 };
 
