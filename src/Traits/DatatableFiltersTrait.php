@@ -4,7 +4,7 @@ namespace IlBronza\Datatables\Traits;
 
 trait DatatableFiltersTrait
 {
-	public function setFiltersHidden(bool $filtersHidden = true) : static
+	public function setFiltersHidden(?bool $filtersHidden = true) : static
 	{
 		$this->filtersHidden = $filtersHidden;
 
@@ -13,7 +13,10 @@ trait DatatableFiltersTrait
 
 	public function areFiltersHidden() : bool
 	{
-		return $this->filtersHidden;
+		if (! is_null($this->filtersHidden))
+			return $this->filtersHidden;
+
+		return (bool) config('datatables.filtersHidden', false);
 	}
 
 	public function hasRemoveFiltersButton() : bool

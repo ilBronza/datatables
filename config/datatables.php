@@ -201,6 +201,9 @@ return [
 
 	'footerFilters' => true,
 
+	// Hide table filters by default. A table-level $filtersHidden property overrides this value.
+	'filtersHidden' => false,
+
 	/**
 	 * Filter trigger: 'enter' = apply only on Enter key (+ change) | 'keyup' = apply on each keystroke | 'blur' = apply on blur
 	 */

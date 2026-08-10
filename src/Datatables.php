@@ -62,7 +62,7 @@ class Datatables
 
 	//DatatableFiltersTrait
 	public ? bool $removeFiltersButton = null;
-	public bool $filtersHidden = false;
+	public ?bool $filtersHidden = null;
 
 	public int $fixedColumnsLeft = 0;
 	public int $fixedColumnsRight = 0;
