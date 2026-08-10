@@ -251,6 +251,30 @@
         };
     }
 
+    window.ibDtHasPendingCellRefresh = function(target)
+    {
+        const targetCell = getClosestCell(target);
+
+        if (! targetCell)
+            return false;
+
+        return Object.keys(pendingRows).some(function(key)
+        {
+            const pending = pendingRows[key];
+
+            return pending.columns.some(function(pendingColumn)
+            {
+                const cell = pending.table
+                    .cell(pending.rowIndex, pendingColumn.columnIndex)
+                    .node();
+
+                return cell === targetCell
+                    && getCellRevision(cell) === pendingColumn.revision
+                    && ! cellHasLocalChanges(cell);
+            });
+        });
+    };
+
     window.ibDtFlushPendingRenderedCells = function()
     {
         Object.keys(pendingRows).forEach(function(key)

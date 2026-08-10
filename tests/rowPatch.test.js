@@ -40,6 +40,7 @@ function boot({ activeElement = null } = {}) {
         completeSave: window.ibDtCompleteEditorCellSave,
         document,
         flush: window.ibDtFlushPendingRenderedCells,
+        hasPendingRefresh: window.ibDtHasPendingCellRefresh,
         handlers,
         patch: window.ibDtPatchRenderedRow,
         window,
@@ -155,6 +156,66 @@ test('invalidates a protected cell after it loses focus', () => {
         { columnIndex: 1, source: 'data' },
         { columnIndex: 0, source: 'data' },
     ]);
+});
+
+test('keeps an untouched focused cell pending until Tab moves focus away', () => {
+    const data = fixture();
+    const editor = {
+        closest: () => data.cells[0],
+        owner: data.cells[0],
+    };
+    const runtime = boot({ activeElement: editor });
+
+    runtime.patch(data.table, data.row, ['calculated-a', 'new-b']);
+
+    assert.equal(runtime.hasPendingRefresh(editor), true);
+    assert.deepEqual(data.rowData, ['old-a', 'new-b']);
+    assert.equal(data.cells[0].innerHTML, '<span>old-a</span>');
+
+    runtime.document.activeElement = null;
+    runtime.flush();
+
+    assert.equal(runtime.hasPendingRefresh(editor), false);
+    assert.deepEqual(data.rowData, ['calculated-a', 'new-b']);
+    assert.equal(data.cells[0].innerHTML, '<span>calculated-a</span>');
+});
+
+test('does not treat a pending server value as authoritative after local input', () => {
+    const data = fixture();
+    const editor = {
+        __ibDtEditor: true,
+        closest: () => data.cells[0],
+        matches: () => true,
+        owner: data.cells[0],
+    };
+    const runtime = boot({ activeElement: editor });
+
+    runtime.patch(data.table, data.row, ['calculated-a', 'new-b']);
+    assert.equal(runtime.hasPendingRefresh(editor), true);
+
+    runtime.handlers.input({ target: editor });
+
+    assert.equal(runtime.hasPendingRefresh(editor), false);
+});
+
+test('does not suppress saving when the cell was already dirty before the refresh', () => {
+    const data = fixture({ dirtyColumn: 0 });
+    const editor = {
+        closest: () => data.cells[0],
+        owner: data.cells[0],
+    };
+    const runtime = boot({ activeElement: editor });
+    const revisions = runtime.captureRevisions(data.table, data.row);
+
+    runtime.patch(
+        data.table,
+        data.row,
+        ['calculated-a', 'new-b'],
+        revisions
+    );
+
+    assert.equal(runtime.hasPendingRefresh(editor), false);
+    assert.equal(data.cells[0].innerHTML, '<span>old-a</span>');
 });
 
 test('preserves dirty cells until their local change is cleared', () => {
