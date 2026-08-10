@@ -38,6 +38,9 @@ class DatatableFieldSelect extends DatatableFieldEditor
 	public ?array $possibleValuesArray = null;
 	public bool $customValueMode = false;
 
+	//rende il select una tendina select2 con ricerca testuale, inizializzata al primo click
+	public bool $select2 = false;
+
 	public ? bool $forceAlphabeticalSorting = false;
 
 	public ? string $possibleValuesMethod = null;
@@ -57,6 +60,20 @@ class DatatableFieldSelect extends DatatableFieldEditor
 	public function hasCustomValueMode() : bool
 	{
 		return $this->customValueMode;
+	}
+
+	public function hasSelect2() : bool
+	{
+		return $this->select2;
+	}
+
+	//classe aggiunta solo al select in cella, non all'input di selectOrInput ne' all'inline edit
+	protected function getSelect2ClassString() : string
+	{
+		if(! $this->hasSelect2())
+			return '';
+
+		return ' ib-editor-select2';
 	}
 
 	public function getFieldSpecificData() : array
@@ -262,7 +279,7 @@ class DatatableFieldSelect extends DatatableFieldEditor
 		if(! $this->userCanEdit())
 			return $this->returnFlat();
 
-		$classes = $this->getHtmlClassesString();
+		$classes = $this->getHtmlClassesString() . $this->getSelect2ClassString();
 
 		return "
 

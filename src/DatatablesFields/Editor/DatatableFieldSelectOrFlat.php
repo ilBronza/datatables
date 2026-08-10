@@ -11,6 +11,7 @@ namespace IlBronza\Datatables\DatatablesFields\Editor;
  * 'stato' => [
  *     'type' => 'editor.selectOrFlat',
  *     'possibleValuesMethod' => 'getStatoSelectPossibleValues',
+ *     'select2' => true, //opzionale, tendina con ricerca testuale
  * ],
  */
 class DatatableFieldSelectOrFlat extends DatatableFieldSelect

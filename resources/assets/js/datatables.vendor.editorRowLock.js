@@ -302,12 +302,15 @@ $(document).ready(function()
 
     // Only inline editors need refresh protection. Locking generic links and
     // buttons could leave a table locked after an ordinary row interaction.
+    // Il select nativo sostituito da select2 non riceve piu' focus: il lock
+    // segue il container, che select2 inserisce dentro la stessa cella.
     const focusableSelector = [
         'table.datatable tbody .ib-editor-text',
         'table.datatable tbody .ib-editor-select',
         'table.datatable tbody .ib-editor-color',
         'table.datatable tbody .ib-editor-custom-value',
         'table.datatable tbody .ib-editor-file-upload',
+        'table.datatable tbody .select2-container',
     ].join(', ');
 
     document.addEventListener('pointerdown', function(event)

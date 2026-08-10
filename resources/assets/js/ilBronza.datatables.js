@@ -32,6 +32,7 @@ require('./datatables.vendor.ajaxButton.min.js');
 require('./datatables.vendor.rowPatch.js');
 require('./datatables.vendor.editorActions.js');
 require('./datatables.vendor.ajaxCall.min.js');
+require('./datatables.vendor.editorSelect2.js');
 require('./datatables.vendor.editorRowLock.js');
 require('./datatables.vendor.buttons.min.js');
 require('./datatables.vendor.columnVisibility.min.js');
