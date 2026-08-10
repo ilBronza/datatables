@@ -584,7 +584,10 @@
 		@endif
 
     window.__ibDatatableUiSettings = window.__ibDatatableUiSettings || {};
-    window.__ibDatatableUiSettings['{{ $table->getId() }}'] = {!! json_encode($table->getDatatableUserData()->uiSettings ?? []) !!};
+    window.__ibDatatableUiSettings['{{ $table->getId() }}'] = {!! json_encode(array_replace(
+        ['filtersHidden' => $table->areFiltersHidden()],
+        $table->getDatatableUserData()->uiSettings ?? []
+    )) !!};
 
     window.__ibDatatableUtilsButtons = window.__ibDatatableUtilsButtons || {};
     window.__ibDatatableUtilsButtons['{{ $table->getId() }}'] = [

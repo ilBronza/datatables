@@ -4,6 +4,18 @@ namespace IlBronza\Datatables\Traits;
 
 trait DatatableFiltersTrait
 {
+	public function setFiltersHidden(bool $filtersHidden = true) : static
+	{
+		$this->filtersHidden = $filtersHidden;
+
+		return $this;
+	}
+
+	public function areFiltersHidden() : bool
+	{
+		return $this->filtersHidden;
+	}
+
 	public function hasRemoveFiltersButton() : bool
 	{
 		if(! is_null($this->removeFiltersButton))
@@ -25,4 +37,3 @@ trait DatatableFiltersTrait
 		return config('datatables.footerFilters');
 	}
 }
-
