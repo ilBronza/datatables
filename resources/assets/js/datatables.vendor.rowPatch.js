@@ -126,6 +126,13 @@
             || cellHasLocalChanges(cell);
     }
 
+    function mustRefreshActiveTargetCell(cell, options)
+    {
+        return !! (options
+            && options.refreshActiveTargetCell
+            && getClosestCell(options.target) === cell);
+    }
+
     function getInlineEditActionColumn(rowNode)
     {
         const child = rowNode && rowNode.nextElementSibling;
@@ -303,7 +310,7 @@
         return revisions;
     };
 
-    window.ibDtPatchRenderedRow = function(table, row, rowData, revisionSnapshot)
+    window.ibDtPatchRenderedRow = function(table, row, rowData, revisionSnapshot, options)
     {
         if (! table || ! row || ! row.any() || ! row.node())
             return false;
@@ -342,7 +349,8 @@
                 return;
 
             const preserve = columnIndex === inlineEditActionColumn
-                || cellMustBePreserved(cell, trackedEditor);
+                || (! mustRefreshActiveTargetCell(cell, options)
+                    && cellMustBePreserved(cell, trackedEditor));
 
             if (preserve)
             {

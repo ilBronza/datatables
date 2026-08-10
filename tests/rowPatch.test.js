@@ -117,6 +117,30 @@ test('preserves the focused cell while invalidating its siblings', () => {
     assert.equal(result.protectedCells, 1);
 });
 
+test('refreshes an explicitly allowed focused file cell immediately', () => {
+    const data = fixture({ activeColumn: 0 });
+    const runtime = boot({ activeElement: data.activeElement });
+    const fileInput = {
+        closest: () => data.cells[0],
+    };
+
+    const result = runtime.patch(
+        data.table,
+        data.row,
+        ['uploaded-file', 'new-b'],
+        null,
+        { refreshActiveTargetCell: true, target: fileInput }
+    );
+
+    assert.deepEqual(data.rowData, ['uploaded-file', 'new-b']);
+    assert.equal(data.cells[0].innerHTML, '<span>uploaded-file</span>');
+    assert.deepEqual(data.invalidations, [
+        { columnIndex: 0, source: 'data' },
+        { columnIndex: 1, source: 'data' },
+    ]);
+    assert.equal(result.protectedCells, 0);
+});
+
 test('invalidates a protected cell after it loses focus', () => {
     const data = fixture({ activeColumn: 0 });
     const runtime = boot({ activeElement: data.activeElement });
