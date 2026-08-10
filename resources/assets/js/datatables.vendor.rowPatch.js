@@ -1,6 +1,94 @@
 (function(window, document)
 {
     const pendingRows = {};
+    const revisionProperty = '__ibDtEditorRevision';
+    const savingProperty = '__ibDtEditorSaving';
+
+    function getClosestCell(target)
+    {
+        if (! target)
+            return null;
+
+        if (typeof target.closest === 'function')
+            return target.closest('td, th');
+
+        return target.__ibDtCell || null;
+    }
+
+    function isEditorTarget(target)
+    {
+        if (! target || typeof target.matches !== 'function')
+            return !! (target && target.__ibDtEditor);
+
+        return target.matches(
+            '.ib-editor-text, .ib-editor-select, .ib-editor-color, ' +
+            '.ib-editor-custom-value, .ib-editor-file-upload'
+        );
+    }
+
+    function getCellRevision(cell)
+    {
+        return cell && Number.isInteger(cell[revisionProperty])
+            ? cell[revisionProperty]
+            : 0;
+    }
+
+    function getCellSavingCount(cell)
+    {
+        return cell && Number.isInteger(cell[savingProperty])
+            ? cell[savingProperty]
+            : 0;
+    }
+
+    function advanceCellRevision(cell)
+    {
+        if (! cell)
+            return false;
+
+        cell[revisionProperty] = getCellRevision(cell) + 1;
+
+        return true;
+    }
+
+    window.ibDtAdvanceEditorRevision = function(target)
+    {
+        if (! isEditorTarget(target))
+            return false;
+
+        return advanceCellRevision(getClosestCell(target));
+    };
+
+    window.ibDtBeginEditorCellSave = function(target)
+    {
+        if (! isEditorTarget(target))
+            return false;
+
+        const cell = getClosestCell(target);
+
+        if (! advanceCellRevision(cell))
+            return false;
+
+        cell[savingProperty] = getCellSavingCount(cell) + 1;
+
+        return true;
+    };
+
+    window.ibDtCompleteEditorCellSave = function(target)
+    {
+        if (! isEditorTarget(target))
+            return false;
+
+        const cell = getClosestCell(target);
+
+        if (! cell)
+            return false;
+
+        cell[savingProperty] = Math.max(0, getCellSavingCount(cell) - 1);
+        advanceCellRevision(cell);
+        window.setTimeout(window.ibDtFlushPendingRenderedCells, 0);
+
+        return true;
+    };
 
     function cellContains(cell, element)
     {
@@ -34,6 +122,7 @@
 
         return cellContains(cell, document.activeElement)
             || cellContains(cell, trackedEditor)
+            || getCellSavingCount(cell) > 0
             || cellHasLocalChanges(cell);
     }
 
@@ -55,37 +144,50 @@
         return Number.isInteger(columnIndex) && columnIndex >= 0 ? columnIndex : null;
     }
 
-    function replaceDataSource(currentData, nextData)
+    function getDataSourceValue(data, dataSource)
     {
-        if (Array.isArray(currentData) && Array.isArray(nextData))
+        if (! data || (typeof dataSource !== 'number' && typeof dataSource !== 'string'))
+            return { supported: false };
+
+        const keys = typeof dataSource === 'number'
+            ? [dataSource]
+            : dataSource.split('.');
+        let value = data;
+
+        for (let index = 0; index < keys.length; index++)
         {
-            currentData.length = nextData.length;
+            if (value === null || typeof value === 'undefined')
+                return { supported: true, value: undefined };
 
-            nextData.forEach(function(value, index)
-            {
-                currentData[index] = value;
-            });
-
-            return true;
+            value = value[keys[index]];
         }
 
-        if (currentData && nextData && typeof currentData === 'object' && typeof nextData === 'object')
+        return { supported: true, value: value };
+    }
+
+    function setDataSourceValue(data, dataSource, value)
+    {
+        if (! data || (typeof dataSource !== 'number' && typeof dataSource !== 'string'))
+            return false;
+
+        const keys = typeof dataSource === 'number'
+            ? [dataSource]
+            : dataSource.split('.');
+        let target = data;
+
+        for (let index = 0; index < keys.length - 1; index++)
         {
-            Object.keys(currentData).forEach(function(key)
-            {
-                if (! Object.prototype.hasOwnProperty.call(nextData, key))
-                    delete currentData[key];
-            });
+            const key = keys[index];
 
-            Object.keys(nextData).forEach(function(key)
-            {
-                currentData[key] = nextData[key];
-            });
+            if (! target[key] || typeof target[key] !== 'object')
+                target[key] = {};
 
-            return true;
+            target = target[key];
         }
 
-        return false;
+        target[keys[keys.length - 1]] = value;
+
+        return true;
     }
 
     function initializeCell(cell)
@@ -160,24 +262,48 @@
             const inlineEditActionColumn = getInlineEditActionColumn(row.node());
             const remaining = [];
 
-            pending.columns.forEach(function(columnIndex)
+            pending.columns.forEach(function(pendingColumn)
             {
+                const columnIndex = pendingColumn.columnIndex;
                 const cell = pending.table.cell(pending.rowIndex, columnIndex).node();
+
+                // The user edited or saved this cell after the response which
+                // created the pending value. That server value is obsolete.
+                if (getCellRevision(cell) !== pendingColumn.revision)
+                    return;
 
                 if (columnIndex === inlineEditActionColumn || cellMustBePreserved(cell, trackedEditor))
                 {
-                    remaining.push(columnIndex);
+                    remaining.push(pendingColumn);
                     return;
                 }
 
-                invalidateCell(pending.table, pending.rowIndex, columnIndex);
+                if (setDataSourceValue(row.data(), pendingColumn.dataSource, pendingColumn.value))
+                    invalidateCell(pending.table, pending.rowIndex, columnIndex);
             });
 
             setPendingColumns(pending.table, pending.rowIndex, remaining);
         });
     };
 
-    window.ibDtPatchRenderedRow = function(table, row, rowData)
+    window.ibDtCaptureRowRevisionSnapshot = function(table, row)
+    {
+        if (! table || ! row || ! row.any() || ! row.node())
+            return {};
+
+        const rowIndex = row.index();
+        const revisions = {};
+
+        table.columns().indexes().toArray().forEach(function(columnIndex)
+        {
+            const cell = table.cell(rowIndex, columnIndex).node();
+            revisions[columnIndex] = getCellRevision(cell);
+        });
+
+        return revisions;
+    };
+
+    window.ibDtPatchRenderedRow = function(table, row, rowData, revisionSnapshot)
     {
         if (! table || ! row || ! row.any() || ! row.node())
             return false;
@@ -189,24 +315,52 @@
         const inlineEditActionColumn = getInlineEditActionColumn(row.node());
         const columnIndexes = table.columns().indexes().toArray();
         const protectedColumns = [];
-
-        if (! replaceDataSource(currentData, rowData))
-            return false;
+        const columnsToInvalidate = [];
 
         let invalidatedCells = 0;
+        let staleCells = 0;
 
         columnIndexes.forEach(function(columnIndex)
         {
-            const cell = table.cell(rowIndex, columnIndex).node();
+            const cellApi = table.cell(rowIndex, columnIndex);
+            const cell = cellApi.node();
+            const expectedRevision = revisionSnapshot
+                && Object.prototype.hasOwnProperty.call(revisionSnapshot, columnIndex)
+                    ? revisionSnapshot[columnIndex]
+                    : getCellRevision(cell);
+
+            if (getCellRevision(cell) !== expectedRevision)
+            {
+                staleCells++;
+                return;
+            }
+
+            const dataSource = table.column(columnIndex).dataSrc();
+            const nextValue = getDataSourceValue(rowData, dataSource);
+
+            if (! nextValue.supported)
+                return;
+
             const preserve = columnIndex === inlineEditActionColumn
                 || cellMustBePreserved(cell, trackedEditor);
 
             if (preserve)
             {
-                protectedColumns.push(columnIndex);
+                protectedColumns.push({
+                    columnIndex: columnIndex,
+                    dataSource: dataSource,
+                    revision: expectedRevision,
+                    value: nextValue.value,
+                });
                 return;
             }
 
+            if (setDataSourceValue(currentData, dataSource, nextValue.value))
+                columnsToInvalidate.push(columnIndex);
+        });
+
+        columnsToInvalidate.forEach(function(columnIndex)
+        {
             if (invalidateCell(table, rowIndex, columnIndex))
                 invalidatedCells++;
         });
@@ -216,6 +370,7 @@
         return {
             invalidatedCells: invalidatedCells,
             protectedCells: protectedColumns.length,
+            staleCells: staleCells,
         };
     };
 
@@ -224,6 +379,16 @@
         document.addEventListener('focusout', function()
         {
             window.setTimeout(window.ibDtFlushPendingRenderedCells, 25);
+        }, true);
+
+        document.addEventListener('input', function(event)
+        {
+            window.ibDtAdvanceEditorRevision(event.target);
+        }, true);
+
+        document.addEventListener('change', function(event)
+        {
+            window.ibDtAdvanceEditorRevision(event.target);
         }, true);
     }
 })(window, document);

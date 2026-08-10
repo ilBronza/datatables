@@ -34,6 +34,10 @@ function boot({ activeElement = null } = {}) {
     vm.runInNewContext(moduleSource, { Array, document, Number, Object, window });
 
     return {
+        advanceRevision: window.ibDtAdvanceEditorRevision,
+        beginSave: window.ibDtBeginEditorCellSave,
+        captureRevisions: window.ibDtCaptureRowRevisionSnapshot,
+        completeSave: window.ibDtCompleteEditorCellSave,
         document,
         flush: window.ibDtFlushPendingRenderedCells,
         handlers,
@@ -72,6 +76,9 @@ function fixture({ activeColumn = null, dirtyColumn = null } = {}) {
         columns() {
             return { indexes: () => ({ toArray: () => [0, 1] }) };
         },
+        column(columnIndex) {
+            return { dataSrc: () => columnIndex };
+        },
         row: () => row,
         table() {
             return { node: () => ({ id: 'orders' }) };
@@ -103,7 +110,7 @@ test('preserves the focused cell while invalidating its siblings', () => {
 
     const result = runtime.patch(data.table, data.row, ['server-a', 'new-b']);
 
-    assert.deepEqual(data.rowData, ['server-a', 'new-b']);
+    assert.deepEqual(data.rowData, ['old-a', 'new-b']);
     assert.equal(data.cells[0].innerHTML, '<span>old-a</span>');
     assert.equal(data.cells[1].innerHTML, '<span>new-b</span>');
     assert.deepEqual(data.invalidations, [{ columnIndex: 1, source: 'data' }]);
@@ -118,6 +125,7 @@ test('invalidates a protected cell after it loses focus', () => {
     runtime.document.activeElement = null;
     runtime.flush();
 
+    assert.deepEqual(data.rowData, ['server-a', 'new-b']);
     assert.equal(data.cells[0].innerHTML, '<span>server-a</span>');
     assert.deepEqual(data.invalidations, [
         { columnIndex: 1, source: 'data' },
@@ -151,4 +159,57 @@ test('preserves an editor tracked by the table during focus transitions', () => 
     assert.equal(data.cells[0].innerHTML, '<span>old-a</span>');
     assert.equal(data.cells[1].innerHTML, '<span>new-b</span>');
     assert.equal(result.protectedCells, 1);
+});
+
+test('rejects a stale cell response when the user types after the request starts', () => {
+    const data = fixture();
+    const runtime = boot();
+    const editor = {
+        __ibDtEditor: true,
+        closest: () => data.cells[0],
+        matches: () => true,
+    };
+    const revisions = runtime.captureRevisions(data.table, data.row);
+
+    runtime.handlers.input({ target: editor });
+    data.cells[0].innerHTML = '<input value="10">';
+
+    const result = runtime.patch(
+        data.table,
+        data.row,
+        ['stale-zero', 'fresh-b'],
+        revisions
+    );
+
+    assert.deepEqual(data.rowData, ['old-a', 'fresh-b']);
+    assert.equal(data.cells[0].innerHTML, '<input value="10">');
+    assert.deepEqual(data.invalidations, [{ columnIndex: 1, source: 'data' }]);
+    assert.equal(result.staleCells, 1);
+});
+
+test('discards a pending response when saving starts before focus is released', () => {
+    const data = fixture({ activeColumn: 0 });
+    const runtime = boot({ activeElement: data.activeElement });
+    const editor = {
+        __ibDtEditor: true,
+        closest: () => data.cells[0],
+        matches: () => true,
+    };
+    const revisions = runtime.captureRevisions(data.table, data.row);
+
+    data.cells[0].innerHTML = '<input value="10">';
+    runtime.patch(data.table, data.row, ['stale-zero', 'fresh-b'], revisions);
+    runtime.beginSave(editor);
+    runtime.document.activeElement = null;
+    runtime.flush();
+
+    assert.deepEqual(data.rowData, ['old-a', 'fresh-b']);
+    assert.equal(data.cells[0].innerHTML, '<input value="10">');
+
+    runtime.completeSave(editor);
+    const freshRevisions = runtime.captureRevisions(data.table, data.row);
+    runtime.patch(data.table, data.row, ['10', 'freshest-b'], freshRevisions);
+
+    assert.deepEqual(data.rowData, ['10', 'freshest-b']);
+    assert.equal(data.cells[0].innerHTML, '<span>10</span>');
 });
