@@ -207,6 +207,9 @@
 
         if (typeof window.ibDtInitCleaveNumericsInRoot === 'function')
             window.ibDtInitCleaveNumericsInRoot(cell);
+
+        if (typeof window.ibDtInitEditorSelect2sInRoot === 'function')
+            window.ibDtInitEditorSelect2sInRoot(cell);
     }
 
     function invalidateCell(table, rowIndex, columnIndex)

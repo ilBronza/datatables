@@ -1,62 +1,50 @@
 /**
- * Select2 per i campi editor.select (e derivati: selectOrFlat, selectOrInput)
- * con la proprieta' select2 attiva.
+ * Inizializza select2 sui select .ib-editor-select2 emessi da DatatableFieldSelect (select2 = true).
+ * Richiede select2 caricato sulla stessa istanza jQuery del pacchetto.
  *
- * Select2 nasconde il select nativo, quindi il popolamento lazy su click di
- * datatables.vendor.ajaxButton.min.js non arriverebbe mai: qui le opzioni
- * vengono caricate prima dell'init, alla prima interazione con la cella.
+ * Le opzioni vanno caricate prima dell'init: select2 nasconde il select nativo e il
+ * popolamento lazy su click di datatables.vendor.ajaxButton.min.js non arriverebbe mai.
  */
-$(document).ready(function()
-{
-    function getPossibleValues(select)
-    {
-        const $select = $(select);
-        const possibleValues = $select.data('possible-values');
+(function ($) {
+	function getPossibleValues(select)
+	{
+		const $select = $(select);
+		const possibleValues = $select.data('possible-values');
 
-        if (possibleValues)
-            return possibleValues;
+		if (possibleValues)
+			return possibleValues;
 
-        const tableId = window.__getTableByCell(select).attr('id');
-        const fieldName = window.__getTH(select).data('name');
+		const tableId = window.__getTableByCell(select).attr('id');
+		const fieldName = window.__getTH(select).data('name');
 
-        return window.ibDtGetSelectPossibleValues(tableId, fieldName);
-    }
+		return window.ibDtGetSelectPossibleValues(tableId, fieldName);
+	}
 
-    window.ibDtInitEditorSelect2 = function(select)
-    {
-        const $select = $(select);
+	function initEditorSelect2sInRoot(rootEl)
+	{
+		$(rootEl).find('select.ib-editor-select2').each(function ()
+		{
+			const $select = $(this);
 
-        window.ibDtPopulateSelectOptions($select, getPossibleValues(select));
+			if ($select.data('select2'))
+				return;
 
-        // la cella e' stretta: la tendina si allarga sulle etichette
-        $select.select2({
-            width: '100%',
-            dropdownAutoWidth: true
-        });
+			window.ibDtPopulateSelectOptions($select, getPossibleValues(this));
 
-        return $select;
-    };
+			//la cella e' stretta: la tendina si allarga sulle etichette
+			$select.select2({
+				width: '100%',
+				dropdownAutoWidth: true
+			});
+		});
+	}
 
-    // init al mousedown, prima che si apra la tendina nativa del browser
-    $(document).on('mousedown', 'table.datatable tbody select.ib-editor-select2', function(event)
-    {
-        if ($(this).data('select2'))
-            return;
+	function onTableDraw()
+	{
+		initEditorSelect2sInRoot(this);
+	}
 
-        event.preventDefault();
+	window.ibDtInitEditorSelect2sInRoot = initEditorSelect2sInRoot;
 
-        window.ibDtInitEditorSelect2(this).select2('open');
-    });
-
-    // arrivo da tastiera: il focus va spostato sul container, il select sparisce
-    $(document).on('focusin', 'table.datatable tbody select.ib-editor-select2', function()
-    {
-        if ($(this).data('select2'))
-            return;
-
-        window.ibDtInitEditorSelect2(this)
-            .next('.select2-container')
-            .find('.select2-selection')
-            .trigger('focus');
-    });
-});
+	$(document).on('draw.dt', 'table.dataTable', onTableDraw);
+})($);
