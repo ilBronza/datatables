@@ -87,6 +87,38 @@ $(document).ready(function()
         });
     }
 
+    function clearTableState(tableId)
+    {
+        if (! tableId)
+            return;
+
+        const prefix = tableId + ':';
+
+        Object.keys(state.unlockTimers).forEach(function(key)
+        {
+            if (key.indexOf(prefix) !== 0)
+                return;
+
+            clearTimeout(state.unlockTimers[key]);
+            delete state.unlockTimers[key];
+        });
+
+        Object.keys(state.locks).forEach(function(key)
+        {
+            if (key.indexOf(prefix) === 0)
+                delete state.locks[key];
+        });
+
+        Object.keys(state.rowRefreshes).forEach(function(key)
+        {
+            if (key.indexOf(prefix) === 0)
+                delete state.rowRefreshes[key];
+        });
+
+        delete state.tableRowReloads[tableId];
+        delete state.tableReloads[tableId];
+    }
+
     function lock(target)
     {
         const context = getContext(target);
@@ -243,9 +275,15 @@ $(document).ready(function()
         {
             if (! reloadDatatable.__ibEditorRowLockWrapped)
             {
-                const guardedReloadDatatable = function(table)
+                const guardedReloadDatatable = function(table, options)
                 {
                     const tableId = $(table.table().node()).attr('id');
+
+                    if (options && options.force)
+                    {
+                        clearTableState(tableId);
+                        return reloadDatatable.apply(this, arguments);
+                    }
 
                     if (tableId && tableHasLock(tableId))
                     {
