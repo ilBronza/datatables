@@ -8,13 +8,20 @@ const moduleSource = fs.readFileSync(
     'utf8'
 );
 
-function boot(selects)
+function boot(selectData)
 {
     const sequence = [];
     const handlers = {};
     const documentNode = { kind: 'document', data: {} };
     const headerNode = { kind: 'header', data: { name: 'stato' } };
-    const tableNode = { kind: 'table', data: {}, attributes: { id: 'orders' }, selects: selects };
+    const selectionNode = { kind: 'selection', data: {} };
+    const containerNode = { kind: 'container', data: {}, selection: selectionNode };
+    const tableNode = { kind: 'table', data: {}, attributes: { id: 'orders' } };
+    const selectNode = {
+        kind: 'select',
+        data: selectData || {},
+        container: containerNode,
+    };
 
     function wrap(node)
     {
@@ -32,17 +39,24 @@ function boot(selects)
                 });
                 return this;
             },
-            find(selector) {
-                sequence.push({ call: 'find', selector: selector });
-                return wrap({ kind: 'set', data: {}, matched: node && node.selects ? node.selects : [] });
+            find() {
+                return wrap(node && node.selection);
+            },
+            next() {
+                return wrap(node && node.container);
             },
             on(eventName, selector, handler) {
                 handlers[eventName] = { selector: selector, handler: handler };
                 return this;
             },
-            select2(options) {
-                sequence.push({ call: 'select2', node: node.kind, options: options });
-                node.data.select2 = {};
+            select2(action) {
+                sequence.push({ call: 'select2', node: node.kind, action: action });
+                if (typeof action === 'object')
+                    node.data.select2 = {};
+                return this;
+            },
+            trigger(eventName) {
+                sequence.push({ call: 'trigger', node: node.kind, event: eventName });
                 return this;
             },
         };
@@ -70,7 +84,7 @@ function boot(selects)
         window: window,
     });
 
-    return { handlers, sequence, tableNode, window };
+    return { containerNode, handlers, selectNode, selectionNode, sequence, window };
 }
 
 function names(sequence)
@@ -78,73 +92,67 @@ function names(sequence)
     return sequence.map(function(entry) { return entry.call; });
 }
 
-function makeSelect(data)
-{
-    return { kind: 'select', data: data || {} };
-}
+test('the first mousedown fills the options before select2 takes over the select', () => {
+    const runtime = boot();
+    let prevented = false;
 
-test('a draw fills the options and hands each select over to select2', () => {
-    const select = makeSelect();
-    const runtime = boot([select]);
-
-    assert.equal(runtime.handlers['draw.dt'].selector, 'table.dataTable');
-
-    runtime.handlers['draw.dt'].handler.call(runtime.tableNode);
+    runtime.handlers.mousedown.handler.call(runtime.selectNode, {
+        preventDefault() { prevented = true; },
+    });
 
     assert.deepEqual(names(runtime.sequence), [
-        'find',
         'ibDtGetSelectPossibleValues',
         'ibDtPopulateSelectOptions',
         'select2',
+        'select2',
     ]);
-    assert.equal(runtime.sequence[0].selector, 'select.ib-editor-select2');
-    assert.equal(runtime.sequence[1].tableId, 'orders');
-    assert.equal(runtime.sequence[1].fieldName, 'stato');
-    assert.deepEqual(runtime.sequence[2].possibleValues, { a: 'Alfa', b: 'Beta' });
-    assert.equal(runtime.sequence[3].options.width, '100%');
-    assert.equal(runtime.sequence[3].options.dropdownAutoWidth, true);
+    assert.equal(runtime.handlers.mousedown.selector, 'table.datatable tbody select.ib-editor-select2');
+    assert.equal(prevented, true);
+    assert.equal(runtime.sequence[0].tableId, 'orders');
+    assert.equal(runtime.sequence[0].fieldName, 'stato');
+    assert.deepEqual(runtime.sequence[1].possibleValues, { a: 'Alfa', b: 'Beta' });
+    assert.equal(runtime.sequence[2].action.width, '100%');
+    assert.equal(runtime.sequence[3].action, 'open');
 });
 
 test('possible values carried by the cell skip the table header lookup', () => {
-    const select = makeSelect({ 'possible-values': { x: 'Ics' } });
-    const runtime = boot([select]);
+    const runtime = boot({ 'possible-values': { x: 'Ics' } });
 
-    runtime.handlers['draw.dt'].handler.call(runtime.tableNode);
+    runtime.handlers.mousedown.handler.call(runtime.selectNode, { preventDefault() {} });
 
     assert.deepEqual(names(runtime.sequence), [
-        'find',
         'ibDtPopulateSelectOptions',
         'select2',
+        'select2',
     ]);
-    assert.deepEqual(runtime.sequence[1].possibleValues, { x: 'Ics' });
+    assert.deepEqual(runtime.sequence[0].possibleValues, { x: 'Ics' });
 });
 
-test('a redraw leaves the selects already handed over untouched', () => {
-    const pristine = makeSelect();
-    const initialized = makeSelect({ select2: {} });
-    const runtime = boot([initialized, pristine]);
+test('an already initialized select is left untouched', () => {
+    const runtime = boot({ select2: {} });
+    let prevented = false;
 
-    runtime.handlers['draw.dt'].handler.call(runtime.tableNode);
+    runtime.handlers.mousedown.handler.call(runtime.selectNode, {
+        preventDefault() { prevented = true; },
+    });
+    runtime.handlers.focusin.handler.call(runtime.selectNode);
+
+    assert.equal(prevented, false);
+    assert.deepEqual(runtime.sequence, []);
+});
+
+test('reaching the cell by keyboard moves the focus onto the select2 container', () => {
+    const runtime = boot();
+
+    runtime.handlers.focusin.handler.call(runtime.selectNode);
 
     assert.deepEqual(names(runtime.sequence), [
-        'find',
         'ibDtGetSelectPossibleValues',
         'ibDtPopulateSelectOptions',
         'select2',
+        'trigger',
     ]);
-});
-
-test('a patched cell reinitializes its selects through the exposed helper', () => {
-    const select = makeSelect();
-    const runtime = boot([]);
-    const cell = { kind: 'cell', data: {}, selects: [select] };
-
-    runtime.window.ibDtInitEditorSelect2sInRoot(cell);
-
-    assert.deepEqual(names(runtime.sequence), [
-        'find',
-        'ibDtGetSelectPossibleValues',
-        'ibDtPopulateSelectOptions',
-        'select2',
-    ]);
+    assert.equal(runtime.handlers.focusin.selector, 'table.datatable tbody select.ib-editor-select2');
+    assert.equal(runtime.sequence[3].node, 'selection');
+    assert.equal(runtime.sequence[3].event, 'focus');
 });

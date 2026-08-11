@@ -1,9 +1,11 @@
 /**
- * Inizializza select2 sui select .ib-editor-select2 emessi da DatatableFieldSelect (select2 = true).
- * Richiede select2 caricato sulla stessa istanza jQuery del pacchetto.
+ * Select2 per i campi editor.select (e derivati: selectOrFlat, selectOrInput)
+ * con la proprieta' select2 attiva.
  *
  * Le opzioni vanno caricate prima dell'init: select2 nasconde il select nativo e il
  * popolamento lazy su click di datatables.vendor.ajaxButton.min.js non arriverebbe mai.
+ * L'init resta volutamente lazy: farlo durante draw.dt mette Select2 nel ciclo di
+ * rendering di DataTables e puo' interferire con il redraw della riga.
  */
 (function ($) {
 	function getPossibleValues(select)
@@ -20,31 +22,45 @@
 		return window.ibDtGetSelectPossibleValues(tableId, fieldName);
 	}
 
-	function initEditorSelect2sInRoot(rootEl)
+	function initEditorSelect2(select)
 	{
-		$(rootEl).find('select.ib-editor-select2').each(function ()
-		{
-			const $select = $(this);
+		const $select = $(select);
 
-			if ($select.data('select2'))
-				return;
+		if ($select.data('select2'))
+			return $select;
 
-			window.ibDtPopulateSelectOptions($select, getPossibleValues(this));
+		window.ibDtPopulateSelectOptions($select, getPossibleValues(select));
 
-			//la cella e' stretta: la tendina si allarga sulle etichette
-			$select.select2({
-				width: '100%',
-				dropdownAutoWidth: true
-			});
+		//la cella e' stretta: la tendina si allarga sulle etichette
+		$select.select2({
+			width: '100%',
+			dropdownAutoWidth: true
 		});
+
+		return $select;
 	}
 
-	function onTableDraw()
+	window.ibDtInitEditorSelect2 = initEditorSelect2;
+
+	//Init al primo click, prima che il browser apra il select nativo.
+	$(document).on('mousedown', 'table.datatable tbody select.ib-editor-select2', function (event)
 	{
-		initEditorSelect2sInRoot(this);
-	}
+		if ($(this).data('select2'))
+			return;
 
-	window.ibDtInitEditorSelect2sInRoot = initEditorSelect2sInRoot;
+		event.preventDefault();
+		initEditorSelect2(this).select2('open');
+	});
 
-	$(document).on('draw.dt', 'table.dataTable', onTableDraw);
+	//Arrivo da tastiera: dopo l'init il focus deve passare al container Select2.
+	$(document).on('focusin', 'table.datatable tbody select.ib-editor-select2', function ()
+	{
+		if ($(this).data('select2'))
+			return;
+
+		initEditorSelect2(this)
+			.next('.select2-container')
+			.find('.select2-selection')
+			.trigger('focus');
+	});
 })($);
