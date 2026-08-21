@@ -6,6 +6,7 @@ $(document).ready(function()
         rowRefreshes: {},
         tableRowReloads: {},
         tableReloads: {},
+        bulkCommits: {},
     };
 
     function getContext(target)
@@ -117,6 +118,50 @@ $(document).ready(function()
 
         delete state.tableRowReloads[tableId];
         delete state.tableReloads[tableId];
+        delete state.bulkCommits[tableId];
+    }
+
+    function releaseTableLocks(tableId)
+    {
+        if (! tableId)
+            return;
+
+        const prefix = tableId + ':';
+
+        Object.keys(state.unlockTimers).forEach(function(key)
+        {
+            if (key.indexOf(prefix) !== 0)
+                return;
+
+            clearTimeout(state.unlockTimers[key]);
+            delete state.unlockTimers[key];
+        });
+
+        Object.keys(state.locks).forEach(function(key)
+        {
+            if (key.indexOf(prefix) === 0)
+                delete state.locks[key];
+        });
+    }
+
+    function beginBulkCommit(tableId)
+    {
+        if (! tableId)
+            return;
+
+        state.bulkCommits[tableId] = true;
+        releaseTableLocks(tableId);
+    }
+
+    function consumeBulkCommit(tableId)
+    {
+        if (! tableId || ! state.bulkCommits[tableId])
+            return false;
+
+        delete state.bulkCommits[tableId];
+        releaseTableLocks(tableId);
+
+        return true;
     }
 
     function lock(target)
@@ -124,6 +169,12 @@ $(document).ready(function()
         const context = getContext(target);
 
         if (! context)
+            return;
+
+        // A select/select2 bulk commit owns the next table redraw. Focus
+        // restoration performed by Select2 must not lock any row again before
+        // that redraw starts.
+        if (state.bulkCommits[context.tableId])
             return;
 
         if (state.unlockTimers[context.key])
@@ -246,6 +297,9 @@ $(document).ready(function()
                 {
                     const domId = getTableIdFromSelector(tableId);
 
+                    if (consumeBulkCommit(domId))
+                        return reloadTableRows.apply(this, arguments);
+
                     if (domId && tableHasLock(domId))
                     {
                         state.tableRowReloads[domId] = {
@@ -278,6 +332,9 @@ $(document).ready(function()
                 const guardedReloadDatatable = function(table, options)
                 {
                     const tableId = $(table.table().node()).attr('id');
+
+                    if (consumeBulkCommit(tableId))
+                        return reloadDatatable.apply(this, arguments);
 
                     if (options && options.force)
                     {
@@ -337,11 +394,22 @@ $(document).ready(function()
             unlock(target);
     }, true);
 
+    document.addEventListener('ib:dt-bulk-inline-edit-start', function(event)
+    {
+        const table = $(event.target).closest('table.datatable').get(0);
+
+        if (table)
+            beginBulkCommit(table.id);
+    }, true);
+
     installRefreshGuards();
     setTimeout(installRefreshGuards, 0);
 
     window.ibDatatableEditorRowLock = {
         isLocked: tableHasLock,
+        isBulkCommitActive: function(tableId) {
+            return !! state.bulkCommits[tableId];
+        },
         state: state,
     };
 });

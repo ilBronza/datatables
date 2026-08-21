@@ -12,9 +12,12 @@ function boot()
 {
     const handlers = {};
     const reloadCalls = [];
+    const rowReloadCalls = [];
     const tableNode = { id: 'orders', kind: 'table' };
     const rowNode = { id: 'order-1', kind: 'row', tableNode: tableNode };
+    const secondRowNode = { id: 'order-2', kind: 'row', tableNode: tableNode };
     const editor = { kind: 'editor', rowNode: rowNode, tableNode: tableNode };
+    const secondEditor = { kind: 'editor', rowNode: secondRowNode, tableNode: tableNode };
     const table = {
         table() {
             return { node: () => tableNode };
@@ -65,12 +68,15 @@ function boot()
         };
     }
 
-    const $ = function(node) { return wrap(node); };
+    const $ = function(node) { return wrap(node === '#orders' ? tableNode : node); };
     $.fn = {};
 
     const window = {
         __refreshRow() {},
-        reloadTableRows() {},
+        reloadTableRows() {
+            rowReloadCalls.push(Array.from(arguments));
+            return true;
+        },
         reloadDatatable(target, options) {
             reloadCalls.push({ target: target, options: options });
             return true;
@@ -87,7 +93,7 @@ function boot()
         window: window,
     });
 
-    return { editor, handlers, reloadCalls, table, window };
+    return { editor, handlers, reloadCalls, rowReloadCalls, secondEditor, table, tableNode, window };
 }
 
 test('ordinary table reload waits while an editor owns the row lock', () => {
@@ -113,4 +119,27 @@ test('forced table reload bypasses and clears the editor row lock', () => {
     assert.equal(runtime.reloadCalls[0].options.force, true);
     assert.equal(runtime.window.ibDatatableEditorRowLock.isLocked('orders'), false);
     assert.equal(runtime.window.ibDatatableEditorRowLock.state.tableReloads.orders, undefined);
+});
+
+test('bulk select commit clears every table lock and owns the next rows draw', () => {
+    const runtime = boot();
+
+    runtime.handlers.focusin({ target: runtime.editor });
+    runtime.handlers.focusin({ target: runtime.secondEditor });
+    assert.equal(runtime.window.ibDatatableEditorRowLock.isLocked('orders'), true);
+
+    runtime.handlers['ib:dt-bulk-inline-edit-start']({ target: runtime.tableNode });
+
+    assert.equal(runtime.window.ibDatatableEditorRowLock.isLocked('orders'), false);
+    assert.equal(runtime.window.ibDatatableEditorRowLock.isBulkCommitActive('orders'), true);
+
+    // Select2 may restore focus after change: it must not recreate a lock.
+    runtime.handlers.focusin({ target: runtime.editor });
+    assert.equal(runtime.window.ibDatatableEditorRowLock.isLocked('orders'), false);
+
+    runtime.window.reloadTableRows('#orders', ['order-1', 'order-2']);
+
+    assert.equal(runtime.rowReloadCalls.length, 1);
+    assert.deepEqual(runtime.rowReloadCalls[0][1], ['order-1', 'order-2']);
+    assert.equal(runtime.window.ibDatatableEditorRowLock.isBulkCommitActive('orders'), false);
 });
