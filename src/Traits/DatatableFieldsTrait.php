@@ -221,7 +221,12 @@ trait DatatableFieldsTrait
      *
      * Output shape:
      * [
-     *   'custom' => ['name' => 'custom', 'slug' => 'custom', 'cssClass' => 'ib-dt-fieldsgroup-custom'],
+     *   'custom' => [
+     *       'name' => 'custom',
+     *       'slug' => 'custom',
+     *       'cssClass' => 'ib-dt-fieldsgroup-custom',
+     *       'columnIndexes' => [2, 4],
+     *   ],
      *   ...
      * ]
      */
@@ -243,18 +248,26 @@ trait DatatableFieldsTrait
                 if ($groupName === '')
                     continue;
 
-                if (isset($out[$groupName]))
-                    continue;
+                if (! isset($out[$groupName]))
+                {
+                    $slug = Str::slug($groupName);
 
-                $slug = Str::slug($groupName);
+                    $out[$groupName] = [
+                        'name' => $groupName,
+                        'slug' => $slug,
+                        'cssClass' => 'ib-dt-fieldsgroup-' . $slug,
+                        'columnIndexes' => [],
+                    ];
+                }
 
-                $out[$groupName] = [
-                    'name' => $groupName,
-                    'slug' => $slug,
-                    'cssClass' => 'ib-dt-fieldsgroup-' . $slug,
-                ];
+                $out[$groupName]['columnIndexes'][] = $field->getIndex();
             }
         }
+
+        foreach ($out as &$groupDefinition)
+            $groupDefinition['columnIndexes'] = array_values(array_unique($groupDefinition['columnIndexes']));
+
+        unset($groupDefinition);
 
         return $out;
     }
@@ -427,7 +440,6 @@ trait DatatableFieldsTrait
         return $this->placeholderElement;
     }
 }
-
 
 
 
