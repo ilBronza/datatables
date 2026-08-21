@@ -260,6 +260,7 @@ class Datatables
 			$fieldsGroup = static::makeInlineEditFieldsGroup($name, $fieldsGroup, $sourceFieldsGroup, $element);
 
 		$table = new static();
+		$table->setName($name);
 
 		$table->setMainModelElement($element::class);
 		$table->setElements(collect([$element]));
