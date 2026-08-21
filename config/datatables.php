@@ -169,6 +169,26 @@ return [
 			'nullable' => true,
 		]
 	],
+
+	'labels' => [
+		'select' => 'select',
+		'nd' => 'nd',
+	],
+
+	'fetcher' => [
+		'headerIcon' => 'eye',
+	],
+
+	'summary' => [
+		'formats' => [
+			'economics' => [
+				'decimalSep' => ',',
+				'thousandsSep' => '.',
+				'fractionDigits' => 2,
+			],
+		],
+	],
+
     'replace_model_id_string' => env('REPLACE_MODEL_ID_STRING', 'replace_model_id_string'),
     'domStickyButtons' => env('DATATABLES_DOM_STICKY_BUTTONS', false),
     'domStickyHeader' => env('DATATABLES_STICKY_HEADER', false),
@@ -253,4 +273,5 @@ return [
 	],
 
 	'bulkEdit' => env('DATATABLES_BULK_EDIT', false),
+	'bulkEditOnSelection' => env('DATATABLES_BULK_EDIT_ON_SELECTION', false),
 ];

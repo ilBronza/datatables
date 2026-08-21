@@ -79,6 +79,21 @@ npm run development
 
 ## Usage
 
+### `async`
+
+Use `async` to load one column in a single POST after each draw. IDs come from
+the existing DataTables row IDs and the endpoint is stored on the column header. See
+[the async field guide](docs/async-field.md) for configuration, response format,
+renderers, and caching.
+
+### `editor.selectCell`
+
+Use `editor.selectCell` when a select's allowed values depend on the table
+row. It supports per-row values included in the table data and lazy loading
+from a route when the user opens the editor. See
+[the `editor.selectCell` guide](docs/editor-select-cell.md) for configuration,
+response formats, nullable values, and Select2 support.
+
 
 ### Form in table header and submit cell
 
