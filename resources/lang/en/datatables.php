@@ -9,5 +9,7 @@ return array (
   'next' => 'Prossimo',
   'previous' => 'Precedente',
   'first' => 'Prima',
-  'generalSearchTitle' => 'Cerca'
+  'generalSearchTitle' => 'Cerca',
+  'summaryFilteredRows' => 'Sum of filtered rows',
+  'summarySelectedRows' => 'Sum of selected rows'
 );

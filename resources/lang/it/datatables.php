@@ -10,4 +10,6 @@ return [
 	'previous' => 'Precedente',
 	'first' => 'Prima',
 	'infoFiltered' => '(filtrati da _MAX_ record totali)',
+	'summaryFilteredRows' => 'Somma delle righe filtrate',
+	'summarySelectedRows' => 'Somma delle righe selezionate',
 ];
