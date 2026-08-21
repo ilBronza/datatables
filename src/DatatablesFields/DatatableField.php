@@ -75,6 +75,7 @@ class DatatableField
 
 	public null|int|string $keyPosition = null;
 	public null|int|string $valuePosition = null;
+	public null|int|string $labelPosition = null;
 
 	public ?string $overridingValueMethod = null;
 	public ?string $inlineFieldType = null;
@@ -174,6 +175,9 @@ class DatatableField
 	public $element;
 	public $valueAsRowClass = false;
 	public $valueAsRowClassPrefix = false;
+
+	//da usare insieme a valueAsRowClass: mette in classe il testo mostrato (es. option del select) invece del valore
+	public $labelAsRowClass = false;
 	public $compiledAsRowClass;
 	public $compiledAsRowClassPrefix;
 	public $extraModelClassname;

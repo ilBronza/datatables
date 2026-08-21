@@ -45,6 +45,15 @@ trait DatatablesFieldsHtmlClassesTrait
 		return null;
 	}
 
+	//il testo dell'option viene sluggato, quindi il prefisso si separa col trattino
+	public function getLabelAsRowClassPrefix()
+	{
+		if (! $prefix = $this->getValueAsRowClassPrefix())
+			return null;
+
+		return $prefix . '-';
+	}
+
 	public function getCompiledAsRowClassPrefix()
 	{
 		if ($this->compiledAsRowClassPrefix === false)

@@ -188,7 +188,7 @@ trait DatatablesFieldsColumnDefsTrait
 
 		return "
         //" . $this->name . "
-        window.valueAsClass = data[" . $this->getIndex() . "]" . $this->getStructuredDataIndexString() . ";
+        window.valueAsClass = data[" . $this->getIndex() . "]" . $this->getValueAsRowClassDataIndexString() . ";
 
 
         if(typeof window.valueAsClass !== 'undefined')
@@ -198,7 +198,7 @@ trait DatatablesFieldsColumnDefsTrait
                 window.valueAsClass = JSON.stringify(window.valueAsClass);
             }
 
-            window.valueAsClass = '" . $this->getValueAsRowClassPrefix() . "' + window.valueAsClass.replace(/[^a-zA-Z0-9 ]/g, ' ');
+            " . $this->getValueAsRowClassParseScript() . "
             window.previousValueAsClass = $(row).data(" . json_encode('ibDtValueAsRowClass' . $this->getIndex()) . ");
 
             if(window.previousValueAsClass)
@@ -210,6 +210,23 @@ trait DatatablesFieldsColumnDefsTrait
         }
 
         ";
+	}
+
+	//con labelAsRowClass la classe si prende dal testo mostrato (es. option del select) invece che dal valore
+	public function getValueAsRowClassDataIndexString() : ?string
+	{
+		if ($this->labelAsRowClass)
+			return $this->getLabelStructuredDataIndexString();
+
+		return $this->getStructuredDataIndexString();
+	}
+
+	public function getValueAsRowClassParseScript() : string
+	{
+		if ($this->labelAsRowClass)
+			return "window.valueAsClass = '" . $this->getLabelAsRowClassPrefix() . "' + window.valueAsClass.normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');";
+
+		return "window.valueAsClass = '" . $this->getValueAsRowClassPrefix() . "' + window.valueAsClass.replace(/[^a-zA-Z0-9 ]/g, ' ');";
 	}
 
 	public function getCompiledAsRowClassScript()
