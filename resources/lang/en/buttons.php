@@ -4,6 +4,9 @@ return [
 	'inlineCreate' => 'Add',
 	'save' => 'Save',
 	'cancel' => 'Cancel',
+	'bulkInlineEdit' => 'Edit selected',
+	'bulkInlineEditActive' => 'Bulk editing active',
+	'bulkInlineEditSourceNotSelected' => 'You can only edit one of the selected rows.',
 
 	'selectFiltered' => 'Select filtered',
 	'selectFilteredTooltip' => 'Select filtered',

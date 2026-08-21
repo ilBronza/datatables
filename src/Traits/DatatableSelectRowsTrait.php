@@ -12,6 +12,7 @@ use function is_null;
 trait DatatableSelectRowsTrait
 {
     protected ?bool $bulkEditFromController = null;
+    protected ?bool $bulkEditOnSelectionFromController = null;
 
     public function setBulkEditFromController(?bool $bulkEdit) : self
     {
@@ -34,6 +35,29 @@ trait DatatableSelectRowsTrait
     public function hasBulkEdit() : bool
     {
         return $this->getBulkEdit();
+    }
+
+    public function setBulkEditOnSelectionFromController(?bool $bulkEditOnSelection) : self
+    {
+        $this->bulkEditOnSelectionFromController = $bulkEditOnSelection;
+
+        return $this;
+    }
+
+    public function getBulkEditOnSelection() : bool
+    {
+        if (! is_null($this->bulkEditOnSelection))
+            return (bool) $this->bulkEditOnSelection;
+
+        if (! is_null($this->bulkEditOnSelectionFromController))
+            return (bool) $this->bulkEditOnSelectionFromController;
+
+        return (bool) config('datatables.bulkEditOnSelection', false);
+    }
+
+    public function hasBulkEditOnSelection() : bool
+    {
+        return $this->getBulkEditOnSelection();
     }
 
     public function getFirstFieldsGroup()
@@ -84,7 +108,7 @@ trait DatatableSelectRowsTrait
                 if ($field->requiresSelectRowCheckboxes())
                     return true;
 
-                if ($this->hasBulkEdit() && $field->isBulkEditable())
+                if (($this->hasBulkEdit() || $this->hasBulkEditOnSelection()) && $field->isBulkEditable())
                     return true;
             }
 
@@ -93,7 +117,7 @@ trait DatatableSelectRowsTrait
 
     public function getBulkEditableFields() : Collection
     {
-        if (! $this->hasBulkEdit())
+        if (! ($this->hasBulkEdit() || $this->hasBulkEditOnSelection()))
             return collect();
 
         return $this->getFields()->filter(
@@ -126,6 +150,13 @@ trait DatatableSelectRowsTrait
     public function hasBulkEditButton() : bool
     {
         return $this->hasBulkEdit()
+            && $this->hasSelectRowCheckboxes()
+            && $this->hasBulkEditableFields();
+    }
+
+    public function hasBulkEditOnSelectionButton() : bool
+    {
+        return $this->hasBulkEditOnSelection()
             && $this->hasSelectRowCheckboxes()
             && $this->hasBulkEditableFields();
     }

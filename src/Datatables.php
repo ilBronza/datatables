@@ -111,6 +111,7 @@ class Datatables
 	public $customButtons;
 	public $selectRowCheckboxes;
 	public ?bool $bulkEdit = null;
+	public ?bool $bulkEditOnSelection = null;
 	public $placeholderElement;
 	public $datatableUserData;
 	public ?bool $copyButton = null;
@@ -171,9 +172,11 @@ class Datatables
 		$selectRowCheckboxes = $parameters['selectRowCheckboxes'] ?? false;
 		$extraVariables = $parameters['extraVariables'] ?? null;
 		$modelClass = $parameters['modelClass'] ?? null;
+		$bulkEdit = $parameters['bulkEdit'] ?? null;
+		$bulkEditOnSelection = $parameters['bulkEditOnSelection'] ?? null;
 
 		$table = static::create(
-			$name, $fieldsGroups, $elementsProvider, $selectRowCheckboxes, $extraVariables, $modelClass
+			$name, $fieldsGroups, $elementsProvider, $selectRowCheckboxes, $extraVariables, $modelClass, $bulkEdit, $bulkEditOnSelection
 		);
 
 		if ((request()->ajax()) && (request()->model))
@@ -189,7 +192,7 @@ class Datatables
 		return $table;
 	}
 
-	static function create(string $name, array $fieldsGroups, $elements, bool $selectRowCheckboxes = false, array $extraVariables = null, string $modelClass = null, ?bool $bulkEditFromController = null)
+	static function create(string $name, array $fieldsGroups, $elements, bool $selectRowCheckboxes = false, array $extraVariables = null, string $modelClass = null, ?bool $bulkEditFromController = null, ?bool $bulkEditOnSelectionFromController = null)
 	{
 		ini_set('memory_limit', '512M');
 
@@ -201,6 +204,9 @@ class Datatables
 
 		if (! is_null($bulkEditFromController))
 			$table->setBulkEditFromController($bulkEditFromController);
+
+		if (! is_null($bulkEditOnSelectionFromController))
+			$table->setBulkEditOnSelectionFromController($bulkEditOnSelectionFromController);
 
 		if (($selectRowCheckboxes) || $table->fieldsGroupsRequiresSelectRowCheckboxes($fieldsGroups))
 			$table->setRowSelectCheckboxes();
@@ -290,10 +296,15 @@ class Datatables
 	 * Inline fields override source fields of the same name. Every remaining
 	 * data column uses the source field's inline type or the text editor, while
 	 * action, identity and file controls stay out of the batch editor.
+	 *
+	 * Con onlyDeclaredFields a true nel gruppo inline i campi sorgente non
+	 * dichiarati non vengono derivati: restano solo quelli del file inline,
+	 * ordinati come nella tabella sorgente.
 	 */
 	public static function makeInlineEditFieldsGroup(string $name, array $inlineFieldsGroup, array $sourceFieldsGroup, Model $element) : array
 	{
 		$inlineFields = $inlineFieldsGroup['fields'] ?? [];
+		$onlyDeclaredFields = $inlineFieldsGroup['onlyDeclaredFields'] ?? false;
 		$sourceTable = new static();
 
 		$sourceTable->setMainModelElement($element::class);
@@ -315,6 +326,9 @@ class Datatables
 
 				continue;
 			}
+
+			if ($onlyDeclaredFields)
+				continue;
 
 			if (! static::canCreateInlineField($sourceField))
 				continue;

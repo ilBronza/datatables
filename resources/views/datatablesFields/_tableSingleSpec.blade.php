@@ -1,4 +1,5 @@
 <script type="text/javascript">
+	window.__ibDatatablesSummaryFormats = {!! json_encode(config('datatables.summary.formats', [])) !!};
 
 	@if($table->isArrayTable())
         window.{{ $table->getId() }}dataset = {!! json_encode($tableSourceData) !!};
@@ -355,6 +356,13 @@
             }
         },
 
+		@if($table->hasBulkEditOnSelectionButton())
+        {
+            extend: 'bulkInlineEdit',
+            className: 'ib-dt-bulk-inline-edit',
+        },
+		@endif
+
 		@if($table->hasBulkEditButton())
         {
             extend: 'bulkToggle',
@@ -540,13 +548,16 @@
         })->all()
     ) !!};
 
-		@if($table->hasBulkEditButton())
+		@if($table->hasBulkEditButton() || $table->hasBulkEditOnSelectionButton())
     window.__ibDatatableBulkEditableFields = window.__ibDatatableBulkEditableFields || {};
     window.__ibDatatableBulkEditableFields['{{ $table->getId() }}'] = {!! json_encode($table->getBulkEditableFieldsArray()) !!};
     window.__ibDatatableToggleableFields = window.__ibDatatableBulkEditableFields;
     window.__ibDatatableBulkToggleLabels = window.__ibDatatableBulkToggleLabels || {};
     window.__ibDatatableBulkToggleLabels['{{ $table->getId() }}'] = {!! json_encode([
         'button' => __('datatables::buttons.bulkToggle'),
+		'inlineButton' => __('datatables::buttons.bulkInlineEdit'),
+		'inlineActive' => __('datatables::buttons.bulkInlineEditActive'),
+		'inlineSourceNotSelected' => __('datatables::buttons.bulkInlineEditSourceNotSelected'),
         'yes' => __('datatables::buttons.bulkToggleYes'),
         'no' => __('datatables::buttons.bulkToggleNo'),
         'apply' => __('datatables::buttons.bulkToggleApply'),
