@@ -16,6 +16,39 @@ namespace IlBronza\Datatables\DatatablesFields\Editor;
  */
 class DatatableFieldSelectOrFlat extends DatatableFieldSelect
 {
+	protected int $selectFallbackFlagPosition = 3;
+
+	/**
+	 * editorProperty e' il valore da mostrare in flat, non necessariamente il
+	 * valore che deve essere preselezionato nel select. Quando manca, torna al
+	 * campo originale e forza il rendering del select.
+	 */
+	public function transformValue($value)
+	{
+		$result = parent::transformValue($value);
+
+		while (count($result) < $this->selectFallbackFlagPosition)
+			$result[] = null;
+
+		$result[] = false;
+
+		if (! $this->editorProperty)
+			return $result;
+
+		$flatValue = $value->{$this->editorProperty} ?? null;
+
+		if ($flatValue !== null && $flatValue !== '' && $flatValue !== $this->nullValue)
+			return $result;
+
+		$selectedValue = $value->{$this->name} ?? $this->default;
+
+		$result[1] = $selectedValue;
+		$result[2] = $this->getInitialSelectLabel($selectedValue);
+		$result[$this->selectFallbackFlagPosition] = true;
+
+		return $result;
+	}
+
 	//il select mostra l'etichetta (item[2]), non la chiave (item[1])
 	public function returnFlat()
 	{
@@ -38,7 +71,7 @@ class DatatableFieldSelectOrFlat extends DatatableFieldSelect
 		//!= null intenzionale: intercetta sia null che undefined
 		return "
 
-		if(item && item[1] != null && item[1] !== '' && item[1] !== " . json_encode($this->nullValue) . ")
+		if(item && item[" . $this->selectFallbackFlagPosition . "] !== true && item[1] != null && item[1] !== '' && item[1] !== " . json_encode($this->nullValue) . ")
 		{
 			" . $this->returnFilled() . "
 		}

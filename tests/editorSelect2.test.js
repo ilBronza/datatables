@@ -8,7 +8,7 @@ const moduleSource = fs.readFileSync(
     'utf8'
 );
 
-function boot(selectData)
+function boot(selectData, rowRoutePromise)
 {
     const sequence = [];
     const handlers = {};
@@ -30,8 +30,24 @@ function boot(selectData)
             attr(name) {
                 return node && node.attributes ? node.attributes[name] : undefined;
             },
-            data(name) {
-                return node && node.data ? node.data[name] : undefined;
+            data(name, value) {
+                if (! node || ! node.data)
+                    return undefined;
+
+                if (arguments.length > 1)
+                {
+                    node.data[name] = value;
+
+                    return this;
+                }
+
+                return node.data[name];
+            },
+            removeData(name) {
+                if (node && node.data)
+                    delete node.data[name];
+
+                return this;
             },
             each(callback) {
                 (node && node.matched ? node.matched : []).forEach(function(matchedNode) {
@@ -77,6 +93,9 @@ function boot(selectData)
             sequence.push({ call: 'ibDtPopulateSelectOptions', node: $select.node.kind, possibleValues: possibleValues });
         },
     };
+
+    if (rowRoutePromise)
+        window.ibDtLoadSelectPossibleValuesRow = function() { return rowRoutePromise; };
 
     vm.runInNewContext(moduleSource, {
         $: function(node) { return wrap(node); },
@@ -155,4 +174,20 @@ test('reaching the cell by keyboard moves the focus onto the select2 container',
     assert.equal(runtime.handlers.focusin.selector, 'table.datatable tbody select.ib-editor-select2');
     assert.equal(runtime.sequence[3].node, 'selection');
     assert.equal(runtime.sequence[3].event, 'focus');
+});
+
+test('a row route populates the select before the first Select2 opening', async () => {
+    const runtime = boot({}, Promise.resolve({ c: 'Charlie' }));
+
+    runtime.handlers.mousedown.handler.call(runtime.selectNode, { preventDefault() {} });
+    await Promise.resolve();
+    await Promise.resolve();
+
+    assert.deepEqual(names(runtime.sequence), [
+        'ibDtPopulateSelectOptions',
+        'select2',
+        'select2',
+    ]);
+    assert.deepEqual(runtime.sequence[0].possibleValues, { c: 'Charlie' });
+    assert.equal(runtime.sequence[2].action, 'open');
 });

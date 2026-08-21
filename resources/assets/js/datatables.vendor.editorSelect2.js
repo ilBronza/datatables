@@ -10,6 +10,14 @@
 (function ($) {
 	function getPossibleValues(select)
 	{
+		if (typeof window.ibDtLoadSelectPossibleValuesRow === 'function')
+		{
+			const rowRouteRequest = window.ibDtLoadSelectPossibleValuesRow(select);
+
+			if (rowRouteRequest)
+				return rowRouteRequest;
+		}
+
 		const $select = $(select);
 		const possibleValues = $select.data('possible-values');
 
@@ -22,14 +30,9 @@
 		return window.ibDtGetSelectPossibleValues(tableId, fieldName);
 	}
 
-	function initEditorSelect2(select)
+	function populateAndInitialize($select, possibleValues)
 	{
-		const $select = $(select);
-
-		if ($select.data('select2'))
-			return $select;
-
-		window.ibDtPopulateSelectOptions($select, getPossibleValues(select));
+		window.ibDtPopulateSelectOptions($select, possibleValues);
 
 		//la cella e' stretta: la tendina si allarga sulle etichette
 		$select.select2({
@@ -40,6 +43,35 @@
 		return $select;
 	}
 
+	function initEditorSelect2(select)
+	{
+		const $select = $(select);
+
+		if ($select.data('select2'))
+			return $select;
+
+		const possibleValues = getPossibleValues(select);
+
+		if (possibleValues && typeof possibleValues.then === 'function')
+		{
+			$select.data('select2Loading', true);
+
+			return possibleValues.then(function (list)
+			{
+				$select.removeData('select2Loading');
+				$select.data('possibleValuesRowRouteReady', true);
+
+				return populateAndInitialize($select, list);
+			}, function (error)
+			{
+				$select.removeData('select2Loading');
+				throw error;
+			});
+		}
+
+		return populateAndInitialize($select, possibleValues);
+	}
+
 	window.ibDtInitEditorSelect2 = initEditorSelect2;
 
 	//Init al primo click, prima che il browser apra il select nativo.
@@ -48,8 +80,24 @@
 		if ($(this).data('select2'))
 			return;
 
+		if ($(this).data('select2Loading'))
+			return;
+
 		event.preventDefault();
-		initEditorSelect2(this).select2('open');
+
+		const initialized = initEditorSelect2(this);
+
+		if (initialized && typeof initialized.then === 'function')
+		{
+			initialized.then(function ($select)
+			{
+				$select.select2('open');
+			}, console.error);
+
+			return;
+		}
+
+		initialized.select2('open');
 	});
 
 	//Arrivo da tastiera: dopo l'init il focus deve passare al container Select2.
@@ -58,9 +106,62 @@
 		if ($(this).data('select2'))
 			return;
 
-		initEditorSelect2(this)
-			.next('.select2-container')
-			.find('.select2-selection')
-			.trigger('focus');
+		if ($(this).data('select2Loading'))
+			return;
+
+		const focusSelection = function ($select)
+		{
+			$select
+				.next('.select2-container')
+				.find('.select2-selection')
+				.trigger('focus');
+		};
+
+		const initialized = initEditorSelect2(this);
+
+		if (initialized && typeof initialized.then === 'function')
+		{
+			initialized.then(focusSelection, console.error);
+
+			return;
+		}
+
+		focusSelection(initialized);
+	});
+
+	// Ogni apertura successiva ricarica le opzioni della riga. Il flag ready
+	// permette l'apertura che segue il caricamento senza innescare una seconda GET.
+	$(document).on('select2:opening', 'table.datatable tbody select.ib-editor-select2[data-possible-values-row-route]', function (event)
+	{
+		const $select = $(this);
+
+		if ($select.data('possibleValuesRowRouteReady'))
+		{
+			$select.removeData('possibleValuesRowRouteReady');
+
+			return;
+		}
+
+		if ($select.data('select2Loading'))
+		{
+			event.preventDefault();
+
+			return;
+		}
+
+		event.preventDefault();
+		$select.data('select2Loading', true);
+
+		window.ibDtLoadSelectPossibleValuesRow(this).then(function (possibleValues)
+		{
+			window.ibDtPopulateSelectOptions($select, possibleValues);
+			$select.data('possibleValuesRowRouteReady', true);
+			$select.removeData('select2Loading');
+			$select.select2('open');
+		}, function (error)
+		{
+			$select.removeData('select2Loading');
+			console.error(error);
+		});
 	});
 })($);

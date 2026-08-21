@@ -31,8 +31,11 @@ class DatatableFieldSelect extends DatatableFieldEditor
 	public $width = '125px';
 	public $fieldType = 'text';
 
+	//transformValue ritorna [key, value, label]
+	public null|int|string $labelPosition = 2;
+
 	public $nullValue = 'null';
-	public $nullString = 'nd';
+	public $nullString;
 	public $default = "null";
 	public bool $associative = false;
 	public ?array $possibleValuesArray = null;
@@ -49,6 +52,7 @@ class DatatableFieldSelect extends DatatableFieldEditor
 
     public function __construct(string $name, array $parameters = [], int $index = null, DatatableField $parent = null, Datatables $table = null)
 	{
+		$this->nullString = config('datatables.labels.nd', 'nd');
 		parent::__construct($name, $parameters, $index, $parent, $table);
 	}
 
@@ -91,8 +95,39 @@ class DatatableFieldSelect extends DatatableFieldEditor
 		return ' data-custom-value-mode="true"';
 	}
 
+	protected function hasPossibleValuesRowRoute() : bool
+	{
+		return false;
+	}
+
+	protected function getPossibleValuesRowRouteDataAttributes() : string
+	{
+		return '';
+	}
+
+	protected function getPossibleValuesRowIdDataAttribute() : string
+	{
+		return '';
+	}
+
+	protected function getPossibleValuesRowRouteInlineDataAttributes() : array
+	{
+		return [];
+	}
+
+	protected function getInitialSelectLabel($selectedValue) : string
+	{
+		return $this->getSelectOptionLabel(
+			$this->getPossibleEnumValuesArray(),
+			$selectedValue
+		);
+	}
+
     public function parseFieldSpecificHeaderData()
     {
+		if ($this->hasPossibleValuesRowRoute())
+			return;
+
 		$list = $this->getPossibleEnumValuesArray();
 
 		if($this->isNullable())
@@ -207,10 +242,7 @@ class DatatableFieldSelect extends DatatableFieldEditor
 		$propertyName = $this->editorProperty ?? $this->name;
 		$selectedValue = $value->{$propertyName} ?? $this->default;
 
-		$selected = $this->getSelectOptionLabel(
-			$this->getPossibleEnumValuesArray(),
-			$selectedValue
-		);
+		$selected = $this->getInitialSelectLabel($selectedValue);
 
 		return [
 			$this->element->getKey(),
@@ -243,7 +275,10 @@ class DatatableFieldSelect extends DatatableFieldEditor
 		if (! $this->userCanEdit())
 			return '';
 
-		$dataAttributes = $this->getDataAttributes();
+		$dataAttributes = array_merge(
+			$this->getDataAttributes(),
+			$this->getPossibleValuesRowRouteInlineDataAttributes()
+		);
 		$dataAttributes['url'] = $this->getInlineEditUpdateUrl();
 		$dataAttributes['inline-source-field'] = $this->name;
 
@@ -256,7 +291,9 @@ class DatatableFieldSelect extends DatatableFieldEditor
 			$attributes[] = 'data-' . e($name) . '="' . e($value) . '"';
 
 		$value = $this->getInlineEditValue();
-		$options = $this->getPossibleEnumValuesArray();
+		$options = $this->hasPossibleValuesRowRoute()
+			? []
+			: $this->getPossibleEnumValuesArray();
 
 		if ($this->isNullable())
 			$options = array_merge([$this->nullValue => $this->nullString], $options);
@@ -290,7 +327,7 @@ class DatatableFieldSelect extends DatatableFieldEditor
 		if(item)
 			selected = '<option selected value=\"' + item[1] + '\">' + item[2] + '</option>';
 
-		item = '<select data-populated=\"false\"" . $this->getCustomValueModeDataAttribute() . " " . $this->getValueString() . " class=\"" . $classes . " uk-select ib-editor-select\" data-url=\"' + url + '\" data-field=\"{$this->parameter}\">' + selected + '</select>';
+		item = '<select data-populated=\"false\"" . $this->getCustomValueModeDataAttribute() . $this->getPossibleValuesRowRouteDataAttributes() . $this->getPossibleValuesRowIdDataAttribute() . " " . $this->getValueString() . " class=\"" . $classes . " uk-select ib-editor-select\" data-url=\"' + url + '\" data-field=\"{$this->parameter}\">' + selected + '</select>';
 
 		";
 	}

@@ -17,6 +17,7 @@ namespace IlBronza\Datatables\DatatablesFields\Editor;
 class DatatableFieldSelectOrInput extends DatatableFieldSelectOrFlat
 {
 	public ? string $inputFieldName = null;
+	protected int $selectFallbackFlagPosition = 4;
 
 	public function getInputFieldName()
 	{
@@ -30,7 +31,10 @@ class DatatableFieldSelectOrInput extends DatatableFieldSelectOrFlat
 	{
 		$result = parent::transformValue($value);
 
-		$result[] = $value->{$this->getInputFieldName()};
+		// selectOrFlat usa item[3] come flag; selectOrInput lo riserva al testo libero.
+		$selectFallback = array_pop($result);
+		$result[3] = $value->{$this->getInputFieldName()};
+		$result[] = $selectFallback;
 
 		return $result;
 	}
