@@ -100,3 +100,20 @@ The default channel is
 package uses a different private channel. Call
 `$table->setListenToModelBroadcasts(false)` to disable a globally enabled
 integration.
+
+## Dedicated table refresh channel
+
+Every table exposes a separate private refresh channel derived from its name:
+
+```php
+// A table named "ordersToShip" listens on:
+// channel.tables.orders-to-ship.refresh
+```
+
+Broadcast `.refreshTable` on that channel. The payload is ignored and every
+rendered table subscribed to the channel calls its standard DataTables reload,
+without resetting pagination. This listener is independent of model broadcasts:
+the table does not need a base model or `setListenToModelBroadcasts()`.
+
+Use `$table->setRefreshTableBroadcastChannel('private-channel-name')` only to
+override the conventional channel.

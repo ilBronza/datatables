@@ -103,16 +103,22 @@ function boot(options = {}) {
         echoListeners[channel + ':.crud.model.changed'](payload);
     }
 
+    function emitRefreshTable(channel, payload = {}) {
+        echoListeners[channel + ':.refreshTable'](payload);
+    }
+
     return {
         addTable,
         ajaxCalls,
         browserTabId: window.ibGetDatatableBrowserTabId(),
         emit,
+        emitRefreshTable,
     };
 }
 
 function makeTable({
     channel = 'channel.crud-events.models/order',
+    refreshTableChannel = null,
     id = 'orders',
     model = 'App\\Models\\Order',
     serverSide = false,
@@ -123,6 +129,7 @@ function makeTable({
         attributes: {
             'data-model-broadcast-channel': channel,
             'data-model-broadcast-model': model,
+            'data-refresh-table-broadcast-channel': refreshTableChannel,
         },
         getAttribute(name) {
             return this.attributes[name] || null;
@@ -194,6 +201,41 @@ function makeTable({
 
     return { calls, table };
 }
+
+test('reloads a table on its dedicated refresh channel without a model broadcast', () => {
+    const runtime = boot();
+    const fixture = makeTable({
+        channel: null,
+        refreshTableChannel: 'channel.tables.orders.refresh',
+    });
+    runtime.addTable(fixture.table);
+
+    runtime.emitRefreshTable('channel.tables.orders.refresh');
+
+    assert.equal(fixture.calls.reloads, 1);
+    assert.equal(fixture.calls.reloadPaging, false);
+});
+
+test('shares a refresh channel between its rendered tables', () => {
+    const runtime = boot();
+    const firstFixture = makeTable({
+        channel: null,
+        id: 'orders',
+        refreshTableChannel: 'channel.tables.orders.refresh',
+    });
+    const secondFixture = makeTable({
+        channel: null,
+        id: 'orders-summary',
+        refreshTableChannel: 'channel.tables.orders.refresh',
+    });
+    runtime.addTable(firstFixture.table);
+    runtime.addTable(secondFixture.table);
+
+    runtime.emitRefreshTable('channel.tables.orders.refresh');
+
+    assert.equal(firstFixture.calls.reloads, 1);
+    assert.equal(secondFixture.calls.reloads, 1);
+});
 
 test('fetches and adds a created row with a string key', async () => {
     const runtime = boot();

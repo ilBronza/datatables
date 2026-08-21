@@ -8,6 +8,7 @@ trait DatatableModelBroadcastsTrait
 {
 	public ?bool $listenToModelBroadcasts = null;
 	public ?string $modelBroadcastChannel = null;
+	public ?string $refreshTableBroadcastChannel = null;
 	public ?string $modelBroadcastCreatedFetchUrl = null;
 	public ?string $modelBroadcastCreatedFetchRequestHook = null;
 
@@ -40,6 +41,19 @@ trait DatatableModelBroadcastsTrait
 
 		return $this->modelBroadcastChannel
 			?? 'channel.crud-events.models.' . Str::kebab(class_basename($this->modelClass));
+	}
+
+	public function setRefreshTableBroadcastChannel(?string $channel) : static
+	{
+		$this->refreshTableBroadcastChannel = $channel;
+
+		return $this;
+	}
+
+	public function getRefreshTableBroadcastChannel() : ?string
+	{
+		return $this->refreshTableBroadcastChannel
+			?? 'channel.tables.' . Str::kebab($this->getName()) . '.refresh';
 	}
 
 	public function setModelBroadcastCreatedFetchUrl(?string $url) : static

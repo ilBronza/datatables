@@ -120,6 +120,10 @@
 				@endif
 			@endif
 
+			@if($refreshTableChannel = $table->getRefreshTableBroadcastChannel())
+				data-refresh-table-broadcast-channel="{{ $refreshTableChannel }}"
+			@endif
+
 			@if($table->drawOnFieldsEvents())
 				data-filter-draw-on-events="true"
 			@endif
