@@ -4,6 +4,9 @@ data-column="{{ $field->getIndex() }}">
 	<div @if(! $field->showLabel()) class=" uk-hidden" @endif>
 		{!! $field->getTranslatedName() !!}
 	</div>
+	@if($icon = $field->getFetcherHeaderIconString())
+		{!! $icon !!}
+	@endif
 	@include('datatables::datatablesFields.filters.sorting')
 	@if($icon = $field->getInstationIconString())
 		{!! $icon !!}

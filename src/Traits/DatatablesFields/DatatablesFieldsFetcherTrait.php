@@ -2,6 +2,7 @@
 
 namespace IlBronza\Datatables\Traits\DatatablesFields;
 
+use IlBronza\Buttons\Icons\FaIcon;
 use function config;
 
 trait DatatablesFieldsFetcherTrait
@@ -18,6 +19,17 @@ trait DatatablesFieldsFetcherTrait
 			return $this->fetcher;
 
 		return null;
+	}
+
+	public function getFetcherHeaderIconString() : ? string
+	{
+		if (! $this->getFetcherData())
+			return null;
+
+		if (! $icon = config('datatables.fetcher.headerIcon', 'eye'))
+			return null;
+
+		return FaIcon::inline($icon);
 	}
 
 	public function setFetcherParameters(array $parameters = [])
