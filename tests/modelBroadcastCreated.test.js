@@ -15,8 +15,14 @@ function wait(milliseconds) {
 function boot(options = {}) {
     const handlers = {};
     const echoListeners = {};
+    const consoleLogs = [];
     const tables = new Map();
     const ajaxCalls = [];
+    const vmConsole = {
+        log(...args) {
+            consoleLogs.push(args);
+        },
+    };
 
     const document = {
         getElementById(id) {
@@ -59,6 +65,7 @@ function boot(options = {}) {
     };
 
     const window = {
+        console: vmConsole,
         Echo: {
             private(channel) {
                 return {
@@ -85,7 +92,7 @@ function boot(options = {}) {
         Promise,
         Set,
         clearTimeout,
-        console,
+        console: vmConsole,
         document,
         Error,
         Map,
@@ -111,6 +118,7 @@ function boot(options = {}) {
         addTable,
         ajaxCalls,
         browserTabId: window.ibGetDatatableBrowserTabId(),
+        consoleLogs,
         emit,
         emitRefreshTable,
     };
@@ -214,6 +222,25 @@ test('reloads a table on its dedicated refresh channel without a model broadcast
 
     assert.equal(fixture.calls.reloads, 1);
     assert.equal(fixture.calls.reloadPaging, false);
+});
+
+test('logs the broadcast channels registered for a table', () => {
+    const runtime = boot();
+    const fixture = makeTable({
+        channel: 'channel.crud-events.models/order',
+        refreshTableChannel: 'channel.tables.orders.refresh',
+        id: 'orders',
+    });
+
+    runtime.addTable(fixture.table);
+
+    assert.equal(runtime.consoleLogs.length, 1);
+    assert.equal(runtime.consoleLogs[0][0], '[DataTables] Broadcast subscriptions');
+    assert.equal(runtime.consoleLogs[0][1].tableId, 'orders');
+    assert.deepEqual(Array.from(runtime.consoleLogs[0][1].channels), [
+        'channel.tables.orders.refresh',
+        'channel.crud-events.models/order',
+    ]);
 });
 
 test('shares a refresh channel between its rendered tables', () => {
