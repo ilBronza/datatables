@@ -5,4 +5,5 @@ return array (
   'mySelfEdit' => 'Edit',
   'inlineEdit' => 'Inline edit',
   'mySelfDelete' => 'Delete',
+  'archive' => 'Archive',
 );

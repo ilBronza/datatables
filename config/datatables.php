@@ -213,7 +213,9 @@ return [
 
 	'saveState' => false,
 
-	'debug' => true,
+	// Preloads AJAX table data during the initial render and makes data errors
+	// visible in the originating request. Keep disabled outside debugging.
+	'debug' => env('DATATABLES_DEBUG', false),
 
 	'pageLength' => 50,
 

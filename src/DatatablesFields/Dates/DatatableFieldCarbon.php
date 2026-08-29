@@ -9,6 +9,13 @@ class DatatableFieldCarbon extends DatatableField
 {
     use CarbonTrait;
 
+	/**
+	 * When enabled, the cell data is [date value, validity], where validity is
+	 * 0 for a past date, 1 for a future date, and null for an empty date.
+	 */
+	public bool $checkValidity = false;
+	public null|int|string $validityPosition = 1;
+
     public $defaultFilterType = 'date';
     public $defaultWidth = '80px';
 
@@ -17,14 +24,61 @@ class DatatableFieldCarbon extends DatatableField
     public function transformValue($value)
     {
         if(! $value)
-            return null;
+            return $this->transformValueWithValidity(null, null);
 
         $date = $value->format('Y-m-d'); // QUI: prendi il giorno "di calendario" che vuoi preservare
 
-        return \Carbon\Carbon::createFromFormat('Y-m-d', $date, 'UTC')
-            ->startOfDay()
-            ->timestamp;
+		$date = \Carbon\Carbon::createFromFormat('Y-m-d', $date, 'UTC')
+            ->startOfDay();
+
+		return $this->transformValueWithValidity($date->timestamp, $date);
     }
+
+	public function setParameters(array $parameters)
+	{
+		parent::setParameters($parameters);
+
+		if (! $this->checkValidity)
+			return;
+
+		$this->valueAsRowClass = true;
+		$this->valueAsRowClassPrefix = true;
+	}
+
+	public function getValueAsRowClassDataIndexString() : ?string
+	{
+		if ($this->checkValidity)
+			return "[{$this->validityPosition}]";
+
+		return parent::getValueAsRowClassDataIndexString();
+	}
+
+	public function getCustomColumnDefItemPreparation() : string
+	{
+		if (! $this->checkValidity)
+			return '';
+
+		return "
+					if (Array.isArray(item))
+						item = item[0];
+		";
+	}
+
+	protected function transformValueWithValidity($transformedValue, $dateValue)
+	{
+		if (! $this->checkValidity)
+			return $transformedValue;
+
+		return [$transformedValue, $this->getValidityValue($dateValue)];
+	}
+
+	protected function getValidityValue($dateValue) : ?int
+	{
+		if (! $dateValue)
+			return null;
+
+		return $dateValue->isPast() ? 0 : 1;
+	}
 
 	public function getCompiledAsRowClassScript()
 	{

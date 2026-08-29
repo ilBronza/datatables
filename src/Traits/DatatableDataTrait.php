@@ -12,8 +12,26 @@ use Throwable;
 use function dd;
 use function get_class_methods;
 
+/**
+ * Resolves table elements, transforms their cells, and manages table data caches.
+ */
 trait DatatableDataTrait
 {
+	/**
+	 * Calculate and cache AJAX data while rendering a debug page.
+	 *
+	 * The entry is consumed by the first matching AJAX request and expires quickly
+	 * if that request is never made.
+	 */
+	public function prepareDebugAjaxData() : void
+	{
+		cache()->put(
+			$this->getCachedTableKey(),
+			$this->calculateData(),
+			now()->addMinutes(5)
+		);
+	}
+
 	public function prepareCachedData()
 	{
 		return cache()->remember(
@@ -154,6 +172,7 @@ trait DatatableDataTrait
 		}
 		catch (Exception $e)
 		{
+			dd($e->getMessage(), $field, $element);
 			return $this->handleError($e);
 		}
 	}

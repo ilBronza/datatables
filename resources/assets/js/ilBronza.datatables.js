@@ -34,6 +34,7 @@ require('./datatables.vendor.editorActions.js');
 require('./datatables.vendor.ajaxCall.min.js');
 require('./datatables.vendor.editorSelect2.js');
 require('./datatables.vendor.editorRowLock.js');
+require('./datatables.vendor.fieldsGroups.js');
 require('./datatables.vendor.buttons.min.js');
 require('./datatables.vendor.columnVisibility.min.js');
 require('./datatables.vendor.datatablesFields.min.js');

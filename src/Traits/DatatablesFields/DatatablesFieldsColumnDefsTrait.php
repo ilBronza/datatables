@@ -15,6 +15,8 @@ trait DatatablesFieldsColumnDefsTrait
 
 	public function getCustomColumnDef()
 	{
+		$itemPreparation = $this->getCustomColumnDefItemPreparation();
+
 		// if(! $this->getEndingResultOptions())
 		//     return ;
 
@@ -26,6 +28,7 @@ trait DatatablesFieldsColumnDefsTrait
             {
                 if(type == 'display')
                 {
+					" . $itemPreparation . "
                     " . $this->getCustomColumnDefSingleResult() . "
                     " . $this->getEndingResultOptions() . "
 
@@ -34,6 +37,7 @@ trait DatatablesFieldsColumnDefsTrait
 
                 if(type == 'export')
                 {
+					" . $itemPreparation . "
                     " . $this->getCustomColumnDefSingleResultExport() . "
                     " . $this->getExportResultOptionsEditor() . "
 
@@ -42,6 +46,7 @@ trait DatatablesFieldsColumnDefsTrait
 
                 if(type == 'filter')
                 {
+					" . $itemPreparation . "
                 	//there
                     " . $this->getCustomColumnDefSingleSearchResult() . "
                     
@@ -50,6 +55,7 @@ trait DatatablesFieldsColumnDefsTrait
 
                 if(type == 'sort')
                 {
+					" . $itemPreparation . "
                     " . $this->getCustomColumnDefSingleSortResult() . "
 
                     return item;
@@ -58,6 +64,15 @@ trait DatatablesFieldsColumnDefsTrait
                 return item;
             }
         }";
+	}
+
+	/**
+	 * Gives fields that return structured data a chance to select the value
+	 * consumed by their renderers. Plain fields deliberately leave it empty.
+	 */
+	public function getCustomColumnDefItemPreparation() : string
+	{
+		return '';
 	}
 
 	public function getCustomColumnDefSingleResult()

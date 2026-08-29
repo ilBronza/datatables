@@ -19,6 +19,8 @@ class DatatableFieldDate extends DatatableFieldEditor
 	public $inputFieldDefaultFormat = "YYYY-MM-DD";
 	public $fieldType = 'date';
 	public $defaultFilterType = 'date';
+	public bool $checkValidity = false;
+	public null|int|string $validityPosition = 2;
 
 	public function isBulkEditable() : bool
 	{
@@ -31,11 +33,36 @@ class DatatableFieldDate extends DatatableFieldEditor
 			return $value;
 
 		$this->element = $value;
+		$date = $value->{$this->name} ?? null;
 
-		return [
+		$result = [
 			$this->element->getKey(),
-			$value->{$this->name}->timestamp ?? null
+			$date->timestamp ?? null
 		];
+
+		if ($this->checkValidity)
+			$result[] = $date ? ($date->isPast() ? 0 : 1) : null;
+
+		return $result;
+	}
+
+	public function setParameters(array $parameters)
+	{
+		parent::setParameters($parameters);
+
+		if (! $this->checkValidity)
+			return;
+
+		$this->valueAsRowClass = true;
+		$this->valueAsRowClassPrefix = true;
+	}
+
+	public function getValueAsRowClassDataIndexString() : ?string
+	{
+		if ($this->checkValidity)
+			return "[{$this->validityPosition}]";
+
+		return parent::getValueAsRowClassDataIndexString();
 	}
 
 	public function getInlineEditValue() : string

@@ -149,8 +149,19 @@
 		@if($table->isAjaxTable())
         //ajaxxalo
         ajax: {
-            {{-- url: window.addParameterToURL(window.addParameterToURL("{{ $table->getUrl() }}", 'cachedtablekey', "{{ $table->getCachedTableKey() }}"), 'model', '{{ $table->getRelationName() }}'), --}}
+            @if($table->usesDebugPreloadedAjaxData())
+            url: window.addParameterToURL(
+                window.addParameterToURL(
+                    "{{ $table->getUrl() }}",
+                    'model',
+                    '{{ $table->getRelationName() }}'
+                ),
+                'cachedtablekey',
+                '{{ $table->getCachedTableKey() }}'
+            ),
+            @else
             url: window.addParameterToURL("{{ $table->getUrl() }}", 'model', '{{ $table->getRelationName() }}'),
+            @endif
             type: '{{ $table->getAjaxMethod() }}',
             dataSrc: function (json)
             {
@@ -403,9 +414,44 @@
 
 				@foreach ($table->getButtons() as $button)
 				@if(is_string($button))
-            '{{ $button }}' @if(! $loop->last), @endif
+					'{{ $button }}',
 				@elseif(is_array($button))
-				{!! json_encode($button) !!} @if(! $loop->last), @endif
+				{!! json_encode($button) !!},
+				@elseif($button instanceof \IlBronza\Datatables\Buttons\FieldsGroupToggleButton)
+				@php
+					$fieldsGroupToggleDefinition = $button->getDatatablesDefinition();
+					$fieldsGroupToggleActiveText = $fieldsGroupToggleDefinition['activeText'];
+					$fieldsGroupToggleInactiveText = $fieldsGroupToggleDefinition['inactiveText'];
+
+					if ($button->hasIcon()) {
+						$fieldsGroupToggleIcon = $button->renderIcon();
+						$fieldsGroupToggleActiveText .= ' ' . $fieldsGroupToggleIcon;
+						$fieldsGroupToggleInactiveText .= ' ' . $fieldsGroupToggleIcon;
+					}
+				@endphp
+        {
+            extend: {!! json_encode($fieldsGroupToggleDefinition['extend']) !!},
+            fieldGroup: {!! json_encode($fieldsGroupToggleDefinition['fieldGroup']) !!},
+			activeText: {!! json_encode($fieldsGroupToggleActiveText) !!},
+			inactiveText: {!! json_encode($fieldsGroupToggleInactiveText) !!},
+            attr: {
+				@foreach($button->getAttributes() as $attribute => $value)
+                '{{ $attribute }}': '{{ $value }}',
+				@endforeach
+				@foreach($button->getData() as $data => $value)
+                'data-{{ $data }}': '{{ $value }}',
+				@endforeach
+				@if($button->getId())
+                id: '{{ $button->getId() }}',
+				@endif
+            },
+			@if($buttonClasses = $button->getHtmlClassesString())
+            className: '{{ $buttonClasses }}',
+			@else
+            className: '{{ Str::slug($button->getText()) }}',
+			@endif
+            text: {!! json_encode($fieldsGroupToggleInactiveText) !!}
+        },
 			@else
         {
             attr: {

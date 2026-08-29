@@ -11,8 +11,9 @@ class DatatableFieldFormat extends DatatableFieldCarbon
 
     public function transformValue($value)
     {
-        if($value)
-            return $value->format($this->format);
+		if (! $value)
+			return $this->transformValueWithValidity(null, null);
+
+		return $this->transformValueWithValidity($value->format($this->format), $value);
     }
 }
-

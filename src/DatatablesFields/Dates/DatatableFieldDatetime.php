@@ -10,9 +10,9 @@ class DatatableFieldDatetime extends DatatableFieldDate
 	public function transformValue($value)
 	{
 		if(! $value)
-			return null;
+			return $this->transformValueWithValidity(null, null);
 
-		return $value->timestamp;
+		return $this->transformValueWithValidity($value->timestamp, $value);
 //
 //		$date = $value->format('Y-m-d'); // QUI: prendi il giorno "di calendario" che vuoi preservare
 //
@@ -21,4 +21,3 @@ class DatatableFieldDatetime extends DatatableFieldDate
 	}
 
 }
-

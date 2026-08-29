@@ -58,3 +58,32 @@ test('reloadTable response actions are recognized in action and ibaction', () =>
     assert.equal(runtime.ibDtEditorResponseRequestsTableReload({ ibaction: 'reloadTable' }), true);
     assert.equal(runtime.ibDtEditorResponseRequestsTableReload({ action: 'refreshRow' }), false);
 });
+
+test('inline editor controls request a table reload after a failed save', () => {
+    const runtime = boot();
+    const target = {
+        matches(selector) {
+            return selector.includes('.ib-editor-select');
+        },
+        closest(selector) {
+            return selector === 'table.datatable' ? {} : null;
+        },
+    };
+
+    assert.equal(runtime.ibDtEditorTargetRequiresErrorReload(target), true);
+});
+
+test('non-editor targets do not request a table reload after a failed save', () => {
+    const runtime = boot();
+    const target = {
+        matches() {
+            return false;
+        },
+        closest() {
+            return null;
+        },
+    };
+
+    assert.equal(runtime.ibDtEditorTargetRequiresErrorReload(target), false);
+    assert.equal(runtime.ibDtEditorTargetRequiresErrorReload(null), false);
+});

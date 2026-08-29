@@ -15,6 +15,7 @@ return array (
   	'mySelfUnDelete' => 'Ripristina',
 	'save' => 'Salva',
 	'mySelfClone' => 'Duplica',
+	'archive' => 'Archivia',
 	'milestone' => 'Completamento',
 	'client' => 'Cliente',
 	'destination' => 'Destinazione',

@@ -94,6 +94,27 @@ from a route when the user opens the editor. See
 [the `editor.selectCell` guide](docs/editor-select-cell.md) for configuration,
 response formats, nullable values, and Select2 support.
 
+### Validity classes for date fields
+
+Add `checkValidity => true` to a `dates.*` or `editor.dates.*` field to expose
+its validity alongside its normal value. The cell data gains one final value:
+`0` for a past date, `1` for a future date, and `null` when the date is empty.
+The same value is automatically added as a class to the row, prefixed with the
+field slug (for example, `expiry-date0`, `expiry-date1`, or
+`expiry-datenull`). This makes it possible to style the whole row:
+
+```php
+'expiry_date' => [
+    'type' => 'dates.date',
+    'checkValidity' => true,
+],
+```
+
+```css
+tr.expiry-date0 { background: #fee2e2; }
+tr.expiry-date1 { background: #dcfce7; }
+```
+
 
 ### Form in table header and submit cell
 

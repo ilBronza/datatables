@@ -330,12 +330,19 @@ class DatatableField
 
 		do
 		{
-			$property = array_shift($properties);
+			try
+			{
+				$property = array_shift($properties);
 
-			if (strpos($property, 'mySelf') === false)
-				$element = isset($element->$property) ? $element->$property : null;
+				if (strpos($property, 'mySelf') === false)
+					$element = isset($element->$property) ? $element->$property : null;
 
-			$this->elementValues[++ $i] = $element;
+				$this->elementValues[++ $i] = $element;				
+			}
+			catch(\Exception $e)
+			{
+				throw new \Exception($e->getMessage() . ' - fieldName: ' . $fieldName);
+			}
 		} while (count($properties));
 
 		return $element;

@@ -32,6 +32,9 @@ use Illuminate\Support\Str;
 
 use function implode;
 
+/**
+ * Builds DataTables definitions and coordinates their server-side data source.
+ */
 class Datatables
 {
 	use DatatableDomTrait;
@@ -213,18 +216,22 @@ class Datatables
 
 		$table->setVariables($extraVariables ?? []);
 		$table->setElementsProvider($elements);
+		$table->setName($name);
 
 		if ((request()->ajax()) && (! request()->ibFetcher))
 		{
-			// if (($table->cachedTableKey = request()->input('cachedtablekey')) && ($data = cache()->pull($table->cachedTableKey)))
-			// {
-			// 	$table->setData($data, $selectRowCheckboxes);
-			//
-			// 	return $table;
-			// }
-
 			$table->addFieldsGroups($fieldsGroups);
 			// $table->addFields($fields);
+
+			if ($table->usesDebugPreloadedAjaxData())
+				if ($cachedTableKey = request()->input('cachedtablekey'))
+					if (is_string($cachedTableKey) && hash_equals($table->getCachedTableKey(), $cachedTableKey) && cache()->has($cachedTableKey))
+					{
+						$table->cachedTableKey = $cachedTableKey;
+						$table->setData(cache()->pull($cachedTableKey));
+
+						return $table;
+					}
 
 			if (request()->has('rowId'))
 				return $table->returnSingleElement($elements);
@@ -244,7 +251,6 @@ class Datatables
 
 		$table->addFieldsGroups($fieldsGroups);
 
-		$table->setName($name);
 		$table->setUrl(request()->url());
 
 		// $table->setElements($elements());
@@ -595,7 +601,9 @@ class Datatables
 				"data" => $this->getData()
 			];
 
-		if (! $this->isAjaxTable())
+		if ($this->usesDebugPreloadedAjaxData())
+			$this->prepareDebugAjaxData();
+		elseif (! $this->isAjaxTable())
 			$this->prepareCachedData();
 		$this->parseColumnDefs();
 
@@ -710,6 +718,15 @@ class Datatables
 	public function debug() : bool
 	{
 		return config('datatables.debug', false);
+	}
+
+	/**
+	 * Determine whether an AJAX table should preload its data during the initial
+	 * server-side render so transformation errors are raised immediately.
+	 */
+	public function usesDebugPreloadedAjaxData() : bool
+	{
+		return $this->debug() && $this->isAjaxTable();
 	}
 
 	private function cleanCachedTableKeyParameterIfEditor()

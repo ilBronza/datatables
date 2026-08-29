@@ -10,7 +10,9 @@ class DatatableFieldDate extends DatatableFieldCarbon
 
     public function transformValue($value)
     {
-        return $value->format($this->dateFormat);
+		if (! $value)
+			return $this->transformValueWithValidity(null, null);
+
+        return $this->transformValueWithValidity($value->format($this->dateFormat), $value);
     }
 }
-

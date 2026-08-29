@@ -10,12 +10,11 @@ class DatatableFieldDate extends MainDatatableFieldDate
 	public function transformValue($value)
 	{
 		if(! $value)
-			return null;
+			return $this->transformValueWithValidity(null, null);
 
 		$value = Carbon::createFromFormat('Y-m-d', $value);
 
-		return $value->timestamp ?? null;
+		return $this->transformValueWithValidity($value->timestamp ?? null, $value);
 	}
 
 }
-

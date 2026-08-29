@@ -4,6 +4,9 @@ namespace IlBronza\Datatables\DatatablesFields\Links;
 
 class DatatableFieldArchive extends DatatableFieldAjax
 {
+	public ? string $translationPrefix = 'datatables::fields';
+	public ? string $forcedStandardName = 'archive';
+
     public $faIcon = 'box-archive';
     public $confirmMessage = 'datatables::messages.areYouSureToDeleteThisObject';
     public $textParameter = false;

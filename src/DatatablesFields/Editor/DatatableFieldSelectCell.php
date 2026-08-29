@@ -70,7 +70,7 @@ class DatatableFieldSelectCell extends DatatableFieldSelect
 
 		if (! $method || ! method_exists($this->element, $method))
 			throw new LogicException(sprintf(
-				'editor.selectCell "%s" richiede "%s" valido sul model della riga',
+				'editor.selectCell "%s" richiede possibleValuesRowLabelMethod "%s" dichiarato sul model della riga',
 				$this->name,
 				$method
 			));
