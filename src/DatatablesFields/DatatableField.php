@@ -81,6 +81,8 @@ class DatatableField
 	public ?string $inlineFieldType = null;
 	public $rowId = false;
 	public $tooltip = false;
+	public bool $headerTooltip = false;
+	public ? string $translatedHeaderTooltip = null;
 	public $summary;
 	public $data = [];
 	public $mainHeader = null;

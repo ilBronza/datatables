@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use function array_map;
 use function config;
+use function count;
 use function dd;
 use function explode;
 use function get_class;
@@ -185,6 +186,27 @@ trait DatatablesFieldsDisplayTrait
 	public function hasTooltip()
 	{
 		return $this->tooltip;
+	}
+
+	public function getTooltipsTranslationPrefix() : string
+	{
+		$pieces = explode('::', $this->getTranslationPrefix());
+
+		if (count($pieces) == 1)
+			return 'tooltips';
+
+		return $pieces[0] . '::tooltips';
+	}
+
+	public function getHeaderTooltip() : ? string
+	{
+		if ($this->translatedHeaderTooltip)
+			return $this->translatedHeaderTooltip;
+
+		if (! $this->headerTooltip)
+			return null;
+
+		return __($this->getTooltipsTranslationPrefix() . '.' . ($this->forcedStandardName ?? $this->name));
 	}
 
 	public function getInstationIconString() : ? string
