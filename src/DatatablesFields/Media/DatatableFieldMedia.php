@@ -31,18 +31,26 @@ class DatatableFieldMedia extends DatatableField
 			$this->getCollection()
 	    );
 
-	    if($this->hasLightbox())
-		    return [
-			    $media?->getUrl(),
-				$media?->getUrl(
-					$this->getConversionName()
-				)
-		    ];
+		if(isset($media))
+		{
+			if($this->hasLightbox())
+				return [
+					$media->getUrl(),
+					$media->getUrl(
+						$this->getConversionName()
+					)
+				];
 
-	    return $media?->getUrl(
-		    $this->getConversionName()
-	    );
-    }
+			return $media->getUrl(
+				$this->getConversionName()
+			);
+		}
+
+		if($this->hasLightbox())
+			return [null, null];
+
+		return null;
+	}
 
 	public function getCustomColumnDefSingleResult()
 	{

@@ -18,6 +18,7 @@ class DatatableFieldFormatted extends DatatableFieldBaseNumber
 	// public ?string $suffix = ' €';
 	public int $decimals = 2;
 	public ? string $localeFormatting = null;
+	public bool $showNull = true;
 
 	public function getExportResultOptionsEditor()
 	{
@@ -36,7 +37,10 @@ class DatatableFieldFormatted extends DatatableFieldBaseNumber
 	public function getCustomColumnDefSingleResult()
 	{
 		return "
-		 	item = Number(item).toLocaleString('{$this->getLocaleFormatting()}', {minimumFractionDigits: {$this->decimals}, maximumFractionDigits: {$this->decimals}, useGrouping: 'always'});
+			if(item === null)
+				item = '';
+			else
+				item = Number(item).toLocaleString('{$this->getLocaleFormatting()}', {minimumFractionDigits: {$this->decimals}, maximumFractionDigits: {$this->decimals}, useGrouping: 'always'});
 		";		
 	}
 
@@ -59,6 +63,9 @@ class DatatableFieldFormatted extends DatatableFieldBaseNumber
 
 	public function transformValue($value)
 	{
+		if ($this->showNull && is_null($value))
+			return null;
+
 		if (! $value)
 			return 0;
 
