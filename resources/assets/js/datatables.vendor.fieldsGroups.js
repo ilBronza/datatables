@@ -178,6 +178,16 @@
                 : null;
             const fieldNamesToPersist = [];
             const api = this;
+            const summaryWasActive = !! (tableNode && tableNode.__summaryActive === true);
+            let summaryButton = null;
+
+            if (summaryWasActive) {
+                try {
+                    summaryButton = dt.button('.removesummary');
+                    if (summaryButton && typeof summaryButton.trigger === 'function')
+                        summaryButton.trigger();
+                } catch (err) {}
+            }
 
             indexes.forEach(function (columnIndex) {
                 try {
@@ -202,6 +212,10 @@
                 if (fieldName && columnDisplayRoute && typeof dt.manageColumnVisibility === 'function')
                     fieldNamesToPersist.push(fieldName);
             });
+
+            if (summaryWasActive && summaryButton && typeof summaryButton.trigger === 'function') {
+                try { summaryButton.trigger(); } catch (err) {}
+            }
 
             let chain = Promise.resolve();
 

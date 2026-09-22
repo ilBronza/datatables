@@ -32,14 +32,16 @@ function createButtonNode()
     };
 }
 
-function boot({ definitions, visibility, route = '/column-display' })
+function boot({ definitions, visibility, route = '/column-display', summaryActive = false })
 {
     const listeners = [];
     const persistCalls = [];
     const applyCalls = [];
+    const summaryTransitions = [];
     let adjusted = 0;
     const tableNode = {
         id: 'orders',
+        __summaryActive: summaryActive,
         getAttribute(name) {
             return name === 'data-columndisplayroute' ? route : null;
         },
@@ -71,6 +73,15 @@ function boot({ definitions, visibility, route = '/column-display' })
         },
         on(event, listener) {
             listeners.push(listener);
+        },
+        button(selector) {
+            return {
+                trigger() {
+                    assert.equal(selector, '.removesummary');
+                    tableNode.__summaryActive = !tableNode.__summaryActive;
+                    summaryTransitions.push(tableNode.__summaryActive);
+                },
+            };
         },
     };
 
@@ -105,6 +116,8 @@ function boot({ definitions, visibility, route = '/column-display' })
         visibility,
         persistCalls,
         applyCalls,
+        summaryTransitions,
+        tableNode,
         getAdjusted: () => adjusted,
     };
 }
@@ -148,6 +161,19 @@ test('a fully hidden group from saved preferences is expanded on its first click
         JSON.parse(JSON.stringify(runtime.api.getHiddenState(runtime.dt).texts)),
         []
     );
+});
+
+test('a grouped column change closes and reopens an active summary through its button', async () => {
+    const runtime = boot({
+        definitions: { texts: { columnIndexes: [1, 2] } },
+        visibility: [true, true, true],
+        summaryActive: true,
+    });
+
+    await runtime.api.toggle(runtime.dt, 'texts');
+
+    assert.deepEqual(runtime.summaryTransitions, [false, true]);
+    assert.equal(runtime.tableNode.__summaryActive, true);
 });
 
 test('overlapping groups retain independent restore state', async () => {

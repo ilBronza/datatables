@@ -142,24 +142,37 @@ input.editorchanged
 
 table.dataTable
 {
-  .ib-dt-summary-scope
+  .summary,
+  .inlinesearchsummary
   {
-    position: relative;
-
-    &::before
+    > .ib-dt-summary-scope
     {
-      position: absolute;
-      top: 50%;
-      right: calc(100% + .5rem);
-      z-index: 1;
-      color: #6b7280;
-      content: attr(data-summary-label);
-      font-size: .75em;
-      font-weight: 500;
-      line-height: 1.25;
-      pointer-events: none;
-      transform: translateY(-50%);
-      white-space: nowrap;
+      position: relative;
+
+      &::before
+      {
+        position: absolute;
+        top: 50%;
+        right: calc(100% + .5rem);
+        z-index: 1;
+        color: #6b7280;
+        content: attr(data-summary-label);
+        font-size: .75em;
+        font-weight: 500;
+        line-height: 1.25;
+        pointer-events: none;
+        transform: translateY(-50%);
+        white-space: nowrap;
+      }
+    }
+
+    // DataTables hides columns by applying `display: none` to their header
+    // cells. The label is rendered in each summary cell, but is shown only
+    // next to the first summary column that remains visible.
+    > .ib-dt-summary-scope:not([style*="display: none"]):not(.dtr-hidden)
+      ~ .ib-dt-summary-scope:not([style*="display: none"]):not(.dtr-hidden)::before
+    {
+      display: none;
     }
   }
 
@@ -643,7 +656,10 @@ th
 
 .dt-column-order
 {
-  display: none;
+  // DataTables styles are loaded after this package in some host apps.
+  // Keep its built-in arrows hidden: the hover-only control and the
+  // asc/desc strip are rendered by this package instead.
+  display: none !important;
 }
 
 /**

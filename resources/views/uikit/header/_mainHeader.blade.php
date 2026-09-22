@@ -1,4 +1,4 @@
-        <tr class="mainheader">
+        <tr class="mainheader" data-dt-order="disable">
             @foreach($table->getFields() as $field)
                 @if($field->hasMainHeader())
                     <th class="{{ Str::slug($field->mainHeader['label']) }}"
