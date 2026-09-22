@@ -51,7 +51,12 @@ return array (
 	 'order' => 'Ordine',
 	  ],
 
-	
-
-	
+  'mySelfOrders' => 'Commesse',
+  'product' => 'Prodotto',
+  'orderProductPhase.order.client' => 'Cliente',
+  'parent' => 'Elemento padre',
+  'orderProductPhase.product.client' => 'Cliente',
+  'estimable.order' => 'Commessa',
+  'mySelfPrimaryKey' => 'Chiave primaria',
+  'mySelfId' => 'Identificativo',
 );
