@@ -18,6 +18,12 @@ function boot(options = {}) {
     const consoleLogs = [];
     const tables = new Map();
     const ajaxCalls = [];
+    let currentTime = Date.now();
+    class ClockDate extends Date {
+        static now() {
+            return currentTime;
+        }
+    }
     const vmConsole = {
         log(...args) {
             consoleLogs.push(args);
@@ -93,6 +99,7 @@ function boot(options = {}) {
         Set,
         clearTimeout,
         console: vmConsole,
+        Date: ClockDate,
         document,
         Error,
         Map,
@@ -116,11 +123,14 @@ function boot(options = {}) {
 
     return {
         addTable,
+        advanceTime(milliseconds) { currentTime += milliseconds; },
         ajaxCalls,
+        beginLocalRowMutation: window.ibDtBeginLocalRowMutation,
         browserTabId: window.ibGetDatatableBrowserTabId(),
         consoleLogs,
         emit,
         emitRefreshTable,
+        finishLocalRowMutation: window.ibDtFinishLocalRowMutation,
     };
 }
 
@@ -309,6 +319,89 @@ test('ignores a created event emitted by the originating table only', async () =
     assert.equal(sourceFixture.calls.reloads, 0);
     assert.equal(otherFixture.calls.added.length, 1);
     assert.equal(otherFixture.calls.reloads, 0);
+});
+
+test('ignores updated and saved broadcasts for a recently refreshed local row', async () => {
+    const runtime = boot();
+    const sourceFixture = makeTable({ id: 'orders' });
+    const otherFixture = makeTable({ id: 'orders-summary' });
+    runtime.addTable(sourceFixture.table);
+    runtime.addTable(otherFixture.table);
+
+    const mutation = runtime.beginLocalRowMutation(sourceFixture.table, 'ORD-SELF');
+    const payload = { key: 'ORD-SELF', model: 'App\\Models\\Order' };
+
+    // A queued broadcast may arrive before the mutation's HTTP response.
+    runtime.emit('channel.crud-events.models/order', { ...payload, action: 'updated' });
+    await wait(140);
+    runtime.finishLocalRowMutation(mutation, true);
+    runtime.emit('channel.crud-events.models/order', { ...payload, action: 'saved' });
+    await wait(140);
+
+    assert.equal(sourceFixture.calls.reloads, 0);
+    assert.equal(otherFixture.calls.reloads, 0);
+});
+
+test('does not hide another browser tab or a failed local mutation', async () => {
+    const runtime = boot();
+    const fixture = makeTable();
+    runtime.addTable(fixture.table);
+
+    const mutation = runtime.beginLocalRowMutation(fixture.table, 'ORD-SELF');
+    runtime.emit('channel.crud-events.models/order', {
+        action: 'updated',
+        key: 'ORD-SELF',
+        model: 'App\\Models\\Order',
+        origin: { browserTabId: 'another-tab', tableId: 'orders' },
+    });
+    await wait(140);
+
+    runtime.finishLocalRowMutation(mutation, false);
+    runtime.emit('channel.crud-events.models/order', {
+        action: 'saved',
+        key: 'ORD-SELF',
+        model: 'App\\Models\\Order',
+    });
+    await wait(140);
+
+    assert.equal(fixture.calls.reloads, 2);
+});
+
+test('replays a broadcast received before a failed local mutation responds', async () => {
+    const runtime = boot();
+    const fixture = makeTable();
+    runtime.addTable(fixture.table);
+
+    const mutation = runtime.beginLocalRowMutation(fixture.table, 'ORD-SELF');
+    runtime.emit('channel.crud-events.models/order', {
+        action: 'updated',
+        key: 'ORD-SELF',
+        model: 'App\\Models\\Order',
+    });
+    await wait(140);
+    assert.equal(fixture.calls.reloads, 0);
+
+    runtime.finishLocalRowMutation(mutation, false);
+
+    assert.equal(fixture.calls.reloads, 1);
+});
+
+test('stops ignoring an originless row event after five seconds', async () => {
+    const runtime = boot();
+    const fixture = makeTable();
+    runtime.addTable(fixture.table);
+
+    const mutation = runtime.beginLocalRowMutation(fixture.table, 'ORD-SELF');
+    runtime.finishLocalRowMutation(mutation, true);
+    runtime.advanceTime(5001);
+    runtime.emit('channel.crud-events.models/order', {
+        action: 'updated',
+        key: 'ORD-SELF',
+        model: 'App\\Models\\Order',
+    });
+    await wait(140);
+
+    assert.equal(fixture.calls.reloads, 1);
 });
 
 test('adds the mapped row through the client-side DataTables API', async () => {

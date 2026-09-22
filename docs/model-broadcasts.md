@@ -20,6 +20,16 @@ object. Datatables ignores an event only when both identifiers match the
 receiving table, avoiding the redundant refresh after its own mutation while
 still updating other tables and browser tabs.
 
+Datatables also tracks Ajax row mutations in a short page-local buffer keyed
+by model and row ID. While the request is pending, `updated` and `saved`
+broadcasts for that row are held. If the response triggers a local row or
+table refresh, the buffer suppresses those broadcasts for five more seconds.
+If the request fails or does not refresh locally, held broadcasts are processed.
+An event explicitly originating from a different browser tab always passes
+through this buffer. The buffer is a fallback for events without usable origin
+metadata; simultaneous edits from an originless source during the five-second
+window cannot be distinguished from the page's own edit.
+
 The identifiers use the request headers
 `X-IB-Datatable-Browser-Tab-Id` and `X-IB-Datatable-Table-Id`. They are
 correlation metadata only and must never be used for authentication or
