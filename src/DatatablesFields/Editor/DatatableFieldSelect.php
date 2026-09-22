@@ -12,6 +12,7 @@ use IlBronza\FileCabinet\Helpers\DossierrowFormFieldHelper;
 use IlBronza\FileCabinet\Models\Form;
 
 use IlBronza\FileCabinet\Models\Formrow;
+use LogicException;
 
 use function dd;
 use function explode;
@@ -25,7 +26,7 @@ class DatatableFieldSelect extends DatatableFieldEditor
 
 	public function isBulkEditable() : bool
 	{
-		return true;
+		return ! $this->hasPossibleValuesRowRoute();
 	}
 
 	public $width = '125px';
@@ -49,6 +50,8 @@ class DatatableFieldSelect extends DatatableFieldEditor
 	public ? string $possibleValuesMethod = null;
 
 	public ? string $possibleValuesRoute = null;
+	public ?string $possibleValuesRowRoute = null;
+	public ?string $possibleValuesRowLabelMethod = null;
 
     public function __construct(string $name, array $parameters = [], int $index = null, DatatableField $parent = null, Datatables $table = null)
 	{
@@ -97,30 +100,65 @@ class DatatableFieldSelect extends DatatableFieldEditor
 
 	protected function hasPossibleValuesRowRoute() : bool
 	{
-		return false;
+		return (bool) $this->possibleValuesRowRoute;
 	}
 
 	protected function getPossibleValuesRowRouteDataAttributes() : string
 	{
-		return '';
+		if (! $this->hasPossibleValuesRowRoute())
+			return '';
+
+		return ' data-possible-values-row-route="' . e($this->possibleValuesRowRoute) . '"'
+			. ' data-possible-values-row-route-placeholder="'
+			. e(config('datatables.replace_model_id_string')) . '"';
 	}
 
 	protected function getPossibleValuesRowIdDataAttribute() : string
 	{
-		return '';
+		if (! $this->hasPossibleValuesRowRoute())
+			return '';
+
+		return " data-row-id=\"' + item[0] + '\"";
 	}
 
 	protected function getPossibleValuesRowRouteInlineDataAttributes() : array
 	{
-		return [];
+		if (! $this->hasPossibleValuesRowRoute())
+			return [];
+
+		return [
+			'possible-values-row-route' => $this->possibleValuesRowRoute,
+			'possible-values-row-route-placeholder' => config('datatables.replace_model_id_string'),
+			'row-id' => $this->element?->getKey(),
+		];
 	}
 
 	protected function getInitialSelectLabel($selectedValue) : string
 	{
+		if ($this->hasPossibleValuesRowRoute())
+			return $this->getPossibleValuesRowLabel($selectedValue);
+
 		return $this->getSelectOptionLabel(
 			$this->getPossibleEnumValuesArray(),
 			$selectedValue
 		);
+	}
+
+	protected function getPossibleValuesRowLabel($selectedValue) : string
+	{
+		$method = $this->possibleValuesRowLabelMethod;
+
+		if (! $method || ! is_object($this->element) || ! method_exists($this->element, $method))
+			throw new LogicException(sprintf(
+				'Il campo select "%s" richiede possibleValuesRowLabelMethod "%s" dichiarato sul model della riga',
+				$this->name,
+				$method
+			));
+
+		if ($selectedValue === null || $selectedValue === $this->nullValue)
+			return $this->nullString;
+
+		return (string) $this->element->{$method}();
 	}
 
     public function parseFieldSpecificHeaderData()
@@ -299,6 +337,10 @@ class DatatableFieldSelect extends DatatableFieldEditor
 			$options = array_merge([$this->nullValue => $this->nullString], $options);
 
 		$optionsHtml = '';
+
+		if ($this->hasPossibleValuesRowRoute() && $value !== '' && $value !== $this->nullValue)
+			$optionsHtml = '<option value="' . e($value) . '" selected>'
+				. e($this->getInitialSelectLabel($value)) . '</option>';
 
 		foreach ($options as $optionValue => $label)
 		{

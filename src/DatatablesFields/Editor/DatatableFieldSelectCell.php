@@ -3,7 +3,6 @@
 namespace IlBronza\Datatables\DatatablesFields\Editor;
 
 use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\EditorSingleFieldTrait;
-use LogicException;
 
 /**
  * Select editor con valori possibili calcolati per ogni cella/riga.
@@ -26,59 +25,9 @@ class DatatableFieldSelectCell extends DatatableFieldSelect
 {
 	use EditorSingleFieldTrait;
 
-	public ?string $possibleValuesRowRoute = null;
-	public ?string $possibleValuesRowLabelMethod = null;
-
-	protected function hasPossibleValuesRowRoute() : bool
-	{
-		return ! ! $this->possibleValuesRowRoute;
-	}
-
-	protected function getPossibleValuesRowRouteDataAttributes() : string
-	{
-		if (! $this->hasPossibleValuesRowRoute())
-			return '';
-
-		return ' data-possible-values-row-route="' . e($this->possibleValuesRowRoute) . '"'
-			. ' data-possible-values-row-route-placeholder="'
-			. e(config('datatables.replace_model_id_string')) . '"';
-	}
-
-	protected function getPossibleValuesRowIdDataAttribute() : string
-	{
-		if (! $this->hasPossibleValuesRowRoute())
-			return '';
-
-		return " data-row-id=\"' + item[0] + '\"";
-	}
-
-	protected function getPossibleValuesRowRouteInlineDataAttributes() : array
-	{
-		if (! $this->hasPossibleValuesRowRoute())
-			return [];
-
-		return [
-			'possible-values-row-route' => $this->possibleValuesRowRoute,
-			'possible-values-row-route-placeholder' => config('datatables.replace_model_id_string'),
-			'row-id' => $this->element?->getKey(),
-		];
-	}
-
 	protected function getInitialSelectLabel($selectedValue) : string
 	{
-		$method = $this->possibleValuesRowLabelMethod;
-
-		if (! $method || ! method_exists($this->element, $method))
-			throw new LogicException(sprintf(
-				'editor.selectCell "%s" richiede possibleValuesRowLabelMethod "%s" dichiarato sul model della riga',
-				$this->name,
-				$method
-			));
-
-		if ($selectedValue === null || $selectedValue === $this->nullValue)
-			return $this->nullString;
-
-		return (string) $this->element->{$method}();
+		return $this->getPossibleValuesRowLabel($selectedValue);
 	}
 
 	public function parseFieldSpecificHeaderData()

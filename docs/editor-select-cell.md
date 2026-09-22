@@ -5,9 +5,9 @@ vary from one table row to another. Use it when the options depend on the
 model displayed in that row: for example, the vehicles available for a given
 order.
 
-It is different from `editor.select`: the latter has one common list of
-options for the whole table, while `editor.selectCell` resolves the list in
-the context of each row.
+By default, `editor.select` has one common list of options for the whole
+table. It can also fetch options for each row with `possibleValuesRowRoute`.
+Use `editor.selectCell` when the row options are included in the table data.
 
 ## Basic configuration
 
@@ -126,6 +126,24 @@ the cell options. The route is requested at the first opening and again at
 each later opening, so the list can reflect current server state. This avoids
 issuing one request for every visible row when the page is loaded.
 
+The same route configuration also works with `editor.select`:
+
+```php
+'vehicle_id' => [
+    'type' => 'editor.select',
+    'possibleValuesRowLabelMethod' => 'getVehicleSelectLabel',
+    'possibleValuesRowRoute' => route('orders.vehicle-options', [
+        'order' => config('datatables.replace_model_id_string'),
+    ]),
+],
+```
+
+With a row route, both editors require `possibleValuesRowLabelMethod` to show
+the current value without fetching the options during table rendering. A
+row-route field is excluded from bulk editing because its options vary by row.
+`possibleValuesRoute` remains the separate option for refreshing one shared
+list across the table.
+
 ## Nullable values and option groups
 
 Set the standard select properties when needed:
@@ -162,7 +180,7 @@ The options may also be grouped:
 | --- | --- |
 | One option list shared by all rows | `editor.select` |
 | Different options for every row, included in table data | `editor.selectCell` with `possibleValuesMethod` |
-| Different options for every row, fetched only on opening | `editor.selectCell` with `possibleValuesRowRoute` |
+| Different options for every row, fetched only on opening | `editor.select` or `editor.selectCell` with `possibleValuesRowRoute` |
 
 `select2 => true` is optional in every case. It adds textual search to the
 select; with a row route, its initialization still waits for the options to be

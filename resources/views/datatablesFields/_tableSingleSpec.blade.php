@@ -285,11 +285,7 @@
                 });
 
                 // reset eventuali filtri range custom
-                Object.keys(window).forEach(function (key) {
-                    if (key.startsWith('range{{ $table->getId() }}')) {
-                        delete window[key];
-                    }
-                });
+                delete window['{{ $table->getId() }}_rangeFilters'];
 
                 if (typeof window.ibSyncClearFiltersButtonForTable === 'function') {
                     window.ibSyncClearFiltersButtonForTable('{{ $table->getId() }}');
@@ -568,7 +564,7 @@
     window.__ibDatatableSelectPossibleValues = window.__ibDatatableSelectPossibleValues || {};
     window.__ibDatatableSelectPossibleValues['{{ $table->getId() }}'] = {};
 @foreach($table->getFields() as $field)
-    @if($field instanceof \IlBronza\Datatables\DatatablesFields\Editor\DatatableFieldSelect && ! $field instanceof \IlBronza\Datatables\DatatablesFields\Editor\DatatableFieldSelectCell)
+    @if($field instanceof \IlBronza\Datatables\DatatablesFields\Editor\DatatableFieldSelect && ! $field instanceof \IlBronza\Datatables\DatatablesFields\Editor\DatatableFieldSelectCell && ! $field->possibleValuesRowRoute)
         @php
             $selectPossibleValues = $field->getPossibleEnumValuesArray();
 

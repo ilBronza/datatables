@@ -88,9 +88,9 @@ renderers, and caching.
 
 ### `editor.selectCell`
 
-Use `editor.selectCell` when a select's allowed values depend on the table
-row. It supports per-row values included in the table data and lazy loading
-from a route when the user opens the editor. See
+Use `editor.selectCell` when a select's allowed values are included in each
+table row. For lazy loading when the editor opens, both `editor.select` and
+`editor.selectCell` support `possibleValuesRowRoute`. See
 [the `editor.selectCell` guide](docs/editor-select-cell.md) for configuration,
 response formats, nullable values, and Select2 support.
 
