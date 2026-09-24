@@ -172,7 +172,7 @@ trait DatatableDataTrait
 		}
 		catch (Exception $e)
 		{
-			dd($e->getMessage(), $field, $element);
+			aERR($e->getMessage(), $field, $element);
 			return $this->handleError($e);
 		}
 	}
