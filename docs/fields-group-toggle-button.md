@@ -52,3 +52,29 @@ is currently hidden, so the usual labels are `activeText: 'Mostra testi'` and
 
 The existing `fieldsGroups` dropdown remains available; its menu items call the
 same internal `window.ibDatatableFieldsGroups` API as the declarative button.
+
+## Show only while held
+
+Use `FieldsGroupHoldButton` with `holdFieldsGroupsDefinitions` when columns
+should appear only while the button is pressed. The button supports pointer,
+touch, Space and Enter. Releasing it, cancelling the pointer, or leaving the
+window hides the columns again.
+
+```php
+use IlBronza\Datatables\Buttons\FieldsGroupHoldButton;
+
+$datatable->addButton(new FieldsGroupHoldButton('gross_costs', [
+    'activeText' => 'Rilascia per nascondere gli importi lordi',
+    'inactiveText' => 'Tieni premuto per mostrare gli importi lordi',
+]));
+
+'cost_gross_day' => [
+    'type' => 'editor.price',
+    'holdFieldsGroupsDefinitions' => ['gross_costs'],
+],
+```
+
+Hold-only columns start hidden even when an older saved visibility preference
+would show them. Their temporary visibility does not update user preferences
+or DataTables saved state. Hold-only groups are excluded from the regular
+`fieldsGroups` dropdown.

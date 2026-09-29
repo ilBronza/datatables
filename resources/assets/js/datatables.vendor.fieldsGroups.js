@@ -51,7 +51,11 @@
         },
 
         getGroupNames: function (dt) {
-            return Object.keys(this.getDefinitions(dt)).sort(function (a, b) {
+            const definitions = this.getDefinitions(dt);
+
+            return Object.keys(definitions).filter(function (name) {
+                return definitions[name].holdOnly !== true;
+            }).sort(function (a, b) {
                 return a.localeCompare(b);
             });
         },
@@ -241,7 +245,7 @@
             const normalizedGroupName = typeof groupName === 'string' ? groupName.trim() : '';
             const groupDefinition = this.getGroupDefinition(dt, normalizedGroupName);
 
-            if (!groupDefinition)
+            if (!groupDefinition || groupDefinition.holdOnly === true)
                 return Promise.resolve({ changed: false, active: false });
 
             const hiddenState = this.getHiddenState(dt);
@@ -344,6 +348,216 @@
             return fieldsGroups.toggle(dt, groupName).then(function () {
                 fieldsGroups.updateButtonState(dt, node, groupName, config);
             });
+        },
+    };
+
+    const activeHolds = new WeakMap();
+
+    function changeTemporaryVisibility(dt, indexes, visible, adjustColumns = true) {
+        if (!indexes.length)
+            return;
+
+        const tableNode = fieldsGroups.resolveTableNode(dt);
+        const summaryWasActive = !! (tableNode && tableNode.__summaryActive === true);
+        let summaryButton = null;
+
+        if (summaryWasActive) {
+            try {
+                summaryButton = dt.button('.removesummary');
+                if (summaryButton && typeof summaryButton.trigger === 'function')
+                    summaryButton.trigger();
+            } catch (err) {}
+        }
+
+        try {
+            dt.columns(indexes).visible(visible, false);
+            if (adjustColumns)
+                dt.columns.adjust();
+        } finally {
+            if (summaryWasActive && summaryButton && typeof summaryButton.trigger === 'function') {
+                try { summaryButton.trigger(); } catch (err) {}
+            }
+        }
+    }
+
+    function withoutSavingState(dt, callback) {
+        const settings = dt.settings()[0];
+        const original = settings.oFeatures.bStateSave;
+        settings.oFeatures.bStateSave = false;
+
+        try {
+            callback();
+        } finally {
+            settings.oFeatures.bStateSave = original;
+        }
+    }
+
+    $.fn.dataTable.ext.buttons.fieldsGroupHold = {
+        className: 'ib-dt-fields-group-hold',
+        init: function (dt, node, config) {
+            const buttonNode = node && node.jquery ? node[0] : node;
+            const groupDefinition = fieldsGroups.getGroupDefinition(dt, config && config.fieldGroup);
+            const indexes = groupDefinition && groupDefinition.holdOnly === true
+                ? fieldsGroups.collectColumnIndexes(dt, groupDefinition)
+                : [];
+
+            if (!buttonNode || !indexes.length)
+                return;
+
+            const tableNode = fieldsGroups.resolveTableNode(dt);
+            const settings = dt.settings()[0];
+            let activeInput = null;
+            let pointerId = null;
+            let originalStateSave = null;
+
+            function setPressed(pressed) {
+                if (buttonNode.classList)
+                    buttonNode.classList.toggle('uk-button-primary', pressed);
+                buttonNode.setAttribute('aria-pressed', pressed ? 'true' : 'false');
+
+                const label = pressed ? config.activeText : config.inactiveText;
+                if (typeof label === 'string')
+                    buttonNode.innerHTML = label;
+            }
+
+            function release() {
+                if (!activeInput)
+                    return;
+
+                try {
+                    changeTemporaryVisibility(dt, indexes, false);
+                } finally {
+                    settings.oFeatures.bStateSave = originalStateSave;
+                    activeInput = null;
+                    pointerId = null;
+                    originalStateSave = null;
+                    if (activeHolds.get(tableNode) === session)
+                        activeHolds.delete(tableNode);
+                    setPressed(false);
+                }
+            }
+
+            const session = { release: release };
+
+            function press(input, event) {
+                if (activeInput)
+                    return;
+
+                if (activeHolds.has(tableNode))
+                    activeHolds.get(tableNode).release();
+
+                activeInput = input;
+                pointerId = input === 'pointer' ? event.pointerId : null;
+                originalStateSave = settings.oFeatures.bStateSave;
+                settings.oFeatures.bStateSave = false;
+                activeHolds.set(tableNode, session);
+
+                try {
+                    changeTemporaryVisibility(dt, indexes, true);
+                    setPressed(true);
+                } catch (err) {
+                    release();
+                    throw err;
+                }
+            }
+
+            function onPointerDown(event) {
+                if (event.button !== undefined && event.button !== 0)
+                    return;
+
+                press('pointer', event);
+                if (typeof buttonNode.setPointerCapture === 'function') {
+                    try { buttonNode.setPointerCapture(event.pointerId); } catch (err) {}
+                }
+            }
+
+            function onPointerEnd(event) {
+                if (activeInput === 'pointer' && (pointerId == null || pointerId === event.pointerId))
+                    release();
+            }
+
+            function isHoldKey(event) {
+                return event.key === ' ' || event.key === 'Spacebar' || event.key === 'Enter';
+            }
+
+            function onKeyDown(event) {
+                if (!isHoldKey(event))
+                    return;
+
+                event.preventDefault();
+                if (!event.repeat)
+                    press('keyboard', event);
+            }
+
+            function onKeyUp(event) {
+                if (activeInput !== 'keyboard' || !isHoldKey(event))
+                    return;
+
+                event.preventDefault();
+                release();
+            }
+
+            function onBlur() {
+                release();
+            }
+
+            function onContextMenu(event) {
+                if (activeInput)
+                    event.preventDefault();
+            }
+
+            buttonNode.style.touchAction = 'none';
+            buttonNode.style.userSelect = 'none';
+            buttonNode.addEventListener('pointerdown', onPointerDown);
+            buttonNode.addEventListener('pointerup', onPointerEnd);
+            buttonNode.addEventListener('pointercancel', onPointerEnd);
+            buttonNode.addEventListener('lostpointercapture', onPointerEnd);
+            buttonNode.addEventListener('keydown', onKeyDown);
+            buttonNode.addEventListener('keyup', onKeyUp);
+            buttonNode.addEventListener('blur', onBlur);
+            buttonNode.addEventListener('contextmenu', onContextMenu);
+            window.addEventListener('pointerup', onPointerEnd);
+            window.addEventListener('pointercancel', onPointerEnd);
+            window.addEventListener('keyup', onKeyUp);
+            window.addEventListener('blur', onBlur);
+
+            buttonNode.__ibFieldsGroupHoldCleanup = function () {
+                release();
+                buttonNode.removeEventListener('pointerdown', onPointerDown);
+                buttonNode.removeEventListener('pointerup', onPointerEnd);
+                buttonNode.removeEventListener('pointercancel', onPointerEnd);
+                buttonNode.removeEventListener('lostpointercapture', onPointerEnd);
+                buttonNode.removeEventListener('keydown', onKeyDown);
+                buttonNode.removeEventListener('keyup', onKeyUp);
+                buttonNode.removeEventListener('blur', onBlur);
+                buttonNode.removeEventListener('contextmenu', onContextMenu);
+                window.removeEventListener('pointerup', onPointerEnd);
+                window.removeEventListener('pointercancel', onPointerEnd);
+                window.removeEventListener('keyup', onKeyUp);
+                window.removeEventListener('blur', onBlur);
+                delete buttonNode.__ibFieldsGroupHoldCleanup;
+            };
+
+            // Saved DataTables or per-user visibility cannot make a hold-only
+            // group permanently visible when the table is opened.
+            withoutSavingState(dt, function () {
+                const visibleIndexes = indexes.filter(function (index) {
+                    return dt.column(index).visible();
+                });
+                // Buttons.init runs before DataTables creates the scroll body.
+                // Initial sizing will include this visibility change.
+                changeTemporaryVisibility(dt, visibleIndexes, false, false);
+            });
+            setPressed(false);
+        },
+        action: function (event) {
+            if (event && typeof event.preventDefault === 'function')
+                event.preventDefault();
+        },
+        destroy: function (dt, node) {
+            const buttonNode = node && node.jquery ? node[0] : node;
+            if (buttonNode && buttonNode.__ibFieldsGroupHoldCleanup)
+                buttonNode.__ibFieldsGroupHoldCleanup();
         },
     };
 })();

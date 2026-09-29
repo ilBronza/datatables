@@ -217,7 +217,8 @@ trait DatatableFieldsTrait
     }
 
     /**
-     * Returns logical column-groups declared on fields via `fieldsGroupsDefinitions`.
+     * Returns logical column-groups declared on fields via `fieldsGroupsDefinitions`
+     * or `holdFieldsGroupsDefinitions`.
      *
      * Output shape:
      * [
@@ -239,28 +240,41 @@ trait DatatableFieldsTrait
             if (! method_exists($field, 'getFieldsGroupsDefinitions'))
                 continue;
 
-            foreach (($field->getFieldsGroupsDefinitions() ?? []) as $groupName)
+            foreach ([
+                ['names' => $field->getFieldsGroupsDefinitions() ?? [], 'holdOnly' => false],
+                ['names' => method_exists($field, 'getHoldFieldsGroupsDefinitions')
+                    ? $field->getHoldFieldsGroupsDefinitions() : [], 'holdOnly' => true],
+            ] as $definitionType)
             {
-                if (! is_string($groupName))
-                    continue;
-
-                $groupName = trim($groupName);
-                if ($groupName === '')
-                    continue;
-
-                if (! isset($out[$groupName]))
+                foreach ($definitionType['names'] as $groupName)
                 {
-                    $slug = Str::slug($groupName);
+                    if (! is_string($groupName))
+                        continue;
 
-                    $out[$groupName] = [
-                        'name' => $groupName,
-                        'slug' => $slug,
-                        'cssClass' => 'ib-dt-fieldsgroup-' . $slug,
-                        'columnIndexes' => [],
-                    ];
+                    $groupName = trim($groupName);
+                    if ($groupName === '')
+                        continue;
+
+                    if (! isset($out[$groupName]))
+                    {
+                        $slug = Str::slug($groupName);
+
+                        $out[$groupName] = [
+                            'name' => $groupName,
+                            'slug' => $slug,
+                            'cssClass' => 'ib-dt-fieldsgroup-' . $slug,
+                            'columnIndexes' => [],
+                        ];
+
+                        if ($definitionType['holdOnly'])
+                            $out[$groupName]['holdOnly'] = true;
+                    }
+
+                    if (! $definitionType['holdOnly'])
+                        unset($out[$groupName]['holdOnly']);
+
+                    $out[$groupName]['columnIndexes'][] = $field->getIndex();
                 }
-
-                $out[$groupName]['columnIndexes'][] = $field->getIndex();
             }
         }
 
@@ -440,8 +454,6 @@ trait DatatableFieldsTrait
         return $this->placeholderElement;
     }
 }
-
-
 
 
 

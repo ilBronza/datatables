@@ -99,10 +99,20 @@ class DatatableField
 	 * - map:  ['custom' => 'custom', 'economical' => 'economical'] (values are kept)
 	 */
 	public array $fieldsGroupsDefinitions = [];
+	public array $holdFieldsGroupsDefinitions = [];
 
 	public function getFieldsGroupsDefinitions() : array
 	{
-		$raw = $this->fieldsGroupsDefinitions ?? [];
+		return $this->normalizeFieldsGroupsDefinitions($this->fieldsGroupsDefinitions);
+	}
+
+	public function getHoldFieldsGroupsDefinitions() : array
+	{
+		return $this->normalizeFieldsGroupsDefinitions($this->holdFieldsGroupsDefinitions);
+	}
+
+	protected function normalizeFieldsGroupsDefinitions($raw) : array
+	{
 
 		if (! is_array($raw))
 			return [];

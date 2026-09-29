@@ -36,6 +36,9 @@ trait DatatablesFieldsUserDataTrait
 
     public function isVisible()
     {
+        if ($this->getHoldFieldsGroupsDefinitions())
+            return false;
+
         if(($value = $this->getDatatableUserDataParameter('visible')) !== null)
             return $value;
 

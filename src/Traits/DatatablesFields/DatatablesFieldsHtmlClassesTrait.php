@@ -14,7 +14,11 @@ trait DatatablesFieldsHtmlClassesTrait
 		if (! method_exists($this, 'getFieldsGroupsDefinitions'))
 			return [];
 
-		$groups = $this->getFieldsGroupsDefinitions();
+		$groups = array_merge(
+			$this->getFieldsGroupsDefinitions(),
+			method_exists($this, 'getHoldFieldsGroupsDefinitions')
+				? $this->getHoldFieldsGroupsDefinitions() : []
+		);
 
 		if (! is_array($groups))
 			return [];
