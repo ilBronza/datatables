@@ -96,6 +96,7 @@ class DatatableUserData extends Model
 
 		$datatabledata->user_id = Auth::id();
 		$datatabledata->key = $tableKey;
+		$datatabledata->data = [];
 		$datatabledata->save();
 
 		return $datatabledata;
