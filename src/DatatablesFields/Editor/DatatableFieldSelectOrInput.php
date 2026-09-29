@@ -19,6 +19,12 @@ class DatatableFieldSelectOrInput extends DatatableFieldSelectOrFlat
 	public ? string $inputFieldName = null;
 	protected int $selectFallbackFlagPosition = 4;
 
+	// selectOrInput mantiene il proprio contratto: un valore valorizzato usa l'input.
+	protected function shouldRenderValueAsSelect($value) : bool
+	{
+		return false;
+	}
+
 	public function getInputFieldName()
 	{
 		if($this->inputFieldName)
