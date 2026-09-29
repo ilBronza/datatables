@@ -90,6 +90,30 @@ class EditorSelectRowRouteTest extends TestCase
 		$this->assertSame([7 => 'Golf'], json_decode($header['possibleValuesLegacy'], true));
 	}
 
+	public function test_context_fields_are_exposed_in_cell_and_inline_edit_controls() : void
+	{
+		$field = $this->makeField();
+		$field->possibleValuesRowRoute = '/operators';
+		$field->possibleValuesRowLabelMethod = 'getVehicleSelectLabel';
+		$field->possibleValuesRowRouteFields = ['sellable_id', 'starts_at'];
+
+		foreach ([$field->getCustomColumnDefSingleResult(), $field->getInlineEditHtml()] as $html)
+		{
+			$this->assertStringContainsString('data-possible-values-row-route-fields="[&quot;sellable_id&quot;,&quot;starts_at&quot;]"', $html);
+			$this->assertStringContainsString('data-possible-values-row-route-empty-value="null"', $html);
+			$this->assertStringContainsString('data-possible-values-row-route-empty-label="Nessun veicolo"', $html);
+		}
+	}
+
+	public function test_context_cannot_override_the_row_identity() : void
+	{
+		$field = $this->makeField();
+		$field->possibleValuesRowRoute = '/operators';
+		$field->possibleValuesRowRouteFields = ['row_id'];
+		$this->expectException(LogicException::class);
+		$field->getInlineEditHtml();
+	}
+
 	public function test_row_route_requires_a_label_method_on_the_row() : void
 	{
 		$field = $this->makeField();

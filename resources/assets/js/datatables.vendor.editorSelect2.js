@@ -8,6 +8,12 @@
  * rendering di DataTables e puo' interferire con il redraw della riga.
  */
 (function ($) {
+	function reportOptionsError(error)
+	{
+		if (error.name !== 'StaleSelectOptionsError')
+			console.error(error);
+	}
+
 	function getPossibleValues(select)
 	{
 		if (typeof window.ibDtLoadSelectPossibleValuesRow === 'function')
@@ -92,7 +98,7 @@
 			initialized.then(function ($select)
 			{
 				$select.select2('open');
-			}, console.error);
+			}, reportOptionsError);
 
 			return;
 		}
@@ -121,7 +127,7 @@
 
 		if (initialized && typeof initialized.then === 'function')
 		{
-			initialized.then(focusSelection, console.error);
+			initialized.then(focusSelection, reportOptionsError);
 
 			return;
 		}
@@ -161,7 +167,7 @@
 		}, function (error)
 		{
 			$select.removeData('select2Loading');
-			console.error(error);
+			reportOptionsError(error);
 		});
 	});
 })($);

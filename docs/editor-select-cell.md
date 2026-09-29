@@ -144,6 +144,44 @@ row-route field is excluded from bulk editing because its options vary by row.
 `possibleValuesRoute` remains the separate option for refreshing one shared
 list across the table.
 
+## Options depending on other editors in the same row
+
+Declare the editor `parameter` names in `possibleValuesRowRouteFields` to send
+their current, possibly unsaved values with every options GET:
+
+```php
+'sellableSupplier.supplier.target.operator' => [
+    'type' => 'editor.select',
+    'parameter' => 'sellable_supplier_id',
+    'inlineEditProperty' => 'sellable_supplier_id',
+    'possibleValuesRowLabelMethod' => 'getSupplierName',
+    'possibleValuesRowRoute' => route('operator-options'),
+    'possibleValuesRowRouteFields' => ['sellable_id'],
+],
+```
+
+For example, the request query contains `row_id=42&sellable_id=abc`, alongside
+`field` and `table_id`. Values are read from the controls in the same `<tr>`,
+using `data-field` (the editor parameter, not the display column name). Every
+declared field must have exactly one input/select/textarea in that row; missing
+or ambiguous fields fail the request. Empty values are sent too and must not
+be replaced server-side with persisted values. Checkboxes send their checked
+state; multiple selects send their selected values. `row_id`, `field` and
+`table_id` are reserved and cannot be used as context field names.
+
+For inline edit drafts, changing a declared source field clears the dependent
+select and marks it dirty without saving or fetching. Opening the select loads
+the options for the current draft. Obsolete responses are discarded, and old
+selections outside the returned list are not reinserted. Cell selects and
+Select2 use the same contextual loader; automatic draft clearing applies only
+to inline edit controls. Existing selects without this configuration keep their
+previous behavior.
+
+The endpoint must validate context and authorize the row. On save, validate
+the selected option against the submitted context again; client-side filtering
+does not enforce this relationship. No session state or database writes are
+needed to load the options.
+
 ## Nullable values and option groups
 
 Set the standard select properties when needed:

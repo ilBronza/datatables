@@ -52,6 +52,8 @@ class DatatableFieldSelect extends DatatableFieldEditor
 	public ? string $possibleValuesRoute = null;
 	public ?string $possibleValuesRowRoute = null;
 	public ?string $possibleValuesRowLabelMethod = null;
+	/** Editor parameters read from the same row when fetching the options. */
+	public array $possibleValuesRowRouteFields = [];
 
     public function __construct(string $name, array $parameters = [], int $index = null, DatatableField $parent = null, Datatables $table = null)
 	{
@@ -108,9 +110,33 @@ class DatatableFieldSelect extends DatatableFieldEditor
 		if (! $this->hasPossibleValuesRowRoute())
 			return '';
 
-		return ' data-possible-values-row-route="' . e($this->possibleValuesRowRoute) . '"'
-			. ' data-possible-values-row-route-placeholder="'
-			. e(config('datatables.replace_model_id_string')) . '"';
+		$attributes = '';
+
+		foreach ($this->getPossibleValuesRowRouteConfiguration() as $name => $value)
+			$attributes .= ' data-' . $name . '="' . e($value) . '"';
+
+		return $attributes;
+	}
+
+	protected function getPossibleValuesRowRouteConfiguration() : array
+	{
+		$attributes = [
+			'possible-values-row-route' => $this->possibleValuesRowRoute,
+			'possible-values-row-route-placeholder' => config('datatables.replace_model_id_string'),
+		];
+
+		if ($this->possibleValuesRowRouteFields)
+		{
+			foreach ($this->possibleValuesRowRouteFields as $field)
+				if (! is_string($field) || $field === '' || in_array($field, ['row_id', 'field', 'table_id'], true))
+					throw new LogicException('possibleValuesRowRouteFields requires editor parameter names; row_id, field and table_id are reserved');
+
+			$attributes['possible-values-row-route-fields'] = json_encode(array_values($this->possibleValuesRowRouteFields), JSON_THROW_ON_ERROR);
+			$attributes['possible-values-row-route-empty-value'] = $this->isNullable() ? $this->nullValue : '';
+			$attributes['possible-values-row-route-empty-label'] = $this->isNullable() ? $this->nullString : config('datatables.labels.select', 'select');
+		}
+
+		return $attributes;
 	}
 
 	protected function getPossibleValuesRowIdDataAttribute() : string
@@ -126,11 +152,9 @@ class DatatableFieldSelect extends DatatableFieldEditor
 		if (! $this->hasPossibleValuesRowRoute())
 			return [];
 
-		return [
-			'possible-values-row-route' => $this->possibleValuesRowRoute,
-			'possible-values-row-route-placeholder' => config('datatables.replace_model_id_string'),
+		return array_merge($this->getPossibleValuesRowRouteConfiguration(), [
 			'row-id' => $this->element?->getKey(),
-		];
+		]);
 	}
 
 	protected function getInitialSelectLabel($selectedValue) : string
