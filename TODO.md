@@ -6,6 +6,8 @@ Attività da svolgere su questo progetto, distinte dai TODO tecnici della docume
 
 - [ ] Fare in modo che `inlineCreate` e `inlineEdit` si risolvano automaticamente, inserendo un trait nei controller di create ed edit.
 
+- [ ] **Alleggerire gli URL degli editor nella tabella.** Gli editor normali costruiscono l'URL dal template della colonna e dall'ID della riga, poi lo ripetono come `data-url` su ogni controllo nel DOM. Per ora lasciare il comportamento invariato; se il numero di celle editor causa un costo misurabile, valutare di risolvere l'URL al salvataggio usando un template condiviso e l'ID della riga, preservando route personalizzate e editor inline. Intanto eliminare il `data-url` duplicato nello stesso input degli editor testo (`EditorSingleFieldTrait` e `DataAttributesTrait`).
+
 - [ ] **Merge ricorsivo del config dei package.** Oggi `mergeConfigFrom` di Laravel fa un `array_merge` shallow: il config pubblicato dall'app sostituisce in blocco gli array di primo livello del package invece di fondersi chiave per chiave. Va sostituito con una versione ricorsiva.
 
   **Dove:** non in `DatatablesServiceProvider` ma in `IlBronzaServiceProviderPackagesTrait` (`ilbronza/crud`), così vale per tutta la famiglia di package.
