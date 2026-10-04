@@ -4,6 +4,7 @@ namespace IlBronza\Datatables\DatatablesFields\Links;
 
 use IlBronza\Datatables\DatatablesFields\DatatableField;
 use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\IconTextContentTrait;
+use LogicException;
 
 class DatatableFieldLink extends DatatableField
 {
@@ -18,6 +19,22 @@ class DatatableFieldLink extends DatatableField
 	public $showNull = false;
 	public $dataAttributes = [];
 	public $htmlTag = 'a';
+	public ?string $conditionallyDisabledMethod = null;
+
+	protected function isConditionallyDisabled($value) : bool
+	{
+		if ($this->conditionallyDisabledMethod === null)
+			return false;
+
+		if (! is_object($value) || ! is_callable([$value, $this->conditionallyDisabledMethod]))
+			throw new LogicException(sprintf(
+				'Il campo link "%s" richiede conditionallyDisabledMethod "%s" chiamabile sul model della riga',
+				$this->name,
+				$this->conditionallyDisabledMethod
+			));
+
+		return (bool) $value->{$this->conditionallyDisabledMethod}();
+	}
 
     public function isSortable()
     {
@@ -43,6 +60,9 @@ class DatatableFieldLink extends DatatableField
 
 	public function transformValue($value)
 	{
+		if ($value && $this->isConditionallyDisabled($value))
+			return $this->hasText() ? [null, null] : null;
+
 		if(! $this->textParameter)
 		{
 			if(! isset($this->variable))
