@@ -548,6 +548,41 @@ table.datatable {
     }
   }
 
+  .ib-dt-date-editor
+  {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    vertical-align: middle;
+
+    > .ib-dt-date-display
+    {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      align-items: center;
+      overflow: hidden;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    > input:not(:focus)
+    {
+      color: transparent !important;
+
+      &::-webkit-datetime-edit,
+      &::-webkit-calendar-picker-indicator
+      {
+        opacity: 0;
+      }
+    }
+
+    > input:focus + .ib-dt-date-display
+    {
+      display: none;
+    }
+  }
+
   .columnsintestations
   {
     .dt-column-title

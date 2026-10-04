@@ -135,6 +135,25 @@ adds `iframed=true` to the URL and keeps the row-ID placeholder substitution:
 ],
 ```
 
+### Read-only format for date editors
+
+Set `dateFormat` on an `editor.dates.date` field to format the cell while its
+input is not focused, and for users who cannot edit it:
+
+```php
+'periodo' => [
+    'type' => 'editor.dates.date',
+    'dateFormat' => 'YYYY-MM',
+],
+```
+
+Focusing the cell reveals the native date input, which still uses
+`inputFieldDefaultFormat` (`YYYY-MM-DD` by default). Saving preserves the full
+date, including the day. Without `dateFormat`, the existing display is unchanged.
+This option also applies to `editor.dates.datetime` and `editor.dates.time`.
+Rebuild the host application's JavaScript and LESS assets after updating this
+feature (publish `datatables.assets` first if the app uses copied assets).
+
 ### Validity classes for date fields
 
 Add `checkValidity => true` to a `dates.*` or `editor.dates.*` field to expose

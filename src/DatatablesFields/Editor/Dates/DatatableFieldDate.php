@@ -16,11 +16,17 @@ class DatatableFieldDate extends DatatableFieldEditor
 
 	public $defaultWidth = '8em';
 	public $width = '8em';
+	public $dateFormat = null;
 	public $inputFieldDefaultFormat = "YYYY-MM-DD";
 	public $fieldType = 'date';
 	public $defaultFilterType = 'date';
 	public bool $checkValidity = false;
 	public null|int|string $validityPosition = 2;
+
+	public function getDateFormat()
+	{
+		return $this->dateFormat ?? $this->getInputFieldDefaultDateFormat();
+	}
 
 	public function isBulkEditable() : bool
 	{
@@ -79,24 +85,43 @@ class DatatableFieldDate extends DatatableFieldEditor
 		return (string) $value;
 	}
 
+	protected function getReadOnlyDateRender() : string
+	{
+		$format = json_encode($this->getDateFormat());
+
+		return "
+			let date = item[1] === null || typeof item[1] === 'undefined' || item[1] === ''
+				? null : moment.unix(item[1]);
+			item = date && date.isValid() ? date.format({$format}) : '';
+		";
+	}
+
+	public function getCustomColumnDefSingleResultExport()
+	{
+		if ($this->dateFormat !== null)
+			return $this->getReadOnlyDateRender();
+
+		return parent::getCustomColumnDefSingleResultExport();
+	}
+
 	public function getCustomColumnDefSingleResult()
 	{
 		if (! $this->userCanEdit())
-			return "
-
-            if(item[1])
-            {
-                let date = moment.unix(item[1]);
-
-                if(date.isValid())
-                    item = date.format('" . $this->inputFieldDefaultFormat . "');
-            }
-
-        ";
+			return $this->getReadOnlyDateRender();
 
 		$classes = $this->getHtmlClassesString();
+		$displayRender = '';
+
+		if ($this->dateFormat !== null)
+		{
+			$displayFormat = json_encode($this->getDateFormat());
+			$inputFormat = json_encode($this->getInputFieldDefaultDateFormat());
+			$displayRender = "item = window.ibDtRenderDateEditor(item, {$displayFormat}, {$inputFormat});";
+		}
 
 		return "
+
+		item = item.slice();
 
 		" . $this->substituteUrlParameter() . "
 
@@ -109,6 +134,8 @@ class DatatableFieldDate extends DatatableFieldEditor
 		}
 
 		item = '<input " . $this->getValueString() . $this->getTypeString() . " class=\"" . $classes . " uk-input ib-editor-text ' + ((item[1])? 'ib-compiled' : '') + '\" data-url=\"' + url + '\" data-field=\"{$this->parameter}\" />';
+
+		{$displayRender}
 
 		";
 	}
