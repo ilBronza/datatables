@@ -332,6 +332,15 @@ class DatatableFieldSelect extends DatatableFieldEditor
 		return $possibleValues[$key] ?? $this->nullString;
 	}
 
+	public function getCustomColumnDefSingleSearchResult()
+	{
+		return "
+			item = item ? [item[1], item[2]].filter(function(value) {
+				return value !== null && value !== undefined;
+			}).join(' ') : '';
+		";
+	}
+
 	public function getInlineEditHtml() : string
 	{
 		if (! $this->userCanEdit())
