@@ -42,7 +42,7 @@ class MultipleDatatableField extends DatatableField
 
 	public function getColumnDefDataIndexString()
 	{
-		return "data-cellindex=' + i + ' ";
+		return " data-cellindex=' + i + ' ";
 	}
 
 	public function getCustomColumnDef()

@@ -44,6 +44,11 @@ class DatatableFieldKeyvalue extends DatatableField
 		";
 	}
 
+	public function getCustomColumnDefSingleResult()
+	{
+		return $this->getDisplayCustomColumnDefSingleResult();
+	}
+
 	// public function getUrl() : string
 	// {
 	// 	$placeholderModel = $this->getFieldPlaceholderModel();

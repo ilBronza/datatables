@@ -94,6 +94,47 @@ table row. For lazy loading when the editor opens, both `editor.select` and
 [the `editor.selectCell` guide](docs/editor-select-cell.md) for configuration,
 response formats, nullable values, and Select2 support.
 
+### Hover operations and delete
+
+Use `fieldOperations` on a `keyvalue.keyvalue` field to show actions over its
+cell on hover. The built-in `delete` operation uses the field's `modelClass` to
+generate a placeholder `getDeleteUrl()`, substitutes the cell's ID, asks for
+confirmation, and sends a `DELETE` request through the existing Ajax handler.
+
+```php
+'id' => [
+    'type' => 'keyvalue.keyvalue',
+    'modelClass' => Order::gpc(),
+    'property' => 'name',
+    'fieldOperations' => [
+        'commessa' => [
+            'type' => 'link',
+            'faIcon' => 'clipboard',
+            'target' => '_blank',
+            'link' => $orderPlaceholder->getPlaceholderRoute('show'),
+        ],
+        'delete',
+    ],
+],
+```
+
+`delete` defaults to the Font Awesome `trash` icon. To override the icon or
+URL, use `'delete' => ['type' => 'delete', 'faIcon' => 'trash', 'link' => $url]`.
+An explicit URL must contain the configured row-ID placeholder when it is
+shared across rows.
+
+For a link in a UIkit iframe lightbox, set `'target' => 'iframe'`. The operation
+adds `iframed=true` to the URL and keeps the row-ID placeholder substitution:
+
+```php
+'note' => [
+    'type' => 'link',
+    'faIcon' => 'clipboard',
+    'target' => 'iframe',
+    'link' => $orderPlaceholder->getAddNotesUrl(),
+],
+```
+
 ### Validity classes for date fields
 
 Add `checkValidity => true` to a `dates.*` or `editor.dates.*` field to expose

@@ -47,6 +47,7 @@ require('./datatables.vendor.selectionActions.js');
 require('./datatables.vendor.sorting.min.js');
 require('./datatables.vendor.summary.min.js');
 require('./datatables.vendor.utilities.min.js');
+require('./datatables.vendor.fieldOperations.js');
 require('./datatables.vendor.main.min.js');
 require('./datatables.vendor.asyncColumns.js');
 require('./datatables.vendor.resizeHeight.js');
