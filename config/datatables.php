@@ -261,6 +261,8 @@ return [
     ],
 
 	'selection' => [
+		// Mostra il cestino per le righe selezionate se esiste un campo Delete.
+		'autoDelete' => true,
 
 		/**
 		 * Dropdown delle azioni di selezione accanto al checkbox

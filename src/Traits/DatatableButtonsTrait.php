@@ -2,11 +2,26 @@
 
 namespace IlBronza\Datatables\Traits;
 
+use IlBronza\Datatables\DatatablesFields\Links\DatatableFieldDelete;
+
 use function config;
 use function is_null;
 
 trait DatatableButtonsTrait
 {
+	public function getSelectionDeleteField() : ?DatatableFieldDelete
+	{
+		if (! $this->hasSelectRowCheckboxes()
+			|| ! ($this->autoDeleteSelected ?? config('datatables.selection.autoDelete', true)))
+			return null;
+
+		foreach ($this->getFields() as $field)
+			if (get_class($field) === DatatableFieldDelete::class)
+				return $field;
+
+		return null;
+	}
+
 	public function hasDoublerButton() : bool
 	{
 		if (! $this->hasDoublerFields())

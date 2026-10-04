@@ -113,6 +113,7 @@ class Datatables
 	public ?bool $canEditColumnStyles = null;
 	public $customButtons;
 	public $selectRowCheckboxes;
+	public ?bool $autoDeleteSelected = null;
 	public ?bool $bulkEdit = null;
 	public ?bool $bulkEditOnSelection = null;
 	public $placeholderElement;

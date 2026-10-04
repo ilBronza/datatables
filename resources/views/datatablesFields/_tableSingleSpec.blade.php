@@ -377,6 +377,26 @@
         },
 		@endif
 
+		@if($selectionDeleteField = $table->getSelectionDeleteField())
+        {
+            text: '<i class="fa-solid fa-trash" aria-hidden="true"></i>',
+            className: 'ib-dt-selection-action ib-dt-delete-selected uk-hidden',
+            attr: {
+                'aria-label': {!! json_encode(__('datatables::buttons.deleteSelected')) !!},
+                title: {!! json_encode(__('datatables::buttons.deleteSelected')) !!},
+                'data-delete-column-index': {{ $selectionDeleteField->getIndex() }}
+            },
+            action: function (e, dt, node) {
+                e.preventDefault();
+                window.ibDtDeleteSelectedRows(dt, node, {{ $selectionDeleteField->getIndex() }}, {
+                    confirm: {!! json_encode(__('datatables::buttons.deleteSelectedConfirm')) !!},
+                    error: {!! json_encode(__('datatables::buttons.deleteSelectedError')) !!},
+                    success: {!! json_encode(__('datatables::buttons.deleteSelectedSuccess')) !!}
+                });
+            }
+        },
+		@endif
+
 		@if($table->hasSelectFilteredButton())
         {
             extend: 'selectFiltered',

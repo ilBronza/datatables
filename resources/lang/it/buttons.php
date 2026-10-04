@@ -33,4 +33,8 @@ return [
 	'selectionDisabledHint' => 'Stai già vedendo solo le selezionate',
 	'selectionBanner' => 'Stai vedendo solo :count righe selezionate',
 	'selectionBannerShowAll' => 'Mostra tutte',
+	'deleteSelected' => 'Elimina selezionate',
+	'deleteSelectedConfirm' => 'Eliminare :count righe selezionate?',
+	'deleteSelectedError' => 'Impossibile eliminare :count righe. La tabella è stata aggiornata.',
+	'deleteSelectedSuccess' => 'Eliminate :count righe.',
 ];

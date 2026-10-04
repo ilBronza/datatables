@@ -20,4 +20,8 @@ return [
 	'selectionDisabledHint' => 'You are already seeing only the selected ones',
 	'selectionBanner' => 'Showing only :count selected rows',
 	'selectionBannerShowAll' => 'Show all',
+	'deleteSelected' => 'Delete selected',
+	'deleteSelectedConfirm' => 'Delete :count selected rows?',
+	'deleteSelectedError' => 'Could not delete :count rows. The table has been refreshed.',
+	'deleteSelectedSuccess' => 'Deleted :count rows.',
 ];
