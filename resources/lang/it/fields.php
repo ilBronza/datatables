@@ -59,4 +59,6 @@ return array (
   'estimable.order' => 'Commessa',
   'mySelfPrimaryKey' => 'Chiave primaria',
   'mySelfId' => 'Identificativo',
+    'mySelfPopulate' => 'Compila',
+    'target' => 'Elemento collegato',
 );
