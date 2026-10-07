@@ -1,7 +1,14 @@
 # `editor.textConditionallyDisabled`
 
-Questo editor estende `editor.text` e disabilita l'input in base al model della
-singola riga.
+Questo editor estende `editor.textLegacy` e disabilita l'input in base al model
+della singola riga. Rimane quindi indipendente dalle future modifiche a
+`editor.text`.
+
+`editor.textLegacy` contiene l'implementazione precedente del campo di testo.
+Per ora anche `editor.text` la eredita, mantenendo il comportamento esistente.
+La larghezza di `editor.textLegacy` usa la configurazione di `editor.text`,
+salvo un valore esplicito in
+`datatables.datatableFieldWidths.editor.datatableFieldTextLegacy`.
 
 ```php
 'title' => [

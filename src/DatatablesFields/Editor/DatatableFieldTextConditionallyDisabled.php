@@ -7,7 +7,7 @@ use IlBronza\Datatables\DatatablesFields\FieldTypesTraits\ConditionallyDisabledE
 /**
  * Text editor disabilitabile in base al model della singola riga.
  */
-class DatatableFieldTextConditionallyDisabled extends DatatableFieldText
+class DatatableFieldTextConditionallyDisabled extends DatatableFieldTextLegacy
 {
 	use ConditionallyDisabledEditorTrait;
 
