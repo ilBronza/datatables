@@ -291,6 +291,9 @@ class DatatableField
 
 		$folders = implode("", array_map(function ($item)
 		{
+			if ($item === 'ibDtV2')
+				return $item . '\\';
+
 			return ucfirst($item) . '\\';
 		}, $pieces));
 
