@@ -3,13 +3,13 @@
 namespace IlBronza\Datatables;
 
 use App\Models\Appointment;
-use Closure;
 use IlBronza\Datatables\DatatablesFields\DatatableField;
 use IlBronza\Datatables\DatatablesFields\DatatableFieldPrimary;
 use IlBronza\Datatables\DatatablesFields\DatatableFieldSelectRowCheckbox;
 use IlBronza\Datatables\DatatablesFields\Editor\DatatableFieldEditor;
 use IlBronza\Datatables\DatatablesFields\Editor\DatatableFieldFileUpload;
 use IlBronza\Datatables\DatatablesFields\Links\DatatableFieldLink;
+use IlBronza\Datatables\Helpers\DatatableRowsLoader;
 use IlBronza\Datatables\Traits\DatatableButtonsTrait;
 use IlBronza\Datatables\Traits\DatatableColumnDefsTrait;
 use IlBronza\Datatables\Traits\DatatableColumnDisplayTrait;
@@ -79,6 +79,7 @@ class Datatables
 	public $fieldsGroups;
 	public $elements;
 	public $elementsProvider;
+	public $elementsQueryProvider;
 	public $url;
 	public $columnDefs = [];
 
@@ -178,9 +179,10 @@ class Datatables
 		$modelClass = $parameters['modelClass'] ?? null;
 		$bulkEdit = $parameters['bulkEdit'] ?? null;
 		$bulkEditOnSelection = $parameters['bulkEditOnSelection'] ?? null;
+		$queryProvider = $parameters['queryProvider'] ?? null;
 
 		$table = static::create(
-			$name, $fieldsGroups, $elementsProvider, $selectRowCheckboxes, $extraVariables, $modelClass, $bulkEdit, $bulkEditOnSelection
+			$name, $fieldsGroups, $elementsProvider, $selectRowCheckboxes, $extraVariables, $modelClass, $bulkEdit, $bulkEditOnSelection, $queryProvider
 		);
 
 		if ((request()->ajax()) && (request()->model))
@@ -190,13 +192,14 @@ class Datatables
 
 		unset($parameters['fieldsGroups']);
 		unset($parameters['elements']);
+		unset($parameters['queryProvider']);
 
 		$table->bind($parameters);
 
 		return $table;
 	}
 
-	static function create(string $name, array $fieldsGroups, $elements, bool $selectRowCheckboxes = false, array $extraVariables = null, string $modelClass = null, ?bool $bulkEditFromController = null, ?bool $bulkEditOnSelectionFromController = null)
+	static function create(string $name, array $fieldsGroups, $elements, bool $selectRowCheckboxes = false, array $extraVariables = null, string $modelClass = null, ?bool $bulkEditFromController = null, ?bool $bulkEditOnSelectionFromController = null, ?callable $queryProvider = null)
 	{
 		ini_set('memory_limit', '512M');
 
@@ -217,6 +220,7 @@ class Datatables
 
 		$table->setVariables($extraVariables ?? []);
 		$table->setElementsProvider($elements);
+		$table->elementsQueryProvider = $queryProvider;
 		$table->setName($name);
 
 		if ((request()->ajax()) && (! request()->ibFetcher))
@@ -224,7 +228,7 @@ class Datatables
 			$table->addFieldsGroups($fieldsGroups);
 			// $table->addFields($fields);
 
-			if ($table->usesDebugPreloadedAjaxData())
+			if (! request()->hasAny(['rowId', 'rowIds', 'ibeditor']) && $table->usesDebugPreloadedAjaxData())
 				if ($cachedTableKey = request()->input('cachedtablekey'))
 					if (is_string($cachedTableKey) && hash_equals($table->getCachedTableKey(), $cachedTableKey) && cache()->has($cachedTableKey))
 					{
@@ -242,8 +246,7 @@ class Datatables
 				return $table->returnSelectedElements($elements);
 			}
 
-			$elements = $elements();
-			$table->setElements($elements);
+			$table->resolveElements();
 			$table->setData();
 
 			return $table;
@@ -402,53 +405,22 @@ class Datatables
 
 	public function returnSelectedElements(callable $elements)
 	{
-		if ($elements instanceof Closure)
-		{
-			if (! $elements = $elements())
-				mori('nessun elemento');
+		$this->setElements(DatatableRowsLoader::get(
+			$elements, $this->modelClass, request()->input('rowIds'), $this->elementsQueryProvider
+		));
+		$this->setData();
 
-			if (! $firstElement = $elements->first())
-				mori('nessun elemento');
-
-			$_elements = $elements->whereIn(
-				$firstElement->getKeyName(), request()->rowIds
-			);
-
-			$this->setElements($_elements);
-			$this->setData();
-
-			return $this;
-		}
-
-		mori('non instanceof Closure, vuol dire che è una query o una collection, zio culo culo culo culo cazzo culo cazzo culo merda');
+		return $this;
 	}
 
 	public function returnSingleElement(callable $elements)
 	{
-		if ($elements instanceof Closure)
-		{
-			if (! $elements = $elements())
-				mori('nessun elemento');
+		$this->setElements(DatatableRowsLoader::get(
+			$elements, $this->modelClass, [request()->input('rowId')], $this->elementsQueryProvider
+		)->take(1));
+		$this->setData();
 
-			if (! $firstElement = $elements->first())
-				mori('nessun elemento');
-
-			$element = $elements->firstWhere(
-				$firstElement->getKeyName(), request()->input('rowId')
-			);
-
-			$collection = collect();
-
-			if ($element)
-				$collection->push($element);
-
-			$this->setElements($collection);
-			$this->setData();
-
-			return $this;
-		}
-
-		mori('non instanceof Closure, vuol dire che è una query o una collection, zio culo culo culo culo cazzo culo cazzo culo merda');
+		return $this;
 	}
 
 	public function setElements(Collection $elements = null)
@@ -469,7 +441,9 @@ class Datatables
 		if (! $this->elementsProvider)
 			return;
 
-		$this->setElements(($this->elementsProvider)());
+		$this->setElements(DatatableRowsLoader::get(
+			$this->elementsProvider, $this->modelClass, null, $this->elementsQueryProvider
+		));
 	}
 
 	public function setName(string $name)

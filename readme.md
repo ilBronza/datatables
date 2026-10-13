@@ -79,6 +79,14 @@ npm run development
 
 ## Usage
 
+### Row refresh queries
+
+Implement `getIndexQuery()` on a CRUD index controller to expose its Eloquent
+builder. Row refreshes apply the primary-key filter before executing the query;
+existing controllers use a temporary model scope around `getIndexElements()`.
+See [the row refresh query guide](docs/row-refresh-query.md) for the optional
+standard index trait, legacy behavior, and standalone tables.
+
 ### `async`
 
 Use `async` to load one column in a single POST after each draw. IDs come from
