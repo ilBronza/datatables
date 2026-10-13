@@ -10,6 +10,7 @@ class DatatablesFieldOperation
     public ? string $faIcon = null;
     public ? string $link = null;
     public ? string $target = null;
+    public ? string $label = null;
 
     static function createFromString(string $name)
     {
@@ -36,6 +37,9 @@ class DatatablesFieldOperation
 
         if(isset($parameters['target']))
             $fieldOperation->setTarget($parameters['target']);
+
+        if(isset($parameters['label']))
+            $fieldOperation->setLabel($parameters['label']);
 
         return $fieldOperation->setName($name);
     }
@@ -103,6 +107,18 @@ class DatatablesFieldOperation
     public function getTarget() : ? string
     {
         return $this->target;
+    }
+
+    public function setLabel(string $label) : static
+    {
+        $this->label = $label;
+
+        return $this;
+    }
+
+    public function getLabel() : ?string
+    {
+        return $this->label;
     }
 
     public function setIcon(string $icon) : static

@@ -162,6 +162,7 @@ class DatatableField
 	public $headerHtmlClasses = [];
 	public $footerHtmlClasses = [];
 	public $fieldOperations = [];
+	public bool $fieldOperationsVertical = false;
 	public $fieldExtraData = [];
 	public $filteredTable;
 	public $parameter;

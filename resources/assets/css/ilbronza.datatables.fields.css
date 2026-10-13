@@ -126,10 +126,18 @@ nobr
 }
 
 
+/* Raise the owner and any fixed cell only while the toolbar is present. */
+table.datatable tbody td:has(.fieldoperations),
+.ibop:has(> .fieldoperations)
+{
+    z-index: 4;
+}
+
 .fieldoperations
 {
     position: absolute;
-    background-color: #ffffffdd;
+    z-index: 5;
+    background-color: #fff;
     top: 0;
     left: 30px;
     border: 1px solid #ccc;
@@ -153,6 +161,22 @@ nobr
 .fieldoperations span + span
 {
     margin-left: 5px;
+}
+
+.fieldoperations.fieldoperations-vertical
+{
+    display: inline-flex;
+    flex-direction: column;
+}
+
+.fieldoperations.fieldoperations-vertical > *
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    float: none;
+    margin-left: 0;
+    padding: 2px;
 }
 
 table.dataTable tbody td.select-checkbox:before, table.dataTable tbody th.select-checkbox:before,

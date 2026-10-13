@@ -131,6 +131,15 @@ URL, use `'delete' => ['type' => 'delete', 'faIcon' => 'trash', 'link' => $url]`
 An explicit URL must contain the configured row-ID placeholder when it is
 shared across rows.
 
+Set `'fieldOperationsVertical' => true` alongside `fieldOperations` to stack
+the hover actions vertically in a 30px-wide popup. The default is `false`
+(horizontal). For iterated fields, set it inside `childParameters` to orient
+each item's popup.
+
+Each operation can also specify a `label` to display text instead of its icon.
+Popups containing labels fit their text in either orientation. On `links.see`
+fields, placeholder links use the owning DataTables row ID.
+
 For a link in a UIkit iframe lightbox, set `'target' => 'iframe'`. The operation
 adds `iframed=true` to the URL and keeps the row-ID placeholder substitution:
 

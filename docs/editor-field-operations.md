@@ -43,4 +43,18 @@ pending without detaching the request target. Toggles use their own state and
 never replace the key/value label. A configured fetcher keeps the existing
 double-click summary modal, using the ID of the specific iterated model.
 
-Rebuild the host application's JavaScript bundle after updating this package.
+The hover toolbar has an opaque background and an explicit stacking level.
+Its positioned owner is raised only while the toolbar exists, including when
+a delete operation keeps it visible during the request.
+
+Set `'fieldOperationsVertical' => true` alongside `fieldOperations` for a
+vertical, 30px-wide toolbar. It defaults to `false`, keeping the horizontal
+layout. For `iterators.each`, set the option inside `childParameters` to apply
+it to each child model's operations.
+
+An operation's optional `label` displays text instead of the icon. Popups with
+labels fit their text, in either orientation. `links.see` fields resolve operation
+placeholders from the owning DataTables row ID. This support is provided by the
+package views and requires no application view override.
+
+Rebuild the host application's JavaScript/CSS bundle after updating this package.

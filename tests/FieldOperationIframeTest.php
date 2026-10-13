@@ -62,7 +62,7 @@ class FieldOperationIframeTest extends TestCase
             ob_end_clean();
         }
 
-        $this->assertStringContainsString('<span uk-lightbox><a', $html);
+        $this->assertMatchesRegularExpression('/<span uk-lightbox>\s*<a/', $html);
         $this->assertStringContainsString("href='/notes/__ROW_ID__?iframed=true'", $html);
         $this->assertStringContainsString("data-type='iframe'", $html);
         $this->assertStringContainsString("class='fa-solid fa-clipboard'", $html);
