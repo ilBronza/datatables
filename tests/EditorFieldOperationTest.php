@@ -6,6 +6,8 @@ use IlBronza\Datatables\DatatablesFields\Iterators\DatatableFieldEach;
 use IlBronza\Datatables\DatatablesFields\Model\DatatableFieldKeyvalue;
 use Illuminate\Config\Repository;
 use Illuminate\Container\Container;
+use Illuminate\Translation\ArrayLoader;
+use Illuminate\Translation\Translator;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -20,6 +22,12 @@ class EditorFieldOperationTest extends TestCase
         $container->instance('config', new Repository([
             'datatables' => ['replace_model_id_string' => '__ID__'],
         ]));
+        $loader = new ArrayLoader();
+        $loader->addMessages('it', 'operations', [
+            'remind' => 'Confermi il promemoria?',
+            'invert' => 'Confermi l\'inversione dei colori?',
+        ]);
+        $container->instance('translator', new Translator($loader, 'it'));
         Container::setInstance($container);
     }
 
@@ -85,6 +93,53 @@ class EditorFieldOperationTest extends TestCase
 
         $this->assertSame(['first', 'First product'], $field->transformValue(new EditorFieldOperationModel('first', 'First product')));
         $this->assertSame([null, null], $field->transformValue(null));
+    }
+
+    public function test_confirmation_messages_are_translated_before_exporting_editor_operations() : void
+    {
+        $field = $this->field();
+        $field->fieldOperations['remind']['confirmMessage'] = 'operations.remind';
+        $field->fieldOperations['invert']['confirmMessage'] = 'operations.invert';
+
+        $operations = $field->getEditorFieldOperations();
+
+        $this->assertSame('Confermi il promemoria?', $operations['remind']['confirmMessage']);
+        $this->assertSame('Confermi l\'inversione dei colori?', $operations['invert']['confirmMessage']);
+        $this->assertSame('operations.remind', $field->fieldOperations['remind']['confirmMessage']);
+    }
+
+    public function test_confirmation_messages_can_be_literal_text() : void
+    {
+        $field = $this->field();
+        $field->fieldOperations['invert']['confirmMessage'] = 'Invertire i colori?';
+
+        $this->assertSame('Invertire i colori?', $field->getEditorFieldOperations()['invert']['confirmMessage']);
+    }
+
+    public function test_editor_operations_keep_absent_and_empty_confirmation_messages() : void
+    {
+        $field = $this->field();
+        $this->assertArrayNotHasKey('confirmMessage', $field->getEditorFieldOperations()['remind']);
+
+        $field->fieldOperations['remind']['confirmMessage'] = '';
+        $field->fieldOperations['invert']['confirmMessage'] = null;
+
+        $operations = $field->getEditorFieldOperations();
+
+        $this->assertSame('', $operations['remind']['confirmMessage']);
+        $this->assertNull($operations['invert']['confirmMessage']);
+    }
+
+    public function test_delete_operations_keep_their_separate_confirmation_path() : void
+    {
+        $field = $this->field();
+        $field->fieldOperations['delete'] = [
+            'type' => 'delete',
+            'link' => '/products/__ID__',
+            'confirmMessage' => 'operations.remind',
+        ];
+
+        $this->assertSame(['remind', 'invert'], array_keys($field->getEditorFieldOperations()));
     }
 
     public function test_toggle_can_read_its_property_without_a_value_function() : void

@@ -44,9 +44,19 @@ jQuery(document).ready(function($)
         const owner = control.closest('[data-cellindex], td');
 
         if (owner.data('editorOperationPending'))
+        {
+            event.stopImmediatePropagation();
             return;
+        }
 
         const operation = control.data('editorOperation');
+
+        if (operation.confirmMessage && ! window.confirm(operation.confirmMessage))
+        {
+            event.stopImmediatePropagation();
+            return;
+        }
+
         const data = Object.assign({}, operation.data, {
             'ib-editor': true,
             field: operation.editorProperty,

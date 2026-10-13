@@ -116,6 +116,9 @@ trait DatatablesFieldsOperationsTrait
             if (! is_array($parameters) || ! in_array($parameters['type'] ?? null, ['editor.toggle', 'editor.ajax'], true))
                 continue;
 
+            if (isset($parameters['confirmMessage']))
+                $parameters['confirmMessage'] = __($parameters['confirmMessage']);
+
             if (isset($parameters['fetcher']['urlMethod']))
             {
                 $model = method_exists($this, 'getFieldPlaceholderModel')

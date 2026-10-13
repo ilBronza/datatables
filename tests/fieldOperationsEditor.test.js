@@ -10,11 +10,12 @@ function node(classes = [], attrs = {})
     return {classes: new Set(classes), attrs, data: {}, children: []};
 }
 
-function boot(ajaxResult = {})
+function boot(ajaxResult = {}, confirmResult = true)
 {
     const document = {};
     const handlers = [];
     const calls = [];
+    const confirmations = [];
 
     class Wrapper
     {
@@ -56,11 +57,12 @@ function boot(ajaxResult = {})
 
     const window = {
         replace_model_id_string: '__ID__',
+        confirm(message) { confirmations.push(message); return confirmResult; },
         ibCallAjax(params) { calls.push(params); if (ajaxResult instanceof Error) throw ajaxResult; return ajaxResult; },
     };
     vm.runInNewContext(source, {window, document, jQuery: $, $});
 
-    function toolbar(id, reminded)
+    function toolbar(id, reminded, operationParameters = {})
     {
         const owner = node();
         const container = node();
@@ -73,6 +75,9 @@ function boot(ajaxResult = {})
             remind: {type: 'editor.toggle', editorProperty: 'reminding', fetcher: {url: '/products/__ID__/reminds'}},
             invert: {type: 'editor.ajax', editorProperty: 'id', data: {ibaction: 'invertColors'}},
         };
+        Object.entries(operationParameters).forEach(([name, parameters]) => {
+            operations[name] = Object.assign({}, operations[name], parameters);
+        });
         const item = [id, 'Product ' + id, {remind: reminded}];
         window.ibDtInitFieldOperations($(container), item, operations);
         return {owner, remind, invert, pdf, item};
@@ -80,10 +85,24 @@ function boot(ajaxResult = {})
 
     function click(control)
     {
-        handlers[0].call(control, {preventDefault() {}, stopPropagation() {}});
+        const event = {
+            defaultPrevented: false,
+            propagationStopped: false,
+            immediatePropagationStopped: false,
+            preventDefault() { this.defaultPrevented = true; },
+            stopPropagation() { this.propagationStopped = true; },
+            stopImmediatePropagation() { this.immediatePropagationStopped = true; this.stopPropagation(); },
+        };
+        for (const handler of handlers)
+        {
+            handler.call(control, event);
+            if (event.immediatePropagationStopped)
+                break;
+        }
+        return event;
     }
 
-    return {calls, toolbar, click};
+    return {calls, confirmations, toolbar, click, onClick(handler) { handlers.push(handler); }};
 }
 
 test('each product gets its own links, summary URL, and reminder state', () => {
@@ -144,4 +163,107 @@ test('cancelled and failed requests release the owner for a retry', () => {
     const second = failed.toolbar('second', false);
     assert.throws(() => failed.click(second.invert), /network/);
     assert.equal(second.owner.data.editorOperationPending, undefined);
+});
+
+for (const name of ['remind', 'invert'])
+{
+    test(`${name} confirmation cancellation prevents AJAX, pending state, spinner, and other click handlers`, () => {
+        const runtime = boot({}, false);
+        const message = 'Confermi questa operazione?';
+        const product = runtime.toolbar('first', false, {[name]: {confirmMessage: message}});
+        let otherClicks = 0;
+        runtime.onClick(() => { otherClicks++; });
+
+        const event = runtime.click(product[name]);
+
+        assert.deepEqual(runtime.confirmations, [message]);
+        assert.equal(runtime.calls.length, 0);
+        assert.equal(product.owner.data.editorOperationPending, undefined);
+        assert.equal(product.owner.data.url, undefined);
+        assert.equal(product.owner.classes.has('spin'), false);
+        assert.equal(product[name].classes.has('spin'), false);
+        assert.equal(event.defaultPrevented, true);
+        assert.equal(event.propagationStopped, true);
+        assert.equal(event.immediatePropagationStopped, true);
+        assert.equal(otherClicks, 0);
+
+        runtime.click(product[name]);
+        assert.equal(runtime.confirmations.length, 2, 'Cancellation allows another attempt');
+        assert.equal(runtime.calls.length, 0);
+    });
+
+    test(`${name} confirmation acceptance sends the existing request and starts pending state and spinner`, () => {
+        const runtime = boot();
+        const message = 'Confermi questa operazione?';
+        const product = runtime.toolbar('first', false, {[name]: {confirmMessage: message}});
+        let otherClicks = 0;
+        runtime.onClick(() => { otherClicks++; });
+
+        runtime.click(product[name]);
+
+        assert.deepEqual(runtime.confirmations, [message]);
+        assert.equal(runtime.calls.length, 1);
+        assert.equal(product.owner.data.editorOperationPending, true);
+        assert.equal(product.owner.classes.has('spin'), true);
+        assert.equal(runtime.calls[0].target, product.owner);
+        assert.equal(runtime.calls[0].data.field, name === 'remind' ? 'reminding' : 'id');
+        assert.equal(runtime.calls[0].data._method, 'PUT');
+        assert.equal(runtime.calls[0].data['ib-editor'], true);
+        assert.equal(runtime.calls[0].refreshRowOnSuccess, true);
+        assert.equal(runtime.calls[0].forceRefreshRowOnSuccess, true);
+        assert.equal(runtime.calls[0].deferRowRefresh, true);
+        if (name === 'remind')
+            assert.equal(runtime.calls[0].data.value, true);
+        else
+            assert.equal(runtime.calls[0].data.ibaction, 'invertColors');
+        assert.equal(otherClicks, 1, 'Accepted clicks keep their existing handlers');
+    });
+}
+
+test('operations without a confirmation message keep their existing behavior', () => {
+    for (const parameters of [{}, {confirmMessage: ''}, {confirmMessage: null}])
+    {
+        for (const name of ['remind', 'invert'])
+        {
+            const runtime = boot({}, false);
+            const product = runtime.toolbar('first', false, {[name]: parameters});
+            let otherClicks = 0;
+            runtime.onClick(() => { otherClicks++; });
+
+            runtime.click(product[name]);
+
+            assert.equal(runtime.confirmations.length, 0);
+            assert.equal(runtime.calls.length, 1);
+            assert.equal(product.owner.data.editorOperationPending, true);
+            assert.equal(product.owner.classes.has('spin'), true);
+            assert.equal(otherClicks, 1);
+        }
+    }
+});
+
+test('pending clicks do not repeat confirmation, AJAX, or other click handlers in the same cell', () => {
+    const runtime = boot();
+    const product = runtime.toolbar('first', false, {
+        remind: {confirmMessage: 'Confermi il promemoria?'},
+        invert: {confirmMessage: 'Invertire i colori?'},
+    });
+    let otherClicks = 0;
+    runtime.onClick(() => { otherClicks++; });
+
+    runtime.click(product.invert);
+    const duplicate = runtime.click(product.invert);
+    const sibling = runtime.click(product.remind);
+
+    assert.deepEqual(runtime.confirmations, ['Invertire i colori?']);
+    assert.equal(runtime.calls.length, 1);
+    assert.equal(otherClicks, 1);
+    assert.equal(duplicate.immediatePropagationStopped, true);
+    assert.equal(sibling.immediatePropagationStopped, true);
+
+    runtime.calls[0].onComplete();
+    runtime.click(product.invert);
+
+    assert.deepEqual(runtime.confirmations, ['Invertire i colori?', 'Invertire i colori?']);
+    assert.equal(runtime.calls.length, 2);
+    assert.equal(otherClicks, 2);
 });
