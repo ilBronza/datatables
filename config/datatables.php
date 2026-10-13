@@ -204,8 +204,6 @@ return [
 
     'scrollX' => false,
     'scrollY' => true,
-    // Altezza minima (px) del corpo scrollabile; evita che il footer venga spinto fuori viewport.
-    'scrollBodyMinHeight' => env('DATATABLES_SCROLL_BODY_MIN_HEIGHT', 900),
 
 	'fixedColumns' => [
 		'enabled' => false,
