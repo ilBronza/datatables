@@ -94,7 +94,8 @@ return [
 		'relations' => [
 			'datatableFieldHasMany' => 'auto',
 			'datatableFieldBelongsTo' => 'auto',
-			'datatableFieldBelongsToMany' => 'auto'
+			'datatableFieldBelongsToMany' => 'auto',
+			'datatableFieldBelongsToManyFlat' => 'auto'
 		],
 		'numbers' => [
 			'datatableFieldNumber2' => '4em',
