@@ -57,4 +57,8 @@ labels fit their text, in either orientation. `links.see` fields resolve operati
 placeholders from the owning DataTables row ID. This support is provided by the
 package views and requires no application view override.
 
+Every operation has a tooltip showing its name by default. Set
+`'tooltip' => 'Apri dettagli'` on an operation to override it, independently of
+the visible `label`.
+
 Rebuild the host application's JavaScript/CSS bundle after updating this package.

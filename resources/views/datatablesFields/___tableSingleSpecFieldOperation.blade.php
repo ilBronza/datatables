@@ -2,16 +2,16 @@
     @php($label = $fieldOperation->getLabel())
     @if($link = $fieldOperation->getRenderedLink())
         @if($fieldOperation->getTarget() === 'iframe')<span uk-lightbox>@endif
-        <a class='ibfieldoperation{{ $fieldOperation->getType() }} {{ $fieldOperation->getName() }}' href='{{ $link }}'
+        <a class='ibfieldoperation{{ $fieldOperation->getType() }} {{ $fieldOperation->getName() }}' href='{{ $link }}' title='{{ $fieldOperation->getTooltip() }}' uk-tooltip='@json(["title" => e($fieldOperation->getTooltip())])'
             @if($target = $fieldOperation->getTarget())
                 @if($target === 'iframe') data-type='iframe'
                 @else target='{{ $target }}' @if($target === '_blank') rel='noopener' @endif
                 @endif
             @endif
             @if($fieldOperation->getType() === 'delete')
-                data-type='DELETE' data-returnconfirm='{{ __('datatables::messages.areYouSureToDeleteThisObject') }}' data-send-ajax-payload='false' title='{{ __('datatables::fields.mySelfDelete') }}' aria-label='{{ __('datatables::fields.mySelfDelete') }}'
+                data-type='DELETE' data-returnconfirm='{{ __('datatables::messages.areYouSureToDeleteThisObject') }}' data-send-ajax-payload='false' aria-label='{{ __('datatables::fields.mySelfDelete') }}'
             @endif
-            @if(filled($label)) style='display: inline-block; padding: 2px 4px;' @if($fieldOperation->getType() !== 'delete') title='{{ $label }}' @endif
+            @if(filled($label)) style='display: inline-block; padding: 2px 4px;'
             @elseif(! $fieldOperation->getFaIcon()) uk-icon='{{ $fieldOperation->getIcon() }}'
             @endif>
             @if(filled($label)){{ $label }}
@@ -20,10 +20,9 @@
         </a>
         @if($fieldOperation->getTarget() === 'iframe')</span>@endif
     @else
-        <span class='ibfieldoperation{{ $fieldOperation->getType() }} {{ $fieldOperation->getName() }}'
+        <span class='ibfieldoperation{{ $fieldOperation->getType() }} {{ $fieldOperation->getName() }}' title='{{ $fieldOperation->getTooltip() }}' uk-tooltip='@json(["title" => e($fieldOperation->getTooltip())])'
             @if($link = $fieldOperation->getLink()) data-substitutelink='{{ $link }}' @endif
-            @if(filled($label)) title='{{ $label }}'
-            @elseif(! $fieldOperation->getFaIcon()) uk-icon='{{ $fieldOperation->getIcon() }}'
+            @if(! filled($label) && ! $fieldOperation->getFaIcon()) uk-icon='{{ $fieldOperation->getIcon() }}'
             @endif>
             @if(filled($label)){{ $label }}
             @elseif($faIcon = $fieldOperation->getFaIcon())<i class='fa-solid fa-{{ $faIcon }}' aria-hidden='true'></i>

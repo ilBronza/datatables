@@ -11,6 +11,7 @@ class DatatablesFieldOperation
     public ? string $link = null;
     public ? string $target = null;
     public ? string $label = null;
+    public ? string $tooltip = null;
 
     static function createFromString(string $name)
     {
@@ -40,6 +41,9 @@ class DatatablesFieldOperation
 
         if(isset($parameters['label']))
             $fieldOperation->setLabel($parameters['label']);
+
+        if(isset($parameters['tooltip']))
+            $fieldOperation->setTooltip($parameters['tooltip']);
 
         return $fieldOperation->setName($name);
     }
@@ -119,6 +123,18 @@ class DatatablesFieldOperation
     public function getLabel() : ?string
     {
         return $this->label;
+    }
+
+    public function setTooltip(string $tooltip) : static
+    {
+        $this->tooltip = $tooltip;
+
+        return $this;
+    }
+
+    public function getTooltip() : ?string
+    {
+        return $this->tooltip ?? $this->getName();
     }
 
     public function setIcon(string $icon) : static
