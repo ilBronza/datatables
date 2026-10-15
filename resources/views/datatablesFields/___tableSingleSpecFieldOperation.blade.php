@@ -2,7 +2,7 @@
     @php($label = $fieldOperation->getLabel())
     @if($link = $fieldOperation->getRenderedLink())
         @if($fieldOperation->getTarget() === 'iframe')<span uk-lightbox>@endif
-        <a class='ibfieldoperation{{ $fieldOperation->getType() }} {{ $fieldOperation->getName() }}' href='{{ $link }}' title='{{ $fieldOperation->getTooltip() }}' uk-tooltip='@json(["title" => e($fieldOperation->getTooltip())])'
+        <a class='ibfieldoperation{{ $fieldOperation->getType() }} {{ $fieldOperation->getName() }}' href='{{ $link }}' title='{{ $fieldOperation->getTooltip() }}'
             @if($target = $fieldOperation->getTarget())
                 @if($target === 'iframe') data-type='iframe'
                 @else target='{{ $target }}' @if($target === '_blank') rel='noopener' @endif
@@ -20,7 +20,7 @@
         </a>
         @if($fieldOperation->getTarget() === 'iframe')</span>@endif
     @else
-        <span class='ibfieldoperation{{ $fieldOperation->getType() }} {{ $fieldOperation->getName() }}' title='{{ $fieldOperation->getTooltip() }}' uk-tooltip='@json(["title" => e($fieldOperation->getTooltip())])'
+        <span class='ibfieldoperation{{ $fieldOperation->getType() }} {{ $fieldOperation->getName() }}' title='{{ $fieldOperation->getTooltip() }}'
             @if($link = $fieldOperation->getLink()) data-substitutelink='{{ $link }}' @endif
             @if(! filled($label) && ! $fieldOperation->getFaIcon()) uk-icon='{{ $fieldOperation->getIcon() }}'
             @endif>
