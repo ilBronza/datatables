@@ -39,6 +39,7 @@ function boot({ reloadTable = true, otherDirty = false } = {})
             closest(selector) { return wrap(selector === 'tr' ? node?.row : null); },
             next() { return wrap(node?.child); },
             hasClass(name) { return !! node?.classes?.has(name); },
+            attr(name) { return node?.attributes?.[name]; },
             find(selector) {
                 if (selector === '.ib-datatable-inline-edit-cancel') return wrap(node?.cancel);
                 return wrap((node?.fields || []).filter(item => item.classes.has(selector.slice(1))));
@@ -154,6 +155,14 @@ test('validation errors leave the inline editor open and preserve its dirty valu
     assert.equal(runtime.child.fields[0].original, 'old');
     assert.equal(runtime.child.fields[0].value, 'new-sellable');
     assert.equal(runtime.child.fields[0].classes.has('editorchanged'), true);
+});
+
+test('disabled fields are omitted from the inline batch', () => {
+    const runtime = boot();
+    runtime.child.fields[1].disabled = true;
+    runtime.save();
+    assert.equal(Object.hasOwn(runtime.params().data.fields, 'sellable_supplier_id'), false);
+    assert.equal(runtime.params().inlineEditSubmittedFields.length, 1);
 });
 
 test('other rows remain dirty and protected by the table guard', () => {

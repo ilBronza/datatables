@@ -6,6 +6,7 @@ use App\Models\Appointment;
 use IlBronza\Datatables\Contracts\DatatableFieldContract;
 use IlBronza\Datatables\DatatablesFields\DatatableFieldPrimary;
 use IlBronza\Datatables\DatatablesFields\DatatableFieldSelectRowCheckbox;
+use IlBronza\Datatables\DatatablesFields\ibDtV2\Editor\DatatableFieldEditor as V2Editor;
 use IlBronza\Datatables\DatatablesFields\Editor\DatatableFieldFileUpload;
 use IlBronza\Datatables\DatatablesFields\Links\DatatableFieldLink;
 use IlBronza\Datatables\Helpers\DatatableRowsLoader;
@@ -343,6 +344,15 @@ class Datatables
 			if (! static::canCreateInlineField($sourceField))
 				continue;
 
+			// V2 shares binding, attributes and disabledIf with the source editor.
+			if ($sourceField instanceof V2Editor)
+			{
+				$fields[$sourceFieldName] = array_replace($sourceTable->prepareFieldParameters($sourceFieldsGroup['fields'][$sourceFieldName]), [
+					'type' => $sourceField->getInlineFieldType(),
+				]);
+				continue;
+			}
+
 			$fields[$sourceFieldName] = [
 				'type' => $sourceField->getInlineFieldType(),
 				'inlineEditProperty' => $sourceFieldName,
@@ -369,6 +379,9 @@ class Datatables
 
 	protected static function canCreateInlineField(DatatableFieldContract $field) : bool
 	{
+		if ($field instanceof V2Editor && ! $field->editorTargetsRow())
+			return false;
+
 		return (! $field instanceof DatatableFieldPrimary)
 			&& (! $field instanceof DatatableFieldSelectRowCheckbox)
 			&& (! $field instanceof DatatableFieldLink)

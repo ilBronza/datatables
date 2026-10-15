@@ -155,3 +155,24 @@ test('ordinary text and native date editors are not normalized', () => {
     for (const [type, value] of [['text', '12,202'], ['date', '2026-09-17'], ['time', '12:20']])
         assert.equal(window.__ibGetEditorSubmitValue(field(value, { type })), value);
 });
+
+test('V2 text distinguishes numeric-looking strings, zero and blank during saves', () => {
+    for (const [value, original] of [['1', '001'], ['', '0'], ['0', ''], ['1.0', '1'], ['1,2', '1.2']])
+    {
+        const runtime = boot();
+        const target = field(value, { type: 'text', original });
+        target.attributes['data-ib-dt-value-type'] = 'text';
+        assert.equal(runtime.window.editorFieldHasChanged(target), true);
+        runtime.save(target);
+        assert.equal(runtime.requests.length, 1);
+        assert.equal(runtime.requests[0].data.value, value);
+    }
+});
+
+test('V2 text comparison keeps null and zero rendering semantics without numeric coercion', () => {
+    const runtime = boot();
+    assert.equal(runtime.window.__ibEditorValuesEqual('', null, 'text', 'text'), true);
+    assert.equal(runtime.window.__ibEditorValuesEqual('0', 0, 'text', 'text'), true);
+    assert.equal(runtime.window.__ibEditorValuesEqual('', 0, 'text', 'text'), false);
+    assert.equal(runtime.window.__ibEditorValuesEqual('001', '1', 'text', 'text'), false);
+});
