@@ -2,7 +2,7 @@
 
 namespace IlBronza\Datatables\Castables;
 
-use IlBronza\Datatables\DatatablesFields\DatatableField;
+use IlBronza\Datatables\Contracts\DatatableFieldContract;
 use function collect;
 
 class Data
@@ -69,7 +69,7 @@ class Data
 		return $this->uiSettings[$key] ?? $default;
 	}
 
-	public function getColumnSettingsByField(DatatableField $field)
+	public function getColumnSettingsByField(DatatableFieldContract $field)
 	{
 		if(isset($this->columnsSettings[$field->getCamelName()]))
 			return $this->columnsSettings[$field->getCamelName()];

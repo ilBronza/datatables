@@ -6,7 +6,8 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 use IlBronza\Datatables\DatatableFieldsGroup;
-use IlBronza\Datatables\DatatablesFields\DatatableField;
+use IlBronza\Datatables\Contracts\DatatableFieldContract;
+use IlBronza\Datatables\DatatablesFields\FieldFactory;
 
 use function config;
 use function is_null;
@@ -342,9 +343,9 @@ trait DatatableFieldsTrait
         throw new \Exception('wrong field parameteres for table ' . json_encode($this->name));      
     }
 
-    public function replicateRenderAsField(string $fieldName, string $alternativeRenderAs, DatatableField $field)
+    public function replicateRenderAsField(string $fieldName, string $alternativeRenderAs, DatatableFieldContract $field)
     {
-        $fieldParameters = DatatableField::extractOverrideableParametersNameByType(
+        $fieldParameters = FieldFactory::extractOverrideableParametersNameByType(
             $alternativeRenderAs
         );
 
@@ -354,7 +355,7 @@ trait DatatableFieldsTrait
             if(! empty($field->$fieldParameter))
                 $parameters[$fieldParameter] = $field->$fieldParameter;
 
-        $field = DatatableField::createByType(
+        $field = FieldFactory::createByType(
             $fieldName,
             $alternativeRenderAs,
             $parameters,
@@ -378,7 +379,7 @@ trait DatatableFieldsTrait
 
         $fieldType = $this->TODO_ChangeAllViewsInTypeGetType($fieldParameters);
 
-        $field = DatatableField::createByType(
+        $field = FieldFactory::createByType(
             $fieldName,
             $fieldType,
             $fieldParameters,

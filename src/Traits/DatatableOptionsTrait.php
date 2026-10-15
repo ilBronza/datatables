@@ -3,7 +3,7 @@
 namespace IlBronza\Datatables\Traits;
 
 use IlBronza\Datatables\ColumnOption;
-use IlBronza\Datatables\DatatablesFields\DatatableField;
+use IlBronza\Datatables\Contracts\DatatableFieldContract;
 use newField;
 
 use function method_exists;
@@ -158,7 +158,7 @@ trait DatatableOptionsTrait
 		$this->createdRowScripts[] = $script;
 	}
 
-	private function checkFieldRowCreationScripts(DatatableField $field)
+	private function checkFieldRowCreationScripts(DatatableFieldContract $field)
 	{
 		if ($script = $field->getCreatedRowScripts())
 			$this->addCreatedRowScript($script);
@@ -170,7 +170,7 @@ trait DatatableOptionsTrait
 	 *
 	 * @param  newField  $field
 	 */
-	private function checkFieldOptions(DatatableField $field)
+	private function checkFieldOptions(DatatableFieldContract $field)
 	{
 		$this->checkFieldRowCreationScripts($field);
 

@@ -3,7 +3,7 @@
 namespace IlBronza\Datatables\Traits;
 
 use Exception;
-use IlBronza\Datatables\DatatablesFields\DatatableField;
+use IlBronza\Datatables\Contracts\DatatableFieldContract;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -140,7 +140,7 @@ trait DatatableDataTrait
 		return false;
 	}
 
-	private function getCellData(DatatableField $field, object $element)
+	private function getCellData(DatatableFieldContract $field, object $element)
 	{
 		if($overridingMethod = $field->getOverridingValueMethod())
 		{
@@ -177,7 +177,7 @@ trait DatatableDataTrait
 		}
 	}
 
-	private function getCellDataWithSummary(DatatableField $field, object $element)
+	private function getCellDataWithSummary(DatatableFieldContract $field, object $element)
 	{
 		$value = $this->getTableCellDataValue($field->name, $element);
 

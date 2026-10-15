@@ -3,10 +3,9 @@
 namespace IlBronza\Datatables;
 
 use App\Models\Appointment;
-use IlBronza\Datatables\DatatablesFields\DatatableField;
+use IlBronza\Datatables\Contracts\DatatableFieldContract;
 use IlBronza\Datatables\DatatablesFields\DatatableFieldPrimary;
 use IlBronza\Datatables\DatatablesFields\DatatableFieldSelectRowCheckbox;
-use IlBronza\Datatables\DatatablesFields\Editor\DatatableFieldEditor;
 use IlBronza\Datatables\DatatablesFields\Editor\DatatableFieldFileUpload;
 use IlBronza\Datatables\DatatablesFields\Links\DatatableFieldLink;
 use IlBronza\Datatables\Helpers\DatatableRowsLoader;
@@ -278,7 +277,7 @@ class Datatables
 
 		foreach ($table->getFields() as $field)
 		{
-			if ($field instanceof DatatableFieldEditor)
+			if ($field->isEditor())
 				$field->setInlineEditElement($element);
 		}
 
@@ -368,7 +367,7 @@ class Datatables
 			: null;
 	}
 
-	protected static function canCreateInlineField(DatatableField $field) : bool
+	protected static function canCreateInlineField(DatatableFieldContract $field) : bool
 	{
 		return (! $field instanceof DatatableFieldPrimary)
 			&& (! $field instanceof DatatableFieldSelectRowCheckbox)
@@ -379,7 +378,7 @@ class Datatables
 	public function getInlineEditFields() : Collection
 	{
 		return $this->getFields()->filter(
-			fn ($field) => $field instanceof DatatableFieldEditor
+			fn ($field) => $field->isEditor()
 		);
 	}
 

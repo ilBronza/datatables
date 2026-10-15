@@ -3,6 +3,7 @@
 namespace IlBronza\Datatables\DatatablesFields;
 
 use Exception;
+use IlBronza\Datatables\Contracts\DatatableFieldContract;
 use IlBronza\Datatables\DatatableFieldsGroup;
 use IlBronza\Datatables\Datatables;
 use IlBronza\Datatables\DatatablesFields\Editor\DatatableFieldEditor;
@@ -27,7 +28,7 @@ use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsStructuredDataIn
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsSummaryTrait;
 use IlBronza\Datatables\Traits\DatatablesFields\DatatablesFieldsUserDataTrait;
 
-class DatatableField
+class DatatableField implements DatatableFieldContract
 {
 	use DatatablesFieldsStructuredDataIndexTrait;
 	use DatatablesFieldsPermissionsTrait;
@@ -262,45 +263,12 @@ class DatatableField
 
 	static function getPackageClassNameByType(string $fieldType) : string
 	{
-		$pieces = explode("::", $fieldType);
-
-		$package = array_shift($pieces);
-
-		$fieldType = static::getClassNameByType(implode(".", $pieces), false);
-
-		if ($package == 'app')
-			$fullnamespace = "App\\";
-		else
-			$fullnamespace = get_class(app($package));
-
-		$namespacePieces = explode("\\", $fullnamespace);
-		array_pop($namespacePieces);
-
-		return implode("\\", $namespacePieces) . "\Providers\DatatablesFields\\" . $fieldType;
+		return FieldFactory::getPackageClassNameByType($fieldType);
 	}
 
 	static function getClassNameByType(string $fieldType, bool $fullQualifiedNamespace = true) : string
 	{
-		//if contains "::" in string, it's a custom field
-		if (strpos($fieldType, "::") !== false)
-			return static::getPackageClassNameByType($fieldType);
-
-		$pieces = explode(".", $fieldType);
-
-		$fieldType = ucfirst(array_pop($pieces));
-
-		$folders = implode("", array_map(function ($item)
-		{
-			if ($item === 'ibDtV2')
-				return $item . '\\';
-
-			return ucfirst($item) . '\\';
-		}, $pieces));
-
-		if (! $fullQualifiedNamespace)
-			return $folders . "DatatableField" . $fieldType;
-
-		return __NAMESPACE__ . '\\' . $folders . "DatatableField" . $fieldType;
+		return FieldFactory::getClassNameByType($fieldType, $fullQualifiedNamespace);
 	}
 
 	static function createByType(string $fieldName, string $fieldType, array $fieldParameters, int $index = 0, DatatableField $parent = null, Datatables $table = null)

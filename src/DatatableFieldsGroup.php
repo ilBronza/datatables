@@ -2,7 +2,7 @@
 
 namespace IlBronza\Datatables;
 
-use IlBronza\Datatables\DatatablesFields\DatatableField;
+use IlBronza\Datatables\Contracts\DatatableFieldContract;
 
 class DatatableFieldsGroup
 {
@@ -27,7 +27,7 @@ class DatatableFieldsGroup
 		$this->translationPrefix = $translationPrefix;
 	}
 
-	public function addField(string $fieldName, DatatableField $field)
+	public function addField(string $fieldName, DatatableFieldContract $field)
 	{
 		$field->setFieldsGroup($this);
 

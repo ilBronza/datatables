@@ -3,21 +3,21 @@
 namespace IlBronza\Datatables\Traits;
 
 use IlBronza\Datatables\DatatablesFields\ColumnDef;
-use IlBronza\Datatables\DatatablesFields\DatatableField;
+use IlBronza\Datatables\Contracts\DatatableFieldContract;
 
 trait DatatableColumnDefsTrait
 {
     public $customColumnDefs = [];
 
-    private function addCustomColumnDefsRenderingMethods(DatatableField $field)
+    private function addCustomColumnDefsRenderingMethods(DatatableFieldContract $field)
     {
         if($alternativeRenderAs = $field->getRenderAsType())
             $field = $this->replicateRenderAsField('fakeRenderingField', $alternativeRenderAs, $field);
 
         // $fieldIndex = $field->getIndex();
 
-        if($field->name == 'fakeRenderingField')
-            dd("fakeRenderingField");
+        // if($field->name == 'fakeRenderingField')
+        //     dd("fakeRenderingField");
 
         if($customColumnDef = $field->getCustomColumnDef())
             return $this->customColumnDefs[] = $customColumnDef;
@@ -53,7 +53,7 @@ trait DatatableColumnDefsTrait
      *
      * @param datatableField $field
      */
-    private function checkFieldColumnDefs(DatatableField $field)
+    private function checkFieldColumnDefs(DatatableFieldContract $field)
     {
         //get field base columnDefs
         $fieldColumnDefs = $field->getColumnDefs();

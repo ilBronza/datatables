@@ -2,8 +2,7 @@
 
 namespace IlBronza\Datatables\Traits;
 
-use IlBronza\Datatables\DatatablesFields\DatatableField;
-use IlBronza\Datatables\DatatablesFields\Editor\DatatableFieldEditor;
+use IlBronza\Datatables\Contracts\DatatableFieldContract;
 use Illuminate\Support\Collection;
 
 use function config;
@@ -121,7 +120,7 @@ trait DatatableSelectRowsTrait
             return collect();
 
         return $this->getFields()->filter(
-            fn (DatatableField $field) => $field->isBulkEditable()
+            fn (DatatableFieldContract $field) => $field->isBulkEditable()
         );
     }
 
@@ -132,7 +131,7 @@ trait DatatableSelectRowsTrait
 
     public function getBulkEditableFieldsArray() : array
     {
-        return $this->getBulkEditableFields()->map(function (DatatableField $field)
+        return $this->getBulkEditableFields()->map(function (DatatableFieldContract $field)
         {
             $fieldData = $field->getFieldSpecificData();
 
@@ -141,7 +140,7 @@ trait DatatableSelectRowsTrait
                 'parameter' => $fieldData['field'] ?? $field->getFieldName(),
                 'index' => $field->getIndex(),
                 'label' => $field->getTranslatedName(),
-                'nullable' => $field instanceof DatatableFieldEditor && $field->isNullable(),
+                'nullable' => $field->isEditor() && $field->isNullable(),
                 'customValueMode' => $fieldData['custom-value-mode'] ?? false,
             ];
         })->values()->all();
