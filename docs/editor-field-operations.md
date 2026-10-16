@@ -59,7 +59,9 @@ package views and requires no application view override.
 
 Every operation has a tooltip showing its name by default. Set
 `'tooltip' => 'Apri dettagli'` on an operation to override it, independently of
-the visible `label`. Tooltips use the native HTML `title` attribute and require
-no JavaScript initialization.
+the visible `label`. Tooltips use the native HTML `title` attribute without a
+tooltip library. The toolbar creation script also assigns these titles after
+rendering, so application overrides of the operation markup receive the
+configured tooltips.
 
 Rebuild the host application's JavaScript/CSS bundle after updating this package.

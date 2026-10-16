@@ -2,6 +2,17 @@
 
 jQuery(document).ready(function()
 {
+    function setFieldOperationTitles(container, tooltips)
+    {
+        Object.entries(tooltips).forEach(function(entry)
+        {
+            container.find('a, span').filter(function()
+            {
+                return $(this).hasClass(entry[0]);
+            }).attr('title', entry[1]);
+        });
+    }
+
 @foreach($table->getFields() as $field)
     @if($field->hasFieldOperations())
 
@@ -27,6 +38,7 @@ jQuery(document).ready(function()
         item = [datatable.row($(this).closest('tr')).id(), item];
         @endif
         window.ibDtInitFieldOperations(div, item, @json($field->getEditorFieldOperations()));
+        setFieldOperationTitles(div, @json(collect($field->getFieldOperations())->map(fn ($operation) => $operation->getTooltip())));
 
         $(this).append(div);
     });
@@ -51,6 +63,7 @@ jQuery(document).ready(function()
         @if($hasLabels)div.css({'white-space': 'nowrap', 'z-index': 10});@endif
         var item = window.__getCell(this).data()[$(this).attr('data-cellindex')];
         window.ibDtInitFieldOperations(div, item, @json($field->child->getEditorFieldOperations()));
+        setFieldOperationTitles(div, @json(collect($field->child->getFieldOperations())->map(fn ($operation) => $operation->getTooltip())));
 
         $(this).append(div);
     });
