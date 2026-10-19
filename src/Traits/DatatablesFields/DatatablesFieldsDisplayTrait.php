@@ -111,9 +111,14 @@ trait DatatablesFieldsDisplayTrait
 		return $this->getWidth() ?? $this->defaultWidth ?? false;
 	}
 
+	public function getUnstyledWidth()
+	{
+		return $this->width ?? config('datatables.widths.' . $this->getType());
+	}
+
 	public function getWidth()
 	{
-		$defaultWidth = $this->width ?? config('datatables.widths.' . $this->getType());
+		$defaultWidth = $this->getUnstyledWidth();
 
 		if(! $columnSettings = $this->getTable()->getDatatableUserData()->getColumnSettingsByField($this))
 			return $defaultWidth;
@@ -131,7 +136,7 @@ trait DatatablesFieldsDisplayTrait
 			if(isset($parameters['width']))
 				$width = max($width, (int) str_replace(['em', 'px', '%'], '', $parameters['width']));
 
-		return $width;
+		return $width ?: $defaultWidth;
 	}
 
 	public function showLabel() : bool

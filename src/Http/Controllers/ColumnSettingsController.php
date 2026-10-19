@@ -3,65 +3,32 @@
 namespace IlBronza\Datatables\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Auth;
 use IlBronza\Datatables\Models\DatatableUserData;
+use IlBronza\Datatables\Support\ColumnStyles;
 use Illuminate\Http\Request;
-
-use function dd;
-use function json_decode;
+use Illuminate\Validation\ValidationException;
 
 class ColumnSettingsController extends Controller
 {
-	// private function hideColumn()
-	// {
-	// 	$this->datatableUserData->data->hideColumn(request()->input('columnName'));
-	// }
+    public function update(Request $request, string $tableKey)
+    {
+        $request->validate([
+            'columnIndex' => 'integer|required|min:0',
+            'settings_json' => 'string|required|json|max:65536',
+            'columnName' => 'string|required|max:128',
+        ]);
 
-	// private function showColumn()
-	// {
-	// 	$this->datatableUserData->data->showColumn(request()->input('columnName'));
-	// }
+        $settings = json_decode($request->input('settings_json'), true);
+        if (! is_array($settings) || ! isset($settings['selectors']) || ! is_array($settings['selectors']))
+            throw ValidationException::withMessages(['settings_json' => 'Invalid column style settings.']);
 
-	// public function manageAction()
-	// {
-	// 	$this->datatableUserData = DatatableUserData::provideByTableKey(
-	// 		$this->tableKey
-	// 	);
+        $selectors = ColumnStyles::normalize($settings['selectors']);
+        DatatableUserData::provideByTableKey($tableKey)->addColumnSettings(
+            $request->input('columnName'),
+            (int) $request->input('columnIndex'),
+            ['selectors' => $selectors]
+        );
 
-	// 	$action = request()->input('action');
-
-	// 	$this->{$action}();
-
-	// 	$this->datatableUserData->save();
-
-	// 	return [
-	// 		'success' => true
-	// 	];
-	// }
-
-	public function update(Request $request, string $tableKey)
-	{
-		$request->validate([
-			'columnIndex' => 'integer|required',
-			'settings_json' => 'string|required',
-			'columnName' => 'string|required|max:128'
-		]);
-
-		$this->tableKey = $tableKey;
-
-
-		$this->datatableUserData = DatatableUserData::provideByTableKey(
-			$this->tableKey
-		);
-
-		$this->datatableUserData->addColumnSettings(
-			$request->columnName,
-			$request->columnIndex,
-			json_decode($request->settings_json, true)
-		);
-
-		return [
-			'success' => true
-		];
-	}
+        return ['success' => true, 'selectors' => (object) $selectors];
+    }
 }

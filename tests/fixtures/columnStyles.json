@@ -1,0 +1,22 @@
+[
+  {
+    "name": "legacy branches and pixel widths",
+    "selectors": {"td": {"width": 240}, "td a i + td a span": {"color": "#123456", "font-size": 16}},
+    "normalized": {"td": {"width": "240px", "min-width": "240px", "max-width": "240px"}, "td a i + td a span": {"color": "#123456", "font-size": "16px"}}
+  },
+  {
+    "name": "semantic targets and long text",
+    "selectors": {"td [data-style-target=\"name\"]": {"text-overflow-mode": "tooltip", "font-family": "'Open Sans', sans-serif"}, "td > div > span:nth-of-type(2)": {"letter-spacing": -0.5}},
+    "normalized": {"td [data-style-target=\"name\"]": {"text-overflow-mode": "tooltip", "font-family": "'Open Sans', sans-serif"}, "td > div > span:nth-of-type(2)": {"letter-spacing": "-0.5px"}}
+  },
+  {
+    "name": "reject selectors and declarations escaping the column",
+    "selectors": {"td, body": {"color": "red"}, "td </style><script>": {"color": "red"}, "td": {"color": "red;display:none", "background-image": "url(https://example.test)", "font-family": "</style>", "position": "fixed", "font-size": "14px"}},
+    "normalized": {"td": {"font-size": "14px"}}
+  },
+  {
+    "name": "legacy tooltip flags and units",
+    "selectors": {"td a": {"__tooltip": true, "text-overflow-mode": "ellipsis", "width": "12em", "min-width": "4px"}, "td span": {"__tooltip": false, "font-size": "1.2rem"}},
+    "normalized": {"td a": {"__tooltip": true, "text-overflow-mode": "ellipsis", "width": "12em", "min-width": "12em", "max-width": "12em"}, "td span": {"font-size": "1.2rem"}}
+  }
+]

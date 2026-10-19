@@ -39,6 +39,7 @@ require('./datatables.vendor.editorRowLock.js');
 require('./datatables.vendor.fieldsGroups.js');
 require('./datatables.vendor.buttons.min.js');
 require('./datatables.vendor.columnVisibility.min.js');
+require('./datatables.vendor.columnStyles.js');
 require('./datatables.vendor.datatablesFields.min.js');
 require('./datatables.vendor.duplicates.min.js');
 require('./datatables.vendor.elementsSelectRows.js');

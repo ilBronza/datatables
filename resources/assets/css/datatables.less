@@ -1242,3 +1242,73 @@ button.ib-button-attention,
     background-color: white;
   }
 }
+
+// Created only while a column style inspector is open.
+.uk-offcanvas-bar.ib-column-style-open {
+    width: 380px;
+    max-width: 100vw;
+    padding: 0 !important;
+    background: #fff;
+    color: #253044;
+
+    .uk-offcanvas-close { color: #253044; top: 16px; right: 14px; }
+}
+
+.ib-column-style-editor {
+    font-size: 14px;
+    line-height: 1.45;
+
+    header { padding: 18px 22px 14px; border-bottom: 1px solid #e3e8ef; }
+    h3 { color: inherit; font-size: 19px; margin: 9px 0 4px; overflow-wrap: anywhere; }
+    p { margin: 0; }
+    .ib-style-scope, .ib-style-sample, .ib-style-empty, footer p { color: #626d7d; font-size: 12px; }
+    .ib-style-body { padding: 16px 22px; }
+    .ib-style-target-label { display: block; font-weight: 500; }
+    .ib-style-target-label span { display: block; margin-bottom: 6px; }
+    .ib-style-sample { margin-top: 8px; overflow-wrap: anywhere; }
+    .ib-style-empty:empty, .ib-style-sample:empty { display: none; }
+    .ib-style-empty { margin-top: 8px; }
+    .ib-style-controls { margin-top: 18px; }
+    .ib-style-control { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 8px; margin-bottom: 13px; }
+    .ib-style-control label { grid-column: 1 / -1; font-size: 12px; color: #526075; }
+    .ib-style-control input, .ib-style-control select { min-width: 0; }
+    .uk-input, .uk-select {
+        background-color: #fff;
+        color: #253044;
+        border: 1px solid #d9e0e9;
+        border-radius: 5px;
+        height: 36px;
+        font-size: 14px;
+    }
+    input::placeholder { color: #737e8d; font-size: 12px; }
+    input[type=color] { padding: 4px; width: 100%; }
+    button { cursor: pointer; }
+    button:disabled, input:disabled, select:disabled { cursor: default; opacity: .55; }
+    .ib-style-back, .ib-style-reset, .ib-style-property-reset {
+        background: transparent; border: 0; color: #526075; padding: 4px 0; font: inherit;
+    }
+    .ib-style-back { padding-right: 35px; }
+    .ib-style-property-reset { font-size: 11px; min-width: 66px; text-align: right; }
+    .ib-style-reset { font-size: 12px; margin-top: 10px; }
+    details { border-top: 1px solid #e3e8ef; padding-top: 12px; }
+    summary { cursor: pointer; margin-bottom: 12px; color: #526075; }
+    footer { position: sticky; bottom: 0; padding: 13px 22px; background: #fff; border-top: 1px solid #e3e8ef; }
+    footer p { min-height: 18px; margin-bottom: 10px; }
+    footer > div { display: flex; gap: 10px; }
+    footer .uk-button { border-radius: 5px; padding: 0 16px; line-height: 36px; text-transform: none; }
+    footer .uk-button-default { border: 1px solid #d9e0e9; background: #fff; color: #253044; }
+    footer .uk-button-primary { border: 1px solid #1e87f0; background: #1e87f0; color: #fff; }
+}
+
+.toggle-vis-container .ib-colvis-item .ib-colvis-gear {
+    opacity: .5;
+    padding: 4px 8px;
+    &:focus-visible { opacity: 1; }
+}
+
+@media (pointer: coarse) {
+    .ib-column-style-editor {
+        .uk-input, .uk-select, button, summary { min-height: 44px; }
+        .uk-input, .uk-select { font-size: 16px; }
+    }
+}

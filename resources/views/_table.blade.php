@@ -1,9 +1,5 @@
 @include('datatables::datatablesFields._tableSingleSpec')
 
-@if($table->canEditColumnStyles() && $table->canHideColumns())
-	@include('datatables::datatablesFields._columnSettingsForm')
-@endif
-
 @if(! request()->input('justTable', false))
 	{{-- @include('datatables::__extraViews', ['position' => 'top']) --}}
 
@@ -34,6 +30,10 @@
 				class="uk-nav uk-dropdown-nav ib-colvis-container toggle-vis-container table{{ $table->getId() }}"
 				data-tableid="{{ $table->getId() }}"
 				data-settings-store-url="{{ $table->getColumnVisibilityStoreUrl() }}"
+				@if($table->canEditColumnStyles())
+					data-style-labels="{{ json_encode(__('datatables::columnStyles')) }}"
+					data-style-fonts="{{ json_encode(config('datatables.fonts', [])) }}"
+				@endif
 			>
 				@foreach($table->getFields() as $field)
 					<li class="ib-colvis-item uk-flex uk-flex-wrap">
@@ -42,6 +42,7 @@
 								class="uk-width-expand toggle-vis @if($field->isVisible()) uk-text-bold @endif {{ $field->getFieldName() }}"
 								data-column="{{ $field->getIndex() }}"
 								data-name="{{ $field->getFieldName() }}"
+								data-style-column="{{ $field->getCamelName() }}"
 								data-visibility="{{ ($field->isVisible() ? 1 : 0) }}"
 								style="color: black;"
 						>
@@ -52,6 +53,8 @@
 							<a
 									href="javascript:void(0)"
 									class="ib-colvis-gear uk-width-auto"
+									aria-label="{{ __('datatables::columnStyles.title') }}: {{ $field->getTranslatedName() }}"
+									aria-expanded="false"
 							>
 								<i class="fa-solid fa-gear"></i>
 							</a>

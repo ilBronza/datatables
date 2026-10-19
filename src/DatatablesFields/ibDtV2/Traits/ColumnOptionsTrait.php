@@ -19,10 +19,15 @@ trait ColumnOptionsTrait
 	public array $fieldsGroupsDefinitions = [];
 	public array $holdFieldsGroupsDefinitions = [];
 
+	public function getUnstyledWidth() : string
+	{
+		return $this->width ?? $this->getWidthFromConfig();
+	}
+
 	public function getWidth() : string
 	{
 		$settings = $this->table?->getDatatableUserData()->getColumnSettingsByField($this) ?? [];
-		return $settings['selectors']['td']['width'] ?? $this->width ?? $this->getWidthFromConfig();
+		return $settings['selectors']['td']['width'] ?? $this->getUnstyledWidth();
 	}
 
 	public function isVisible() : bool
