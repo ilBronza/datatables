@@ -152,7 +152,7 @@
             @if($table->usesDebugPreloadedAjaxData())
             url: window.addParameterToURL(
                 window.addParameterToURL(
-                    "{{ $table->getUrl() }}",
+                    @json($table->getUrl()),
                     'model',
                     '{{ $table->getRelationName() }}'
                 ),
@@ -160,7 +160,7 @@
                 '{{ $table->getCachedTableKey() }}'
             ),
             @else
-            url: window.addParameterToURL("{{ $table->getUrl() }}", 'model', '{{ $table->getRelationName() }}'),
+            url: window.addParameterToURL(@json($table->getUrl()), 'model', '{{ $table->getRelationName() }}'),
             @endif
             type: '{{ $table->getAjaxMethod() }}',
             dataSrc: function (json)
