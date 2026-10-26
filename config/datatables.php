@@ -216,6 +216,12 @@ return [
 	// visible in the originating request. Keep disabled outside debugging.
 	'debug' => env('DATATABLES_DEBUG', false),
 
+	'errors' => [
+		// Let aERR apply its user-specific error policy before returning a cell error.
+		// Disable to continue rendering cells unless datatables.debug is enabled.
+		'useAErr' => env('DATATABLES_ERRORS_USE_AERR', true),
+	],
+
 	'pageLength' => 50,
 
 	'mustPrintIntestation' => false,

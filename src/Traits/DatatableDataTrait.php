@@ -2,9 +2,7 @@
 
 namespace IlBronza\Datatables\Traits;
 
-use Exception;
 use IlBronza\Datatables\Contracts\DatatableFieldContract;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 use Throwable;
@@ -142,37 +140,29 @@ trait DatatableDataTrait
 
 	private function getCellData(DatatableFieldContract $field, object $element)
 	{
-		if($overridingMethod = $field->getOverridingValueMethod())
-		{
-			$value = $field->getFieldCellDataValue($field->name, $element);
-
-				try
-				{
-					return $field->transformValue(
-						$value->{$overridingMethod}($field->staticVariableValue)
-					);
-				}
-				catch(Throwable $e)
-				{
-					Log::critical($e->getMessage());
-					return null;
-				}
-		}
-
 		try
 		{
+			if ($overridingMethod = $field->getOverridingValueMethod())
+			{
+				$value = $field->getFieldCellDataValue($field->name, $element);
+
+				return $field->transformValue(
+					$value->{$overridingMethod}($field->staticVariableValue)
+				);
+			}
+
 			if ($field->requireElement())
 				return $field->transformValue($element);
 
 			$value = $field->getFieldCellDataValue($field->name, $element);
 
-			// $value = $this->getCellDataValue($field->name, $element);
-
 			return $field->transformValue($value);
 		}
-		catch (Exception $e)
+		catch (Throwable $e)
 		{
-			aERR($e->getMessage(), $field, $element);
+			if (config('datatables.errors.useAErr', true))
+				aERR($e->getMessage(), $field, $element);
+
 			return $this->handleError($e);
 		}
 	}
