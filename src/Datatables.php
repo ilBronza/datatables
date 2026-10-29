@@ -104,7 +104,7 @@ class Datatables
 	public $stripe = true;
 	public $pageLength = null;
 	public $options = [];
-	public bool $hasSorting = false;
+	public ?bool $hasSorting = null;
 	public $sourceType = 'ajax';
 	public $variables = [];
 	public $modelClass;

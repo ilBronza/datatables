@@ -212,6 +212,9 @@ return [
 
 	'saveState' => false,
 
+	// Default column sorting; an explicit table-level setting takes precedence.
+	'hasSorting' => env('DATATABLES_HAS_SORTING', false),
+
 	// Preloads AJAX table data during the initial render and makes data errors
 	// visible in the originating request. Keep disabled outside debugging.
 	'debug' => env('DATATABLES_DEBUG', false),

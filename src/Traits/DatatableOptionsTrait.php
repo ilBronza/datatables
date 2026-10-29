@@ -63,7 +63,7 @@ trait DatatableOptionsTrait
 
 	public function hasSorting() : bool
 	{
-		return $this->hasSorting;
+		return $this->hasSorting ?? (bool) config('datatables.hasSorting', false);
 	}
 
 	public function canHideColumns()
