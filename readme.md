@@ -79,6 +79,46 @@ npm run development
 
 ## Usage
 
+### Header styles
+
+To let each user switch between truncated and expanded column titles, enable the
+toolbar button in the application's `config/datatables.php`:
+
+```php
+'defaultButtons' => [
+    'headerStyles' => true,
+],
+```
+
+The package default is `false`. The button changes the titles of its own table,
+including scrolling and fixed copies, without changing column widths or body
+cells. The choice is stored per user and table in the existing UI settings and
+restored on reload. Disabling the button also disables its saved style override.
+No JavaScript or CSS asset rebuild is needed.
+
+Use `setHeaderStyles()` on a table to override its column-title CSS from a
+controller. The default is an empty array and preserves the current appearance.
+For example, to wrap titles instead of truncating them:
+
+```php
+$this->table->setHeaderStyles([
+    'white-space' => 'normal',
+    'text-wrap' => 'wrap',
+    'overflow-wrap' => 'anywhere',
+    'overflow' => 'visible',
+    'text-overflow' => 'clip',
+]);
+```
+
+The `headerStyles` array can also be passed through `bind()` or the parameters of
+`createStandAloneTable()`. Call `setHeaderStyles([])` to remove the override.
+CSS values must include units where required (for example, `'font-size' => '12px'`).
+
+Styles apply to the column titles and their label elements, including scrolling
+and fixed-header copies belonging to that table. They do not style the body,
+filters, grouped headers or other tables. Declarations use `!important` to
+override the default title styling. No JavaScript or CSS asset rebuild is needed.
+
 ### Row refresh queries
 
 Implement `getIndexQuery()` on a CRUD index controller to expose its Eloquent

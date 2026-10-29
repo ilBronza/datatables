@@ -4,12 +4,31 @@ namespace IlBronza\Datatables\Traits;
 
 use IlBronza\Datatables\ColumnOption;
 use IlBronza\Datatables\Contracts\DatatableFieldContract;
+use IlBronza\Datatables\Support\HeaderStyles;
 use newField;
 
 use function method_exists;
 
 trait DatatableOptionsTrait
 {
+	/** @param array<string, string|int|float> $styles */
+	public function setHeaderStyles(array $styles) : static
+	{
+		$this->headerStyles = $styles;
+
+		return $this;
+	}
+
+	public function getHeaderStyles() : array
+	{
+		return $this->headerStyles;
+	}
+
+	public function getHeaderStylesCss() : string
+	{
+		return HeaderStyles::css($this->getId(), $this->getHeaderStyles());
+	}
+
 	public function setHasSorting(bool $hasSorting) : static
 	{
 		$this->hasSorting = $hasSorting;

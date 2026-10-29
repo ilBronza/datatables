@@ -254,6 +254,7 @@ return [
 	],
 
 	'defaultButtons' => [
+        'headerStyles' => false,
         'search' => true,
 		'reload' => true,
         'copy' => true,

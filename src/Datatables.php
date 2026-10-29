@@ -97,6 +97,7 @@ class Datatables
 	public ?bool $mustPrintIntestation = null;
 
 	public array $htmlClasses = [];
+	public array $headerStyles = [];
 
 	public ? bool $footerFilters;
 

@@ -11,9 +11,12 @@ class TableUiSettingsController extends Controller
 	public function update(Request $request, string $tableKey)
 	{
 		$request->validate([
-			'key' => 'string|required|max:64|in:mainHeaderHidden,filtersHidden',
+			'key' => 'string|required|max:64|in:mainHeaderHidden,filtersHidden,headerStylesExpanded',
 			'value' => 'nullable'
 		]);
+
+		if ($request->input('key') === 'headerStylesExpanded')
+			$request->validate(['value' => 'required|boolean']);
 
 		$datatableUserData = DatatableUserData::provideByTableKey($tableKey);
 

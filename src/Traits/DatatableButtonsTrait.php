@@ -9,6 +9,23 @@ use function is_null;
 
 trait DatatableButtonsTrait
 {
+	public function hasHeaderStylesToggleButton() : bool
+	{
+		return (bool) config('datatables.defaultButtons.headerStyles', false);
+	}
+
+	public function areHeaderStylesExpanded() : bool
+	{
+		$settings = $this->getDatatableUserData()->uiSettings ?? [];
+		if (array_key_exists('headerStylesExpanded', $settings))
+			return filter_var($settings['headerStylesExpanded'], FILTER_VALIDATE_BOOL);
+
+		$styles = $this->getHeaderStyles();
+
+		return in_array($styles['white-space'] ?? null, ['normal', 'pre-wrap', 'pre-line', 'break-spaces'], true)
+			|| ($styles['text-wrap'] ?? null) === 'wrap';
+	}
+
 	public function getSelectionDeleteField() : ?DatatableFieldDelete
 	{
 		if (! $this->hasSelectRowCheckboxes()

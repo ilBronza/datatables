@@ -1,6 +1,8 @@
 <?php
 
 return [
+	'expandHeaders' => 'Estendi intestazioni',
+	'truncateHeaders' => 'Compatta intestazioni',
 	'inlineCreate' => 'Aggiungi',
 	'save' => 'Salva',
 	'cancel' => 'Annulla',

@@ -1,5 +1,7 @@
 <style type="text/css">
 
+	{!! $table->getHeaderStylesCss() !!}
+
 	@foreach($table->getFields() as $index => $field)
 
 		/*colonna indice {{ $loop->index }}*/

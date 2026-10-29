@@ -272,6 +272,10 @@
             className: 'reload',
         }, @endif
 
+        @if(! $table->hasMainHeader())
+            @include('datatables::datatablesFields.__tableSingleSpecHeaderStylesButton')
+        @endif
+
 			@if($table->hasRemoveFiltersButton())
 
         {
@@ -326,6 +330,7 @@
             }
         },
 
+            @include('datatables::datatablesFields.__tableSingleSpecHeaderStylesButton')
 		@endif
 
         {
@@ -687,5 +692,6 @@
 </script>
 
 @include('datatables::datatablesFields.__tableSingleSpecCss')
+@include('datatables::datatablesFields.__tableSingleSpecHeaderStylesMode')
 @include('datatables::datatablesFields.__tableSingleSpecRangeFilters')
 @include('datatables::datatablesFields.__tableSingleSpecFieldOperations')

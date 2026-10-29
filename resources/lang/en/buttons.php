@@ -1,6 +1,8 @@
 <?php
 
 return [
+	'expandHeaders' => 'Expand headers',
+	'truncateHeaders' => 'Truncate headers',
 	'inlineCreate' => 'Add',
 	'save' => 'Save',
 	'cancel' => 'Cancel',
