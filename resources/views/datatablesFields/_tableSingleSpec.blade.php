@@ -533,6 +533,9 @@
         {
             extend: 'copy',
             className: 'copy uk-hidden ib-dt-hidden-export',
+            exportOptions: {
+                orthogonal: 'export'
+            },
         },
 		@endif
 
