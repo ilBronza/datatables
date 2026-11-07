@@ -147,6 +147,7 @@
 
 			class="wannabedatatable {{ $table->getStripeClass() }} datatable {{ $table->getName() }} {{ $table->getHtmlClassesString() }}"
 			style="table-layout: auto;"
+			data-scroll-body-min-height="{{ config('datatables.scrollBodyMinHeight', 400) }}"
 	>
 		@include('datatables::uikit.header._header')
 

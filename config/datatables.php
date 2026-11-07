@@ -205,6 +205,7 @@ return [
 
     'scrollX' => false,
     'scrollY' => true,
+    'scrollBodyMinHeight' => env('DATATABLES_SCROLL_BODY_MIN_HEIGHT', 400), // px
 
 	'fixedColumns' => [
 		'enabled' => false,

@@ -4,6 +4,7 @@ jQuery(document).ready(function ($)
     {
         // se hai un footer/sticky bar in basso, indica la sua altezza qui
         var BOTTOM_OFFSET = 0; // es. 48 o 64; considera anche env(safe-area-inset-bottom) sui device mobili
+        var DEFAULT_MIN_BODY_HEIGHT = 400;
 
         function fitWindowWrapper()
         {
@@ -11,10 +12,9 @@ jQuery(document).ready(function ($)
 
             els.forEach(function(el) {
 
-                var wrapper = el.closest('.dataTables_wrapper, .dt-container');
-                if (! wrapper) return;
+                if (! el.closest('.dataTables_wrapper, .dt-container')) return;
 
-                var table = wrapper.querySelector('table.dataTable');
+                var table = el.querySelector('table.dataTable');
                 if (! table) return;
 
                 if ( $(table).hasClass('related-table'))
@@ -26,8 +26,11 @@ jQuery(document).ready(function ($)
                     : 0;
 
                 var available = window.innerHeight - rect.top - BOTTOM_OFFSET - safeInset;
+                var minHeight = parseInt(table.getAttribute('data-scroll-body-min-height'), 10);
+                if (isNaN(minHeight) || minHeight < 0) minHeight = DEFAULT_MIN_BODY_HEIGHT;
 
-                el.style.maxHeight = Math.max(available - 100, 0) + 'px';
+                el.style.minHeight = minHeight + 'px';
+                el.style.maxHeight = Math.max(available - 100, minHeight) + 'px';
             });
 
 
