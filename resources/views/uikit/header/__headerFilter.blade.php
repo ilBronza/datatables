@@ -28,9 +28,11 @@
 			data-filter-draw-on-events="{{ $field->canDrawTable() }}"
 			data-filter-draw-on-keyup="{{ $field->canDrawKeyup() }}"
 			data-name="{{ $field->getFieldName() }}"
+			data-field-name="{{ $field->getFieldName() }}"
 			data-label="{{ $field->getTranslatedName() }}"
 			data-camelName="{{ $field->getCamelName() }}"
 			data-column="{{ $field->getIndex() }}"
+			data-original-column-index="{{ $field->getIndex() }}"
 
 			@foreach($field->getHeaderData() as $data => $value)
 				data-{{ $data }}="{{ $value }}"

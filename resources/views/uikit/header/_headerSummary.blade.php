@@ -5,7 +5,9 @@
         <th
             class="summary{{ $field->getIndex() }} @if($field->getSummaryType()) ib-dt-summary-scope @endif"
             data-name="{{ $field->getFieldName() }}"
+            data-field-name="{{ $field->getFieldName() }}"
             data-column="{{ $field->getIndex() }}"
+            data-original-column-index="{{ $field->getIndex() }}"
             @if($field->getSummaryType())
                 data-summary-label="{{ __('datatables::datatables.summarySelectedRows') }}"
             @endif
@@ -18,7 +20,9 @@
     <th
         class="summary{{ $field->getIndex() }} @if($field->getSummaryType()) ib-dt-summary-scope @endif"
         data-name="{{ $field->getFieldName() }}"
+        data-field-name="{{ $field->getFieldName() }}"
         data-column="{{ $field->getIndex() }}"
+        data-original-column-index="{{ $field->getIndex() }}"
         @if($field->getSummaryType())
             data-summary-label="{{ __('datatables::datatables.summaryFilteredRows') }}"
         @endif

@@ -7,7 +7,7 @@
 		/*colonna indice {{ $loop->index }}*/
 
 		@if($field->hasCss())
-	#{{ $table->getId() }} tbody tr > *:nth-child({{ $loop->index - 1 }}) {
+	#{{ $table->getId() }} td.{{ $field->getHtmlClassForCss() }} {
 		@foreach($field->getCssRules() as $cssRule)
     	{{ $cssRule }};
 	    @endforeach
@@ -36,9 +36,10 @@
 		/* Compatibility with FixedHeader v4+. */
 		.dtfh-floatingparent table.{{ $table->getName() }} th.{{ $field->getHtmlClassForCss() }}
 		{
-			min-width: {{ $width }}!important;
-			max-width: {{ $width }}!important;
-			width: {{ $width }}!important;
+			min-width: var(--ib-column-width, {{ $width }})!important;
+			max-width: var(--ib-column-width, {{ $width }})!important;
+			width: var(--ib-column-width, {{ $width }})!important;
+			box-sizing: border-box;
 		}
     @endif
 
@@ -46,7 +47,7 @@
 
 </style>
 
-{{-- One replaceable stylesheet per column; the inspector never mutates cell inline styles. --}}
+{{-- One replaceable stylesheet per column; inline width constraints are restored by the inspector. --}}
 @foreach(($table->getDatatableUserData()->columnsSettings ?? []) as $name => $parameters)
     <style data-ib-column-style data-table-id="{{ $table->getId() }}" data-column-name="{{ $name }}">{!! \IlBronza\Datatables\Support\ColumnStyles::css($table->getId(), $name, $parameters['selectors'] ?? []) !!}</style>
 @endforeach

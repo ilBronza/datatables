@@ -1,5 +1,15 @@
 [
   {
+    "name": "visible overflow is persisted while unsupported modes are rejected",
+    "selectors": {"td": {"width": 150, "text-overflow-mode": "visible"}, "td a": {"text-overflow-mode": "visible"}, "td span": {"text-overflow-mode": "scroll"}},
+    "normalized": {"td": {"width": "150px", "text-overflow-mode": "visible", "min-width": "150px", "max-width": "150px"}, "td a": {"text-overflow-mode": "visible"}}
+  },
+  {
+    "name": "independent boolean icons with safe Font Awesome names",
+    "selectors": {"td [data-style-target=\"boolean-true\"]":{"__icon":"circle-check","color":"green"},"td [data-style-target=\"boolean-null\"]":{"__icon":"x\" onclick=\"evil"},"td":{"__icon":"star"}},
+    "normalized": {"td [data-style-target=\"boolean-true\"]":{"__icon":"circle-check","color":"green"}}
+  },
+  {
     "name": "legacy branches and pixel widths",
     "selectors": {"td": {"width": 240}, "td a i + td a span": {"color": "#123456", "font-size": 16}},
     "normalized": {"td": {"width": "240px", "min-width": "240px", "max-width": "240px"}, "td a i + td a span": {"color": "#123456", "font-size": "16px"}}

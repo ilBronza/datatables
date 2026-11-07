@@ -130,13 +130,8 @@ trait DatatablesFieldsDisplayTrait
 			if(isset($tdSettings['width']))
 				return $tdSettings['width'];
 
-		$width = 0;
-
-		foreach($selectors as $selector => $parameters)
-			if(isset($parameters['width']))
-				$width = max($width, (int) str_replace(['em', 'px', '%'], '', $parameters['width']));
-
-		return $width ?: $defaultWidth;
+		// A descendant's width must not become the width of the entire column.
+		return $defaultWidth;
 	}
 
 	public function showLabel() : bool

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="it"><head><meta charset="utf-8"><title>Verifica configurazione tabella</title>
+<link rel="stylesheet" href="/deps/uikit/dist/css/uikit.min.css">
+<link rel="stylesheet" href="/deps/datatables.net-dt/css/dataTables.dataTables.css">
+<link rel="stylesheet" href="/deps/@fortawesome/fontawesome-free/css/all.min.css">
+<link rel="stylesheet" href="/compiled.css">
+<style>
+body { padding:30px; background:#fff; color:#253044; }
+main { max-width:900px; margin:auto; }
+#orders th.customer, #orders td.customer, #orders_wrapper th.customer, #orders_wrapper td.customer,
+table[data-realid=orders] th.customer { width:var(--ib-column-width,300px)!important;min-width:var(--ib-column-width,300px)!important;max-width:var(--ib-column-width,300px)!important;box-sizing:border-box; }
+#orders th.contact, #orders td.contact, #orders_wrapper th.contact { width:220px!important; min-width:220px!important;max-width:220px!important;box-sizing:border-box; }
+.metrics {display:block; margin:14px 0; padding:10px; background:#f5f7fa; font:13px monospace; white-space:pre-wrap;}
+</style></head><body><main>
+<h2>Commesse · verifica configurazione</h2>
+<button type="button" id="edit" class="uk-button uk-button-default">Modifica tabella</button>
+<button type="button" id="fields" class="uk-button uk-button-default" uk-toggle="target:#offcanvas">Campi</button>
+<output class="metrics" id="metrics"></output>
+<table id="orders" class="datatable display" data-realid="orders" data-uisettingsroute="/mock-ui">
+<thead><tr class="mainheader" data-dt-order="disable"><th colspan="2">Anagrafica</th><th colspan="2">Valori</th></tr>
+<tr class="columnsintestations"><th class="customer" data-field-name="customer" data-column="0" data-original-column-index="0">Cliente con intestazione molto lunga</th><th class="contact" data-field-name="contact" data-column="1" data-original-column-index="1">Referente</th><th class="active" data-field-name="active" data-column="2" data-original-column-index="2">Attivo</th><th class="amount" data-field-name="amount" data-column="3" data-original-column-index="3">Importo</th></tr>
+<tr class="columns" data-dt-order="disable"><th class="customer" data-field-name="customer" data-column="0" data-original-column-index="0"><input class="uk-input" placeholder="Cerca cliente"></th><th class="contact" data-field-name="contact" data-column="1" data-original-column-index="1"><input class="uk-input" placeholder="Cerca referente"></th><th class="active" data-field-name="active" data-column="2" data-original-column-index="2"></th><th class="amount" data-field-name="amount" data-column="3" data-original-column-index="3"></th></tr></thead>
+</table>
+<div id="offcanvas" uk-offcanvas="mode:push"><div class="uk-offcanvas-bar uk-padding-small"><button class="uk-offcanvas-close" type="button" uk-close></button>
+<div class="ib-config-list-tools" hidden><button class="uk-button uk-button-default uk-button-small ib-config-reset-order">Ripristina ordine originale</button><p class="ib-config-order-hint"></p><p class="ib-config-order-status" role="status"></p></div>
+<ul id="togglefieldsorders" class="toggle-vis-container" data-tableid="orders" data-settings-store-url="/mock-style"></ul>
+</div></div>
+</main>
+<script src="/deps/jquery/dist/jquery.js"></script><script src="/deps/datatables.net/js/dataTables.js"></script>
+<script src="/deps/datatables.net-colreorder/js/dataTables.colReorder.js"></script><script src="/deps/datatables.net-fixedheader/js/dataTables.fixedHeader.js"></script>
+<script src="/deps/uikit/dist/js/uikit.min.js"></script>
+<script src="/resources/assets/js/datatables.vendor.columnIndexes.js"></script>
+<script src="/resources/assets/js/datatables.vendor.columnStyles.js"></script><script src="/resources/assets/js/datatables.vendor.tableConfigurator.js"></script>
+<script>
+const labels={title:'Stile della colonna',columns:'Colonne',allRows:'Si applica a tutte le righe della colonna',target:'Elemento da modificare',cell:'Intera cella',text:'Testo',link:'Collegamento',icon:'Icona',button:'Pulsante',list:'Lista',image:'Immagine',input:'Campo',badge:'Etichetta',savedElement:'Elemento',notOnPage:'Elemento non presente',discovering:'Ricerca…',width:'Larghezza colonna (px)',fontSize:'Dimensione testo (px)',iconSize:'Dimensione icona (px)',color:'Colore',background:'Sfondo',weight:'Spessore',fontStyle:'Stile',align:'Allineamento',overflow:'Testo lungo',fontFamily:'Carattere',spacing:'Spaziatura',transform:'Maiuscole',decoration:'Decorazione',more:'Altre opzioni',original:'Predefinito',custom:'Ripristina',resetElement:'Ripristina questo elemento',resetProperty:'Ripristina proprietà',cancel:'Annulla',save:'Salva stile',unsaved:'Modifiche da salvare',noChanges:'Nessuna modifica',saving:'Salvataggio…',saved:'Stile salvato',failed:'Salvataggio fallito',editTable:'Modifica tabella',finishEditing:'Fine modifica',move:'Sposta colonna',configureElement:'Configura elemento',groupOrderHint:'Sposta i campi all’interno del proprio gruppo.',orderHint:'Trascina i campi',orderSaved:'Ordine salvato',orderFailed:'Ordine non salvato',finishCellEdit:'Completa la modifica del dato',stateTrue:'Vero',stateFalse:'Falso',stateNull:'Nullo',stateIcon:'Icona Font Awesome (nome)',statePreview:'Anteprima stato',left:'Sinistra',center:'Centro',right:'Destra',wrap:'A capo',clip:'Taglia',ellipsis:'Puntini di sospensione',tooltip:'Puntini e suggerimento'};
+const names=['customer','contact','active','amount'];
+const titles=['Cliente','Referente','Attivo','Importo'];
+const list=document.getElementById('togglefieldsorders');list.dataset.styleLabels=JSON.stringify(labels);list.dataset.styleFonts='{}';
+const states={true:{icon:'check',family:'solid'},false:{icon:'close',family:'solid'},null:{icon:'minus',family:'solid'}};
+names.forEach((name,i)=>{
+ const item=document.createElement('li');item.className='ib-colvis-item uk-flex';
+ item.innerHTML='<button type="button" class="ib-config-handle ib-config-list-handle" hidden data-field-name="'+name+'" aria-label="Sposta '+titles[i]+'"><i class="fa-solid fa-grip-vertical"></i></button><a class="toggle-vis uk-width-expand" data-name="'+name+'" data-style-column="'+name+'" data-column="'+i+'">'+titles[i]+'</a><button type="button" class="ib-colvis-gear" aria-label="Stile '+titles[i]+'"><i class="fa-solid fa-gear"></i></button>';
+ item.querySelector('a').dataset.configuration=JSON.stringify({name,column:name,index:i,width:i===0?'300px':i===1?'220px':'120px',states:i===2?states:{}});list.appendChild(item);
+});
+window.__ibColumnStyleDraftByTable={orders:{}};window.__ibDatatableUiSettings={orders:{}};
+$.ajax=options=>{const request=$.Deferred();setTimeout(()=>request.resolve({success:true}),30);return request.promise();};
+const options={paging:false,info:false,searching:false,scrollX:true,fixedHeader:true,order:[],autoWidth:false,
+ data:[['<a href="/should-not-open"><i class="fa-solid fa-user"></i><span data-style-target="name" style="min-width:300px!important;display:block">OfficineRossiConUnaDenominazioneMoltoLungaESenzaSpazi</span></a>','Marco Rossi',true,12450],['<ul><li>Cliente con nome lungo su più parole</li><li>Secondo riferimento</li></ul>','Anna Bianchi',false,8500]],
+ columns:names.map((name,i)=>({className:name,name,width:i===0?'300px':i===1?'220px':'120px',render:i===2?function(value,type,row,meta){if(type!=='display')return value;const state=value===null?'null':value?'true':'false';const icon=ibDtColumnStyles.icon('orders','active','td [data-style-target="boolean-'+state+'"]',states[state].icon);return '<span class="ib-toggle fa-solid fa-'+icon+'" data-style-target="boolean-'+state+'" data-style-state="'+state+'" data-style-default-icon="'+states[state].icon+'" data-style-applied-icon="'+icon+'" data-value="'+value+'"></span>';}:undefined}))};
+ibDtTableConfigurator.prepare(document.getElementById('orders'),options);window.fixtureTable=$('#orders').DataTable(options);
+document.getElementById('edit').addEventListener('click',()=>{ibDtTableConfigurator.toggle(fixtureTable);document.getElementById('edit').textContent=document.getElementById('orders').classList.contains('ib-configuring')?'Fine modifica':'Modifica tabella';});
+list.querySelectorAll('.toggle-vis').forEach(node=>node.addEventListener('click',()=>{const col=fixtureTable.column(Number(node.dataset.column));col.visible(!col.visible());}));
+function measure(){const cell=document.querySelector('#orders tbody td.customer');const header=document.querySelector('#orders_wrapper .dt-scroll-head th.customer');document.getElementById('metrics').textContent='Cliente: '+cell.getBoundingClientRect().width.toFixed(1)+' px · Intestazione: '+header.getBoundingClientRect().width.toFixed(1)+' px · Ordine: '+ibDtTableConfigurator.current(fixtureTable).join(', ');}
+fixtureTable.on('column-sizing.dt draw.dt column-visibility.dt columns-reordered.dt',measure);measure();
+</script></body></html>

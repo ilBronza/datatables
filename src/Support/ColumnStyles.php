@@ -32,7 +32,7 @@ class ColumnStyles
             'text-align' => ['left', 'center', 'right', 'start', 'end'],
             'text-transform' => ['none', 'uppercase', 'lowercase', 'capitalize'],
             'text-decoration' => ['none', 'underline', 'line-through'],
-            'text-overflow-mode' => ['wrap', 'clip', 'ellipsis', 'tooltip'],
+            'text-overflow-mode' => ['visible', 'wrap', 'clip', 'ellipsis', 'tooltip'],
         ];
         foreach (array_slice($selectors, 0, 100, true) as $selector => $rules)
         {
@@ -48,7 +48,12 @@ class ColumnStyles
                 }
                 if (! is_string($raw) && ! is_numeric($raw)) continue;
                 $value = trim((string) $raw);
-                if (in_array($key, ['width', 'min-width', 'max-width', 'font-size', 'letter-spacing']))
+                if ($key === '__icon')
+                {
+                    if (strlen($value) <= 80 && preg_match('/^[a-z0-9]+(?:-[a-z0-9]+)*$/D', $value)
+                        && preg_match('/^td \[data-style-target="boolean-(true|false|null)"\]$/D', $selector)) $out[$key] = $value;
+                }
+                elseif (in_array($key, ['width', 'min-width', 'max-width', 'font-size', 'letter-spacing']))
                 {
                     if (preg_match('/^-?\d+(?:\.\d+)?$/D', $value)) $value .= 'px';
                     if (preg_match('/^-?\d+(?:\.\d+)?(?:px|em|rem|%)$/D', $value) || (str_contains($key, 'width') && $value === 'auto')) $out[$key] = $value;
@@ -77,12 +82,13 @@ class ColumnStyles
         $out = [];
         foreach ($rules as $key => $value)
         {
-            if ($key === '__tooltip') continue;
+            if ($key === '__tooltip' || $key === '__icon') continue;
             if ($key === 'text-overflow-mode')
             {
                 $out[] = 'white-space:' . ($value === 'wrap' ? 'normal' : 'nowrap') . '!important';
-                $out[] = 'overflow:' . ($value === 'wrap' ? 'visible' : 'hidden') . '!important';
+                $out[] = 'overflow:' . (in_array($value, ['visible', 'wrap']) ? 'visible' : 'hidden') . '!important';
                 $out[] = 'text-overflow:' . (in_array($value, ['ellipsis', 'tooltip']) ? 'ellipsis' : 'clip') . '!important';
+                $out[] = 'overflow-wrap:' . ($value === 'wrap' ? 'anywhere' : 'normal') . '!important';
             }
             else $out[] = $key . ':' . $value . '!important';
         }
@@ -98,12 +104,25 @@ class ColumnStyles
         {
             $targets = array_map(fn ($path) => $base . ' ' . $cell . ($path !== '' ? ' ' . $path : ''), static::paths($signature));
             $rule = implode(',', $targets) . '{' . static::declarations($rules) . '}';
+            if ($signature !== 'td' && isset($rules['text-overflow-mode']))
+                $rule .= implode(',', $targets) . '{display:block;max-width:100%;min-width:0}';
+            if ($signature === 'td' && isset($rules['text-overflow-mode']))
+            {
+                $content = $base . ' ' . $cell . ' :is(a,span,div,li):not([data-style-default-icon]):not(.fieldoperations):not(.fieldoperations *)';
+                $rule .= $content . '{' . static::declarations(['text-overflow-mode' => $rules['text-overflow-mode']]) . ';max-width:100%;min-width:0}'
+                    . $content . ':is(a,span){display:inline-block;vertical-align:middle}';
+            }
             if ($signature === 'td' && isset($rules['width']))
             {
                 $header = 'th[class~=' . static::quote($column) . ']';
-                $rule .= $base . ' ' . $header . ',[id=' . static::quote($tableId . '_wrapper') . '] ' . $header
-                    . ',table[data-realid=' . static::quote($tableId) . '] ' . $header
-                    . '{' . static::declarations(['width' => $rules['width'], 'min-width' => $rules['width'], 'max-width' => $rules['width']]) . '}';
+                $boxes = [];
+                foreach ([$base, '[id=' . static::quote($tableId . '_wrapper') . ']', 'table[data-realid=' . static::quote($tableId) . ']'] as $scope)
+                    foreach ([$header, $cell] as $box) $boxes[] = $scope . ' ' . $box;
+                $rule .= implode(',', $boxes) . '{--ib-column-width:' . $rules['width'] . '!important;box-sizing:border-box;'
+                    . static::declarations(['width' => $rules['width'], 'min-width' => $rules['width'], 'max-width' => $rules['width']]) . '}';
+                if ($rules['width'] !== 'auto')
+                    $rule .= implode(',', array_map(fn ($box) => $box . ' > :not(.fieldoperations):not(.ib-config-header-actions)', $boxes))
+                        . '{min-width:0!important;max-width:calc(' . $rules['width'] . ' - 24px)!important;box-sizing:border-box;overflow-wrap:anywhere}';
             }
             $output[] = $rule;
         }

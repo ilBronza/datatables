@@ -1252,6 +1252,14 @@ button.ib-button-attention,
     color: #253044;
 
     .uk-offcanvas-close { color: #253044; top: 16px; right: 14px; }
+    .ib-config-list-tools { display: none; }
+    // UIkit themes can load after app.css and force inverse offcanvas colours.
+    .ib-column-style-editor h3 { color: #253044; }
+    .ib-column-style-editor .uk-input, .ib-column-style-editor .uk-select {
+        background: #fff; color: #253044; border-color: #d9e0e9 !important;
+        &:focus { background: #fff; color: #253044; border-color: #1e87f0 !important; }
+        &::placeholder { color: #737e8d !important; opacity: 1; }
+    }
 }
 
 .ib-column-style-editor {
@@ -1271,6 +1279,8 @@ button.ib-button-attention,
     .ib-style-controls { margin-top: 18px; }
     .ib-style-control { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 8px; margin-bottom: 13px; }
     .ib-style-control label { grid-column: 1 / -1; font-size: 12px; color: #526075; }
+    .ib-style-help { grid-column: 1 / -1; font-size: 12px; color: #626d7d; }
+    .ib-style-help:empty { display: none; }
     .ib-style-control input, .ib-style-control select { min-width: 0; }
     .uk-input, .uk-select {
         background-color: #fff;
@@ -1304,6 +1314,50 @@ button.ib-button-attention,
     opacity: .5;
     padding: 4px 8px;
     &:focus-visible { opacity: 1; }
+}
+
+// Controls only become available while configuring this particular table.
+.ib-config-header-actions {
+    display: inline-flex;
+    gap: 3px;
+    position: absolute;
+    right: 3px;
+    top: 2px;
+    z-index: 5;
+    background: #fff;
+    border: 1px solid #d9e0e9;
+    border-radius: 4px;
+    opacity: 0;
+}
+.ib-config-header-actions[hidden], .ib-config-handle[hidden], .ib-config-list-tools[hidden], .ib-config-picker[hidden] { display: none !important; }
+.columnsintestations th { position: relative; }
+.columnsintestations th:hover .ib-config-header-actions,
+.columnsintestations th:focus-within .ib-config-header-actions { opacity: 1; }
+.ib-config-header-actions button, .ib-config-handle, .ib-config-picker button {
+    border: 0; background: #fff; color: #253044; padding: 6px 8px; min-width: 30px; min-height: 30px; cursor: pointer;
+}
+.ib-config-handle { cursor: grab; }
+.ib-config-handle:active { cursor: grabbing; }
+.ib-config-list-tools { margin: 30px 0 12px; font-size: 12px; }
+.ib-config-order-status { min-height: 1.5em; }
+.ib-configuring tbody td { cursor: crosshair; }
+.ib-configuring tbody td:hover, .ib-configuring tbody td:focus-visible { outline: 2px solid #1e87f0; outline-offset: -2px; }
+.ib-configuring .fieldoperations { display: none !important; }
+.ib-config-picker {
+    position: absolute; z-index: 1010; display: flex; gap: 4px; padding: 4px;
+    max-width: calc(100vw - 8px); background: #fff; border: 1px solid #aab8c9; border-radius: 4px;
+    box-shadow: 0 2px 8px #0002;
+    select { min-width: 0; max-width: 300px; background: #fff; color: #253044; border: 0; font-size: 13px; }
+}
+.ib-style-state-preview {
+    display: flex; align-items: center; gap: 12px; margin-top: 12px; padding: 12px; background: #f6f8fb;
+    i { font-size: 24px; }
+    span { color: #526075; font-size: 12px; }
+    &[hidden] { display: none; }
+}
+@media (pointer: coarse) {
+    .ib-config-header-actions { opacity: 1; position: static; }
+    .ib-config-header-actions button, .ib-config-handle, .ib-config-picker button { min-width: 44px; min-height: 44px; }
 }
 
 @media (pointer: coarse) {

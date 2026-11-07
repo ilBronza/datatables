@@ -4,6 +4,7 @@ namespace IlBronza\Datatables\DatatablesFields;
 
 class DatatableFieldBoolean extends DatatableField
 {
+	use \IlBronza\Datatables\Traits\DatatablesFields\BooleanStyleTrait;
 	public null|int|string $keyPosition = null;
 	public null|int|string $valuePosition = null;
 
@@ -40,9 +41,16 @@ class DatatableFieldBoolean extends DatatableField
 		 *
 		 * **/
 
-		return "
-			item = '<i class=\"fa-{$this->iconType} fa-{$iconString}\"></i>';
-		";
+		return "item = '<i class=\"fa-{$this->iconType} fa-{$iconString}\"></i>';";
+	}
+
+	private function getStateBooleanString(string $iconString, string $state = 'true')
+	{
+		$attributes = addslashes($this->booleanStyleAttributes($state, $iconString));
+		$icon = $this->booleanStyleIconExpression($state, $iconString);
+		$renderer = $this->getBooleanString($iconString);
+		$renderer = str_replace('class="', $attributes . " data-style-applied-icon=\"' + {$icon} + '\" class=\"", $renderer);
+		return str_replace('fa-' . $iconString . '"', "fa-' + {$icon} + '\"", $renderer);
 	}
 
 	private function getVoidString()
@@ -56,17 +64,17 @@ class DatatableFieldBoolean extends DatatableField
 			return "
 
 			if(item)
-				" . $this->getBooleanString($this->trueIcon) . "
+				" . $this->getStateBooleanString($this->trueIcon) . "
 
 			else if((item == 0)||(item === false))
-				" . $this->getBooleanString($this->falseIcon) . "
+				" . $this->getStateBooleanString($this->falseIcon, 'false') . "
 
 			else
-				" . $this->getBooleanString($this->nullIcon);
+				" . $this->getStateBooleanString($this->nullIcon, 'null');
 
 		return "
 			if(item)
-				" . $this->getBooleanString($this->trueIcon) . "
+				" . $this->getStateBooleanString($this->trueIcon) . "
 
 			else
 				" . $this->getVoidString();
@@ -86,10 +94,10 @@ class DatatableFieldBoolean extends DatatableField
 		return "
 
 		if(item)
-			" . $this->getBooleanString($this->trueIcon) . "
+			" . $this->getStateBooleanString($this->trueIcon) . "
 
 		else
-			" . $this->getBooleanString($this->falseIcon) . "
+			" . $this->getStateBooleanString($this->falseIcon, 'false') . "
 		";
 	}
 

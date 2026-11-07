@@ -73,26 +73,20 @@
 
                     const key = $(this).attr('name') || $(this).attr('id');
 
-                    if (data.filters[key]) {
+                    if (data.filters && Object.prototype.hasOwnProperty.call(data.filters, key)) {
 
-                        $(this).val(data.filters[key]).change();
+                        $(this).val(data.filters[key]).trigger($.Event('change', {ibRestoringState: true}));
 
-{{--                         let field = this;
 
-                        // Triggers per compatibilità
-                        setTimeout(function ()
-                        {
-                            $(field).trigger('change');
-                        }, 100); --}}
 
-                        $(this).addClass('filter-filled');
+                        $(this).toggleClass('filter-filled', !!String(data.filters[key] || '').trim());
                     }
                 });
 
                 // Forza il ricalcolo
                 const tableInstance = $('#{{ $table->getId() }}').DataTable();
 
-                tableInstance.draw();
+                tableInstance.draw(false);
 			}, 0);
         },
 
@@ -266,6 +260,17 @@
 		@endif ];
 
     window.{{ $table->getId() }}buttons = [
+        @if($table->canEditColumnStyles())
+        {
+            text: @json(__('datatables::columnStyles.editTable')),
+            className: 'ib-config-toggle',
+            attr: {'aria-pressed': 'false'},
+            action: function (e, dt) {
+                e.preventDefault();
+                if (window.ibDtTableConfigurator) window.ibDtTableConfigurator.toggle(dt);
+            }
+        },
+        @endif
         @if($table->hasReloadButton())
         {
             extend: 'reload',

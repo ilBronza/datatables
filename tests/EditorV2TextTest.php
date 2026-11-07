@@ -112,7 +112,26 @@ class EditorV2TextTest extends TestCase
 		$this->assertStringContainsString('ib-dt-fieldsgroup-details', $header);
 		$this->assertStringContainsString('data-filtertype="text"', $header);
 		$this->assertStringContainsString('refreshRow&quot;:true', $header);
-		$this->assertStringContainsString('name="footertitle"', view('datatables::uikit.footer._footer', ['table' => $table])->render());
+		$footer = view('datatables::uikit.footer._footer', ['table' => $table])->render();
+		$this->assertStringContainsString('name="footertitle"', $footer);
+		$table->summary = ['sum' => []];
+		$summary = view('datatables::uikit.header._headerSummary', ['table' => $table])->render();
+		$dom = new \DOMDocument();
+		@$dom->loadHTML('<table>' . $header . '<thead>' . $summary . '</thead>' . $footer . '</table>');
+		$xpath = new \DOMXPath($dom);
+		foreach ($table->getFields() as $column) {
+			$nodes = $xpath->query('//th[@data-field-name="' . $column->getFieldName() . '"]');
+			// Title, header filter, footer filter and both summaries, for both field families.
+			$this->assertSame(5, $nodes->length);
+			foreach ($nodes as $node) {
+				$this->assertSame((string) $column->getIndex(), $node->getAttribute('data-original-column-index'));
+				$this->assertSame((string) $column->getIndex(), $node->getAttribute('data-column'));
+			}
+		}
+		$table->getFieldByName('legacy')->mainHeader = ['label' => 'Details', 'colspan' => 2];
+		$mainHeader = view('datatables::uikit.header._mainHeader', ['table' => $table])->render();
+		$this->assertStringContainsString('colspan="2"', $mainHeader);
+		$this->assertStringNotContainsString('data-original-column-index', $mainHeader);
 		$this->assertStringContainsString('125px', view('datatables::datatablesFields.__tableSingleSpecCss', ['table' => $table])->render());
 	}
 

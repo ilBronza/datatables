@@ -28,6 +28,7 @@ require('datatables.net-select-dt');
  *  FILES letti nella stessa cartella di questo
  */
 
+require('./datatables.vendor.columnIndexes.js');
 require('./datatables.vendor.editorV2.js');
 require('./datatables.vendor.ajaxButton.min.js');
 require('./datatables.vendor.editorDate.js');
@@ -40,6 +41,7 @@ require('./datatables.vendor.fieldsGroups.js');
 require('./datatables.vendor.buttons.min.js');
 require('./datatables.vendor.columnVisibility.min.js');
 require('./datatables.vendor.columnStyles.js');
+require('./datatables.vendor.tableConfigurator.js');
 require('./datatables.vendor.datatablesFields.min.js');
 require('./datatables.vendor.duplicates.min.js');
 require('./datatables.vendor.elementsSelectRows.js');

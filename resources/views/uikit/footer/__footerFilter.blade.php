@@ -10,8 +10,10 @@
 		data-filter-draw-on-events="{{ $field->canDrawTable() }}"
 		data-filter-draw-on-keyup="{{ $field->canDrawKeyup() }}"
 		data-name="{{ $field->getFieldName() }}"
+		data-field-name="{{ $field->getFieldName() }}"
 		data-camelName="{{ $field->getCamelName() }}"
 		data-column="{{ $field->getIndex() }}"
+		data-original-column-index="{{ $field->getIndex() }}"
 
 		@foreach($field->getFooterData() as $data => $value)
 			data-{{ $data }}="{{ $value }}"

@@ -1,6 +1,6 @@
 <th @if($headerTooltip = $field->getHeaderTooltip()) uk-tooltip="offset: 20; title: {{ $headerTooltip }}" @elseif(config('datatables.useTooltips')) uk-tooltip="offset: 20; title: {{ $field->getTranslatedName() }}" @endif
 class="{{ $field->getHeaderHtmlClasses() }} {{ Str::slug($field->getTranslatedName()) }} @if(! $field->showLabel()) hidelabel @endif"
-data-column="{{ $field->getIndex() }}">
+data-column="{{ $field->getIndex() }}" data-original-column-index="{{ $field->getIndex() }}" data-field-name="{{ $field->getFieldName() }}">
 	<div @if(! $field->showLabel()) class=" uk-hidden" @endif>
 		{!! $field->getTranslatedName() !!}
 	</div>

@@ -235,6 +235,12 @@
         return getTableDomId(table) + ':' + rowIndex;
     }
 
+    function pendingColumnIndex(table, column)
+    {
+        const index = table.columns().indexes().toArray().find(index => table.column(index).dataSrc() === column.dataSource);
+        return index === undefined ? column.columnIndex : index;
+    }
+
     function setPendingColumns(table, rowIndex, columns)
     {
         const key = getPendingKey(table, rowIndex);
@@ -266,7 +272,7 @@
             return pending.columns.some(function(pendingColumn)
             {
                 const cell = pending.table
-                    .cell(pending.rowIndex, pendingColumn.columnIndex)
+                    .cell(pending.rowIndex, pendingColumnIndex(pending.table, pendingColumn))
                     .node();
 
                 return cell === targetCell
@@ -296,7 +302,7 @@
 
             pending.columns.forEach(function(pendingColumn)
             {
-                const columnIndex = pendingColumn.columnIndex;
+                const columnIndex = pendingColumnIndex(pending.table, pendingColumn);
                 const cell = pending.table.cell(pending.rowIndex, columnIndex).node();
 
                 // The user edited or saved this cell after the response which
@@ -325,11 +331,13 @@
 
         const rowIndex = row.index();
         const revisions = {};
+        Object.defineProperty(revisions, 'cells', {value:new Map()});
 
         table.columns().indexes().toArray().forEach(function(columnIndex)
         {
             const cell = table.cell(rowIndex, columnIndex).node();
             revisions[columnIndex] = getCellRevision(cell);
+            revisions.cells.set(cell, getCellRevision(cell));
         });
 
         return revisions;
@@ -356,7 +364,9 @@
         {
             const cellApi = table.cell(rowIndex, columnIndex);
             const cell = cellApi.node();
-            const expectedRevision = revisionSnapshot
+            const expectedRevision = revisionSnapshot && revisionSnapshot.cells && revisionSnapshot.cells.has(cell)
+                ? revisionSnapshot.cells.get(cell)
+                : revisionSnapshot
                 && Object.prototype.hasOwnProperty.call(revisionSnapshot, columnIndex)
                     ? revisionSnapshot[columnIndex]
                     : getCellRevision(cell);

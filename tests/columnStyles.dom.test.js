@@ -135,6 +135,40 @@ domTest('tooltip content is lazy and original titles survive cancel', t => {
     app.$(node.closest('td')).trigger('mouseleave'); assert.equal(node.title,'Original title');
 });
 
+domTest('narrow email links preview all overflow modes, persist visible overflow and reset to truncation', t => {
+    const app = boot(t, {td:{width:'150px'}}), {window} = app;
+    const email = 'long.email.address@example.test';
+    app.tables.orders.cell(0,0).data('<a class="uk-text-truncate" href="mailto:' + email + '">' + email + '</a>').draw();
+    const defaults = window.document.createElement('style');
+    defaults.textContent = '.uk-text-truncate{display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}';
+    window.document.head.appendChild(defaults);
+    const link = window.document.querySelector('#orders td.customer a');
+    app.open();
+    const modes = {visible:['nowrap','visible','clip'], wrap:['normal','visible','clip'],
+        clip:['nowrap','hidden','clip'], ellipsis:['nowrap','hidden','ellipsis'], tooltip:['nowrap','hidden','ellipsis']};
+    for (const [mode, expected] of Object.entries(modes)) {
+        app.input('text-overflow-mode', mode);
+        const style = window.getComputedStyle(link);
+        assert.deepEqual([style.whiteSpace, style.overflow, style.textOverflow], expected, mode);
+        assert.equal(link.textContent, email);
+        assert.equal(link.getAttribute('href'), 'mailto:' + email);
+    }
+    app.$(link).trigger('mouseover');
+    assert.equal(link.closest('td').title, email);
+    app.input('text-overflow-mode', 'visible');
+    assert.equal(link.closest('td').hasAttribute('title'), false);
+    app.panel().querySelector('.ib-style-save').click();
+    assert.equal(JSON.parse(app.requests[0].options.data.settings_json).selectors.td['text-overflow-mode'], 'visible');
+    app.requests[0].deferred.resolve({success:true});
+    app.panel().querySelector('.ib-style-cancel').click(); app.open();
+    const field = app.panel().querySelector('[data-property="text-overflow-mode"]');
+    assert.equal(field.value, 'visible');
+    field.closest('.ib-style-control').querySelector('button').click();
+    assert.equal(window.getComputedStyle(link).overflow, 'hidden');
+    assert.equal(window.getComputedStyle(link).textOverflow, 'ellipsis');
+    assert.ok(app.sheet().textContent.includes('width:150px!important'));
+});
+
 domTest('async cell replacements refresh targets and release the observer when closed', async t => {
     const app=boot(t); app.open();
     const cell=app.window.document.querySelector('#orders td.customer');

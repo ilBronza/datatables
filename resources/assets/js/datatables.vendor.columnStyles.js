@@ -1,10 +1,10 @@
-/* Column styles: no cell inspection or editor DOM until the gear is opened. */
+/* Column styles: target discovery and editor DOM are created only when opened. */
 (function (root, factory) {
     const api = factory();
     if (typeof module === 'object' && module.exports) module.exports = api;
     if (root && root.document && root.jQuery) {
         root.ibDtColumnStyles = api;
-        api.bind(root, root.document, root.jQuery);
+        Object.assign(api, api.bind(root, root.document, root.jQuery));
     }
 })(typeof window === 'undefined' ? null : window, function () {
     'use strict';
@@ -16,7 +16,7 @@
         'text-align': ['left', 'center', 'right', 'start', 'end'],
         'text-transform': ['none', 'uppercase', 'lowercase', 'capitalize'],
         'text-decoration': ['none', 'underline', 'line-through'],
-        'text-overflow-mode': ['wrap', 'clip', 'ellipsis', 'tooltip']
+        'text-overflow-mode': ['visible', 'wrap', 'clip', 'ellipsis', 'tooltip']
     };
     const lengths = ['width', 'min-width', 'max-width', 'font-size', 'letter-spacing'];
     const clone = value => JSON.parse(JSON.stringify(value || {}));
@@ -38,6 +38,11 @@
                 if (key === '__tooltip') { if (raw === true) out[key] = true; return; }
                 if (typeof raw !== 'string' && typeof raw !== 'number') return;
                 let value = String(raw).trim();
+                if (key === '__icon') {
+                    if (/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value) && value.length <= 80
+                        && /^td \[data-style-target="boolean-(true|false|null)"\]$/.test(selector)) out[key] = value;
+                    return;
+                }
                 if (lengths.includes(key)) {
                     if (/^-?\d+(?:\.\d+)?$/.test(value)) value += 'px';
                     if (/^-?\d+(?:\.\d+)?(?:px|em|rem|%)$/.test(value) || (key.includes('width') && value === 'auto')) out[key] = value;
@@ -62,11 +67,12 @@
     function declarations(rules) {
         const out = [];
         Object.entries(rules).forEach(([key, value]) => {
-            if (key === '__tooltip') return;
+            if (key === '__tooltip' || key === '__icon') return;
             if (key === 'text-overflow-mode') {
                 out.push('white-space:' + (value === 'wrap' ? 'normal' : 'nowrap') + '!important',
-                    'overflow:' + (value === 'wrap' ? 'visible' : 'hidden') + '!important',
-                    'text-overflow:' + (['ellipsis', 'tooltip'].includes(value) ? 'ellipsis' : 'clip') + '!important');
+                    'overflow:' + (['visible', 'wrap'].includes(value) ? 'visible' : 'hidden') + '!important',
+                    'text-overflow:' + (['ellipsis', 'tooltip'].includes(value) ? 'ellipsis' : 'clip') + '!important',
+                    'overflow-wrap:' + (value === 'wrap' ? 'anywhere' : 'normal') + '!important');
             } else out.push(key + ':' + value + '!important');
         });
         return out.join(';');
@@ -79,11 +85,20 @@
             const targets = paths(signature).map(path => base + ' ' + cell + (path ? ' ' + path : ''));
             const width = rules.width;
             let output = targets.join(',') + '{' + declarations(rules) + '}';
+            if (signature !== 'td' && rules['text-overflow-mode']) output += targets.join(',') + '{display:block;max-width:100%;min-width:0}';
+            if (signature === 'td' && rules['text-overflow-mode']) {
+                const content = base + ' ' + cell + ' :is(a,span,div,li):not([data-style-default-icon]):not(.fieldoperations):not(.fieldoperations *)';
+                output += content + '{' + declarations({'text-overflow-mode':rules['text-overflow-mode']}) + ';max-width:100%;min-width:0}'
+                    + content + ':is(a,span){display:inline-block;vertical-align:middle}';
+            }
             if (signature === 'td' && width) {
                 const header = 'th[class~=' + quote(column) + ']';
-                output += base + ' ' + header + ',[id=' + quote(tableId + '_wrapper') + '] ' + header
-                    + ',table[data-realid=' + quote(tableId) + '] ' + header
-                    + '{' + declarations({width, 'min-width': width, 'max-width': width}) + '}';
+                const scopes = [base, '[id=' + quote(tableId + '_wrapper') + ']', 'table[data-realid=' + quote(tableId) + ']'];
+                const boxes = scopes.flatMap(scope => [scope + ' ' + header, scope + ' ' + cell]);
+                output += boxes.join(',') + '{--ib-column-width:' + width + '!important;box-sizing:border-box;'
+                    + declarations({width, 'min-width': width, 'max-width': width}) + '}';
+                if (width !== 'auto') output += boxes.map(box => box + ' > :not(.fieldoperations):not(.ib-config-header-actions)').join(',')
+                    + '{min-width:0!important;max-width:calc(' + width + ' - 24px)!important;box-sizing:border-box;overflow-wrap:anywhere}';
             }
             return output;
         }).join('\n');
@@ -107,6 +122,7 @@
         if (tag === 'img') return 'image';
         if (tag === 'a') return 'link';
         if (tag === 'button') return 'button';
+        if (['ul', 'ol', 'li'].includes(tag)) return 'list';
         if (['input', 'select', 'textarea'].includes(tag)) return 'input';
         if (/(?:badge|label|status)/i.test(node.className || '')) return 'badge';
         return 'text';
@@ -148,7 +164,8 @@
                     const type = kind(node);
                     const explicit = node.getAttribute('data-style-label');
                     const role = node.getAttribute('data-style-target');
-                    const excluded = (node.closest('svg') !== null && node.tagName.toLowerCase() !== 'svg')
+                    const excluded = !!node.closest('.fieldoperations, [data-ib-config-control]')
+                        || (node.closest('svg') !== null && node.tagName.toLowerCase() !== 'svg')
                         || (node.closest('[hidden], [aria-hidden="true"]') && type !== 'icon')
                         || node.matches('script, style, template, input[type="hidden"]');
                     const directText = !excluded && Array.from(node.childNodes).some(child => child.nodeType === 3 && child.textContent.trim());
@@ -242,6 +259,96 @@
         window.__ibColumnStyleInspectorBound = true;
         let active = null;
         const tooltipOriginals = new Map();
+        const layouts = new WeakMap();
+
+        function layout(dt) {
+            const table = dt.table().node();
+            const list = document.getElementById('togglefields' + table.id);
+            if (!list || !list.dataset.styleLabels) return;
+            const configured = Array.from(list.querySelectorAll('[data-configuration]'), node => JSON.parse(node.dataset.configuration));
+            if (!configured.length) return;
+            let state = layouts.get(table);
+            if (!state) { state = {busy:false, inline:new Map()}; layouts.set(table,state); }
+            if (state.busy) return;
+            state.busy=true;
+            try {
+                // Undo only constraints installed by this function before recalculating them.
+                state.inline.forEach((style,node)=>{ ['width','min-width','max-width'].forEach(property=>{
+                    const old=style[property];if(old.value)node.style.setProperty(property,old.value,old.priority);else node.style.removeProperty(property);
+                }); });state.inline.clear();
+                const wrapper=dt.table().container(), containerWidth=wrapper.clientWidth;
+                const rootFont=parseFloat(window.getComputedStyle(document.documentElement).fontSize)||16;
+                const saved=(window.__ibColumnStyleDraftByTable || {})[table.id] || {};
+                const dimensions=[];
+                const settings=dt.settings()[0];
+                dt.columns().every(function(index){
+                    const header=this.header(), field=configured.find(item=>header && header.classList.contains(item.column));
+                    if(!field)return;
+                    const selectors=active && active.table===table && active.column===field.column?active.draft:(saved[field.column] || {}).selectors;
+                    const custom=(normalize(selectors).td || {}).width;
+                    const value=custom || field.width;
+                    const matched=String(value || '').match(/^(\d+(?:\.\d+)?)(px|em|rem|%)$/);
+                    let pixels;
+                    if(matched){
+                        const unit=matched[2],font=parseFloat(window.getComputedStyle(header).fontSize)||16;
+                        pixels=Number(matched[1])*(unit==='rem'?rootFont:unit==='em'?font:unit==='%'?containerWidth/100:1);
+                    } else pixels=header.getBoundingClientRect().width || parseFloat(settings.aoColumns[index].sWidth) || 100;
+                    pixels=Math.max(1,pixels);
+                    settings.aoColumns[index].sWidthOrig=pixels+'px';settings.aoColumns[index].sWidth=pixels+'px';
+                    if(this.visible())dimensions.push({index,pixels});
+                    // External backend rules are constrained in CSS. Preserve and override only
+                    // inline !important widths which would otherwise overflow a user-sized cell.
+                    if(custom && matched) Array.from(this.nodes()).forEach(cell=>{
+                        cell.querySelectorAll('[style]').forEach(node=>{
+                            if(node.closest('.fieldoperations,[data-ib-config-control]'))return;
+                            const computed=window.getComputedStyle(node), limit=Math.max(0,pixels-24);
+                            if(parseFloat(computed.minWidth)<=limit && parseFloat(computed.width)<=limit)return;
+                            if(!['width','min-width'].some(property=>node.style.getPropertyValue(property)))return;
+                            state.inline.set(node,Object.fromEntries(['width','min-width','max-width'].map(property=>[property,{value:node.style.getPropertyValue(property),priority:node.style.getPropertyPriority(property)}])));
+                            node.style.setProperty('min-width','0','important');node.style.setProperty('max-width',limit+'px','important');
+                            if(parseFloat(computed.width)>limit)node.style.setProperty('width','100%','important');
+                        });
+                    });
+                });
+                if(!dimensions.length)return;
+                const width=dimensions.reduce((sum,entry)=>sum+entry.pixels,0)+'px';
+                const tables=new Set([table]);
+                wrapper.querySelectorAll('table').forEach(node=>{if(node.dataset.realid===table.id || node.classList.contains('dataTable'))tables.add(node);});
+                document.querySelectorAll('table[data-realid]').forEach(node=>{if(node.dataset.realid===table.id)tables.add(node);});
+                tables.forEach(node=>{
+                    node.style.setProperty('table-layout','fixed','important');node.style.setProperty('width',width,'important');
+                    node.style.setProperty('margin-left','0','important');node.style.setProperty('margin-right','0','important');
+                    node.querySelectorAll(':scope > colgroup > col').forEach((col,index)=>{if(dimensions[index])col.style.setProperty('width',dimensions[index].pixels+'px','important');});
+                });
+            } finally { state.busy=false; }
+        }
+
+        function applyIcons(table, column, selectors) {
+            table.querySelectorAll('td').forEach(cell => {
+                if (!cell.classList.contains(column)) return;
+                cell.querySelectorAll('[data-style-default-icon]').forEach(node => {
+                    const signature = 'td [data-style-target="' + node.dataset.styleTarget + '"]';
+                    const previous = node.dataset.styleAppliedIcon || node.dataset.styleDefaultIcon;
+                    const next = (normalize(selectors)[signature] || {}).__icon || node.dataset.styleDefaultIcon;
+                    if (previous !== next) { node.classList.remove('fa-' + previous); node.classList.add('fa-' + next); }
+                    node.dataset.styleAppliedIcon = next;
+                });
+            });
+        }
+
+        function adjust(editor) {
+            const width = (normalize(editor.draft).td || {}).width || editor.configuration.width;
+            const index = editor.dt.column(function (_index, _data, header) { return header && header.classList.contains(editor.column); }).index();
+            if (index !== undefined) {
+                const settings = editor.dt.settings()[0];
+                settings.aoColumns[index].sWidthOrig = width || null;
+                settings.aoColumns[index].sWidth = width || null;
+            }
+            layout(editor.dt);
+            editor.dt.columns.adjust();
+            layout(editor.dt);
+            if (editor.dt.fixedHeader && editor.dt.fixedHeader.adjust) editor.dt.fixedHeader.adjust();
+        }
 
         function restoreTooltips() {
             tooltipOriginals.forEach((title, node) => {
@@ -265,26 +372,31 @@
         }
 
         function close() {
-            if (!active) return;
+            if (!active) return true;
+            if (active.saving) return false;
             const editor = active;
             restoreTooltips();
             active = null;
+            window.__ibColumnStylePreview = null;
             window.cancelAnimationFrame(editor.frame);
             window.cancelAnimationFrame(editor.discoveryFrame);
             if (editor.cancelDiscovery) editor.cancelDiscovery();
             if (editor.observer) editor.observer.disconnect();
             editor.style.textContent = css(editor.table.id, editor.column, editor.saved);
+            applyIcons(editor.table, editor.column, editor.saved);
             editor.highlight.remove();
             editor.panel.remove();
             editor.list.hidden = false;
             editor.bar.classList.remove('ib-column-style-open');
             $(editor.table).off('.ibColumnStyleInspector');
             editor.gear.setAttribute('aria-expanded', 'false');
-            editor.dt.columns.adjust();
-            editor.gear.focus();
+            editor.draft = clone(editor.saved);
+            adjust(editor);
+            (editor.returnFocus && editor.returnFocus.isConnected ? editor.returnFocus : editor.gear).focus();
+            return true;
         }
 
-        function open(gear) {
+        function open(gear, selectedTarget = 'td', returnFocus = gear) {
             const list = gear.closest('.toggle-vis-container');
             const table = list && document.getElementById(list.dataset.tableid);
             const toggle = gear.closest('.ib-colvis-item').querySelector('.toggle-vis');
@@ -298,6 +410,7 @@
             const saved = normalize(((savedByTable[table.id] || {})[column] || {}).selectors);
             const labels = JSON.parse(list.dataset.styleLabels || '{}');
             const fonts = JSON.parse(list.dataset.styleFonts || '{}');
+            const configuration = JSON.parse(toggle.dataset.configuration || '{}');
             const bar = list.closest('.uk-offcanvas-bar');
             const panel = document.createElement('section');
             panel.className = 'ib-column-style-editor';
@@ -305,15 +418,17 @@
             // Static scaffold only; all column names, samples and labels use textContent.
             panel.innerHTML = '<header><button type="button" class="ib-style-back"></button><h3></h3><p class="ib-style-scope"></p></header>'
                 + '<div class="ib-style-body"><label class="ib-style-target-label"><span></span><select class="uk-select ib-style-target"></select></label>'
-                + '<p class="ib-style-sample"></p><p class="ib-style-empty ib-style-discovery" role="status" hidden></p>'
+                + '<p class="ib-style-sample"></p><div class="ib-style-state-preview" hidden><i aria-hidden="true"></i><span></span></div><p class="ib-style-empty ib-style-discovery" role="status" hidden></p>'
                 + '<p class="ib-style-empty ib-style-unavailable" role="status"></p><div class="ib-style-controls"></div>'
                 + '<button type="button" class="ib-style-reset"></button></div>'
                 + '<footer><p role="status" aria-live="polite"></p><div><button type="button" class="uk-button uk-button-default ib-style-cancel"></button>'
                 + '<button type="button" class="uk-button uk-button-primary ib-style-save"></button></div></footer>';
             const highlight = document.createElement('style');
             document.head.appendChild(highlight);
-            const editor = active = {table, column, dt, list, panel, bar, gear, labels, fonts, saved: clone(saved), draft: clone(saved),
-                index: dt.column(function (_index, _data, header) { return header && header.classList.contains(column); }).index(), style: styleNode(table.id, column), highlight, target: 'td', frame: 0, saving: false};
+            const editor = active = {table, column, dt, list, panel, bar, gear, returnFocus, labels, fonts, configuration, saved: clone(saved), draft: clone(saved),
+                index: dt.column(function (_index, _data, header) { return header && header.classList.contains(column); }).index(), style: styleNode(table.id, column), highlight,
+                target: paths(selectedTarget).length ? selectedTarget : 'td', frame: 0, saving: false};
+            window.__ibColumnStylePreview = {tableId: table.id, column, selectors: editor.draft};
             const find = selector => panel.querySelector(selector);
             find('.ib-style-back').textContent = '‹ ' + labels.columns;
             find('h3').textContent = toggle.textContent.trim();
@@ -336,8 +451,24 @@
             function paint() {
                 restoreTooltips();
                 editor.style.textContent = css(table.id, column, editor.draft);
+                window.__ibColumnStylePreview.selectors = editor.draft;
+                applyIcons(table, column, editor.draft);
+                statePreview();
                 if (editor.frame) window.cancelAnimationFrame(editor.frame);
-                editor.frame = window.requestAnimationFrame(() => { editor.frame = 0; if (active === editor) dt.columns.adjust(); });
+                editor.frame = window.requestAnimationFrame(() => { editor.frame = 0; if (active === editor) adjust(editor); });
+            }
+            function statePreview() {
+                const target = (editor.targets || []).find(item => item.selector === editor.target);
+                const preview = find('.ib-style-state-preview');
+                preview.hidden = !target || !target.state;
+                if (preview.hidden) return;
+                const definition = configuration.states[target.state];
+                const rules = normalize(editor.draft)[editor.target] || {};
+                const icon = preview.querySelector('i');
+                icon.className = 'fa-' + definition.family + ' fa-' + (rules.__icon || definition.icon);
+                icon.removeAttribute('style');
+                Object.entries(rules).forEach(([property, value]) => { if (!property.startsWith('__')) icon.style.setProperty(property, value); });
+                preview.querySelector('span').textContent = labels.statePreview + ': ' + target.label;
             }
             function setRule(property, value) {
                 const rules = editor.draft[editor.target] || {};
@@ -354,19 +485,21 @@
                 const rules = editor.draft[editor.target] || {};
                 const sample = target.node && table.contains(target.node) ? target.node : null;
                 find('.ib-style-sample').textContent = target.sample || '';
-                find('.ib-style-unavailable').textContent = sample || editor.discovering ? '' : labels.notOnPage;
+                find('.ib-style-unavailable').textContent = sample || target.state || editor.discovering ? '' : labels.notOnPage;
+                statePreview();
                 const outline = '#' + identifier(table.id) + ' td[class~=' + quote(column) + ']';
                 highlight.textContent = paths(editor.target).map(path => outline + (path ? ' ' + path : '')).join(',')
                     + '{outline:2px solid #1e87f0;outline-offset:-2px}';
                 const definitions = [];
-                if (target.kind === 'cell') definitions.push(['width', 'number', labels.width, 40, 1600, 10]);
+                if (target.state) definitions.push(['__icon', 'text', labels.stateIcon]);
+                if (target.kind === 'cell') definitions.push(['width', 'range', labels.width, 40, 1600, 1]);
+                if (!['image', 'icon'].includes(target.kind)) definitions.push(['text-overflow-mode', 'select', labels.overflow, enums['text-overflow-mode']]);
                 definitions.push(['color', 'color', labels.color], ['background-color', 'color', labels.background]);
                 if (!['image', 'icon'].includes(target.kind)) {
                     definitions.push(['font-size', 'number', labels.fontSize, 8, 72, 1], ['font-weight', 'select', labels.weight, ['300','400','500','600','700']],
-                        ['font-style', 'select', labels.fontStyle, ['normal','italic']], ['text-align', 'select', labels.align, ['left','center','right']],
-                        ['text-overflow-mode', 'select', labels.overflow, ['wrap','clip','ellipsis','tooltip']]);
+                        ['font-style', 'select', labels.fontStyle, ['normal','italic']], ['text-align', 'select', labels.align, ['left','center','right']]);
                 }
-                if (target.kind === 'icon' && sample && sample.tagName.toLowerCase() !== 'svg') definitions.push(['font-size', 'number', labels.iconSize, 8, 72, 1]);
+                if (target.kind === 'icon' && (target.state || (sample && sample.tagName.toLowerCase() !== 'svg'))) definitions.push(['font-size', 'number', labels.iconSize, 8, 72, 1]);
                 definitions.forEach(definition => addControl(container, definition, rules, sample));
                 if (!['image', 'icon'].includes(target.kind)) {
                     const advanced = document.createElement('details');
@@ -386,7 +519,8 @@
                 label.htmlFor = id; label.textContent = title;
                 const field = document.createElement(type === 'select' ? 'select' : 'input');
                 field.id = id; field.dataset.property = property;
-                field.className = type === 'select' ? 'uk-select' : 'uk-input';
+                field.className = type === 'select' ? 'uk-select' : type === 'range' ? 'uk-range' : 'uk-input';
+                let output;
                 if (type === 'select') {
                     field.add(new Option(labels.original, ''));
                     min.forEach(option => field.add(new Option(labels[option] || option, property === 'font-family' ? fonts[option] : option)));
@@ -395,7 +529,25 @@
                     field.value = selected || '';
                 } else {
                     field.type = type;
-                    if (type === 'number') {
+                    if (type === 'range') {
+                        const header = dt.column(editor.index).header();
+                        const computed = sample && window.getComputedStyle(sample).getPropertyValue(property);
+                        const value = String(rules[property] || configuration.width || computed || '');
+                        const matched = value.match(/^(\d+(?:\.\d+)?)(px|em|rem|%)$/);
+                        let pixels = header.getBoundingClientRect().width || parseFloat(dt.settings()[0].aoColumns[editor.index].sWidth) || 100;
+                        if (matched) {
+                            const unit = matched[2];
+                            const font = parseFloat(window.getComputedStyle(unit === 'rem' ? document.documentElement : header).fontSize) || 16;
+                            pixels = Number(matched[1]) * (unit === 'em' || unit === 'rem' ? font : unit === '%' ? dt.table().container().clientWidth / 100 : 1);
+                        }
+                        pixels = Math.max(1, Math.round(pixels));
+                        // Keep existing widths visible, including values outside the usual slider bounds.
+                        field.min = Math.min(min, pixels); field.max = Math.max(max, pixels); field.step = step;
+                        field.value = pixels;
+                        output = document.createElement('output'); output.htmlFor = id;
+                        output.value = field.value + ' px';
+                        label.append(' · ', output);
+                    } else if (type === 'number') {
                         field.min = min; field.max = max; field.step = step;
                         const explicit = rules[property];
                         // Keep non-pixel legacy units editable without silently turning them into pixels.
@@ -404,6 +556,17 @@
                         } else field.value = explicit ? parseFloat(explicit) : '';
                         const computed = sample && window.getComputedStyle(sample).getPropertyValue(property);
                         field.placeholder = computed ? labels.original + ' (' + computed + ')' : labels.original;
+                    } else if (type === 'text') {
+                        const state = editor.targets.find(target => target.selector === editor.target).state;
+                        field.value = rules[property] || '';
+                        field.placeholder = configuration.states[state].icon;
+                        field.pattern = '[a-z0-9]+(-[a-z0-9]+)*';
+                        field.maxLength = 80;
+                        field.setAttribute('list', 'ib-style-icons-' + table.id);
+                        const suggestions = document.createElement('datalist'); suggestions.id = 'ib-style-icons-' + table.id;
+                        Array.from(new Set(['check','xmark','minus','circle-check','circle-xmark','circle-question','toggle-on','toggle-off','star','flag','bell','triangle-exclamation', ...Object.values(configuration.states).map(state => state.icon)]))
+                            .forEach(value => { const option = document.createElement('option'); option.value = value; suggestions.appendChild(option); });
+                        row.appendChild(suggestions);
                     } else {
                         const value = rules[property] || (sample && window.getComputedStyle(sample).getPropertyValue(property)) || '#000000';
                         const rgb = value.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)/);
@@ -416,12 +579,23 @@
                 reset.disabled = !rules[property];
                 reset.addEventListener('click', () => { setRule(property, ''); controls(); });
                 field.addEventListener(type === 'select' ? 'change' : 'input', () => {
-                    if (field.type === 'number' && !field.validity.valid) return;
+                    if (!field.validity.valid) return;
+                    if (output) output.value = field.value + ' px';
                     setRule(property, field.value);
                     reset.textContent = field.value ? labels.custom : labels.original;
                     reset.disabled = !field.value;
                 });
-                row.append(label, field, reset); container.appendChild(row);
+                row.append(label, field, reset);
+                if (property === 'text-overflow-mode') {
+                    const help = document.createElement('p'); help.className = 'ib-style-help'; help.id = id + '-help';
+                    field.setAttribute('aria-describedby', help.id);
+                    const updateHelp = () => {
+                        const mode = field.value || 'default';
+                        help.textContent = labels['overflowHelp' + mode[0].toUpperCase() + mode.slice(1)] || '';
+                    };
+                    field.addEventListener('change', updateHelp); updateHelp(); row.appendChild(help);
+                }
+                container.appendChild(row);
             }
             function refresh() {
                 if (editor.cancelDiscovery) editor.cancelDiscovery();
@@ -435,6 +609,17 @@
                 editor.cancelDiscovery = discoverInChunks(cells(), editor.draft, labels, (targets, done) => {
                     if (active !== editor || revision !== editor.discoveryRevision) return;
                     const current = editor.target;
+                    Object.entries(configuration.states || {}).forEach(([state, definition]) => {
+                        const selector = 'td [data-style-target="boolean-' + state + '"]';
+                        let target = targets.find(item => item.selector === selector);
+                        if (!target) { target = {selector, node:null, sample:'', kind:'icon'}; targets.push(target); }
+                        target.label = labels['state' + state[0].toUpperCase() + state.slice(1)];
+                        target.kind = 'icon';
+                        target.state = state;
+                    });
+                    // A contextual target may be reached only in a later discovery frame.
+                    if (!done && !targets.some(target => target.selector === current))
+                        targets.push({selector:current, label:labels.savedElement, kind:'text', node:null, sample:''});
                     const previous = (editor.targets || []).find(target => target.selector === current);
                     // Keep a user's current selection while its row is still waiting to be inspected.
                     if (!targets.some(target => target.selector === current) && previous
@@ -481,6 +666,7 @@
                         if (!response || !response.success) { status(labels.failed); return; }
                         editor.saved = clone(response.selectors || snapshot);
                         editor.draft = clone(editor.saved);
+                        window.__ibColumnStylePreview = {tableId: table.id, column, selectors: editor.draft};
                         window.__ibColumnStyleDraftByTable = window.__ibColumnStyleDraftByTable || {};
                         window.__ibColumnStyleDraftByTable[table.id] = window.__ibColumnStyleDraftByTable[table.id] || {};
                         window.__ibColumnStyleDraftByTable[table.id][column] = {index:editor.index, selectors:clone(editor.saved)};
@@ -510,6 +696,7 @@
                 editor.observer.observe(table.tBodies[0], {childList:true, subtree:true});
             }
             refresh(); status(labels.noChanges); find('.ib-style-target').focus();
+            return true;
         }
 
         // Tooltip contents are read only when a cell is hovered/focused, including AJAX rows.
@@ -539,7 +726,20 @@
                 if (active.saving) event.preventDefault(); else close();
             }
         });
+        $(document).on('init.dt.ibColumnLayout draw.dt.ibColumnLayout column-sizing.dt.ibColumnLayout column-visibility.dt.ibColumnLayout fixedHeader-mode.dt.ibColumnLayout', function (_event, settings) {
+            const table = settings && settings.nTable ? settings.nTable : _event.target;
+            if(table && table.tagName === 'TABLE' && $.fn.dataTable.isDataTable(table))layout(new $.fn.dataTable.Api(table));
+        });
+        return {open, close, layout, isSaving: () => !!(active && active.saving)};
     }
 
-    return {paths, normalize, css, matches, discover, discoverInChunks, bind};
+    function icon(tableId, column, selector, fallback) {
+        if (typeof window === 'undefined') return fallback;
+        const preview = window.__ibColumnStylePreview;
+        const selectors = preview && preview.tableId === tableId && preview.column === column ? preview.selectors
+            : ((((window.__ibColumnStyleDraftByTable || {})[tableId] || {})[column] || {}).selectors || {});
+        return (normalize(selectors)[selector] || {}).__icon || fallback;
+    }
+
+    return {paths, normalize, css, matches, kind, structuralPath, discover, discoverInChunks, bind, icon};
 });

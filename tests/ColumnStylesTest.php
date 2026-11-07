@@ -40,4 +40,13 @@ class ColumnStylesTest extends TestCase
         $this->assertStringNotContainsString('>', $css);
         $this->assertSame('', ColumnStyles::css('orders', 'customer', []));
     }
+
+    public function test_visible_overflow_keeps_fixed_width_and_overrides_link_truncation() : void
+    {
+        $css = ColumnStyles::css('users', 'email', ['td' => ['width' => 150, 'text-overflow-mode' => 'visible']]);
+        $this->assertStringContainsString('width:150px!important', $css);
+        $this->assertStringContainsString('white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:normal!important', $css);
+        $this->assertStringContainsString(':is(a,span,div,li)', $css);
+        $this->assertStringNotContainsString('overflow:hidden', $css);
+    }
 }

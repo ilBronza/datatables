@@ -15,7 +15,7 @@
 
 @endif
 
-@if($table->canHideColumns())
+@if($table->canHideColumns() || $table->canEditColumnStyles())
 
 	<button hidden class="colvisbutton" id="offcanvastogglefieldsbutton{{ $table->getId() }}"
 			uk-toggle="target: #offcanvastogglefields{{ $table->getId() }}">Fields visibility
@@ -25,6 +25,13 @@
 		<div class="uk-offcanvas-bar uk-padding-small">
 
 			<button class="uk-offcanvas-close" type="button" uk-close></button>
+			@if($table->canEditColumnStyles())
+				<div class="ib-config-list-tools" hidden data-tableid="{{ $table->getId() }}">
+					<button type="button" class="uk-button uk-button-default uk-button-small ib-config-reset-order">{{ __('datatables::columnStyles.resetOrder') }}</button>
+					<p class="ib-config-order-hint"></p>
+					<p class="ib-config-order-status" role="status" aria-live="polite"></p>
+				</div>
+			@endif
 
 			<ul id="togglefields{{ $table->getId() }}"
 				class="uk-nav uk-dropdown-nav ib-colvis-container toggle-vis-container table{{ $table->getId() }}"
@@ -37,6 +44,11 @@
 			>
 				@foreach($table->getFields() as $field)
 					<li class="ib-colvis-item uk-flex uk-flex-wrap">
+							@if($table->canEditColumnStyles())
+								<button type="button" class="ib-config-handle ib-config-list-handle" hidden
+									aria-label="{{ __('datatables::columnStyles.move') }}: {{ $field->getTranslatedName() }}"
+									data-field-name="{{ $field->getFieldName() }}"><i class="fa-solid fa-grip-vertical" aria-hidden="true"></i></button>
+							@endif
 						<a
 								href="javascript:void(0)"
 								class="uk-width-expand toggle-vis @if($field->isVisible()) uk-text-bold @endif {{ $field->getFieldName() }}"
@@ -44,6 +56,8 @@
 								data-name="{{ $field->getFieldName() }}"
 								data-style-column="{{ $field->getCamelName() }}"
 								data-visibility="{{ ($field->isVisible() ? 1 : 0) }}"
+									data-can-hide="{{ $table->canHideColumns() ? 1 : 0 }}"
+									data-configuration="{{ json_encode(\IlBronza\Datatables\Support\ColumnConfiguration::field($field)) }}"
 								style="color: black;"
 						>
 							{{ $field->getTranslatedName() }}
@@ -133,6 +147,7 @@
 
 			data-editor-save-trigger="{{ config('datatables.editor.saveTrigger', 'enter') }}"
 			data-editor-saved-feedback-duration="{{ max(0, (int) config('datatables.editor.savedFeedbackDuration', 1500)) }}"
+			data-scroll-body-min-height="{{ config('datatables.scrollBodyMinHeight', 400) }}"
 
 			@if($table->hasSummary())
 				data-summary="true"
@@ -147,7 +162,6 @@
 
 			class="wannabedatatable {{ $table->getStripeClass() }} datatable {{ $table->getName() }} {{ $table->getHtmlClassesString() }}"
 			style="table-layout: auto;"
-			data-scroll-body-min-height="{{ config('datatables.scrollBodyMinHeight', 400) }}"
 	>
 		@include('datatables::uikit.header._header')
 

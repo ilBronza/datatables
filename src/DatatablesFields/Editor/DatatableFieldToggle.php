@@ -4,6 +4,7 @@ namespace IlBronza\Datatables\DatatablesFields\Editor;
 
 class DatatableFieldToggle extends DatatableFieldEditor
 {
+	use \IlBronza\Datatables\Traits\DatatablesFields\BooleanStyleTrait;
 	public bool $requiresRowSelectCheckbox = true;
 
 	public function isBulkEditable() : bool
@@ -41,15 +42,17 @@ class DatatableFieldToggle extends DatatableFieldEditor
 		return $this->fieldSpecificClasses;
 	}
 
-	private function getLinkString(string $iconString)
+	private function getLinkString(string $iconString, string $state = 'true')
 	{
 		if (! $classes = $this->getHtmlClassesString())
 			return ;
 
-		$classString = " class=\"{$classes} fa-solid fa-{$iconString}\" ";
+		$icon = $this->booleanStyleIconExpression($state, $iconString);
+		$classString = " class=\"{$classes} fa-solid fa-' + {$icon} + '\" ";
+		$attributes = addslashes($this->booleanStyleAttributes($state, $iconString));
 
 		return "
-			item = '<span data-value=\"' + item[1] + '\" " . $this->getParentDataIndexString() . $this->getHtmlDataAttributesString() . $classString . " ></span>';
+			item = '<span {$attributes} data-style-applied-icon=\"' + {$icon} + '\" data-value=\"' + item[1] + '\" " . $this->getParentDataIndexString() . $this->getHtmlDataAttributesString() . $classString . " ></span>';
 		";
 	}
 
@@ -63,10 +66,10 @@ class DatatableFieldToggle extends DatatableFieldEditor
 			" . $this->getLinkString($this->trueIcon) . "
 
 		else if((item[1] === 0)||(item[1] === false))
-			" . $this->getLinkString($this->falseIcon) . "
+			" . $this->getLinkString($this->falseIcon, 'false') . "
 
 		else
-			" . $this->getLinkString($this->nullIcon);
+			" . $this->getLinkString($this->nullIcon, 'null');
 	}
 
 	public function getCustomColumnDefSingleSearchResult()
@@ -89,7 +92,7 @@ class DatatableFieldToggle extends DatatableFieldEditor
 			" . $this->getLinkString($this->trueIcon) . "
 
 		else
-			" . $this->getLinkString($this->falseIcon) . "
+			" . $this->getLinkString($this->falseIcon, 'false') . "
 		";
 	}
 

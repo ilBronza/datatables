@@ -159,11 +159,14 @@
             return;
 
         const columnIndex = column.index();
+        // A response can arrive after a configuration move: retain the column identity.
+        const columnDefinition = typeof datatable.settings === 'function' ? datatable.settings()[0].aoColumns[columnIndex] : null;
+        const currentColumnIndex = () => columnDefinition ? datatable.settings()[0].aoColumns.indexOf(columnDefinition) : columnIndex;
         const rendererName = column.getHeaderData('asyncRenderer') || 'text';
         const useCache = String(column.getHeaderData('asyncCache')) === '1';
         const tableNode = datatable.table().node();
         const tableKey = tableNode.id || tableNode.getAttribute('data-realid') || 'datatable';
-        const columnKey = tableKey + ':' + columnIndex + ':' + endpoint;
+        const columnKey = tableKey + ':' + (column.getHeaderData('name') || columnIndex) + ':' + endpoint;
         const state = window.ibAsyncColumnState[columnKey] || { generation: 0, signature: null };
         const cache = window.ibAsyncCellsCache[columnKey] || {};
         const ids = currentRows.map(function (row) { return row.id; });
@@ -216,11 +219,12 @@
                     payloadById = cache;
                 }
 
-                renderRows(datatable, columnIndex, rendererName, payloadById, useCache ? ids : missingIds);
+                const index = currentColumnIndex();
+                if (index >= 0) renderRows(datatable, index, rendererName, payloadById, useCache ? ids : missingIds);
             },
             onError: function () {
                 if (state.generation === generation)
-                    markColumnError(datatable, columnIndex, missingIds);
+                    markColumnError(datatable, currentColumnIndex(), missingIds);
             },
             onComplete: function () {
                 if (state.generation === generation)
