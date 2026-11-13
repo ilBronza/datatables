@@ -51,6 +51,14 @@ La colonna è visibile, non ordinabile e senza filtro. Contiene due pulsanti:
   impostando anche lo stato dei nodi intermedi. Un ramo parzialmente aperto
   viene aperto completamente al primo clic.
 
+Nel TH del titolo compare automaticamente un chevron doppio per espandere o
+comprimere tutti i rami del dataset, comprese le altre pagine. Se l'albero è
+parzialmente aperto il primo clic lo espande completamente; se è tutto aperto
+lo comprime. Icona e tooltip seguono anche le aperture delle singole righe.
+Il pulsante è disabilitato durante la ricerca, nella vista piatta opzionale
+e quando non ci sono righe con figli. Le intestazioni clonate per scrolling
+e FixedHeader controllano la stessa tabella.
+
 Le righe senza figli non hanno pulsanti. I tooltip riportano il numero di figli
 diretti o di discendenti totali. I rientri seguono il livello; il calcolo è
 iterativo e non impone un limite di profondità (il rientro visivo si ferma a 12).

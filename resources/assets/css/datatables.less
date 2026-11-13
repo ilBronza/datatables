@@ -10,7 +10,8 @@
     min-height: 1.7rem;
 }
 
-.ib-dt-tree-toggle
+.ib-dt-tree-toggle,
+.ib-dt-tree-toggle-all
 {
     border: 0;
     background: transparent;
@@ -21,12 +22,17 @@
 }
 
 .ib-dt-tree-toggle:hover,
-.ib-dt-tree-toggle:focus-visible
+.ib-dt-tree-toggle:focus-visible,
+.ib-dt-tree-toggle-all:hover,
+.ib-dt-tree-toggle-all:focus-visible
 {
     background: rgba(0, 100, 200, .12);
     outline: 2px solid currentColor;
     outline-offset: -2px;
 }
+
+.ib-dt-tree-toggle-all { margin-inline-start: .35rem; }
+.ib-dt-tree-toggle-all:disabled { opacity: .45; cursor: default; }
 
 .ib-dt-tree-context .ib-dt-tree-controls { opacity: .65; }
 .ib-dt-tree-issue { color: #b45309; }

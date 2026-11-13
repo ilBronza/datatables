@@ -276,3 +276,109 @@ domTest('global header order excludes virtual groups on the first click and rest
     assert.deepEqual(app.visible(), tree);
     assert.equal(app.dt.page.info().recordsTotal, 1);
 });
+
+domTest('header toggle expands and collapses all descendants across pages and follows individual row choices', t => {
+    const app = boot(t, [row('a',null,true),row('a1','a'),row('a2','a1'),row('b'),row('b1','b')]);
+    const header = () => app.dt.column(1).header().querySelector('.ib-dt-tree-toggle-all');
+    assert.equal(header().getAttribute('aria-label'),'Espandi tutto');
+    assert.match(header().innerHTML,/fa-angles-right/);
+    const order = JSON.stringify(app.dt.order());
+    header().click();
+    assert.deepEqual(app.visible(),['a','a1','a2']);
+    assert.equal(JSON.stringify(app.dt.order()),order);
+    assert.equal(header().getAttribute('aria-expanded'),'true');
+    assert.equal(header().title,'Comprimi tutto');
+    assert.match(header().innerHTML,/fa-angles-down/);
+    assert.equal(app.window.document.activeElement,header());
+    app.dt.page('next').draw('page');
+    assert.deepEqual(app.visible(),['b','b1']);
+    header().click();
+    assert.deepEqual(app.visible(),['b']);
+    assert.equal(app.dt.page.info().page,1);
+    app.dt.page('first').draw('page');
+    assert.deepEqual(app.visible(),['a']);
+    app.click('a');
+    assert.deepEqual(app.visible(),['a','a1']);
+    assert.equal(header().title,'Espandi tutto');
+    header().click();
+    app.click('a1');
+    assert.equal(header().title,'Espandi tutto');
+    app.click('a1');
+    assert.equal(header().title,'Comprimi tutto');
+    assert.equal(app.dt.rows({search:'applied'}).count(),5);
+});
+
+domTest('header toggle preserves global choices over AJAX reload and disables itself during search or with no branches', t => {
+    let payload = [row('a'),row('a1','a'),row('b'),row('b1','b')];
+    const app = boot(t,[],{ajax:(_request, callback) => callback({data:payload}),pageLength:10});
+    const header = () => app.dt.column(1).header().querySelector('.ib-dt-tree-toggle-all');
+    header().click();
+    payload = [row('b'),row('b1','b'),row('a'),row('a1','a')];
+    app.dt.ajax.reload(null,false);
+    assert.deepEqual(app.visible(),['b','b1','a','a1']);
+    assert.equal(header().title,'Comprimi tutto');
+    app.dt.search('a1').draw();
+    assert.equal(header().disabled,true);
+    header().click();
+    app.dt.search('').draw();
+    assert.deepEqual(app.visible(),['b','b1','a','a1']);
+    assert.equal(header().disabled,false);
+    payload = [row('leaf')];
+    app.dt.ajax.reload(null,false);
+    assert.equal(header().disabled,true);
+    assert.equal(header().title,'Nessun ramo da espandere');
+    app.dt.clear().draw();
+    assert.equal(header().disabled,true);
+});
+
+domTest('scrolling and cloned title controls remain scoped to their table after column reorder and destroy', t => {
+    const app = boot(t,[row('a'),row('a1','a'),row('b')],{scrollX:true,colReorder:true,pageLength:10});
+    const other = app.window.document.createElement('table');
+    other.id = 'other'; other.innerHTML = '<thead><tr><th>ID</th><th>Tree</th><th>Name</th><th>Amount</th></tr></thead>';
+    app.window.document.body.appendChild(other);
+    const definition = app.window.eval('(' + fixture.column + ')');
+    const second = app.window.jQuery(other).DataTable({data:[row('x'),row('x1','x')],rowId:0,order:[],pageLength:10,
+        columnDefs:[{targets:0,visible:false},{...fixture.options,...definition}]});
+    app.dt.colReorder.order([3,2,0,1]);
+    app.dt.column(3).visible(false); app.dt.draw(false); app.dt.column(3).visible(true);
+    const header = app.dt.column(3).header();
+    const floating = app.window.document.createElement('table');
+    floating.innerHTML = '<thead><tr></tr></thead>';
+    floating.querySelector('tr').appendChild(header.cloneNode(true));
+    app.window.document.body.appendChild(floating);
+    floating.querySelector('button').click();
+    assert.deepEqual(app.visible(),['a','a1','b']);
+    assert.equal(floating.querySelector('button').title,'Comprimi tutto');
+    assert.equal(second.column(1).header().querySelector('button').title,'Espandi tutto');
+    assert.equal(other.querySelectorAll('tbody > tr').length,1);
+    for (let i=0;i<3;i++) app.dt.draw(false);
+    for (const th of app.window.document.querySelectorAll('th')) {
+        assert.ok(th.querySelectorAll('.ib-dt-tree-toggle-all').length <= 1);
+    }
+    app.dt.column(3).visible(false);
+    app.dt.destroy();
+    assert.equal(floating.querySelector('button'),null);
+    assert.equal(header.querySelector('button'),null);
+    assert.equal(app.window.document.querySelectorAll('[data-ib-dt-tree-table-id="tree"]').length,0);
+    assert.equal(other.querySelectorAll('thead .ib-dt-tree-toggle-all').length,1);
+});
+
+domTest('a header toggle is disabled in flat order and restored with the tree', t => {
+    const app = boot(t,[row('a'),row('a1','a')],{flatOnOrder:true,order:[[1,'asc']],pageLength:10});
+    const header = () => app.dt.column(1).header().querySelector('.ib-dt-tree-toggle-all');
+    app.dt.order([2,'asc']).draw();
+    assert.equal(header().disabled,true);
+    app.window.ibDtRowHierarchy.restoreOrder(app.dt);
+    assert.equal(header().disabled,false);
+    header().click();
+    assert.deepEqual(app.visible(),['a','a1']);
+});
+
+extensionTest('header collapse clears stale KeyTable focus while keeping keyboard navigation enabled', 'datatables.net-keytable', t => {
+    const app = boot(t,[row('a',null,true),row('a1','a')],{keys:true,pageLength:10});
+    app.dt.cell('#a1',2).focus();
+    app.dt.column(1).header().querySelector('.ib-dt-tree-toggle-all').click();
+    assert.deepEqual(app.visible(),['a']);
+    assert.equal(app.dt.settings()[0].keytable.s.lastFocus,null);
+    assert.equal(app.dt.keys.enabled(),true);
+});

@@ -30,6 +30,9 @@ paging, native page selectors, sibling sorting, search context, incremental
 patches, AJAX reload, row removal, ColReorder, hidden columns and destroy/recreate.
 Optional Select 3 / RowReorder 1 integrations additionally verify hidden selection,
 page selection and automatic drag disabling when those extensions are installed.
+The hierarchy title-header control is checked across pages, AJAX reloads, search,
+flat ordering, scrolling/cloned headers, multiple tables, ColReorder and destroy;
+the optional KeyTable case verifies keyboard focus when collapsing all rows.
 
 `fixtures/columnStyles.json` is used by both PHP and JavaScript to keep persisted
 CSS and preview normalization consistent.

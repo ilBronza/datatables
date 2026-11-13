@@ -116,6 +116,65 @@
         }
     }
 
+    function openingState(graph) {
+        const roots = graph ? graph.roots.filter(node => node.children.length) : [];
+        return {expandable: roots.length > 0, opened: roots.length > 0 && roots.every(node => node.allOpened)};
+    }
+
+    function toggleAll(graph, opened) {
+        const state = openingState(graph);
+        if (!state.expandable || graph.searching) return false;
+        for (const node of graph.nodes.values()) {
+            if (node.children.length) opened.set(node.stateKey, !state.opened);
+        }
+        return true;
+    }
+
+    function hierarchyHeaders(settings) {
+        const state = settings._ibDtHierarchy;
+        const index = settings.aoColumns.indexOf(state.column);
+        const titles = settings.aoHeader.map(row => row[index]?.cell)
+            .filter(cell => cell?.parentElement?.classList.contains('columnsintestations'));
+        return Array.from(new Set(titles.length ? titles : [new state.DataTable.Api(settings).column(index).header()]));
+    }
+
+    /** Keep the title header and its scrolling / FixedHeader copies synchronized. */
+    function updateHeader(settings) {
+        const state = settings._ibDtHierarchy;
+        if (!state) return;
+        const document = settings.nTable.ownerDocument;
+        const buttons = new Set();
+        for (const header of hierarchyHeaders(settings)) {
+            if (!header) continue;
+            let button = header.querySelector('.ib-dt-tree-toggle-all');
+            if (!button) {
+                button = document.createElement('button');
+                button.type = 'button'; button.className = 'ib-dt-tree-toggle-all';
+                button.dataset.ibDtTreeTableId = settings.sTableId;
+                button.setAttribute('aria-controls', settings.sTableId);
+                (header.querySelector('.dt-column-header') || header).appendChild(button);
+            }
+            buttons.add(button);
+        }
+        const opening = openingState(state.graph);
+        const label = state.labels[opening.opened ? 'closeAll' : 'openAll'];
+        for (const button of document.querySelectorAll('.ib-dt-tree-toggle-all')) buttons.add(button);
+        for (const button of buttons) {
+            if (button.dataset.ibDtTreeTableId !== settings.sTableId) continue;
+            button.disabled = !!state.flat || !opening.expandable || state.graph.searching;
+            button.title = state.flat ? state.labels.restore : state.graph?.searching ? state.labels.searchOpened
+                : opening.expandable ? label : state.labels.noChildren;
+            button.setAttribute('aria-label', button.title);
+            button.setAttribute('aria-expanded', String(opening.opened));
+            let icon = button.querySelector('i');
+            if (!icon) {
+                icon = document.createElement('i'); icon.setAttribute('aria-hidden', 'true');
+                button.appendChild(icon);
+            }
+            icon.className = 'fa-solid fa-angles-' + (opening.opened ? 'down' : 'right');
+        }
+    }
+
     function restore(settings) {
         const state = settings._ibDtHierarchy;
         if (!state?.snapshot) return;
@@ -332,6 +391,7 @@
         // Restore native matches before summaries, exports, info, paging or application callbacks.
         settings.aoHeaderCallback.push(() => restore(settings));
         settings.aoRowCallback.push((row, data, display, full, index) => decorate(settings, row, index));
+        settings.aoDrawCallback.push(() => updateHeader(settings));
         const $table = $(settings.nTable);
         $table.addClass('ib-dt-hierarchy');
         if (state.column.ibDtFlatOnOrder) {
@@ -371,6 +431,10 @@
         });
         settings.aoDestroyCallback.push(() => {
             restore(settings); Object.assign(settings, original);
+            for (const header of hierarchyHeaders(settings)) header?.querySelector('.ib-dt-tree-toggle-all')?.remove();
+            for (const button of settings.nTable.ownerDocument.querySelectorAll('.ib-dt-tree-toggle-all')) {
+                if (button.dataset.ibDtTreeTableId === settings.sTableId) button.remove();
+            }
             $table.off('.ibDtRowHierarchy').removeClass('ib-dt-hierarchy');
             state.opened.clear(); delete settings._ibDtHierarchy;
         });
@@ -385,6 +449,26 @@
         installations.add(DataTable);
         installPageSelectors(DataTable);
         $(document).on('preInit.dt.ibDtRowHierarchy', (event, settings) => attach($, DataTable, settings));
+        // Capture before header sorting/dragging, including controls in FixedHeader clones.
+        const headerInteraction = event => {
+            const button = event.target.closest?.('button.ib-dt-tree-toggle-all');
+            if (!button) return;
+            event.stopPropagation();
+            if (event.type !== 'click') return;
+            event.preventDefault();
+            if (button.disabled) return;
+            const settings = DataTable.settings.find(settings => settings.sTableId === button.dataset.ibDtTreeTableId);
+            const state = settings?._ibDtHierarchy;
+            if (!state || state.flat || !toggleAll(state.graph, state.opened)) return;
+            const api = new DataTable.Api(settings);
+            if (typeof api.cell.blur === 'function') api.cell.blur();
+            api.draw(false);
+            const target = button.isConnected ? button : hierarchyHeaders(settings)[0]?.querySelector('.ib-dt-tree-toggle-all');
+            target?.focus();
+        };
+        for (const event of ['click', 'mousedown', 'pointerdown', 'keydown', 'keypress']) {
+            document.addEventListener(event, headerInteraction, true);
+        }
     }
 
     function restoreOrder(api) {
@@ -394,5 +478,5 @@
         api.order([[settings.aoColumns.indexOf(settings._ibDtHierarchy.column), 'asc']]).draw();
     }
 
-    return {build, page, toggle, install, refresh, restoreOrder};
+    return {build, page, toggle, toggleAll, install, refresh, restoreOrder};
 });
