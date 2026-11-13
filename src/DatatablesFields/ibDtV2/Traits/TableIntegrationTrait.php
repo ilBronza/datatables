@@ -9,6 +9,10 @@ trait TableIntegrationTrait
 	public function isBulkEditable() : bool { return false; }
 	public function requiresSelectRowCheckboxes() : bool { return false; }
 	public function getSaveSettings() : array { return []; }
+	public function getEditorDataAttributes() : array { return []; }
+	public function getJsonAjaxExtraData() : string { return '{}'; }
+	public function getEditorRouteConfiguration() : ?array { return null; }
+	protected function getInlineContainerAttributes() : array { return []; }
 	public function getRenderAsType() : ?string { return null; }
 	public function getInlineFieldType() : string { return 'ibDtV2.editor.text'; }
 	public function getCreatedRowScripts() : string { return ''; }

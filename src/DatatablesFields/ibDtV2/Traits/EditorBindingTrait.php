@@ -21,13 +21,13 @@ trait EditorBindingTrait
 		if (! in_array($this->editorTarget, [null, 'row', 'element'], true))
 			throw new InvalidArgumentException('editorTarget must be row or element.');
 
-		if (! in_array($this->getSaveSettings()['saveTrigger'], ['enter', 'blur', 'tab'], true))
-			throw new InvalidArgumentException('saveTrigger must be enter, blur or tab.');
+		if (! in_array($this->getSaveSettings()['saveTrigger'], $this->getSupportedSaveTriggers(), true))
+			throw new InvalidArgumentException('saveTrigger must be ' . implode(', ', $this->getSupportedSaveTriggers()) . '.');
 
 		$this->parameter ??= $this->name;
 		$this->setReloadTableExtraData($this->reloadTable);
 		// Re-evaluate model-dependent state after saving unless explicitly disabled.
-		$this->setRefreshRowExtraData($this->refreshRow ?? ($this->disabledIf !== null ? true : null));
+		$this->setRefreshRowExtraData($this->refreshRow ?? ($this->disabledIf !== null || $this->updateUrlMethod !== null ? true : null));
 		if ($this->hasSpinner())
 			$this->addHtmlClass('spin');
 	}
@@ -44,20 +44,33 @@ trait EditorBindingTrait
 
 	public function getValuePosition() : null|int|string
 	{
-		return $this->disabledIf !== null || ! $this->editorTargetsRow() ? 'value' : null;
+		return $this->disabledIf !== null || $this->updateUrlMethod !== null || ! $this->editorTargetsRow() ? 'value' : null;
 	}
 
 	public function getSaveSettings() : array
 	{
 		return [
-			'saveTrigger' => $this->saveTrigger ?? config('datatables.editor.saveTrigger', 'enter'),
+			'saveTrigger' => $this->saveTrigger ?? $this->getDefaultSaveTrigger(),
 			'cellFormat' => $this->getValuePosition() === null ? 'scalar' : 'value',
 		];
 	}
 
+	protected function getDefaultSaveTrigger() : string { return config('datatables.editor.saveTrigger', 'enter'); }
+	protected function getSupportedSaveTriggers() : array { return ['enter', 'blur', 'tab']; }
+
 	public function getFieldSpecificData() : array
 	{
 		return ['field' => $this->parameter ?? $this->name];
+	}
+
+	public function getEditorDataAttributes() : array
+	{
+		return [
+			'field' => $this->getFieldSpecificData()['field'],
+			'ib-dt-cell-format' => $this->getSaveSettings()['cellFormat'],
+			'ib-dt-value-type' => $this->editorValueType,
+			'save-trigger' => $this->getSaveSettings()['saveTrigger'],
+		];
 	}
 
 	protected function readEditorValue(object $element, bool $inline = false)
@@ -83,6 +96,8 @@ trait EditorBindingTrait
 			return $cellValue;
 
 		$cell = ['value' => $cellValue];
+		if ($this->updateUrlMethod !== null)
+			$cell['updateUrl'] = $this->getElementUpdateUrl($value);
 		if ($this->disabledIf !== null)
 			$cell['disabled'] = $value === null || $this->isDisabledForElement($value);
 		if (! $this->editorTargetsRow())

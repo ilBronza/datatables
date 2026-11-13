@@ -11,9 +11,14 @@ trait RendererTrait
 		$sort = $this->getCustomColumnDefSingleSortResult();
 		$export = $this->getCustomColumnDefSingleResultExport();
 		$cellAttributes = $this->compileCellAttributes();
+		$route = $this->getEditorRouteConfiguration();
+		$editorOptions = $route === null ? '' : 'ibDtEditor: ' . $this->javascriptLiteral($route) . ',';
+		$typeOption = $this->datatableType === null ? '' : 'type: ' . $this->javascriptLiteral($this->datatableType) . ',';
 
 		return "{
 			targets: [{$this->getIndex()}],
+			{$editorOptions}
+				{$typeOption}
 			{$cellAttributes}
 			render: function(item, type, row, meta) {
 				if (type === 'display') { {$display} }

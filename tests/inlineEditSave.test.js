@@ -107,6 +107,7 @@ function boot({ reloadTable = true, otherDirty = false } = {})
         __showEditorSavedFeedbackForTarget() {},
         __displayResponseErrors() { calls.push('error'); },
     };
+    vm.runInNewContext(buttonSource.slice(0, buttonSource.indexOf('$(window).on("beforeunload"')), context);
     vm.runInNewContext(extract(buttonSource,
         'window.saveDatatableInlineEditRow = function', 'window.__ibRestoreDatatableInlineEditButton = function'), context);
     vm.runInNewContext(extract(ajaxSource,

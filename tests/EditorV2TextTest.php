@@ -10,6 +10,7 @@ use IlBronza\Datatables\DatatablesFields\DatatableField;
 use IlBronza\Datatables\DatatablesFields\FieldFactory;
 use IlBronza\Datatables\DatatablesFields\Editor\DatatableFieldText as LegacyText;
 use IlBronza\Datatables\DatatablesFields\ibDtV2\Editor\DatatableFieldText;
+use IlBronza\Datatables\DatatablesFields\ibDtV2\Editor\DatatableFieldTextarea;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -57,6 +58,80 @@ class EditorV2TextTest extends TestCase
 		return FieldFactory::createByType('title', 'ibDtV2.editor.text', array_replace(['translatedName' => 'Title'], $parameters), 1, null, $table);
 	}
 
+	private function inlineRoute(string $html) : array
+	{
+		$this->assertStringNotContainsString('data-url=', $html);
+		$this->assertSame(1, preg_match('/<input\b([^>]*)>/', $html, $input));
+		foreach (['data-save-trigger', 'data-field=', 'data-ib-dt-value-type', 'data-ib-dt-cell-format'] as $attribute)
+			$this->assertStringNotContainsString($attribute, $input[1]);
+		$this->assertSame(1, preg_match('/data-ib-dt-editor-route="([^"]+)"/', $html, $matches));
+		return json_decode(htmlspecialchars_decode($matches[1], ENT_QUOTES), true, 512, JSON_THROW_ON_ERROR);
+	}
+
+	public function test_textarea_reuses_text_binding_and_renders_inline_content_with_escaped_newlines() : void
+	{
+		config(['datatables.editor.saveTrigger' => 'enter']);
+		$field = FieldFactory::createByType('title', 'ibDtV2.editor.textarea', [
+			'parameter' => 'notes', 'inputAttributes' => ['rows' => 5, 'maxlength' => 400, 'type' => 'text', 'value' => 'ignored'],
+		], 1, null, $this->field()->table);
+		$this->assertInstanceOf(DatatableFieldText::class, $field);
+		$this->assertInstanceOf(DatatableFieldTextarea::class, $field);
+		$value = "\nPrima riga\n</textarea><script>test</script>\n";
+		$model = new EditorV2Record(['id' => 42, 'title' => $value]);
+		$this->assertSame($value, $field->transformValue($model));
+		$this->assertTrue($field->isBulkEditable());
+		$this->assertSame('text', $field->getEditorDataAttributes()['ib-dt-value-type']);
+		$this->assertSame('blur', $field->getSaveSettings()['saveTrigger']);
+		$this->assertSame('notes', $field->getFieldSpecificData()['field']);
+		$html = $field->setInlineEditElement($model)->getInlineEditHtml();
+		$this->assertStringContainsString('<textarea', $html);
+		$this->assertStringContainsString('rows="5"', $html);
+		$this->assertStringContainsString('maxlength="400"', $html);
+		$this->assertStringContainsString('uk-textarea', $html);
+		$this->assertStringContainsString(">\n\nPrima riga\n&lt;/textarea&gt;&lt;script&gt;test&lt;/script&gt;\n</textarea>", $html);
+		$this->assertStringNotContainsString('<input', $html);
+		$this->assertStringNotContainsString('<script>', $html);
+		$this->assertSame(1, preg_match('/<textarea\\b([^>]*)>/', $html, $matches));
+		$this->assertStringNotContainsString('type=', $matches[1]);
+		$this->assertStringNotContainsString(' value=', $matches[1]);
+		$this->assertStringNotContainsString('data-url=', $matches[1]);
+		$this->assertSame('250px', $field->getUnstyledWidth());
+	}
+
+	public function test_textarea_inline_derivation_keeps_the_type_attributes_permissions_and_create_route() : void
+	{
+		$parameters = ['type' => 'ibDtV2.editor.textarea', 'parameter' => 'notes', 'editorProperty' => 'description',
+			'disabledIf' => 'isLocked', 'translatedName' => 'Notes', 'inputAttributes' => ['rows' => 4], 'saveTrigger' => 'tab'];
+		$model = new EditorV2Record(['id' => 42, 'description' => "Uno\nDue", 'locked' => true]);
+		$group = Datatables::makeInlineEditFieldsGroup('records', [], ['fields' => ['title' => $parameters]], $model);
+		$this->assertSame($parameters, $group['fields']['title']);
+		$table = Datatables::createInlineEditTable('records', $group, $model);
+		$field = $table->getInlineEditFields()->first();
+		$this->assertInstanceOf(DatatableFieldTextarea::class, $field);
+		$this->assertSame('ibDtV2.editor.textarea', $field->getInlineFieldType());
+		$this->assertSame(['value' => "Uno\nDue", 'disabled' => true], $field->transformValue($model));
+		$this->assertFalse($field->isBulkEditable());
+		$this->assertStringContainsString(' disabled=""', $field->getInlineEditHtml());
+		$this->assertStringContainsString('rows="4"', $field->getInlineEditHtml());
+		$html = $field->setInlineCreateElement($model, '/records')->getInlineEditHtml();
+		$this->assertStringContainsString('ib-datatable-inline-create-field', $html);
+		$this->assertStringContainsString('data-save-trigger="tab"', $html);
+		$this->assertSame(1, preg_match('/data-ib-dt-editor-route="([^"]+)"/', $html, $matches));
+		$this->assertSame(['storeUrl' => '/records'], json_decode(htmlspecialchars_decode($matches[1], ENT_QUOTES), true));
+		$field->editorRoles = ['admin'];
+		$this->assertSame('', $field->getInlineEditHtml());
+	}
+
+	public function test_textarea_inherits_tab_defaults_and_rejects_enter_to_keep_native_newlines() : void
+	{
+		config(['datatables.editor.saveTrigger' => 'tab']);
+		$field = new DatatableFieldTextarea('title', ['modelClass' => EditorV2Record::class]);
+		$this->assertSame('tab', $field->getSaveSettings()['saveTrigger']);
+		$this->expectException(\InvalidArgumentException::class);
+		$this->expectExceptionMessage('saveTrigger must be blur, tab');
+		new DatatableFieldTextarea('title', ['saveTrigger' => 'enter']);
+	}
+
 	public function test_v2_has_its_own_class_hierarchy_and_traits_and_can_be_used_without_a_table() : void
 	{
 		$field = new DatatableFieldText('title', [
@@ -70,7 +145,7 @@ class EditorV2TextTest extends TestCase
 		$this->assertSame(['value' => 'Independent', 'targetId' => 42],
 			$field->transformValue(new EditorV2Record(['id' => 42, 'title' => 'Independent'])));
 		$this->assertStringContainsString('item.targetId', $field->getCustomColumnDef());
-		$this->assertStringContainsString('data-url="/records/42"', $field->getInlineEditHtml());
+		$this->assertSame(42, $this->inlineRoute($field->getInlineEditHtml())['targetId']);
 	}
 
 	public function test_v2_rejects_legacy_parameters_instead_of_silently_inheriting_their_behaviour() : void
@@ -86,7 +161,7 @@ class EditorV2TextTest extends TestCase
 		$table = Datatables::create('mixed-editors', ['main' => ['fields' => [
 			'legacy' => ['type' => 'editor.text', 'translatedName' => 'Legacy'],
 			'title' => ['type' => 'ibDtV2.editor.text', 'translatedName' => 'Title',
-				'order' => ['type' => 'desc'], 'saveButton' => true, 'fieldsGroupsDefinitions' => ['details']],
+				'order' => ['type' => 'desc'], 'saveTrigger' => 'tab', 'saveButton' => true, 'fieldsGroupsDefinitions' => ['details']],
 			'lockedTitle' => ['type' => 'ibDtV2.editor.text', 'editorProperty' => 'title',
 				'disabledIf' => 'isLocked', 'translatedName' => 'Locked title'],
 		]]], fn () => collect([$model]), false, null, EditorV2Record::class, true);
@@ -119,6 +194,10 @@ class EditorV2TextTest extends TestCase
 		$dom = new \DOMDocument();
 		@$dom->loadHTML('<table>' . $header . '<thead>' . $summary . '</thead>' . $footer . '</table>');
 		$xpath = new \DOMXPath($dom);
+		$this->assertSame(2, $xpath->query('//thead//th[@data-field-name="title" and @data-save-trigger="tab"]')->length);
+		$this->assertSame(2, $xpath->query('//thead//th[@data-field-name="title" and @data-field="title" and @data-ib-dt-value-type="text" and @data-ib-dt-cell-format="scalar"]')->length);
+		$this->assertSame(2, $xpath->query('//thead//th[@data-field-name="lockedTitle" and @data-ib-dt-cell-format="value"]')->length);
+		$this->assertSame(0, $xpath->query('//thead//th[@data-field-name="legacy" and @data-save-trigger]')->length);
 		foreach ($table->getFields() as $column) {
 			$nodes = $xpath->query('//th[@data-field-name="' . $column->getFieldName() . '"]');
 			// Title, header filter, footer filter and both summaries, for both field families.
@@ -217,7 +296,8 @@ class EditorV2TextTest extends TestCase
 		$html = $field->setInlineEditElement($model)->getInlineEditHtml();
 		$this->assertSame(1, substr_count($html, 'data-field='));
 		$this->assertStringContainsString('data-field="notes"', $html);
-		$this->assertStringContainsString('data-url="/records/key%2Fa"', $html);
+		$this->assertSame('key/a', $this->inlineRoute($html)['targetId']);
+		$this->assertSame('/records/__ROW_ID__', $this->inlineRoute($html)['urlTemplate']);
 		$this->assertSame('Original', $field->getInlineEditValue());
 
 		$field->inlineEditProperty = 'title';
@@ -230,9 +310,12 @@ class EditorV2TextTest extends TestCase
 	{
 		$model = new EditorV2Record(['id' => 42, 'title' => 'hello']);
 		$field = $this->field(['editorValueFunction' => 'computedTitle']);
+		$this->assertFalse($field->getEditorRouteConfiguration()['history']);
 		$this->assertSame('HELLO', $field->transformValue($model));
 		$this->assertSame('HELLO', $field->getInlineEditValue());
 		$field->forceValue = 0;
+		$this->assertFalse($field->getEditorRouteConfiguration()['history']);
+		$this->assertFalse($this->field(['forceValue' => 0])->getEditorRouteConfiguration()['history']);
 		$this->assertSame(0, $field->transformValue($model));
 		$this->assertSame('0', $field->getInlineEditValue());
 	}
@@ -250,7 +333,9 @@ class EditorV2TextTest extends TestCase
 		$this->assertStringContainsString('data-flag="false"', $html);
 		$this->assertStringContainsString('&lt;pre&gt;', $html);
 		$this->assertStringContainsString('custom extra', $html);
-		$this->assertSame(1, substr_count($html, 'data-url='));
+		$this->assertStringNotContainsString('data-url=', $html);
+		$this->assertSame(1, substr_count($html, 'data-ib-dt-inline-control='));
+		$this->assertSame(42, $this->inlineRoute($html)['targetId']);
 		$this->assertStringNotContainsString('&amp;quot;', $html);
 	}
 
@@ -272,9 +357,11 @@ class EditorV2TextTest extends TestCase
 		$this->assertTrue($field->hasSaveButton());
 		$this->assertFalse($field->isNullable());
 		$html = $field->setInlineCreateElement(new EditorV2Record(), '/records')->getInlineEditHtml();
-		$this->assertStringContainsString('data-url="/records"', $html);
+		$this->assertSame(['storeUrl' => '/records'], $this->inlineRoute($html));
 		$this->assertStringContainsString('ib-datatable-inline-create-field', $html);
 		$this->assertStringContainsString('data-save-trigger="blur"', $html);
+		$this->assertSame('blur', $field->getHeaderSaveTrigger());
+		$this->assertSame('blur', $field->getHeaderData()['save-trigger']);
 	}
 
 	public function test_old_and_new_editors_are_both_detected_for_inline_and_bulk() : void
@@ -326,11 +413,87 @@ class EditorV2TextTest extends TestCase
 		$this->assertSame('/children/__ROW_ID__', $child->getEditorUpdateUrl());
 	}
 
+	public function test_route_templates_are_column_metadata_and_are_not_compiled_into_inputs() : void
+	{
+		$field = $this->field(['customUpdateRouteName' => 'records.rename', 'data' => ['url' => '/wrong']]);
+		$route = $field->getEditorRouteConfiguration();
+		$this->assertStringEndsWith('/renamed-records/__ROW_ID__', $route['urlTemplate']);
+		$this->assertSame('__ROW_ID__', $route['idPlaceholder']);
+		$this->assertSame('row', $route['target']);
+		$this->assertStringContainsString('ibDtEditor:', $field->getCustomColumnDef());
+		$this->assertStringNotContainsString('data-url', $field->getCustomColumnDef());
+		$this->assertStringNotContainsString('renamed-records', $field->getCustomColumnDefSingleResult());
+		$this->assertStringNotContainsString('encodeURIComponent', $field->getCustomColumnDefSingleResult());
+		$this->assertSame('element', $this->field(['editorTarget' => 'element'])->getEditorRouteConfiguration()['target']);
+	}
+
 	public function test_conditional_state_requests_row_refresh_unless_explicitly_overridden() : void
 	{
 		$this->assertTrue($this->field(['disabledIf' => 'isLocked'])->fieldExtraData['refreshRow']);
 		$this->assertFalse($this->field(['disabledIf' => 'isLocked', 'refreshRow' => false])->fieldExtraData['refreshRow']);
 		$this->assertFalse($this->field(['disabledIf' => 'isLocked', 'reloadTable' => true])->fieldExtraData['refreshRow']);
+	}
+
+	public function test_optional_update_url_method_is_evaluated_on_each_record_and_empty_urls_keep_a_stable_shape() : void
+	{
+		$field = $this->field(['updateUrlMethod' => 'customCellUpdateUrl']);
+		foreach (['/special/a?mode=one&next=%2F', '/special/b', null, '', '  '] as $url)
+		{
+			$model = new EditorV2Record(['id' => 42, 'title' => '001', 'cell_url' => $url]);
+			$this->assertSame(['value' => '001', 'updateUrl' => trim($url ?? '') === '' ? null : $url], $field->transformValue($model));
+		}
+		$this->assertSame(['value' => null, 'updateUrl' => null], $field->transformValue(null));
+		$this->assertSame('value', $field->getValuePosition());
+		$this->assertTrue($field->getEditorRouteConfiguration()['updateUrlFromCell']);
+		$this->assertSame('/records/__ROW_ID__', $field->getEditorRouteConfiguration()['urlTemplate']);
+		$this->assertArrayNotHasKey('updateUrlFromCell', $this->field()->getEditorRouteConfiguration());
+		$this->assertTrue($field->fieldExtraData['refreshRow']);
+		$this->assertFalse($this->field(['updateUrlMethod' => 'customCellUpdateUrl', 'refreshRow' => false])->fieldExtraData['refreshRow']);
+	}
+
+	public function test_custom_cell_url_combines_with_child_targets_and_disabled_metadata() : void
+	{
+		$field = $this->field(['updateUrlMethod' => 'customCellUpdateUrl', 'editorTarget' => 'element', 'disabledIf' => 'isLocked']);
+		$model = new EditorV2Record(['id' => 42, 'title' => 0, 'cell_url' => '/special/child', 'locked' => true]);
+		$this->assertSame(['value' => 0, 'updateUrl' => '/special/child', 'disabled' => true, 'targetId' => 42], $field->transformValue($model));
+		$this->assertStringNotContainsString('data-url', $field->getCustomColumnDef());
+	}
+
+	public function test_custom_inline_update_url_uses_the_record_method_and_create_keeps_its_store_route() : void
+	{
+		$field = $this->field(['updateUrlMethod' => 'customCellUpdateUrl']);
+		$model = new EditorV2Record(['id' => 42, 'title' => 'Note', 'cell_url' => '/special/42?mode=one&next=%2F']);
+		$field->setInlineEditElement($model);
+		$this->assertSame($model->cell_url, $field->getInlineEditUpdateUrl());
+		$this->assertSame($model->cell_url, $this->inlineRoute($field->getInlineEditHtml())['updateUrl']);
+		$model->cell_url = null;
+		$this->assertNull($this->inlineRoute($field->getInlineEditHtml())['updateUrl']);
+		$this->assertSame('/records/42', $field->getInlineEditUpdateUrl());
+		$field->updateUrlMethod = 'missingMethod';
+		$field->setInlineCreateElement($model, '/records/store');
+		$this->assertSame(['storeUrl' => '/records/store'], $this->inlineRoute($field->getInlineEditHtml()));
+		$this->assertSame('/records/store', $field->getInlineEditUpdateUrl());
+	}
+
+	public function test_update_url_method_must_exist_on_the_model() : void
+	{
+		$this->expectException(LogicException::class);
+		$this->expectExceptionMessage('Editor "title" requires callable updateUrlMethod "missingMethod"');
+		$this->field(['updateUrlMethod' => 'missingMethod'])->transformValue(new EditorV2Record());
+	}
+
+	public function test_update_url_method_must_be_public_even_with_eloquent_magic_calls() : void
+	{
+		$this->expectException(LogicException::class);
+		$this->expectExceptionMessage('requires callable updateUrlMethod "privateUpdateUrl"');
+		$this->field(['updateUrlMethod' => 'privateUpdateUrl'])->transformValue(new EditorV2Record());
+	}
+
+	public function test_update_url_method_rejects_non_string_results() : void
+	{
+		$this->expectException(LogicException::class);
+		$this->expectExceptionMessage('updateUrlMethod "customCellUpdateUrl" must return a string or null');
+		$this->field(['updateUrlMethod' => 'customCellUpdateUrl'])->transformValue(new EditorV2Record(['cell_url' => 42]));
 	}
 
 	public function test_inline_derivation_accepts_the_shorthand_type_declaration() : void
@@ -355,6 +518,8 @@ class EditorV2Record extends Model
 	public function isLocked() : bool { return (bool) $this->locked; }
 	public function computedTitle() : string { return strtoupper($this->title); }
 	public function getEditorUpdateUrl() : string { return '/records/__ROW_ID__'; }
+	public function customCellUpdateUrl() { return $this->cell_url; }
+	private function privateUpdateUrl() : string { return '/private'; }
 	private function privateLocked() : bool { return true; }
 }
 

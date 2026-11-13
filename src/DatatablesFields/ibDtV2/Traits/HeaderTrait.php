@@ -57,8 +57,11 @@ trait HeaderTrait
 
 	public function getHeaderData() : array
 	{
-		return $this->confirmMessage === null ? $this->headerData : array_replace($this->headerData, ['confirm' => __($this->confirmMessage)]);
+		$data = $this->confirmMessage === null ? $this->headerData : array_replace($this->headerData, ['confirm' => __($this->confirmMessage)]);
+		return array_replace($data, $this->getEditorDataAttributes());
 	}
+
+	public function getHeaderSaveTrigger() : ?string { return $this->getSaveSettings()['saveTrigger'] ?? null; }
 
 	public function getFooterData() : array { return $this->footerData; }
 	public function hasMainHeader() : bool { return (bool) $this->mainHeader; }

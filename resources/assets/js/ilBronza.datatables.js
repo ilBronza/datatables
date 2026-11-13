@@ -29,7 +29,11 @@ require('datatables.net-select-dt');
  */
 
 require('./datatables.vendor.columnIndexes.js');
-require('./datatables.vendor.editorV2.js');
+require('./datatables.vendor.editorHelpers.js');
+require('./datatables.vendor.numericHelpers.js');
+require('./datatables.vendor.editors.js');
+require('./datatables.vendor.numericEditor.js');
+require('./datatables.vendor.editorHistory.js');
 require('./datatables.vendor.ajaxButton.min.js');
 require('./datatables.vendor.editorDate.js');
 require('./datatables.vendor.rowPatch.js');

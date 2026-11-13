@@ -4,6 +4,10 @@ namespace IlBronza\Datatables\DatatablesFields\ibDtV2\Traits;
 
 trait InputControlTrait
 {
+	protected function isMultilineControl() : bool { return false; }
+	protected function getDefaultInputAttributes() : array { return []; }
+	protected function getInputDisplayValueExpression(string $value) : string { return $value; }
+
 	public function getEditorFieldType()
 	{
 		return $this->fieldType;
@@ -11,7 +15,9 @@ trait InputControlTrait
 
 	protected function getInputAttributes(bool $inline = false) : array
 	{
-		$attributes = $this->inputAttributes;
+		$defaults = $this->getDefaultInputAttributes();
+		$attributes = array_replace($defaults, $this->inputAttributes);
+		$attributes['class'] = array_merge((array) ($defaults['class'] ?? []), (array) ($this->inputAttributes['class'] ?? []));
 		foreach ($this->data as $name => $value)
 			$attributes['data-' . $name] = $value;
 
@@ -21,14 +27,15 @@ trait InputControlTrait
 
 		$attributes = array_replace($attributes, [
 			'type' => $this->getEditorFieldType(),
-			'class' => trim($customClasses . ' ' . $this->getHtmlClassesString() . ' uk-input ib-editor-text ib-dt-editor-v2'
+			'class' => trim($customClasses . ' ' . $this->getHtmlClassesString()
+				. ($this->isMultilineControl() ? ' uk-textarea' : ' uk-input') . ' ib-editor-text ib-dt-editor-v2'
 				. ($inline ? ' ib-datatable-inline-edit-field' : '')),
-			'data-field' => $this->getFieldSpecificData()['field'],
-			'data-ib-dt-cell-format' => $this->getSaveSettings()['cellFormat'],
-			'data-ib-dt-value-type' => $this->editorValueType,
-			'data-save-trigger' => $this->getSaveSettings()['saveTrigger'],
 		]);
-		unset($attributes['disabled'], $attributes['value'], $attributes['data-originalvalue'], $attributes['data-url']);
+		unset($attributes['disabled'], $attributes['value'], $attributes['data-originalvalue'],
+			$attributes['data-url'], $attributes['data-ib-dt-editor-route'], $attributes['data-save-trigger'],
+			$attributes['data-field'], $attributes['data-ib-dt-cell-format'], $attributes['data-ib-dt-value-type']);
+		if ($this->isMultilineControl())
+			unset($attributes['type']);
 
 		if ($inline)
 			$attributes['data-inline-source-field'] = $this->name;
@@ -50,11 +57,20 @@ trait InputControlTrait
 		$attributes = array_replace($this->getInputAttributes(true), [
 			'value' => $value,
 			'data-originalvalue' => $value,
-			'data-url' => $this->getInlineEditUpdateUrl(),
 			'disabled' => $this->isDisabledForElement($this->element),
 		]);
 
-		return $this->wrapControlHtml('<input' . $this->renderHtmlAttributes($attributes) . ' />', true);
+		return $this->wrapControlHtml($this->renderInputControl($attributes, $value), true);
+	}
+
+	protected function renderInputControl(array $attributes, string $value) : string
+	{
+		if (! $this->isMultilineControl())
+			return '<input' . $this->renderHtmlAttributes($attributes) . ' />';
+
+		unset($attributes['value']);
+		// HTML consumes the first LF after <textarea>; prepend one to preserve the value.
+		return '<textarea' . $this->renderHtmlAttributes($attributes) . ">\n" . $this->escapeHtml($value) . '</textarea>';
 	}
 
 	/** Assigns item only: the column/iterator owns the final return. */
@@ -62,26 +78,27 @@ trait InputControlTrait
 	{
 		$value = $this->getCellValueExpression();
 		if (! $this->userCanEdit())
-			return 'item = ' . $this->compileControlWrapper('window.ibDtEscapeHtml(' . $value . ')') . ';';
+			return 'item = ' . $this->compileControlWrapper('window.IlBronza.datatables.editors.helpers.escapeHtml(' . $this->getInputDisplayValueExpression($value) . ')') . ';';
 
 		$target = $this->getTargetIdExpression();
-		$url = $this->javascriptLiteral($this->getEditorUpdateUrl());
-		$placeholder = $this->javascriptLiteral(config('datatables.replace_model_id_string'));
 		$expressions = [
-			'value' => 'value',
 			'data-originalvalue' => 'value',
-			'data-url' => 'url',
 		];
+		if (! $this->isMultilineControl())
+			$expressions['value'] = $this->getInputDisplayValueExpression('value');
 		if (! $this->editorTargetsRow())
 			$expressions['data-ib-dt-target-id'] = 'targetId';
 		$attributes = $this->compileHtmlAttributes($this->getInputAttributes(), $expressions);
-		$input = '"<input" + (' . $attributes . ') + ' . $this->compileDisabledAttribute() . ' + " />"';
+		$tag = $this->isMultilineControl() ? 'textarea' : 'input';
+		$ending = $this->isMultilineControl()
+			? $this->javascriptLiteral(">\n") . ' + window.IlBronza.datatables.editors.helpers.escapeHtml(value) + "</textarea>"'
+			: '" />"';
+		$input = $this->javascriptLiteral('<' . $tag) . ' + (' . $attributes . ') + ' . $this->compileDisabledAttribute() . ' + ' . $ending;
 		$control = $this->compileControlWrapper($input);
 
 		return "{
 			const value = {$value};
 			const targetId = {$target};
-			const url = {$url}.split({$placeholder}).join(encodeURIComponent(String(targetId ?? '')));
 			item = {$control};
 		}";
 	}

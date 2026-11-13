@@ -5,7 +5,8 @@ const { spawnSync } = require('node:child_process');
 const test = require('node:test');
 const vm = require('node:vm');
 
-const runtimeSource = fs.readFileSync('resources/assets/js/datatables.vendor.editorV2.js', 'utf8');
+const runtimeSource = ['editorHelpers', 'numericHelpers', 'editors', 'numericEditor'].map(name =>
+    fs.readFileSync('resources/assets/js/datatables.vendor.' + name + '.js', 'utf8')).join('\n');
 const ajaxSource = fs.readFileSync('resources/assets/js/datatables.vendor.ajaxCall.min.js', 'utf8');
 const bootstrap = process.env.IB_DT_BOOTSTRAP || (fs.existsSync('vendor/autoload.php')
     ? 'vendor/autoload.php' : '../.ibtest/bootstrap_datatables.php');
@@ -48,8 +49,12 @@ test('PHP-generated simple renderer reads ID from the row and preserves original
         const attributes = inputAttributes(column.render(value, 'display', row, {}));
         assert.equal(attributes.value, String(value ?? ''));
         assert.equal(attributes['data-originalvalue'], String(value ?? ''));
-        assert.equal(attributes['data-url'], '/records/key%2Fa?from="table"&mode=edit');
-        assert.equal(attributes['data-ib-dt-cell-format'], 'scalar');
+        assert.equal(attributes['data-url'], undefined);
+        assert.equal(attributes['data-save-trigger'], undefined);
+        assert.equal(attributes['data-ib-dt-cell-format'], undefined);
+        assert.equal(attributes['data-ib-dt-value-type'], undefined);
+        assert.equal(attributes['data-field'], undefined);
+        assert.equal(definitions.plainHeaderData['ib-dt-cell-format'], 'scalar');
         assert.equal(attributes['data-ib-dt-target-id'], undefined);
         assert.equal(row[1], value);
         for (const mode of ['filter', 'sort', 'export', 'type'])
@@ -65,7 +70,8 @@ test('conditional renderer reads disabled directly and does not mutate metadata'
         const html = column.render(cell, 'display', [null, cell, 42], {});
         assert.equal(/ disabled(?:[ =])/.test(html), disabled);
         assert.deepEqual(cell, { value: 'Note', disabled });
-        assert.equal(inputAttributes(html)['data-ib-dt-cell-format'], 'value');
+        assert.equal(inputAttributes(html)['data-ib-dt-cell-format'], undefined);
+        assert.equal(definitions.conditionalHeaderData['ib-dt-cell-format'], 'value');
         for (const mode of ['filter', 'sort', 'export', 'type'])
             assert.equal(column.render(cell, mode, [], {}), 'Note');
     }
@@ -78,11 +84,38 @@ test('static disabled needs no structured payload, and missing target IDs disabl
     assert.doesNotMatch(runtime.column('plain').render('Note', 'display', [null, null, 0], {}), / disabled/);
 });
 
-test('related-model renderer uses its target ID even when the row has a different ID', () => {
+test('related-model renderer retains its target ID without building a URL', () => {
     const column = boot().column('foreign');
     const attributes = inputAttributes(column.render({ value: 'Child', targetId: 'child/a' }, 'display', [null, null, 'parent'], {}));
-    assert.equal(attributes['data-url'], '/records/child%2Fa?from="table"&mode=edit');
+    assert.equal(attributes['data-url'], undefined);
+    assert.equal(column.ibDtEditor.target, 'element');
     assert.equal(attributes['data-ib-dt-target-id'], 'child/a');
+});
+
+test('PHP emits one route template per editable column, outside the render function', () => {
+    const route = boot().column('plain').ibDtEditor;
+    assert.equal(route.urlTemplate, '/records/__ROW_ID__?from="table"&mode=edit');
+    assert.equal(route.idPlaceholder, '__ROW_ID__');
+    assert.equal(route.target, 'row');
+    assert.equal(boot().column('denied').ibDtEditor, undefined);
+    assert.equal(definitions.plain.split('records').length - 1, 1);
+    assert.doesNotMatch(boot().column('plain').render.toString(), /data-url|encodeURIComponent|\/records\//);
+    assert.doesNotMatch(boot().column('plain').render.toString(), /data-save-trigger/);
+});
+
+test('custom update URLs remain in the PHP cell JSON and never enter the input or orthogonal values', () => {
+    const column = boot().column('customUrl');
+    assert.equal(column.ibDtEditor.updateUrlFromCell, true);
+    for (const cell of definitions.customUrlCells) {
+        const original = JSON.stringify(cell);
+        const html = column.render(cell, 'display', [null, cell, 'key/a'], {});
+        assert.equal(inputAttributes(html).value, '001');
+        assert.equal(inputAttributes(html)['data-url'], undefined);
+        assert.doesNotMatch(html, /\/special\/|updateUrl/);
+        for (const mode of ['filter', 'sort', 'export', 'type'])
+            assert.equal(column.render(cell, mode, [], {}), '001');
+        assert.equal(JSON.stringify(cell), original);
+    }
 });
 
 test('configured attributes, classes and affixes are escaped and target the right elements', () => {
@@ -92,8 +125,10 @@ test('configured attributes, classes and affixes are escaped and target the righ
     assert.equal(attrs.placeholder, '"<b>&\'');
     assert.equal(attrs['data-context'], '"<script>&\'');
     assert.equal(attrs['data-flag'], 'false');
-    assert.equal(attrs['data-field'], 'notes');
+    assert.equal(attrs['data-field'], undefined);
+    assert.equal(definitions.attributesHeaderData.field, 'notes');
     assert.equal(attrs['data-kind'], undefined);
+    assert.equal(attrs['data-save-trigger'], undefined);
     assert.match(attrs.class, /custom configured/);
     assert.match(html, /^<div class="outer ib-suffix-container">/);
     assert.match(html, /&lt;pre&gt;/);
@@ -125,11 +160,13 @@ function saveRuntime(initial, format)
     const table = { cell() { return cell; } };
     const $ = element => ({
         length: 1,
+        hasClass() { return false; },
         parents(selector) { return selector === 'td' ? td : { length: 1, DataTable() { return table; } }; },
         attr(name) { return element[name]; }, focus() {},
     });
     td.addClass = () => {};
     const context = { window: boot().window, $, __isEditorSaveTarget() { return false; } };
+    context.window.jQuery = $;
     const start = ajaxSource.indexOf('    window.__checkResultGeneric = function');
     const end = ajaxSource.indexOf('    window.__getDataTableByClass', start);
     assert.ok(start >= 0 && end > start);
@@ -153,7 +190,7 @@ test('AJAX response commits scalar values, including null, server-normalized val
 });
 
 test('AJAX response preserves structured metadata and only updates the selected child', () => {
-    const source = { value: 'old', disabled: false, targetId: 'child' };
+    const source = { value: 'old', disabled: false, targetId: 'child', updateUrl: '/special/child' };
     assert.deepEqual(saveRuntime(source, 'value').save({ notes: 'new' }), { ...source, value: 'new' });
     assert.equal(source.value, 'old');
     const other = { value: 'other', targetId: 'other' };

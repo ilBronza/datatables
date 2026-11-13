@@ -135,14 +135,14 @@ trait DatatableSelectRowsTrait
         {
             $fieldData = $field->getFieldSpecificData();
 
-            return [
+            return array_replace([
                 'name' => $field->getFieldName(),
                 'parameter' => $fieldData['field'] ?? $field->getFieldName(),
                 'index' => $field->getIndex(),
                 'label' => $field->getTranslatedName(),
                 'nullable' => $field->isEditor() && $field->isNullable(),
                 'customValueMode' => $fieldData['custom-value-mode'] ?? false,
-            ];
+            ], isset($fieldData['number-options']) ? ['numericOptions' => $fieldData['number-options']] : []);
         })->values()->all();
     }
 

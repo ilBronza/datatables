@@ -36,7 +36,8 @@ function boot(response)
             },
             data(name, value) {
                 node.data ??= {};
-                if (arguments.length === 1) return node.data[name];
+                if (arguments.length === 1) return Object.hasOwn(node.data, name)
+                    ? node.data[name] : node.attributes?.['data-' + name];
                 node.data[name] = value;
                 return this;
             },
@@ -91,6 +92,7 @@ function boot(response)
         },
     };
 
+    vm.runInNewContext(moduleSource.slice(0, moduleSource.indexOf('$(window).on("beforeunload"')), context);
     vm.runInNewContext(extractLoader(), context);
 
     return { requests, window: context.window };

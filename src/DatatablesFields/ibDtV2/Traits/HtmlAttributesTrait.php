@@ -75,7 +75,7 @@ trait HtmlAttributesTrait
 		{
 			$this->normalizeHtmlAttributes([$name => '']);
 			$parts[] = $this->javascriptLiteral(' ' . $name . '="')
-				. ' + window.ibDtEscapeHtml(' . $expression . ') + ' . $this->javascriptLiteral('"');
+				. ' + window.IlBronza.datatables.editors.helpers.escapeHtml(' . $expression . ') + ' . $this->javascriptLiteral('"');
 		}
 
 		return implode(' + ', $parts);
@@ -83,7 +83,7 @@ trait HtmlAttributesTrait
 
 	protected function getContainerOpeningHtml(bool $inline = false) : string
 	{
-		$attributes = $this->containerAttributes;
+		$attributes = array_replace($this->containerAttributes, $inline ? $this->getInlineContainerAttributes() : []);
 		if ($this->getPrefix() !== false || $this->getSuffix() !== false)
 		{
 			$class = $attributes['class'] ?? '';
