@@ -159,6 +159,7 @@
 			data-uisettingsroute="{{ $table->getUiSettingsStoreUrl() }}"
 
 			{!! $table->getDomStickynessDataAttribute() !!}
+			data-sticky-media="{{ config('datatables.domStickyMedia', false) }}"
 
 			class="wannabedatatable {{ $table->getStripeClass() }} datatable {{ $table->getName() }} {{ $table->getHtmlClassesString() }}"
 			style="table-layout: auto;"

@@ -193,6 +193,8 @@ return [
     'replace_model_id_string' => env('REPLACE_MODEL_ID_STRING', 'replace_model_id_string'),
     'domStickyButtons' => env('DATATABLES_DOM_STICKY_BUTTONS', false),
     'domStickyHeader' => env('DATATABLES_STICKY_HEADER', false),
+    // UIkit media condition (minimum width in px or media query); false enables all widths.
+    'domStickyMedia' => env('DATATABLES_STICKY_MEDIA', false),
     'fixedHeader' =>  env('DATATABLES_FIXED_HEADER', false),
     'hideColumns' => env('DATATABLES_HIDE_COLUMNS', true),
     'fieldsGroups' => env('DATATABLES_FIELDS_GROUPS', true),
