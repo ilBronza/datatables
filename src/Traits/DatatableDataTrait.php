@@ -2,6 +2,7 @@
 
 namespace IlBronza\Datatables\Traits;
 
+use IlBronza\CRUD\ResourceFilters\ResourceFilters;
 use IlBronza\Datatables\Contracts\DatatableFieldContract;
 use Illuminate\Support\Str;
 
@@ -180,5 +181,7 @@ trait DatatableDataTrait
 	private function setCachedTableKey()
 	{
 		$this->cachedTableKey = Str::slug($this->getName() . request()?->route()?->getName() . (\Auth::id() ?? Str::random()), '');
+		if (app()->bound(ResourceFilters::class))
+			$this->cachedTableKey .= app(ResourceFilters::class)->cacheContext();
 	}
 }
