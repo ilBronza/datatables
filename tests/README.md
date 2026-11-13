@@ -15,6 +15,22 @@ NODE_PATH=/tmp/ib-column-style-dom/node_modules node --test tests/columnStyles*.
 
 PHP tests use the shared `.ibtest` environment documented in the parent `AGENTS.md`.
 
+`RowParentIdTest.php` covers the V2 hierarchy field, Eloquent accessor, strict
+JSON normalization and automatic hidden identity. `rowHierarchy.test.js` covers
+the iterative forest, 20,000 levels, invalid references and temporary search
+expansion. `rowHierarchy.dom.test.js` uses the same jsdom/DataTables/ColReorder
+dependencies and `IB_DT_PHP` / `IB_DT_BOOTSTRAP` settings as the V2 editor tests:
+
+```sh
+NODE_PATH=/tmp/ib-editor-v2-dom/node_modules node --test tests/rowHierarchy*.test.js
+```
+
+It exercises PHP-generated column definitions, single/branch toggles, root
+paging, native page selectors, sibling sorting, search context, incremental
+patches, AJAX reload, row removal, ColReorder, hidden columns and destroy/recreate.
+Optional Select 3 / RowReorder 1 integrations additionally verify hidden selection,
+page selection and automatic drag disabling when those extensions are installed.
+
 `fixtures/columnStyles.json` is used by both PHP and JavaScript to keep persisted
 CSS and preview normalization consistent.
 

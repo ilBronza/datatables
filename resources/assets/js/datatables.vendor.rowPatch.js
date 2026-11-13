@@ -321,6 +321,7 @@
             });
 
             setPendingColumns(pending.table, pending.rowIndex, remaining);
+            window.ibDtRowHierarchy?.refresh(pending.table, pending.rowIndex);
         });
     };
 
@@ -409,6 +410,7 @@
         });
 
         setPendingColumns(table, rowIndex, protectedColumns);
+        window.ibDtRowHierarchy?.refresh(table, rowIndex);
 
         return {
             invalidatedCells: invalidatedCells,

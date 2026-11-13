@@ -29,6 +29,7 @@ require('datatables.net-select-dt');
  */
 
 require('./datatables.vendor.columnIndexes.js');
+require('./datatables.vendor.rowHierarchy.js');
 require('./datatables.vendor.editorHelpers.js');
 require('./datatables.vendor.numericHelpers.js');
 require('./datatables.vendor.editors.js');

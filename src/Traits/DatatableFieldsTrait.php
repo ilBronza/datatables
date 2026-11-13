@@ -411,6 +411,16 @@ trait DatatableFieldsTrait
                 $this->setRowIdIndex($field->getIndex());
                 return ;
             }
+
+        // Structural fields need stable row identities even without selection/editors.
+        foreach ($this->fields as $field)
+            if (method_exists($field, 'requiresRowId') && $field->requiresRowId())
+            {
+                $primary = $this->addField('mySelfPrimary', ['type' => 'primary']);
+                $this->getFirstFieldsGroup()->addField('mySelfPrimary', $primary);
+                $this->setRowIdIndex($primary->getIndex());
+                return;
+            }
     }
 
     public function getRowIdIndex()

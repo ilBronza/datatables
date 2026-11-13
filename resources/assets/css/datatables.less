@@ -1,5 +1,36 @@
 @import "./datatables.variables.less";
 
+.ib-dt-tree-controls
+{
+    display: inline-flex;
+    gap: .15rem;
+    padding-inline-start: calc(var(--ib-dt-tree-depth, 0) * .8rem);
+    white-space: nowrap;
+    align-items: center;
+    min-height: 1.7rem;
+}
+
+.ib-dt-tree-toggle
+{
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    padding: .2rem .3rem;
+    line-height: 1;
+}
+
+.ib-dt-tree-toggle:hover,
+.ib-dt-tree-toggle:focus-visible
+{
+    background: rgba(0, 100, 200, .12);
+    outline: 2px solid currentColor;
+    outline-offset: -2px;
+}
+
+.ib-dt-tree-context .ib-dt-tree-controls { opacity: .65; }
+.ib-dt-tree-issue { color: #b45309; }
+
 .editorchanged,
 input.editorchanged
 {

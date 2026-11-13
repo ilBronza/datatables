@@ -260,6 +260,14 @@
 		@endif ];
 
     window.{{ $table->getId() }}buttons = [
+        @if($table->getFields()->contains(fn ($field) => $field instanceof \IlBronza\Datatables\DatatablesFields\ibDtV2\DatatableFieldRowParentId && $field->flatOnOrder))
+        {
+            name: 'ibDtHierarchy',
+            text: @json(__('datatables::rowHierarchy.restore')),
+            enabled: false,
+            action: function (event, dt) { window.ibDtRowHierarchy.restoreOrder(dt); }
+        },
+        @endif
         @if($table->canEditColumnStyles())
         {
             text: @json(__('datatables::columnStyles.editTable')),

@@ -11,6 +11,78 @@ base legacy; i vecchi metodi statici di creazione restano disponibili.
 Il namespace riservato è `IlBronza\Datatables\DatatablesFields\ibDtV2`.
 Il resolver conserva esattamente le maiuscole e minuscole di `ibDtV2`.
 
+## Gerarchia delle righe
+
+La presenza del campo `ibDtV2.rowParentId` attiva automaticamente la gerarchia:
+
+```php
+'row_parent_id' => [
+    'type' => 'ibDtV2.rowParentId',
+],
+```
+
+Il model espone il normale accessor Eloquent, senza trait o configurazioni nel
+controller. Il campo legge l'attributo con il nome dichiarato nel fieldset:
+
+```php
+public function getRowParentIdAttribute(): array
+{
+    return [
+        'value' => $this->parent_id, // null = radice
+        'row_opened' => $this->is_active, // booleano: apre i figli della riga corrente
+    ];
+}
+```
+
+Il getter può anche restituire soltanto l'ID del padre (`int`, `string` o `null`):
+il JSON della cella viene sempre normalizzato in
+`{"value": ..., "row_opened": false}`. `row_opened` omesso vale `false`;
+se presente deve essere un booleano. L'ID deve coincidere con il `rowId` della
+riga padre nella tabella. Sono supportati zero e ID stringa discriminati, come
+`order:42`, purché le identità delle righe usino la stessa convenzione.
+Se non esiste un campo `rowId`, viene aggiunto automaticamente il `primary`
+nascosto, usando la chiave del model; un `rowId` esplicito viene conservato.
+
+La colonna è visibile, non ordinabile e senza filtro. Contiene due pulsanti:
+
+- Chevron singolo (`chevron-right` / `chevron-down`): apre o chiude il nodo,
+  conservando le aperture dei discendenti.
+- Chevron doppio (`angles-right` / `angles-down`): apre o chiude tutto il ramo,
+  impostando anche lo stato dei nodi intermedi. Un ramo parzialmente aperto
+  viene aperto completamente al primo clic.
+
+Le righe senza figli non hanno pulsanti. I tooltip riportano il numero di figli
+diretti o di discendenti totali. I rientri seguono il livello; il calcolo è
+iterativo e non impone un limite di profondità (il rientro visivo si ferma a 12).
+`row_opened` è un default, applicato finché l'utente non modifica quel nodo.
+Le scelte dell'utente sono conservate per ID durante i draw e i reload AJAX
+della stessa istanza; ricaricare la pagina ripristina i default del server.
+
+L'ordinamento agisce tra fratelli. La paginazione e `pageLength` contano le
+radici: un ramo rimane nella stessa pagina anche se contiene molti discendenti.
+`page.info()` conta i rami, mentre `rows({page: 'current'})`, i selettori di
+colonne/celle e le azioni sulla pagina corrente vedono tutte le righe visibili
+di quei rami. Chiudere un nodo non modifica selezione, dati, risultati di ricerca
+o totali. L'export della colonna strutturale è vuoto.
+
+La ricerca mostra le righe corrispondenti e i loro antenati come contesto,
+aprendo temporaneamente i percorsi necessari. Durante la ricerca i pulsanti
+sono disabilitati; cancellarla ripristina le aperture precedenti. Gli antenati
+di contesto non entrano in `rows({search: 'applied'})`, né nei totali dei risultati.
+I refresh incrementali degli editor e dei broadcast aggiornano anche i controlli
+e ricalcolano la struttura quando cambiano padre o default, preservando i draft.
+
+La struttura usa il dataset completo caricato nel browser (anche tramite AJAX);
+`serverSide: true` non è supportato. I record non caricati non vengono recuperati
+automaticamente. Padri assenti, cicli e identità duplicate vengono segnalati con
+un tooltip e resi come radici senza perdere righe. È ammesso un solo campo
+gerarchico per tabella. Il trascinamento RowReorder viene disabilitato: spostare
+un figlio richiede aggiornare la parentela nel model.
+
+Il modulo `datatables.vendor.rowHierarchy.js` è incluso dall'entry point comune.
+Per attivarlo nelle applicazioni pubblicare `datatables.assets` e ricompilare
+il bundle, come per gli altri nuovi campi V2.
+
 Sono disponibili `ibDtV2.editor.text`, `ibDtV2.editor.textarea` e
 `ibDtV2.editor.numeric`:
 
