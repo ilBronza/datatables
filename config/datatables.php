@@ -118,6 +118,7 @@ return [
 			'datatableFieldLinkCachedProperty' => 'auto',
 			'datatableFieldAjaxUrl' => 'auto',
 			'datatableFieldAjax' => 'auto',
+			'datatableFieldLightbox' => '2em',
 			'datatableFieldInlineEdit' => '2em',
 			'datatableFieldArchive' => '2em',
 			'datatableFieldUnDelete' => '2em',
