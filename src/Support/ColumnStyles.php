@@ -5,6 +5,23 @@ namespace IlBronza\Datatables\Support;
 /** Scoped CSS shared by the initial render and the column inspector's wire format. */
 class ColumnStyles
 {
+    private static function isColorLiteral(string $value) : bool
+    {
+        return (bool) preg_match('/^(?:#[\da-f]{3,8}|[a-z]+|(?:rgb|rgba|hsl|hsla)\([\d.,%\s-]+\))$/iD', $value);
+    }
+
+    public static function fieldBackgroundColor(?string $value) : ?string
+    {
+        $value = trim($value ?? '');
+        if ($value === '')
+            return null;
+
+        if (static::isColorLiteral($value) || preg_match('/^var\(--[a-zA-Z0-9_-]+\)$/D', $value))
+            return $value;
+
+        throw new \InvalidArgumentException('Expected a CSS color or var(--name) for the field background.');
+    }
+
     public static function paths(string $signature) : array
     {
         if (strlen($signature) > 1000)
@@ -59,7 +76,7 @@ class ColumnStyles
                     if (preg_match('/^-?\d+(?:\.\d+)?(?:px|em|rem|%)$/D', $value) || (str_contains($key, 'width') && $value === 'auto')) $out[$key] = $value;
                 }
                 elseif (isset($enums[$key]) && in_array($value, $enums[$key], true)) $out[$key] = $value;
-                elseif (in_array($key, ['color', 'background-color']) && preg_match('/^(?:#[\da-f]{3,8}|[a-z]+|(?:rgb|rgba|hsl|hsla)\([\d.,%\s-]+\))$/iD', $value)) $out[$key] = $value;
+                elseif (in_array($key, ['color', 'background-color']) && static::isColorLiteral($value)) $out[$key] = $value;
                 elseif ($key === 'font-family' && preg_match('/^[a-zA-Z0-9\s,\'"_-]+$/D', $value)) $out[$key] = $value;
             }
             if (isset($out['width']))

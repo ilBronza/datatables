@@ -214,6 +214,69 @@ class EditorV2TextTest extends TestCase
 		$this->assertStringContainsString('125px', view('datatables::datatablesFields.__tableSingleSpecCss', ['table' => $table])->render());
 	}
 
+	public function test_field_backgrounds_follow_columns_and_group_spans_with_duplicate_titles() : void
+	{
+		$fields = [
+			'title' => [
+				'type' => 'ibDtV2.editor.text',
+				'translatedName' => 'Stato',
+				'mainHeader' => [
+					'label' => 'Documenti',
+					'colspan' => 2,
+					'backgroundColor' => 'var(--documents)',
+				],
+				'thBackgroundColor' => '#abc',
+				'tdBackgroundColor' => '#def',
+			],
+			'status' => [
+				'type' => 'flat',
+				'translatedName' => 'Stato',
+				'tdBackgroundColor' => 'ivory',
+			],
+			'notes' => [
+				'type' => 'flat',
+				'translatedName' => 'Stato',
+			],
+		];
+		$table = Datatables::create('documents', [
+			'main' => [
+				'fields' => $fields,
+			],
+		], fn () => collect(), false, null, EditorV2Record::class);
+		$table->datatableUserData = new Data();
+		$table->canHideColumns = false;
+		$table->parseColumnDefs();
+		$tableData = [
+			'table' => $table,
+		];
+
+		$header = view('datatables::uikit.header._header', $tableData)->render();
+		$dom = new \DOMDocument();
+		@$dom->loadHTML('<table>' . $header . '</table>');
+		$xpath = new \DOMXPath($dom);
+		$this->assertSame(1, $xpath->query('//tr[@class="mainheader"]/th[@colspan="2" and @style="background-color: var(--documents)"]')->length);
+		$this->assertSame(1, $xpath->query('//tr[@class="columnsintestations"]/th[@data-field-name="title" and @style="background-color: #abc"]')->length);
+		$this->assertSame(2, $xpath->query('//th[@style]')->length);
+
+		$css = view('datatables::datatablesFields.__tableSingleSpecCss', $tableData)->render();
+		foreach ($fields as $name => $parameters)
+		{
+			$index = $table->getFieldByName($name)->getIndex();
+			$marker = 'ib-dt-bg-' . $index;
+			$classes = array_keys(array_filter($table->columnDefs['className']->values, fn ($indexes) => in_array($index, $indexes, true)));
+			if (isset($parameters['tdBackgroundColor']))
+			{
+				$this->assertContains($marker, explode(' ', implode(' ', $classes)));
+				$this->assertMatchesRegularExpression('/td\.' . $marker . '[^{]*\{\s*background-color: ' . $parameters['tdBackgroundColor'] . ';/', $css);
+			}
+			else
+			{
+				$this->assertStringNotContainsString($marker, implode(' ', $classes));
+				$this->assertStringNotContainsString('td.' . $marker, $css);
+			}
+		}
+	}
+
 	public function test_saved_column_settings_use_the_shared_field_contract() : void
 	{
 		$field = $this->field(['visible' => false, 'sortable' => false]);

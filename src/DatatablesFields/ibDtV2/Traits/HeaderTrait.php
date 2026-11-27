@@ -10,7 +10,7 @@ trait HeaderTrait
 	public ?string $translatedName = null;
 	public ?string $translationPrefix = null;
 	public ?string $forcedStandardName = null;
-	public ?string $mainHeader = null;
+	public array|string|null $mainHeader = null;
 	public bool $showLabel = true;
 	public ?bool $mustPrintIntestation = null;
 	public bool $headerTooltip = false;

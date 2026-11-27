@@ -57,6 +57,8 @@ trait DatatableColumnDefsTrait
     {
         //get field base columnDefs
         $fieldColumnDefs = $field->getColumnDefs();
+        if ($field->tdBackgroundColor ?? false)
+            $fieldColumnDefs['className'] = trim(($fieldColumnDefs['className'] ?? '') . ' ib-dt-bg-' . $field->getIndex());
 
         foreach($fieldColumnDefs as $definition => $value)
         {

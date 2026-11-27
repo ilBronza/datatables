@@ -41,6 +41,14 @@ class ColumnStylesTest extends TestCase
         $this->assertSame('', ColumnStyles::css('orders', 'customer', []));
     }
 
+    public function test_field_background_accepts_a_single_color() : void
+    {
+        $this->assertNull(ColumnStyles::fieldBackgroundColor(null));
+        $this->assertSame('rgba(12, 34, 56, .5)', ColumnStyles::fieldBackgroundColor(' rgba(12, 34, 56, .5) '));
+        $this->expectException(\InvalidArgumentException::class);
+        ColumnStyles::fieldBackgroundColor('red; display: none');
+    }
+
     public function test_visible_overflow_keeps_fixed_width_and_overrides_link_truncation() : void
     {
         $css = ColumnStyles::css('users', 'email', ['td' => ['width' => 150, 'text-overflow-mode' => 'visible']]);

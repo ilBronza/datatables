@@ -15,6 +15,8 @@ trait ColumnOptionsTrait
 	public ?string $orderDataType = null;
 	public array $tDHtmlClasses = [];
 	public array $cssRules = [];
+	public ?string $thBackgroundColor = null;
+	public ?string $tdBackgroundColor = null;
 	public ?string $textAlign = null;
 	public array $fieldsGroupsDefinitions = [];
 	public array $holdFieldsGroupsDefinitions = [];

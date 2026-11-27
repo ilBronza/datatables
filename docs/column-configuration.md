@@ -1,5 +1,33 @@
 # Configurazione della tabella
 
+## Colori di sfondo nel FieldsGroupParametersFile
+
+Ogni campo può definire il colore del titolo con `thBackgroundColor` e quello
+delle celle dati con `tdBackgroundColor`. Per colorare un'intestazione di gruppo,
+aggiungere `backgroundColor` al `mainHeader` del campo che apre il gruppo.
+
+```php
+'km_letter_status' => [
+    'type' => 'flat',
+    'translatedName' => 'Stato',
+    'thBackgroundColor' => '#dbeafe',
+    'tdBackgroundColor' => '#eff6ff',
+    'mainHeader' => [
+        'label' => 'Lettera incarico veicolo',
+        'colspan' => 3,
+        'backgroundColor' => 'var(--colore-gruppo)',
+    ],
+],
+```
+
+Le tre opzioni sono indipendenti e funzionano anche con i campi `ibDtV2`.
+Il colore del gruppo copre il suo `colspan`. Filtri e riepiloghi mantengono
+lo stile del tema. Puoi usare colori esadecimali, nomi CSS, `rgb()`, `rgba()`,
+`hsl()`, `hsla()` e variabili definite nel tema con `var(--nome)`.
+Un colore personale salvato per il `td` ha precedenza sul colore del campo.
+
+## Personalizzazione dalla tabella
+
 Con `canEditColumnStyles()` attivo, il pulsante **Modifica tabella** abilita gli
 attivatori contestuali. **Fine modifica** ripristina l'interazione ordinaria.
 La modalità è locale alla tabella e non viene salvata come preferenza.

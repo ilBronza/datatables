@@ -6,6 +6,12 @@
 
 		/*colonna indice {{ $loop->index }}*/
 
+		@if($color = \IlBronza\Datatables\Support\ColumnStyles::fieldBackgroundColor($field->tdBackgroundColor ?? null))
+	#{{ $table->getId() }} > tbody > tr:not(.ib-row-focused) > td.ib-dt-bg-{{ $field->getIndex() }}:not(.focus) {
+		background-color: {{ $color }};
+	}
+		@endif
+
 		@if($field->hasCss())
 	#{{ $table->getId() }} td.{{ $field->getHtmlClassForCss() }} {
 		@foreach($field->getCssRules() as $cssRule)
